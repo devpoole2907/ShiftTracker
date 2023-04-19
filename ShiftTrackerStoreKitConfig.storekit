@@ -1,0 +1,65 @@
+{
+  "identifier" : "7C0EB2CA",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "7.99",
+      "familyShareable" : false,
+      "internalID" : "6446510538",
+      "localizations" : [
+        {
+          "description" : "A large tip!",
+          "displayName" : "ShiftTracker Large Tip",
+          "locale" : "en_AU"
+        }
+      ],
+      "productID" : "ShiftTracker_Large_Tip",
+      "referenceName" : "ShiftTracker Large Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "5.99",
+      "familyShareable" : false,
+      "internalID" : "6446510679",
+      "localizations" : [
+        {
+          "description" : "A medium sized tip!",
+          "displayName" : "ShiftTracker Medium Tip",
+          "locale" : "en_AU"
+        }
+      ],
+      "productID" : "ShiftTracker_Medium_Tip",
+      "referenceName" : "ShiftTracker Medium Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "6446510127",
+      "localizations" : [
+        {
+          "description" : "A small tip!",
+          "displayName" : "Small Tip",
+          "locale" : "en_AU"
+        }
+      ],
+      "productID" : "ShiftTracker_Small_Tip",
+      "referenceName" : "ShiftTracker Small Tip",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6446443887",
+    "_developerTeamID" : "L9DB7QA9DE",
+    "_lastSynchronizedDate" : 701056151.72209203
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
