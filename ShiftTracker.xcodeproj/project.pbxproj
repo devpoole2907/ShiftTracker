@@ -396,8 +396,8 @@
 				1AC048BB29E0D02000355767 /* ContentView */,
 				1AE3845429D40D380002378F /* MoreOptionsView.swift */,
 				1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */,
-				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
 				1AECCC5B29DFA75A00D879FE /* TaxPickerView.swift */,
+				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
 			);
 			path = PrimaryView;
 			sourceTree = "<group>";
