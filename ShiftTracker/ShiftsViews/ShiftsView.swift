@@ -912,7 +912,7 @@ private let dateFormatter: DateFormatter = {
 struct PayPeriodView: View {
     var body: some View{
         VStack(spacing: 50){
-            Text("You have entered the backrooms! ooo")
+            Text("You have entered the backrooms!")
             
             Text("Invoice generation etc and pay period to go here")
         }
