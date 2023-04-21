@@ -418,7 +418,7 @@ struct ContentView: View {
                     
                     
                 }
-                Section{
+              /*  Section{
                     NavigationLink(destination: MoreOptionsView().navigationBarTitle(Text("Shift Settings"))){
                         Text("Shift settings")
                         // .foregroundColor(shift == nil ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
@@ -435,7 +435,7 @@ struct ContentView: View {
                             .cornerRadius(18)
                     }
                     
-                }
+                } */
                 
             }
         }

@@ -60,16 +60,7 @@ struct MoreOptionsView: View{
                //let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
         let proButtonColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : Color.orange.opacity(0.8)
         let iconColor: Color = colorScheme == .dark ? .white : .black
-        
-        
-        let overtimeRateBinding = Binding<Double>(
-                    get: { self.overtimeRate },
-                    set: {
-                        self.overtimeRate = $0
-                        sharedUserDefaults.set($0, forKey: shiftKeys.overtimeMultiplierKey)
-                    }
-                )
-        
+             
         
         NavigationStack{
                 VStack{
@@ -109,66 +100,8 @@ struct MoreOptionsView: View{
                             }
                             }.listRowBackground(Color.clear)
                     }
-                        //.listRowBackground(Color.clear)
-                        //Text("Automatic break")
-                        //Text("Break reminders")
-                        Section(header: Text("Location")){
-                            NavigationLink(destination: AddressFinderView()) {
-                                HStack {
-                                    Image("LocationIconFilled")
-                                    
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20)
-                                    
-                                    Spacer().frame(width: 10)
-                                    Text("Select shift location")
-                                }
-                            }
-                            Toggle(isOn: $clockInReminder){
-                                HStack {
-                                    Image(systemName: "bell.badge.circle")
-                                    Spacer().frame(width: 10)
-                                    Text("Remind me to clock in")
-                                }
-                            }.onChange(of: clockInReminder) { value in
-                                if !value {
-                                    autoClockIn = false
-                                    autoClockOut = false
-                                }
-                                
-                            }
-                            .toggleStyle(OrangeToggleStyle())
-                            
-                            
-                            Toggle(isOn: $clockOutReminder){
-                                HStack {
-                                    Image(systemName: "bell.badge.circle")
-                                    Spacer().frame(width: 10)
-                                    Text("Remind me to clock out")
-                                }
-                            }.toggleStyle(OrangeToggleStyle())
-                            
-                            Toggle(isOn: $autoClockIn){
-                                HStack {
-                                    Image(systemName: "figure.walk.arrival")
-                                    Spacer().frame(width: 10)
-                                    Text("Auto clock in")
-                                }
-                            }.toggleStyle(OrangeToggleStyle())
-                                .disabled(!isProVersion)
-                            Toggle(isOn: $autoClockOut){
-                                HStack {
-                                    Image(systemName: "figure.walk.departure")
-                                    Spacer().frame(width: 10)
-                                    Text("Auto clock out")
-                                }
-                            }
-                            .toggleStyle(OrangeToggleStyle())
-                            .disabled(!isProVersion)
-                        }.listRowSeparator(.hidden)
-                        //.listRowBackground(Color.clear)
-                        Section(header: Text("Overtime")){
+                        
+                    /*    Section(header: Text("Overtime")){
                             
                             Toggle(isOn: $overtimeEnabled){
                                 HStack {
@@ -199,6 +132,8 @@ struct MoreOptionsView: View{
                             }.disabled(!overtimeEnabled)
                             
                         }.listRowSeparator(.hidden)
+                        
+                        */
                         /*
                          NavigationLink(destination: HourlyPayCalculator().navigationBarTitle(Text("Hourly Pay Calculator"))) {
                              HStack {
@@ -265,63 +200,4 @@ extension UIImage {
     }
 }
 
-struct OvertimeView: View{
-    
-    @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
-    
-    @Binding var overtimeAppliedAfter: TimeInterval
-    
-    @State private var selectedOvertimeHour = 0
-        @State private var selectedOvertimeMinute = 0
-    
-    private let shiftKeys = ShiftKeys()
-    
 
-    var body: some View{
-        
-        let hourBinding = Binding<Int>(
-                    get: { self.selectedOvertimeHour },
-                    set: {
-                        self.selectedOvertimeHour = $0
-                        self.updateTimeInterval()
-                    }
-                )
-
-                let minuteBinding = Binding<Int>(
-                    get: { self.selectedOvertimeMinute },
-                    set: {
-                        self.selectedOvertimeMinute = $0
-                        self.updateTimeInterval()
-                    }
-                )
-        NavigationStack{
-            HStack {
-                Picker(selection: hourBinding, label: Text("Hour")) {
-                    ForEach(0..<24) { hour in
-                        Text("\(hour)h").tag(hour)
-                    }
-                }
-                .pickerStyle(WheelPickerStyle())
-                // .frame(width: 100, height: 100)
-                // .clipped()
-                
-                Picker(selection: minuteBinding, label: Text("Minute")) {
-                    ForEach(0..<60) { minute in
-                        Text("\(minute)m").tag(minute)
-                    }
-                }
-                .pickerStyle(WheelPickerStyle())
-                //.frame(width: 100, height: 100)
-                // .clipped()
-            }
-            Spacer()
-        }.navigationTitle("Overtime")
-    }
-    
-    
-    private func updateTimeInterval() {
-            overtimeAppliedAfter = TimeInterval(selectedOvertimeHour * 3600 + selectedOvertimeMinute * 60)
-        sharedUserDefaults.set(overtimeAppliedAfter, forKey: shiftKeys.overtimeAppliedAfterKey)
-        }
-    
-}

@@ -28,7 +28,6 @@
 		1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9629F101040002D9E4 /* ChartView.swift */; };
 		1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */; };
 		1A1DEC9E29F102230002D9E4 /* PersonalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9D29F102230002D9E4 /* PersonalView.swift */; };
-		1A1DEC9F29F102230002D9E4 /* PersonalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9D29F102230002D9E4 /* PersonalView.swift */; };
 		1A22EFFD29C652A900A23F33 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EFFC29C652A900A23F33 /* MainView.swift */; };
 		1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EFFE29C6559100A23F33 /* SettingsView.swift */; };
 		1A22F00129C65E4D00A23F33 /* ShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00029C65E4D00A23F33 /* ShiftsView.swift */; };
@@ -36,7 +35,6 @@
 		1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */; };
-		1A34588429D17B8A00CADDD8 /* AddressFinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
 		1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610529C6D63A008AC8ED /* LaunchView.swift */; };
 		1A4E610829C7F861008AC8ED /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610729C7F861008AC8ED /* SummaryView.swift */; };
@@ -53,6 +51,7 @@
 		1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1A57D1F929CA751500305001 /* Haptics in Frameworks */ = {isa = PBXBuildFile; productRef = 1A57D1F829CA751500305001 /* Haptics */; };
 		1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A69DA2429C98C88008FA77F /* LocationDataManager.swift */; };
+		1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */; };
 		1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A88007029E3D98D009458BE /* BreaksListView.swift */; };
 		1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9855D329C55F8A003F512C /* ShiftTrackerApp.swift */; };
 		1A9855D629C55F8A003F512C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9855D529C55F8A003F512C /* ContentView.swift */; };
@@ -62,6 +61,9 @@
 		1AA6A7B329EEAA5B00B13057 /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA6A7B129EEAA5B00B13057 /* ScheduleView.swift */; };
 		1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */; };
 		1AA6A7B629EEAF7A00B13057 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */; };
+		1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */; };
+		1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC400129F26B5B00E204C8 /* EditJobView.swift */; };
+		1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC400329F2B09A00E204C8 /* OvertimeView.swift */; };
 		1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		1AC048BE29E0D07700355767 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		1AC048C029E0D50E00355767 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
@@ -175,6 +177,9 @@
 		1A9855DA29C55F8C003F512C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1AA6A7B129EEAA5B00B13057 /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
 		1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddJobView.swift; sourceTree = "<group>"; };
+		1AAC400129F26B5B00E204C8 /* EditJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditJobView.swift; sourceTree = "<group>"; };
+		1AAC400329F2B09A00E204C8 /* OvertimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvertimeView.swift; sourceTree = "<group>"; };
 		1AC048BC29E0D07700355767 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		1AC048BF29E0D50E00355767 /* Shift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shift.swift; sourceTree = "<group>"; };
 		1ACA60AC29D7913700B279CB /* ShiftKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftKeys.swift; sourceTree = "<group>"; };
@@ -260,9 +265,12 @@
 		1A1DEC9C29F1020D0002D9E4 /* PersonalView */ = {
 			isa = PBXGroup;
 			children = (
+				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
 				1A1DEC9D29F102230002D9E4 /* PersonalView.swift */,
 				1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */,
 				1AA6A7B129EEAA5B00B13057 /* ScheduleView.swift */,
+				1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */,
+				1AAC400129F26B5B00E204C8 /* EditJobView.swift */,
 			);
 			path = PersonalView;
 			sourceTree = "<group>";
@@ -331,6 +339,7 @@
 				1A9855D929C55F8C003F512C /* Preview Content */,
 				1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */,
 				1ACA60B829D8528700B279CB /* LocationUpdateManager.swift */,
+				1AAC400329F2B09A00E204C8 /* OvertimeView.swift */,
 			);
 			path = ShiftTracker;
 			sourceTree = "<group>";
@@ -397,7 +406,6 @@
 				1AE3845429D40D380002378F /* MoreOptionsView.swift */,
 				1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */,
 				1AECCC5B29DFA75A00D879FE /* TaxPickerView.swift */,
-				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
 			);
 			path = PrimaryView;
 			sourceTree = "<group>";
@@ -561,7 +569,6 @@
 				1AECCC5D29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1AA6A7B629EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1ACA60C129D8F98500B279CB /* SearchBarView.swift in Sources */,
-				1A1DEC9F29F102230002D9E4 /* PersonalView.swift in Sources */,
 				1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AECCC5729DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1A1DEC8A29EFEE8A0002D9E4 /* Event.swift in Sources */,
@@ -601,16 +608,17 @@
 				1A22EFFD29C652A900A23F33 /* MainView.swift in Sources */,
 				1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */,
 				1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */,
+				1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */,
 				1ACA60C029D8F98500B279CB /* SearchBarView.swift in Sources */,
 				1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
-				1A34588429D17B8A00CADDD8 /* AddressFinderView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
 				1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
 				1ACA60BD29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */,
+				1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
 				1A13F19529D02914009BE6B0 /* ProView.swift in Sources */,
@@ -619,6 +627,7 @@
 				1AE3845929D444340002378F /* TabItemView.swift in Sources */,
 				1A1DEC8929EFEE8A0002D9E4 /* Event.swift in Sources */,
 				1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */,
+				1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */,
 				1A12240A29C900150036D04C /* RoundedSquareView.swift in Sources */,
 				1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */,
 				1A4E610829C7F861008AC8ED /* SummaryView.swift in Sources */,
@@ -626,6 +635,7 @@
 				1AECCC5629DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1AECCC5C29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */,
+				1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */,
 				1A1DEC8B29EFEE8A0002D9E4 /* EventStore.swift in Sources */,
 				1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */,
 				1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */,

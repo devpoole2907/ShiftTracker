@@ -28,8 +28,9 @@ struct ShiftTrackerApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(myEvents)
                 .onAppear {
-                                    startMonitoringSavedAddress()
-                                }
+                    startMonitoringAllJobLocations()
+                }
+
         }
         
     }
@@ -45,11 +46,20 @@ struct ShiftTrackerApp: App {
             }
         }
     
-    private func startMonitoringSavedAddress() {
-            if let savedAddress = defaults.string(forKey: "selectedAddress") {
-                locationManager.startMonitoring(savedAddress: savedAddress)
+    private func startMonitoringAllJobLocations() {
+        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+        do {
+            let jobs = try persistenceController.container.viewContext.fetch(fetchRequest)
+            for job in jobs {
+                if let _ = job.address {
+                    locationManager.startMonitoring(job: job)
+                }
             }
+        } catch {
+            print("Error fetching jobs: \(error.localizedDescription)")
         }
+    }
+
 }
 
 

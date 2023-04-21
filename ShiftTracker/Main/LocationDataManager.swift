@@ -9,6 +9,7 @@ import Foundation
 import CoreLocation
 import MapKit
 import UserNotifications
+import CoreData
 
 class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
@@ -18,12 +19,11 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
     
     
     
-    
     override init() {
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-                //
+        //locationManager.allowsBackgroundLocationUpdates = true
             //print("requested when in use")
                 locationManager.startUpdatingLocation()
     }
@@ -75,16 +75,39 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         //print("error: \(error.localizedDescription)")
     }
     
-    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        
-        let locationReminders = UserDefaults.standard.bool(forKey: "clockInReminder") // only send notification to them
-            // if they have location reminders on
-        
-        let autoClockingIn = UserDefaults.standard.bool(forKey: "autoClockIn")
+    public func startMonitoring(job: Job, clockOut: Bool = false) {
+        guard let savedAddress = job.address else { return }
+        let geocoder = CLGeocoder()
+        geocoder.geocodeAddressString(savedAddress) { placemarks, error in
+            if let error = error {
+                print("Error geocoding address: \(error.localizedDescription)")
+            } else if let placemarks = placemarks, let firstPlacemark = placemarks.first, let location = firstPlacemark.location {
+                let region = CLCircularRegion(center: location.coordinate, radius: 75, identifier: job.objectID.uriRepresentation().absoluteString)
+                region.notifyOnEntry = !clockOut
+                region.notifyOnExit = clockOut
 
-        
-        
-        if autoClockingIn {
+                self.locationManager.startMonitoring(for: region)
+            }
+        }
+    }
+
+    
+    
+    
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        // ...
+
+        guard let jobURI = URL(string: region.identifier),
+              let jobID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: jobURI) else {
+            return
+        }
+
+        let context = PersistenceController.shared.container.viewContext
+        if let job = try? context.existingObject(with: jobID) as? Job {
+            if job.autoClockIn {
+                
+                // THIS NEEDS TO BE ADJUSTED, IN CONTENTVIEW WHEN IT RECIEVES THE NOTIFICATION IT MUST START THE CORRESPONDING JOB
+                
                 let content = UNMutableNotificationContent()
                 content.title = "ShiftTracker Pro"
                 content.body = "Clocking you in... Enjoy your shift!"
@@ -105,11 +128,13 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 }
             
                     NotificationCenter.default.post(name: .didEnterRegion, object: nil)
-             
-
-            }
-        
-        else if locationReminders {
+                
+                
+                
+                
+            } else if job.clockInReminder {
+                // Handle clock-in reminder for the job
+                
                 let content = UNMutableNotificationContent()
                 content.title = "You're near your workplace"
                 content.body = "Ready to track your shift? Let's make some bank."
@@ -118,9 +143,6 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
                 let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
-                
-                // let trigger = UNLocationNotificationTrigger(region: region, repeats: false)
-                // let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
 
                 let center = UNUserNotificationCenter.current()
                 center.add(request) { error in
@@ -130,33 +152,25 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 }
             
                     NotificationCenter.default.post(name: .didEnterRegion, object: nil)
-             
-
-            }
-    }
-    
-    public func startMonitoring(savedAddress: String) {
-        print("MONITORING LOCATION")
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(savedAddress) { placemarks, error in
-            if let error = error {
-                print("Error geocoding address: \(error.localizedDescription)")
-            } else if let placemarks = placemarks, let firstPlacemark = placemarks.first, let location = firstPlacemark.location {
-                let region = CLCircularRegion(center: location.coordinate, radius: 75, identifier: "SavedLocation")
-                region.notifyOnEntry = true
-                region.notifyOnExit = true
-
-                self.locationManager.startMonitoring(for: region)
+                
+                
             }
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        // Perform an action when the user exits the region
         print("Exited the region")
-        let clockOutReminder = UserDefaults.standard.bool(forKey: "clockOutReminder")
-        let autoClockOut = UserDefaults.standard.bool(forKey: "autoClockOut")
-        if autoClockOut{
+        guard let jobURI = URL(string: region.identifier),
+              let jobID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: jobURI) else {
+            return
+        }
+
+        let context = PersistenceController.shared.container.viewContext
+        if let job = try? context.existingObject(with: jobID) as? Job {
+            if job.autoClockOut {
+                
+                // THIS NEEDS TO BE MODIFIED SAME AS didEnterRegion ABOVE
+                
                 let content = UNMutableNotificationContent()
                 content.title = "ShiftTracker Pro"
                 content.body = "Clocking you out... Look at how much you made today!"
@@ -165,9 +179,7 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
                 let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
-                
-                // let trigger = UNLocationNotificationTrigger(region: region, repeats: false)
-                // let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
+
 
                 let center = UNUserNotificationCenter.current()
                 center.add(request) { error in
@@ -177,10 +189,7 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 }
             
             NotificationCenter.default.post(name: .didExitRegion, object: nil)
-             
-
-            }
-        else if clockOutReminder {
+            } else if job.clockOutReminder {
                 let content = UNMutableNotificationContent()
                 content.title = "Looks like you're leaving..."
                 content.body = "Don't forget to clock out - open ShiftTracker and see how much you made today!"
@@ -190,8 +199,6 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
                 let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
                 
-                // let trigger = UNLocationNotificationTrigger(region: region, repeats: false)
-                // let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
 
                 let center = UNUserNotificationCenter.current()
                 center.add(request) { error in
@@ -201,13 +208,40 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 }
             
             NotificationCenter.default.post(name: .didExitRegion, object: nil)
-             
-
             }
-        
-        
-        
-        
+        }
+    }
+
+
+
+    public func startMonitoringJobs() {
+        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "clockInReminder == %@", NSNumber(value: true))
+
+        let context = PersistenceController.shared.container.viewContext
+        do {
+            let jobsWithReminder = try context.fetch(fetchRequest)
+            for job in jobsWithReminder {
+                startMonitoring(job: job)
+            }
+        } catch {
+            print("Error fetching jobs with clockInReminder: \(error.localizedDescription)")
+        }
+    }
+    
+    public func startMonitoringClockOutJobs() {
+        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "clockOutReminder == %@", NSNumber(value: true))
+
+        let context = PersistenceController.shared.container.viewContext
+        do {
+            let jobsWithClockOutReminder = try context.fetch(fetchRequest)
+            for job in jobsWithClockOutReminder {
+                startMonitoring(job: job, clockOut: true)
+            }
+        } catch {
+            print("Error fetching jobs with clockOutReminder: \(error.localizedDescription)")
+        }
     }
 
 

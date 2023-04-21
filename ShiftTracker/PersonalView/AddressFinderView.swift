@@ -20,8 +20,8 @@ struct AddressFinderView: View {
     @State private var bottomSheet: Bool = true
     @State private var hideDragIndicator: Bool = false
     
-    
-    
+
+    @Binding var selectedAddressString: String?
     
     private let geocoder = CLGeocoder()
     private let defaults = UserDefaults.standard
@@ -31,10 +31,10 @@ struct AddressFinderView: View {
     
     @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
-    init(){
-        loadSavedAddress()
-
-    }
+    init(selectedAddress: Binding<String?>) {
+            _selectedAddressString = selectedAddress
+            loadSavedAddress()
+        }
     
     private func createAnnotation(for address: CLPlacemark) {
         let annotation = IdentifiablePointAnnotation()
@@ -131,7 +131,7 @@ struct AddressFinderView: View {
                             }
                             
                     }
-                    .presentationDetents([.fraction(0.13), .fraction(0.45), .fraction(0.8)])
+                    .presentationDetents([.fraction(0.35), .fraction(0.45), .fraction(0.8)])
                     .presentationDragIndicator(hideDragIndicator ? .hidden : .visible)
                     // .presentationBackground(.thinMaterial)
                     .presentationCornerRadius(12)
@@ -250,16 +250,22 @@ struct AddressFinderView: View {
     }
     
     private func setSelectedAddress(_ address: CLPlacemark) {
-        defaults.set(address.formattedAddress, forKey: "selectedAddress")
-        defaults.synchronize()
+       
+        // OLD SAVE ADDRESS FROM SINGLE JOB SYSTEM
+     /*   defaults.set(address.formattedAddress, forKey: "selectedAddress")
+        defaults.synchronize()*/
         
-        locationManager.startMonitoring(savedAddress: address.formattedAddress)
+        // NEW MULTI JOB SYSTEM, SAVE THE ADDRESS TO THE JOB
+        selectedAddressString = address.formattedAddress
         createAnnotation(for: address)
         
     }
     
+
+    
     private func loadSavedAddress() {
-        if let savedAddress = defaults.string(forKey: "selectedAddress") {
+      // OLD SINGLE JOB SYSTEM LOAD //  if let savedAddress = defaults.string(forKey: "selectedAddress") {
+        if let savedAddress = selectedAddressString {
             geocoder.geocodeAddressString(savedAddress) { placemarks, error in
                 if let error = error {
                     print("Error geocoding address: \(error.localizedDescription)")
@@ -281,18 +287,12 @@ struct AddressFinderView: View {
     }
 }
 
-extension CLPlacemark {
-    var formattedAddress: String {
-        let components = [subThoroughfare, thoroughfare, locality, administrativeArea, postalCode, country].compactMap { $0 }
-        return components.joined(separator: ", ")
-    }
-}
-
+/*
 struct AddressTextField_Previews: PreviewProvider {
     static var previews: some View {
-        AddressFinderView()
+        AddressFinderView(job: <#Job#>)
     }
-}
+} */
 
 class IdentifiablePointAnnotation: MKPointAnnotation, Identifiable {
     let id = UUID()

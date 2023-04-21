@@ -8,11 +8,18 @@
     </entity>
     <entity name="Job" representedClassName="Job" syncable="YES" codeGenerationType="class">
         <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="autoClockIn" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="autoClockOut" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="clockInReminder" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="clockOutReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="colorBlue" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="colorGreen" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="colorRed" optional="YES" attributeType="Float" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="hourlyPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="overtimeAppliedAfter" optional="YES" attributeType="Double" defaultValueString="12" usesScalarValueType="YES"/>
+        <attribute name="overtimeEnabled" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="overtimeRate" optional="YES" attributeType="Double" defaultValueString="1.25" usesScalarValueType="YES"/>
         <attribute name="payPeriodLength" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="payPeriodStartDay" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
