@@ -160,7 +160,7 @@ struct ListViewRow: View {
     }
 }
 
-struct DaysEventsListView_Previews: PreviewProvider {
+struct ScheduledShiftView_Previews: PreviewProvider {
     static var dateComponents: DateComponents {
         var dateComponents = Calendar.current.dateComponents(
             [.month,
