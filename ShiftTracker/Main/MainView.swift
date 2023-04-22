@@ -15,8 +15,6 @@ struct MainView: View {
     
     @Environment(\.managedObjectContext) private var context
     
-    @EnvironmentObject var eventStore: EventStore
-    
     @AppStorage("AuthEnabled") private var authEnabled: Bool = false
         @State private var showingLockedView = false
 
@@ -47,7 +45,6 @@ struct MainView: View {
                        }
                    }
                 PersonalView()
-                     .environmentObject(eventStore)
                     .tabItem {
                         VStack(alignment: .center){
                             Image(systemName: "person.text.rectangle.fill")
@@ -95,7 +92,7 @@ struct MainView: View {
     
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView() .environmentObject(EventStore(preview: true))
+        MainView()
         
     }
 }

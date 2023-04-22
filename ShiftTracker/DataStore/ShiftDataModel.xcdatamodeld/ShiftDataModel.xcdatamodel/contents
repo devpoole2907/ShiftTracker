@@ -24,6 +24,7 @@
         <attribute name="payPeriodStartDay" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="oldShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="job" inverseEntity="OldShift"/>
+        <relationship name="scheduledShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ScheduledShift" inverseName="job" inverseEntity="ScheduledShift"/>
     </entity>
     <entity name="OldShift" representedClassName="OldShift" syncable="YES" codeGenerationType="class">
         <attribute name="breakElapsed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -44,6 +45,12 @@
         <relationship name="breaks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Break" inverseName="oldShift" inverseEntity="Break"/>
         <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="oldShifts" inverseEntity="Job"/>
         <relationship name="tips" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tip" inverseName="oldShift" inverseEntity="Tip"/>
+    </entity>
+    <entity name="ScheduledShift" representedClassName="ScheduledShift" syncable="YES" codeGenerationType="class">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="scheduledShifts" inverseEntity="Job"/>
     </entity>
     <entity name="Tip" representedClassName="Tip" syncable="YES" codeGenerationType="class">
         <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

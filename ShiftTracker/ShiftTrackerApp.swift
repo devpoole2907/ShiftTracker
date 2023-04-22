@@ -17,8 +17,6 @@ struct ShiftTrackerApp: App {
     
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
-    @StateObject var myEvents = EventStore(preview: true)
-    
     let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
@@ -26,7 +24,6 @@ struct ShiftTrackerApp: App {
                 .preferredColorScheme(getPreferredColorScheme())
                 //.preferredColorScheme(.dark)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(myEvents)
                 .onAppear {
                     startMonitoringAllJobLocations()
                 }

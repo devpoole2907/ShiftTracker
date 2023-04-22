@@ -18,14 +18,10 @@ struct PersonalView: View {
     @Environment(\.colorScheme) var colorScheme
     
     
-    @EnvironmentObject var eventStore: EventStore
-    
     @Environment(\.managedObjectContext) private var viewContext
        @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
     
     @State private var showAddJobView = false
-    
-
     
     @State private var dateSelected: DateComponents?
     @State private var displayEvents = false
@@ -83,6 +79,9 @@ struct PersonalView: View {
 
                 }
                 else {
+                    
+                    
+
                     Section {
                         VStack(alignment: .center, spacing: 15){
                             Text("No jobs found.")
@@ -116,8 +115,8 @@ struct PersonalView: View {
                 }
                 Section{
                    
-                        CalendarView(interval: DateInterval(start: .distantPast, end: .distantFuture), eventStore: eventStore, dateSelected: $dateSelected, displayEvents: $displayEvents)
-                        
+                        CalendarView(interval: DateInterval(start: .distantPast, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
+                        .fixedSize(horizontal: true, vertical: true)
                     
                 } header : {
                     HStack{
@@ -133,13 +132,13 @@ struct PersonalView: View {
                 .listRowBackground(Color.clear)
                 
             
-            }/*.sheet(isPresented: $showAddJobView) {
-                AddJobView()
-                    .environment(\.managedObjectContext, viewContext)
-                    .presentationDetents([.fraction(0.7)])
-                    .presentationDragIndicator(.visible)
-                    .presentationBackground(.thinMaterial)
-            }*/
+            }
+            
+                       .sheet(isPresented: $displayEvents) {
+                            ScheduledShiftsView(dateSelected: $dateSelected)
+                                .presentationDetents([.medium, .large])
+                        }
+            
             .navigationBarTitle("Personal", displayMode: .inline)
         }
         
@@ -164,7 +163,6 @@ struct PersonalView: View {
 struct PersonalView_Previews: PreviewProvider {
     static var previews: some View {
         PersonalView()
-            .environmentObject(EventStore(preview: true))
     }
 }
 
