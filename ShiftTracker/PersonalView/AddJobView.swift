@@ -33,6 +33,9 @@ struct AddJobView: View {
     
     @State private var showOvertimeTimeView = false
     
+    @FocusState private var textIsFocused: Bool
+
+    
     private let daysOfWeek = [
         "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ]
@@ -57,7 +60,10 @@ struct AddJobView: View {
                     
                     
                     
-                }
+                }//.listRowSeparator(.hidden)
+                    .focused($textIsFocused)
+                
+                
                 Section(header: Text("Location")){
                     NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress)) {
                         HStack {
@@ -149,11 +155,7 @@ struct AddJobView: View {
                     }
                 }
                 
-                Button(action: saveJob) {
-                    Text("Save Job")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .navigationBarTitle("Add Job", displayMode: .inline)
+            
             }.sheet(isPresented: $showOvertimeTimeView){
                 OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                     .environment(\.managedObjectContext, viewContext)
@@ -162,6 +164,33 @@ struct AddJobView: View {
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(12)
             }
+            
+            .toolbar{
+                ToolbarItemGroup(placement: .keyboard){
+                    Spacer()
+                    
+                    Button("Done"){
+                        textIsFocused = false
+                    }
+                }
+            }
+            
+            .navigationBarTitle("Add Job")
+            .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                Button(action: saveJob) {
+                                    Text("Save")
+                                        .padding(.vertical, 5)
+                                        .padding(.horizontal, 15)
+                                        //.foregroundColor(.orange)
+                                        //.background(Color(.systemGray4))
+                                        .cornerRadius(8)
+                                 
+                                        
+                                }
+                            }
+                    
+                        }
             
         }
     }
