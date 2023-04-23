@@ -40,17 +40,28 @@ struct CalendarView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        var dateComponentsSet = Set<DateComponents>()
-
+            var dateComponentsSet = Set<DateComponents>()
+            
             for scheduledShift in scheduledShifts {
                 guard let dateComponents = scheduledShift.startDate?.dateComponents else { continue }
                 dateComponentsSet.insert(dateComponents)
             }
-
+            
             // Convert the Set back to an array
             let dateComponents = Array(dateComponentsSet)
-
-            uiView.reloadDecorations(forDateComponents: dateComponents, animated: true)
+            let validDateComponents = dateComponents.filter { $0.isValidDate(in: Calendar.current) }
+           
+        if let selectedDate = dateSelected, let visibleMonth = selectedDate.month, let visibleYear = selectedDate.year {
+                   let visibleDateComponents = validDateComponents.filter { dateComponents in
+                       guard let month = dateComponents.month, let year = dateComponents.year else { return false }
+                       return month == visibleMonth && year == visibleYear
+                   }
+                   uiView.reloadDecorations(forDateComponents: visibleDateComponents, animated: true)
+               } else {
+                   uiView.reloadDecorations(forDateComponents: [], animated: true)
+               }
+        
+            
     }
     
     class Coordinator: NSObject, UICalendarViewDelegate, UICalendarSelectionSingleDateDelegate {

@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 import Charts
 import Haptics
+import Foundation
 
 struct ScheduledShiftsView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -96,6 +97,10 @@ struct CreateShiftForm: View {
     @State private var startDate: Date
     @State private var endDate: Date
     
+    @State private var enableRepeat = false
+    
+    @State private var selectedRepeatEnd: Date
+    
     @State private var selectedIndex: Int = 0
     
     
@@ -110,6 +115,10 @@ struct CreateShiftForm: View {
         _startDate = State(initialValue: defaultDate)
         _endDate = State(initialValue: defaultDate)
         _selectedJob = State(initialValue: jobs.first)
+        
+        let defaultRepeatEnd = Calendar.current.date(byAdding: .month, value: 6, to: defaultDate)!
+        _selectedRepeatEnd = State(initialValue: defaultRepeatEnd)
+        
     }
     
     
@@ -128,6 +137,36 @@ struct CreateShiftForm: View {
             print("Error creating shift: \(error.localizedDescription)")
         }
     }
+    
+    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool) {
+        let repeatID = generateUniqueID()
+
+        var currentStartDate = startDate
+        var currentEndDate = endDate
+        while currentStartDate <= selectedRepeatEnd {
+            let shift = ScheduledShift(context: viewContext)
+            shift.startDate = currentStartDate
+            shift.endDate = currentEndDate
+            shift.job = selectedJob
+            shift.id = UUID()
+            shift.isRepeating = repeatEveryWeek
+            shift.repeatID = repeatEveryWeek ? repeatID : nil
+
+            // Increment the start and end dates by 1 week
+            currentStartDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentStartDate)!
+            currentEndDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentEndDate)!
+        }
+
+        // Save the context after creating all the shifts
+        do {
+            try viewContext.save()
+            onShiftCreated()
+            dismiss()
+        } catch {
+            print("Error saving repeating shift series: \(error)")
+        }
+    }
+
     
     
     @State var startAngle: Double = 0
@@ -208,23 +247,32 @@ struct CreateShiftForm: View {
                     
                     
                     VStack(alignment: .leading){
+                        
                         Text("Selected Job:")
                             .font(.title)
                             .bold()
                             .padding(.horizontal)
                             .padding(.bottom, -50)
+                        
+                        
                         CardPicker(selectedJob: $selectedJob, jobs: jobs, selectedIndex: $selectedIndex)
                         //.padding(.horizontal)
                         
                     }.padding(.top, -100)
                     
                     
-                    
+                    HStack{
                     Button {
                         startDate = getTime(angle: startAngle)
                         endDate = getTime(angle: toAngle, isEndDate: true)
                         selectedJob = jobs[selectedIndex]
-                        createShift()
+                        
+                        if enableRepeat {
+                            saveRepeatingShiftSeries(startDate: getTime(angle: startAngle), endDate: getTime(angle: toAngle, isEndDate: true), repeatEveryWeek: true)
+                        }
+                        else {
+                            createShift()
+                        }
                     } label: {
                         Text("Schedule Shift")
                             .foregroundColor(.white)
@@ -233,12 +281,22 @@ struct CreateShiftForm: View {
                             .padding(.horizontal, 40)
                             .background(.orange, in: Capsule())
                     }
+                    VStack{
+                        Toggle(isOn: $enableRepeat){
+                            Text("Repeat")
+                                .bold()
+                        }
+                        
+                        RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)
+                            .disabled(!enableRepeat)
+                    }
+                }
                     
                 }
                 
             }
             .padding(.top, 35)
-            
+        
             .navigationBarTitle("Schedule a Shift")
         }
     }
@@ -488,6 +546,11 @@ extension View {
 
 
 struct ListViewRow: View {
+    
+    @State private var showEndRepeatAlert = false
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    
     let shift: ScheduledShift
     
     var dateFormatter: DateFormatter {
@@ -503,6 +566,27 @@ struct ListViewRow: View {
         let minutes = Int((interval.truncatingRemainder(dividingBy: 3600)) / 60)
         return "\(hours)h \(minutes)m"
     }
+    
+    func cancelRepeatingShiftSeries(shift: ScheduledShift) {
+        guard let repeatID = shift.repeatID else { return }
+        
+        let request: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "repeatID == %@", repeatID),
+            NSPredicate(format: "startDate > %@", shift.startDate! as NSDate)
+        ])
+        
+        do {
+            let futureShifts = try viewContext.fetch(request)
+            for futureShift in futureShifts {
+                viewContext.delete(futureShift)
+            }
+            try viewContext.save()
+        } catch {
+            print("Error canceling repeating shift series: \(error)")
+        }
+    }
+
     
     var body: some View {
         VStack(alignment: .leading){
@@ -538,10 +622,28 @@ struct ListViewRow: View {
             }.chartXScale(domain: (shift.startDate?.addingTimeInterval(-3600) ?? Date())...(shift.endDate?.addingTimeInterval(3600) ?? Date()))
                 .frame(height: 50)
             
-            
+            if shift.isRepeating {
+                Button{
+                    showEndRepeatAlert.toggle()
+                } label: {
+                    Text("End Repeat").bold()
+                }
+            }
             /*  Text("From \(dateFormatter.string(from: shift.startDate ?? Date())) to \(dateFormatter.string(from: shift.endDate ?? Date()))")
              .bold() */
+        }.alert(isPresented: $showEndRepeatAlert){
+            Alert(
+                title: Text("End all repeating shifts?"),
+                //message: Text("Are you sure you want to end this shift?"),
+                primaryButton: .destructive(Text("End Repeat")) {
+                    cancelRepeatingShiftSeries(shift: shift)
+                },
+                secondaryButton: .cancel(){
+                    
+                }
+            )
         }
+        
         
     }
 }
@@ -599,3 +701,53 @@ struct CardView: View {
         .padding(.vertical, 10)
     }
 }
+
+// used to generate the same ID for scheduledshifts that repeat.
+
+func generateUniqueID() -> String {
+    return UUID().uuidString
+}
+
+struct RepeatEndPicker: View {
+    
+    private let options = ["1 month", "3 months", "6 months"]
+    private let calendar = Calendar.current
+    
+    @State private var selectedIndex = 2 // Default to 6 months
+    @Binding var selectedRepeatEnd: Date
+    let startDate: Date  // Add startDate as a property
+    
+    init(startDate: Date, selectedRepeatEnd: Binding<Date>) {
+        self.startDate = startDate
+        self._selectedRepeatEnd = selectedRepeatEnd
+        let defaultRepeatEnd = calendar.date(byAdding: .month, value: 6, to: startDate)!
+        self._selectedIndex = State(initialValue: self.options.firstIndex(of: "\(6) months")!)
+        // set the selectedIndex to the index of the default repeat end option
+    }
+    
+    var body: some View {
+        Picker("Repeat End", selection: $selectedIndex) {
+            ForEach(0..<options.count) { index in
+                Text(options[index]).tag(index)
+            }
+        }
+        .onChange(of: selectedIndex) { value in
+            let months = [1, 3, 6][value]
+            selectedRepeatEnd = calendar.date(byAdding: .month, value: months, to: startDate)! // Use startDate instead of selectedRepeatEnd
+        }
+    }
+    
+}
+
+
+/*
+Toggle(isOn: $enableRepeat){
+    Text("Repeat")
+        .bold()
+}
+
+RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)
+    .disabled(!enableRepeat)
+
+cancelRepeatingShiftSeries(shift: shift)
+*/

@@ -50,6 +50,8 @@
     <entity name="ScheduledShift" representedClassName="ScheduledShift" syncable="YES" codeGenerationType="class">
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isRepeating" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="repeatID" optional="YES" attributeType="String"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="scheduledShifts" inverseEntity="Job"/>
     </entity>
