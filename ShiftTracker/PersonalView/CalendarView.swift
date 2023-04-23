@@ -13,12 +13,18 @@ struct CalendarView: UIViewRepresentable {
     @Binding var dateSelected: DateComponents?
     @Binding var displayEvents: Bool
     
+    
     @Environment(\.managedObjectContext) private var viewContext
     
     @FetchRequest(entity: ScheduledShift.entity(),
                       sortDescriptors: [],
                       animation: .default)
         private var scheduledShifts: FetchedResults<ScheduledShift>
+    
+    @FetchRequest(entity: Job.entity(),
+                      sortDescriptors: [],
+                      animation: .default)
+        private var jobs: FetchedResults<Job>
     
     func makeUIView(context: Context) -> some UICalendarView {
         let view = UICalendarView()
@@ -92,7 +98,7 @@ struct CalendarView: UIViewRepresentable {
                                             blue: CGFloat(job?.colorBlue ?? 0),
                                             alpha: 1)
                         
-                        return .image(UIImage(systemName: "briefcase.fill"),
+                return .image(UIImage(systemName: job?.icon ?? "briefcase.circle"),
                                       color: color,
                                       size: .large)
                 } catch {

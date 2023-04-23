@@ -16,10 +16,10 @@ struct AddJobView: View {
     
     @State private var name = ""
     @State private var title = ""
-    @State private var hourlyPay = ""
+    @State private var hourlyPay: Double = 0.0
     @State private var payPeriodLength = ""
     @State private var payPeriodStartDay: Int? = nil
-    @State private var selectedColor = Color.red
+    @State private var selectedColor = Color.cyan
     @State private var clockInReminder = true
     @State private var autoClockIn = false
     @State private var clockOutReminder = true
@@ -34,6 +34,18 @@ struct AddJobView: View {
     @State private var showOvertimeTimeView = false
     
     @FocusState private var textIsFocused: Bool
+    
+    @State private var selectedIcon = "briefcase.circle"
+    
+    @State private var activeSheet: ActiveSheet?
+    
+    enum ActiveSheet: Identifiable {
+        case overtimeSheet, symbolSheet
+
+        var id: Int {
+            hashValue
+        }
+    }
 
     
     private let daysOfWeek = [
@@ -50,21 +62,44 @@ struct AddJobView: View {
         
         
         NavigationStack {
-            Form {
-                Section(header: Text("Job Details")) {
-                    TextField("Company Name", text: $name)
-                    TextField("Job Title", text: $title)
-                    TextField("Hourly Pay", text: $hourlyPay)
-                        .keyboardType(.decimalPad)
-                    ColorPicker("Job Color", selection: $selectedColor, supportsOpacity: false)
-                    
-                    
-                    
-                }//.listRowSeparator(.hidden)
+            ScrollView {
+                    VStack(alignment: .leading, spacing: 20){
+                        
+                        HStack(spacing: 10) {
+                            Image(systemName: selectedIcon)
+                                .foregroundColor(selectedColor)
+                                .font(.system(size: 60))
+                                .frame(width: UIScreen.main.bounds.width / 5)
+                            
+                                .onTapGesture {
+                                    activeSheet = .symbolSheet
+                                }
+                            Spacer()
+                            VStack(alignment: .leading){
+                                TextField("Company Name", text: $name)
+                                    .font(.title)
+                                    .bold()
+                                    
+                                TextField("Job Title", text: $title)
+                                    .bold()
+                                    .foregroundColor(.gray)
+                                HStack{
+                                    TextField("Hourly Pay", value: $hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
+                                        .bold()
+                                        .keyboardType(.decimalPad)
+                                }
+                            }
+                        }
                     .focused($textIsFocused)
+                    .padding(.vertical, 15)
+                    //.background(Color(.systemGray6))
+                   // .cornerRadius(12)
+                        
+                    
+                        ColorPicker("", selection: $selectedColor, supportsOpacity: false)
+
                 
-                
-                Section(header: Text("Location")){
+                Section{
                     NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress)) {
                         HStack {
                             Image("LocationIconFilled")
@@ -112,7 +147,7 @@ struct AddJobView: View {
                         .disabled(true)
                 }
                 
-                Section(header: Text("Overtime")) {
+                Section{
                     Toggle(isOn: $overtimeEnabled) {
                         HStack {
                             Image(systemName: "person.crop.circle.badge.clock")
@@ -129,7 +164,7 @@ struct AddJobView: View {
                             Text("Rate: \(overtimeRate, specifier: "%.2f")x")
                         }
                     }.disabled(!overtimeEnabled)
-
+                    
                     HStack {
                         Image(systemName: "calendar.badge.clock")
                         Text("Overtime applied after:")
@@ -138,13 +173,13 @@ struct AddJobView: View {
                             .foregroundColor(.gray)
                     }
                     .onTapGesture {
-                        self.showOvertimeTimeView = true
+                        activeSheet = .overtimeSheet
                     }.disabled(!overtimeEnabled)
                 }
-
                 
                 
-                Section(header: Text("Pay Period")) {
+                
+                Section{
                     TextField("Length in Days (Optional)", text: $payPeriodLength)
                         .keyboardType(.numberPad)
                     
@@ -155,15 +190,32 @@ struct AddJobView: View {
                     }
                 }
                 
-            
-            }.sheet(isPresented: $showOvertimeTimeView){
-                OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
-                    .environment(\.managedObjectContext, viewContext)
-                        .presentationDetents([ .fraction(0.2)])
-                        .presentationBackground(.ultraThinMaterial)
-                        .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                
             }
+                .padding(.horizontal, 30)
+                //.padding(.vertical)
+            }.sheet(item: $activeSheet){ item in
+                
+                switch item {
+                case .overtimeSheet:
+                    OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
+                        .environment(\.managedObjectContext, viewContext)
+                            .presentationDetents([ .fraction(0.2)])
+                            .presentationBackground(.ultraThinMaterial)
+                            .presentationDragIndicator(.visible)
+                            .presentationCornerRadius(12)
+                    
+                    
+            case .symbolSheet:
+                    JobIconPicker(selectedIcon: $selectedIcon, iconColor: selectedColor)
+                    .environment(\.managedObjectContext, viewContext)
+                    .presentationDetents([ .medium])
+                    .presentationBackground(.ultraThinMaterial)
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(12)
+            }
+            
+        }
             
             .toolbar{
                 ToolbarItemGroup(placement: .keyboard){
@@ -208,6 +260,7 @@ struct AddJobView: View {
         newJob.overtimeEnabled = overtimeEnabled
         newJob.overtimeAppliedAfter = overtimeAppliedAfter
         newJob.overtimeRate = overtimeRate
+        newJob.icon = selectedIcon
         
         let uiColor = UIColor(selectedColor)
         let (r, g, b) = uiColor.rgbComponents
@@ -241,5 +294,41 @@ struct AddJobView_Previews: PreviewProvider {
     static var previews: some View {
         AddJobView()
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    }
+}
+
+let jobIcons = [
+    "briefcase.circle", "display", "tshirt.fill", "takeoutbag.and.cup.and.straw.fill", "trash.fill",
+    "wineglass.fill", "cup.and.saucer.fill", "film.fill", "building.columns.circle.fill", "camera.fill", "camera.macro.circle", "bus.fill", "box.truck", "fuelpump.circle", "popcorn.circle", "cross.case.circle", "frying.pan", "cart.circle", "paintbrush", "wrench.adjustable"]
+
+
+struct JobIconPicker: View {
+    @Binding var selectedIcon: String
+    var iconColor: Color
+    @Environment(\.managedObjectContext) private var viewContext
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: Array(repeating: GridItem(.adaptive(minimum: 50)), count: 4), spacing: 50) {
+                    ForEach(jobIcons, id: \.self) { icon in
+                        Button(action: {
+                            selectedIcon = icon
+                        }) {
+                            VStack {
+                                Image(systemName: icon)
+                                    .font(.title2)
+                                   // .resizable()
+                                    //.scaledToFit()
+                                    .frame(height: 20)
+                                    .foregroundColor(iconColor)
+                            }
+                        }
+                    }
+                }
+                .padding()
+            }
+            .navigationBarTitle("Job Icon", displayMode: .inline)
+        }
     }
 }

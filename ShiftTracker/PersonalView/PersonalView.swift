@@ -26,40 +26,51 @@ struct PersonalView: View {
     @State private var dateSelected: DateComponents?
     @State private var displayEvents = false
     
+    @State private var deleteJobAlert = false
+    @State private var jobToDelete: Job?
+    
+    @State private var showAllScheduledShiftsView = false
+    
     var body: some View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
         
+        
         NavigationStack {
-            
+            ZStack{
+                if !showAllScheduledShiftsView{
             List {
-               //Spacer(minLength: 300)
-                 
-                
-                
                 if !jobs.isEmpty{
                     Section {
-                    ForEach(jobs, id: \.self) { job in
-                        
-                        NavigationLink(destination: EditJobView(job: job)){
-                            VStack(alignment: .leading, spacing: 5){
-                                Text(job.name ?? "")
-                                    .foregroundColor(textColor)
-                                    .font(.title2)
-                                    .bold()
-                                Text(job.title ?? "")
-                                    .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                                    .font(.subheadline)
-                                    .bold()
-                                Text("$\(job.hourlyPay, specifier: "%.2f") / hr")
-                                    .foregroundColor(.gray)
-                                    .font(.footnote)
-                                    .bold()
+                        ForEach(jobs, id: \.self) { job in
+                            
+                            NavigationLink(destination: EditJobView(job: job)){
+                                
+                                HStack(spacing : 10){
+                                    Image(systemName: job.icon ?? "briefcase.circle")
+                                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                                        .font(.system(size: 30))
+                                        .frame(width: UIScreen.main.bounds.width / 7)
+                                    VStack(alignment: .leading, spacing: 5){
+                                        Text(job.name ?? "")
+                                            .foregroundColor(textColor)
+                                            .font(.title2)
+                                            .bold()
+                                        Text(job.title ?? "")
+                                            .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                                            .font(.subheadline)
+                                            .bold()
+                                        Text("$\(job.hourlyPay, specifier: "%.2f") / hr")
+                                            .foregroundColor(.gray)
+                                            .font(.footnote)
+                                            .bold()
+                                    }
+                                    
+                                }
                             }
                         }
+                        .onDelete(perform: deleteJob)
                     }
-                    .onDelete(perform: deleteJob)
-                }
                 header: {
                     HStack{
                         Text("Jobs")
@@ -76,12 +87,12 @@ struct PersonalView: View {
                     }
                     .padding(.trailing, 16)
                 }
-
+                    
                 }
                 else {
                     
                     
-
+                    
                     Section {
                         VStack(alignment: .center, spacing: 15){
                             Text("No jobs found.")
@@ -90,15 +101,15 @@ struct PersonalView: View {
                             
                             
                             NavigationLink(destination: AddJobView()){
-                                        Text("Create one now")
-                                            .bold()
-                                            .foregroundColor(.orange)
-                                            .padding(.vertical, 10)
-                                            .frame(maxWidth: .infinity)
-                                    }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .padding(.horizontal, 85)
-
+                                Text("Create one now")
+                                    .bold()
+                                    .foregroundColor(.orange)
+                                    .padding(.vertical, 10)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.horizontal, 85)
+                            
                         } .frame(maxWidth: .infinity)
                             .padding()
                     } header : {
@@ -114,8 +125,8 @@ struct PersonalView: View {
                     
                 }
                 Section{
-                   
-                        CalendarView(interval: DateInterval(start: .distantPast, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
+                    
+                    CalendarView(interval: DateInterval(start: .distantPast, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
                         .fixedSize(horizontal: true, vertical: true)
                     
                 } header : {
@@ -131,25 +142,75 @@ struct PersonalView: View {
                 }
                 .listRowBackground(Color.clear)
                 
-            
-            }
+                
+            }.opacity(showAllScheduledShiftsView ? 0 : 1)
+                .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
+        } else {
+            AllScheduledShiftsView()
+                .opacity(showAllScheduledShiftsView ? 1 : 0)
+                .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
+        }
+    }
             
                        .sheet(isPresented: $displayEvents) {
                             ScheduledShiftsView(dateSelected: $dateSelected)
                                 .presentationDetents([.medium, .large])
+                                .presentationBackground(.ultraThinMaterial)
                         }
+                       .alert(isPresented: $deleteJobAlert) {
+                           Alert(title: Text("Delete Job"),
+                                 message: Text("Are you sure you want to delete this job and all associated scheduled shifts?"),
+                                 primaryButton: .destructive(Text("Delete")) {
+                                     confirmDeleteJob()
+                                 },
+                                 secondaryButton: .cancel()
+                           )
+                       }
             
-            .navigationBarTitle("Personal", displayMode: .inline)
+                       .navigationBarTitle(showAllScheduledShiftsView ? "Schedule" : "Personal", displayMode: .inline)
+            .toolbar{
+                        ToolbarItem(placement: .navigationBarTrailing){
+                            Button(action: {
+                                withAnimation(.easeInOut(duration: 0.4)) {
+                                    showAllScheduledShiftsView.toggle()
+                                }
+                            }) {
+                                Image(systemName: "list.bullet")
+                                    .foregroundColor(showAllScheduledShiftsView ? Color.white : Color.orange)
+                                    .background(
+                                                        RoundedRectangle(cornerRadius: 6)
+                                                            .fill(showAllScheduledShiftsView ? .orange : .clear)
+                                                            .padding(-5)
+                                                    )
+                            }
+                        }
+                    }
         }
         
     }
     
     
     private func deleteJob(at offsets: IndexSet) {
-            for index in offsets {
-                let job = jobs[index]
-                viewContext.delete(job)
-            }
+        for index in offsets {
+            let job = jobs[index]
+            jobToDelete = job
+            deleteJobAlert = true
+        }
+    }
+
+    
+    private func confirmDeleteJob() {
+        if let job = jobToDelete {
+            // Delete associated ScheduledShifts
+            if let scheduledShifts = job.scheduledShifts as? Set<ScheduledShift> {
+                        for shift in scheduledShifts {
+                            viewContext.delete(shift)
+                        }
+                    }
+
+                    // Delete the job
+                    viewContext.delete(job)
+                    jobToDelete = nil
             
             do {
                 try viewContext.save()
@@ -157,6 +218,9 @@ struct PersonalView: View {
                 print("Failed to delete job: \(error.localizedDescription)")
             }
         }
+        deleteJobAlert = false
+    }
+
     
 }
 
@@ -183,3 +247,95 @@ extension CLPlacemark {
         return components.joined(separator: ", ")
     }
 }
+
+
+
+struct AllScheduledShiftsView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        entity: ScheduledShift.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: false)]
+    ) private var allShifts: FetchedResults<ScheduledShift>
+
+    var groupedShifts: [Date: [ScheduledShift]] {
+        Dictionary(grouping: allShifts, by: { $0.startDate?.midnight() ?? Date() })
+    }
+
+    @Environment(\.colorScheme) var colorScheme
+    
+    private var timeFormatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.timeStyle = .short
+            return formatter
+        }
+    
+    func formattedDate(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, d MMM"
+        return dateFormatter.string(from: date)
+    }
+    
+    var body: some View {
+        
+        let textColor: Color = colorScheme == .dark ? .white : .black
+        
+        
+        
+        List {
+            ForEach(groupedShifts.keys.sorted(by: >), id: \.self) { date in
+                Section(header: Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(textColor)) {
+                    ForEach(groupedShifts[date] ?? [], id: \.self) { shift in
+                        HStack {
+                            // Vertical line
+                            RoundedRectangle(cornerRadius: 1)
+                                .fill(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
+                                .frame(width: 4)
+                            
+                            VStack(alignment: .leading) {
+                                Text(shift.job?.name ?? "")
+                                    .bold()
+                                Text(shift.job?.title ?? "")
+                                    .foregroundColor(.gray)
+                                    .bold()
+                            }
+                            Spacer()
+                            
+                            VStack(alignment: .trailing){
+                                if let startDate = shift.startDate {
+                                                                   Text(timeFormatter.string(from: startDate))
+                                        .font(.subheadline)
+                                        .bold()
+                                                               }
+                                                               if let endDate = shift.endDate {
+                                                                   Text(timeFormatter.string(from: endDate))
+                                                                       .font(.subheadline)
+                                                                       .bold()
+                                                                       .foregroundColor(.gray)
+                                                               }
+                            }
+                        }
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                viewContext.delete(shift)
+                                try? viewContext.save()
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                        }
+                    }
+                }.listRowBackground(Color.clear)
+            }
+        }
+        .listStyle(PlainListStyle())
+        .scrollContentBackground(.hidden)
+    }
+}
+
+extension Date {
+    func midnight() -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day], from: self)
+        return calendar.date(from: components) ?? self
+    }
+}
+
