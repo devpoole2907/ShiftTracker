@@ -49,7 +49,7 @@ struct TimerView: View {
             Text("cheese")
                 .padding()
         }
-            .navigationBarTitle("Job name")
+        .navigationBarTitle(job.name)
     }
 }
 
