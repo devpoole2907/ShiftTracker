@@ -9,14 +9,14 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>4</integer>
 		</dict>
 		<key>Promises (Playground) 2.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>5</integer>
 		</dict>
 		<key>Promises (Playground).xcscheme</key>
 		<dict>
@@ -33,7 +33,7 @@
 		<key>ShiftTracker Watch Edition Watch App.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<key>ShiftTracker Watch Watch App.xcscheme_^#shared#^_</key>
 		<dict>
@@ -74,6 +74,11 @@
 			<true/>
 		</dict>
 		<key>1A9855CF29C55F8A003F512C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1AD72AAF29F7809800534342</key>
 		<dict>
 			<key>primary</key>
 			<true/>

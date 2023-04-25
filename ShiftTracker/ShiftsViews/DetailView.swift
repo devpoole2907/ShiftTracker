@@ -66,7 +66,7 @@ struct DetailView: View {
         _selectedBreakEndDate = State(wrappedValue: shift.breakEndDate ?? Date())
         _selectedTaxPercentage = State(wrappedValue: shift.tax )
         _selectedHourlyPay = State(wrappedValue: shift.hourlyPay)
-        _selectedTag = State(wrappedValue: shift.tag)
+        //_selectedTag = State(wrappedValue: shift.tag)
         _shiftDuration = State(wrappedValue: shift.duration)
         _selectedTotalTips = State(wrappedValue: shift.totalTips)
     }
@@ -387,7 +387,7 @@ struct DetailView: View {
                             noteIsFocused = false
                             payIsFocused = false
                             shift.shiftNote = notes
-                            shift.tag = selectedTag
+                            //shift.tag = selectedTag
                             saveContext()
                         }
                     }
@@ -407,7 +407,7 @@ struct DetailView: View {
                         shift.breakEndDate = selectedBreakEndDate
                         shift.tax = selectedTaxPercentage
                         shift.hourlyPay = selectedHourlyPay
-                        shift.tag = selectedTag
+                        //shift.tag = selectedTag
                         shift.totalTips = selectedTotalTips
                         let newBreakElapsed = selectedBreakEndDate.timeIntervalSince(selectedBreakStartDate)
                         shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate) - newBreakElapsed

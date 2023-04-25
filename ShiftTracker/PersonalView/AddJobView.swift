@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import CoreData
 
 struct AddJobView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -57,6 +58,19 @@ struct AddJobView: View {
             let minutes = Int(timeInterval) % 3600 / 60
             return "\(hours)h \(minutes)m"
         }
+    
+    
+    func fetchAllJobs() -> [Job] {
+        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+        do {
+            let jobs = try viewContext.fetch(fetchRequest)
+            return jobs
+        } catch {
+            print("Failed to fetch jobs: \(error.localizedDescription)")
+            return []
+        }
+    }
+
     
     var body: some View {
         
@@ -261,6 +275,7 @@ struct AddJobView: View {
         newJob.overtimeAppliedAfter = overtimeAppliedAfter
         newJob.overtimeRate = overtimeRate
         newJob.icon = selectedIcon
+        newJob.uuid = UUID()
         
         let uiColor = UIColor(selectedColor)
         let (r, g, b) = uiColor.rgbComponents
@@ -282,6 +297,11 @@ struct AddJobView: View {
         
         do {
             try viewContext.save()
+            
+            let allJobs = fetchAllJobs()
+                    //let jobDataArray = allJobs.map { jobData(from: $0) }
+                    WatchConnectivityManager.shared.sendJobData(allJobs)
+            
             locationManager.startMonitoring(job: newJob)
             presentationMode.wrappedValue.dismiss()
         } catch {

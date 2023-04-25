@@ -24,6 +24,7 @@
         <attribute name="payPeriodLength" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="payPeriodStartDay" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="oldShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="job" inverseEntity="OldShift"/>
         <relationship name="scheduledShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ScheduledShift" inverseName="job" inverseEntity="ScheduledShift"/>
     </entity>
@@ -38,7 +39,6 @@
         <attribute name="shiftEndDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="shiftNote" optional="YES" attributeType="String"/>
         <attribute name="shiftStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="tag" optional="YES" attributeType="Transformable" customClassName=".Tag"/>
         <attribute name="tax" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="taxedPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="totalPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

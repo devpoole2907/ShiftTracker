@@ -7,13 +7,16 @@
 
 import SwiftUI
 import CoreData
-
+import WatchConnectivity
 
 @main
 struct ShiftTrackerApp: App {
     
     private let locationManager = LocationDataManager()
         private let defaults = UserDefaults.standard
+    
+    @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
+
     
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
