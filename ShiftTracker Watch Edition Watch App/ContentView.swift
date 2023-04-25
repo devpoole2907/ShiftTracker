@@ -85,8 +85,21 @@ struct TimerView: View {
     var body: some View{
         
         ScrollView{
-            Text("cheese")
-                .padding()
+            VStack{
+                Text("cheese")
+                    .padding()
+                HStack{
+                    Button(action: {
+                        
+                    }) {
+                        Text("Start")
+    
+                }
+                    Button(action: {
+                        
+                    }) {
+                        Text("End")
+            }
         }
         .navigationBarTitle(job.name ?? "Unnamed Job")
     }
