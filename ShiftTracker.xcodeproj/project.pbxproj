@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A0BA92B29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92929F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld */; };
+		1A0BA92D29F7D65700541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
+		1A0BA92E29F7D77200541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
 		1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */; };
 		1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1629F11C03003C83F0 /* StatsView.swift */; };
 		1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */; };
@@ -64,7 +67,6 @@
 		1AC048C129E0D50E00355767 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
 		1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */; };
 		1AC9DDF529F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */; };
-		1AC9DDF629F7B1E500C15008 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1AC9DDF829F7B28700C15008 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF729F7B28700C15008 /* JobData.swift */; };
 		1AC9DDF929F7B28700C15008 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF729F7B28700C15008 /* JobData.swift */; };
 		1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
@@ -153,6 +155,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1A0BA92A29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ShiftTrackerWatchDataModel.xcdatamodel; sourceTree = "<group>"; };
+		1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPersistenceController.swift; sourceTree = "<group>"; };
 		1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightView.swift; sourceTree = "<group>"; };
 		1A0F5F1629F11C03003C83F0 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonView.swift; sourceTree = "<group>"; };
@@ -465,6 +469,8 @@
 				1AD72AB429F7809900534342 /* ContentView.swift */,
 				1AD72AB629F7809A00534342 /* Assets.xcassets */,
 				1AD72AB829F7809A00534342 /* Preview Content */,
+				1A0BA92929F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld */,
+				1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */,
 			);
 			path = "ShiftTracker Watch Edition Watch App";
 			sourceTree = "<group>";
@@ -686,6 +692,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A0BA92E29F7D77200541F5B /* WatchPersistenceController.swift in Sources */,
 				1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */,
 				1AECCC5329DC218E00D879FE /* Tag.swift in Sources */,
 				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
@@ -746,8 +753,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AC9DDF929F7B28700C15008 /* JobData.swift in Sources */,
-				1AC9DDF629F7B1E500C15008 /* ShiftDataModel.xcdatamodeld in Sources */,
+				1A0BA92B29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld in Sources */,
 				1AD72AB529F7809900534342 /* ContentView.swift in Sources */,
+				1A0BA92D29F7D65700541F5B /* WatchPersistenceController.swift in Sources */,
 				1AC9DDF529F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1AD72AB329F7809900534342 /* ShiftTracker_Watch_EditionApp.swift in Sources */,
 			);
@@ -1255,6 +1263,16 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
+		1A0BA92929F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				1A0BA92A29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodel */,
+			);
+			currentVersion = 1A0BA92A29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodel */;
+			path = ShiftTrackerWatchDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
 		1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

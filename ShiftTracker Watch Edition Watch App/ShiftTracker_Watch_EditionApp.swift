@@ -10,10 +10,12 @@ import SwiftUI
 @main
 struct ShiftTracker_Watch_Edition_Watch_AppApp: App {
     
+    let persistenceController = WatchPersistenceController.shared
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
