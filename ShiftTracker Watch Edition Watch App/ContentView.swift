@@ -7,27 +7,66 @@
 
 import SwiftUI
 import WatchConnectivity
-
+import CoreData
 
 
 struct ContentView: View {
     
-    @ObservedObject private var connectivityManager = WatchConnectivityManager.shared
+    private let connectivityManager = WatchConnectivityManager.shared
+    @Environment(\.managedObjectContext) private var viewContext
     
     
+    
+    @FetchRequest(
+            entity: Job.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]
+        ) private var jobs: FetchedResults<Job>
+    
+    @State private var showAlert = false
+    @State private var jobToDelete: Job?
+    
+    private func deleteJob(at offsets: IndexSet) {
+        if let index = offsets.first {
+            jobToDelete = jobs[index]
+            showAlert = true
+        }
+    }
+    
+    private func confirmDelete() {
+        if let job = jobToDelete {
+            viewContext.delete(job)
+            do {
+                try viewContext.save()
+                connectivityManager.deleteJob(job)
+            } catch {
+                print("Failed to delete job: \(error.localizedDescription)")
+            }
+        }
+        jobToDelete = nil
+        showAlert = false
+    }
     
     var body: some View {
         NavigationStack{
-                List(connectivityManager.receivedJobs, id: \.id) { job in
+            List{
+                ForEach(jobs, id: \.self) { job in
                     NavigationLink(destination: TimerView(job: job)){
                         JobRow(job: job)
                     }
-                }.onReceive(connectivityManager.$receivedJobs) { jobs in
-                    print("Received jobs: \(jobs)")
-                }
+                }.onDelete(perform: deleteJob)
+            }
                 .listStyle(CarouselListStyle())
                 .navigationBarTitle("ShiftTracker")
             }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("Confirm Delete"),
+                message: Text("Are you sure you want to delete this job?"),
+                primaryButton: .destructive(Text("Delete"), action: confirmDelete),
+                secondaryButton: .cancel()
+            )
+        }
+
                 
         }
     }
@@ -41,7 +80,7 @@ struct ContentView_Previews: PreviewProvider {
 
 struct TimerView: View {
     
-    var job: JobData
+    var job: Job
     
     var body: some View{
         
@@ -49,7 +88,7 @@ struct TimerView: View {
             Text("cheese")
                 .padding()
         }
-        .navigationBarTitle(job.name)
+        .navigationBarTitle(job.name ?? "Unnamed Job")
     }
 }
 
@@ -62,18 +101,18 @@ struct TimerView_Previews: PreviewProvider {
 
 
 struct JobRow: View {
-    var job: JobData
+    var job: Job
     
     var body: some View {
         HStack{
             VStack(alignment: .leading, spacing: 5){
-                Image(systemName: job.icon)
+                Image(systemName: job.icon ?? "briefcase.circle")
                     .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
                     .font(.title)
-                Text(job.name)
+                Text(job.name ?? "Unnamed Job")
                     .font(.headline)
                     .bold()
-                Text(job.title)
+                Text(job.title ?? "")
                     .font(.footnote)
                     .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
                     .bold()

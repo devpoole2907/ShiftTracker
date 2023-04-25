@@ -51,6 +51,8 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
             print("Error decoding data: \(error.localizedDescription)")
         }
     }
+    
+    
 
 
 
