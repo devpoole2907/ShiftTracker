@@ -12,7 +12,10 @@ import CoreData
 final class WatchConnectivityManager: NSObject, ObservableObject {
     static let shared = WatchConnectivityManager()
     
-    let persistenceController = WatchPersistenceController()
+    let persistenceController = WatchPersistenceController.shared
+    
+    var onDeleteJob: ((UUID) -> Void)?
+
     
     @Published var receivedJobs: [JobData] = []
     
@@ -122,8 +125,8 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         if let action = message["action"] as? String, action == "deleteJob", let jobIdString = message["jobId"] as? String {
             if let jobId = UUID(uuidString: jobIdString) {
-                let context = PersistenceController.shared.container.viewContext
-                deleteJob(with: jobId, in: context)
+                onDeleteJob?(jobId)
+
             }
         }
     }

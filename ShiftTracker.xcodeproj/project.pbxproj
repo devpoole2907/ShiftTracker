@@ -10,6 +10,7 @@
 		1A0BA92B29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92929F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld */; };
 		1A0BA92D29F7D65700541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
 		1A0BA92E29F7D77200541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
+		1A0BA93129F7E40B00541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
 		1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */; };
 		1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1629F11C03003C83F0 /* StatsView.swift */; };
 		1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */; };
@@ -674,6 +675,7 @@
 				1AECCC5D29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1AA6A7B629EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1ACA60C129D8F98500B279CB /* SearchBarView.swift in Sources */,
+				1A0BA93129F7E40B00541F5B /* WatchPersistenceController.swift in Sources */,
 				1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AECCC5729DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */,

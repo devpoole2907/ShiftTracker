@@ -20,6 +20,13 @@ struct ShiftTrackerApp: App {
     
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
+    init() {
+            WatchConnectivityManager.shared.onDeleteJob = { jobId in
+                let context = PersistenceController.shared.container.viewContext
+                WatchConnectivityManager.shared.deleteJob(with: jobId, in: context)
+            }
+        }
+    
     let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {

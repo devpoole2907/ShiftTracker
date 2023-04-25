@@ -84,6 +84,7 @@ struct TimerView: View {
     
     var body: some View{
         
+        NavigationStack{
         ScrollView{
             VStack{
                 Text("cheese")
@@ -93,58 +94,63 @@ struct TimerView: View {
                         
                     }) {
                         Text("Start")
-    
-                }
+                            .bold()
+                        
+                    }
                     Button(action: {
                         
                     }) {
                         Text("End")
+                            .bold()
+                    }
+                }
             }
         }
         .navigationBarTitle(job.name ?? "Unnamed Job")
     }
-}
-
-/*
-struct TimerView_Previews: PreviewProvider {
-    static var previews: some View {
-        TimerView(job: <#JobData#>)
+        }
     }
-} */
-
-
-struct JobRow: View {
-    var job: Job
     
-    var body: some View {
-        HStack{
-            VStack(alignment: .leading, spacing: 5){
-                Image(systemName: job.icon ?? "briefcase.circle")
-                    .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                    .font(.title)
-                Text(job.name ?? "Unnamed Job")
-                    .font(.headline)
-                    .bold()
-                Text(job.title ?? "")
-                    .font(.footnote)
-                    .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                    .bold()
-                
-            }
-            Spacer()
-            
-            VStack{
-                Button(action: {
+    /*
+     struct TimerView_Previews: PreviewProvider {
+     static var previews: some View {
+     TimerView(job: <#JobData#>)
+     }
+     } */
+    
+    
+    struct JobRow: View {
+        var job: Job
+        
+        var body: some View {
+            HStack{
+                VStack(alignment: .leading, spacing: 5){
+                    Image(systemName: job.icon ?? "briefcase.circle")
+                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                        .font(.title)
+                    Text(job.name ?? "Unnamed Job")
+                        .font(.headline)
+                        .bold()
+                    Text(job.title ?? "")
+                        .font(.footnote)
+                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                        .bold()
                     
-                }) {
-                    Image(systemName: "ellipsis.circle.fill")
-                        .foregroundColor(.orange)
-                        .font(.title2)
                 }
                 Spacer()
+                
+                VStack{
+                    Button(action: {
+                        
+                    }) {
+                        Image(systemName: "ellipsis.circle.fill")
+                            .foregroundColor(.orange)
+                            .font(.title2)
+                    }
+                    Spacer()
+                }
             }
+            .padding()
         }
-        .padding()
-    }
 }
  

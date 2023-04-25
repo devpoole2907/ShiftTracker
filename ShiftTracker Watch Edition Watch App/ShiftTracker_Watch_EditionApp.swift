@@ -10,7 +10,9 @@ import SwiftUI
 @main
 struct ShiftTracker_Watch_Edition_Watch_AppApp: App {
     
-    let persistenceController = WatchPersistenceController.shared
+   // let persistenceController = WatchPersistenceController.shared
+    
+    @StateObject private var persistenceController = WatchPersistenceController.shared
     
     var body: some Scene {
         WindowGroup {

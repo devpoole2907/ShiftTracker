@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-struct WatchPersistenceController {
+class WatchPersistenceController: ObservableObject {
     static let shared = WatchPersistenceController()
 
     let container: NSPersistentContainer
