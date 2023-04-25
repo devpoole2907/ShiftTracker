@@ -127,7 +127,9 @@ struct PersonalView: View {
                 Section{
                     
                     CalendarView(interval: DateInterval(start: .distantPast, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
-                        .fixedSize(horizontal: true, vertical: true)
+                        //.fixedSize(horizontal: true, vertical: true)
+                       // .scaleEffect(CGSize(width: 0.95, height: 0.95))
+                        //.padding(.horizontal, 20)
                     
                 } header : {
                     HStack{
@@ -140,7 +142,7 @@ struct PersonalView: View {
                         
                     }
                 }
-                .listRowBackground(Color.clear)
+                //.listRowBackground(Color.clear)
                 
                 
             }.opacity(showAllScheduledShiftsView ? 0 : 1)
@@ -155,7 +157,7 @@ struct PersonalView: View {
                        .sheet(isPresented: $displayEvents) {
                             ScheduledShiftsView(dateSelected: $dateSelected)
                                 .presentationDetents([.medium, .large])
-                                .presentationBackground(.ultraThinMaterial)
+                                //.presentationBackground(.ultraThinMaterial)
                         }
                        .alert(isPresented: $deleteJobAlert) {
                            Alert(title: Text("Delete Job"),

@@ -10,6 +10,7 @@ import CoreData
 import Charts
 import Haptics
 import Foundation
+import UserNotifications
 
 struct ScheduledShiftsView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -34,6 +35,14 @@ struct ScheduledShiftsView: View {
         }
     }
     
+    func cancelNotification(for scheduledShift: ScheduledShift) {
+        let identifier = "ScheduledShift-\(scheduledShift.objectID)"
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
+    }
+    
+
+
+    
     var body: some View {
         NavigationStack {
             Group {
@@ -45,6 +54,7 @@ struct ScheduledShiftsView: View {
                                 ListViewRow(shift: shift)
                                     .swipeActions {
                                         Button(role: .destructive) {
+                                            cancelNotification(for: shift)
                                             viewContext.delete(shift)
                                             try? viewContext.save()
                                         } label: {
@@ -77,7 +87,7 @@ struct ScheduledShiftsView: View {
             })
             .environment(\.managedObjectContext, viewContext)
             .presentationDetents([.large])
-            .presentationBackground(.thinMaterial)
+            //.presentationBackground(.thinMaterial)
             .presentationDragIndicator(.visible)
         }
     }
@@ -102,6 +112,11 @@ struct CreateShiftForm: View {
     @State private var selectedRepeatEnd: Date
     
     @State private var selectedIndex: Int = 0
+    
+    // for notifications
+    @State private var notifyMe = true
+    @State private var selectedReminderTime: ReminderTime = .fifteenMinutes
+    
     
     
     var onShiftCreated: () -> Void
@@ -128,15 +143,22 @@ struct CreateShiftForm: View {
         newShift.endDate = endDate
         newShift.job = selectedJob
         newShift.id = UUID()
+        newShift.notifyMe = notifyMe
+        newShift.reminderTime = selectedReminderTime.timeInterval
         
         do {
             try viewContext.save()
+            if notifyMe {
+                scheduleNotification(for: newShift, reminderTime: newShift.reminderTime)
+            }
             onShiftCreated()
             dismiss()
         } catch {
             print("Error creating shift: \(error.localizedDescription)")
         }
     }
+    
+    
     
     func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool) {
         let repeatID = generateUniqueID()
@@ -151,6 +173,12 @@ struct CreateShiftForm: View {
             shift.id = UUID()
             shift.isRepeating = repeatEveryWeek
             shift.repeatID = repeatEveryWeek ? repeatID : nil
+            shift.notifyMe = notifyMe
+            shift.reminderTime = selectedReminderTime.timeInterval
+            
+            if notifyMe {
+                scheduleNotification(for: shift, reminderTime: shift.reminderTime)
+                    }
 
             // Increment the start and end dates by 1 week
             currentStartDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentStartDate)!
@@ -166,6 +194,31 @@ struct CreateShiftForm: View {
             print("Error saving repeating shift series: \(error)")
         }
     }
+    
+    func scheduleNotification(for scheduledShift: ScheduledShift, reminderTime: TimeInterval) {
+        // Create the content of the notification
+        let content = UNMutableNotificationContent()
+        content.title = "Upcoming Shift"
+        content.body = "You have a shift starting soon!"
+        content.sound = .default
+
+        // Create a notification trigger based on the startDate and reminderTime
+        let triggerDate = Calendar.current.date(byAdding: .second, value: Int(-scheduledShift.reminderTime), to: scheduledShift.startDate ?? Date())!
+        let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: triggerDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
+
+        // Create a unique identifier for the request
+        let identifier = "ScheduledShift-\(scheduledShift.objectID)"
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+
+        // Schedule the notification
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error)")
+            }
+        }
+    }
+
 
     
     
@@ -177,12 +230,12 @@ struct CreateShiftForm: View {
     
     var body: some View {
         
-        let sliderColor: Color = colorScheme == .dark ? Color(.systemGray5) : .black
         
+        let textColor: Color = colorScheme == .dark ? .white : .black
         
         
         NavigationStack {
-            VStack(spacing: 5){
+            List{
                 
                 //.padding(.top, 100)
                 
@@ -190,97 +243,90 @@ struct CreateShiftForm: View {
                 
                 //.padding(.top, 45)
                 
-                
-                VStack{
-                    HStack(spacing: 25){
-                        VStack(alignment: .leading, spacing: 8){
-                            Label {
-                                Text("Start")
-                                    .bold()
-                            } icon: {
-                                Image(systemName: "figure.walk.arrival")
-                                    .foregroundColor(.orange)
-                            }
-                            .font(.callout)
-                            
-                            Text(getTime(angle: startAngle).formatted(date: .abbreviated, time: .omitted))
-                                .font(.caption2)
-                                .foregroundColor(.gray)
-                            
-                            Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
-                                .font(.title2.bold())
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding()
-                        
-                        VStack(alignment: .leading, spacing: 8){
-                            Label {
-                                Text("End")
-                                    .bold()
-                            } icon: {
-                                Image(systemName: "figure.walk.departure")
-                                    .foregroundColor(.orange)
-                            }
-                            .font(.callout)
-                            
-                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .abbreviated, time: .omitted))
-                                .font(.caption2)
-                                .foregroundColor(.gray)
-                            
-                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .omitted, time: .shortened))
-                                .font(.title2.bold())
-                            
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding()
-                    }
-                    
+            
+             /*
                     //.padding()
                     .background(Color(.systemGray5),in: RoundedRectangle(cornerRadius: 12))
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
                     .padding(.top, -50)
-                    
-                    sleepTimeSlider()
-                        .frame(maxHeight: screenBounds().height / 4)
-                        .padding(.top, 200)
-                    
-                    
-                    VStack(alignment: .leading){
+                     */
+                Section{
+                    HStack(spacing: 25){
+                        VStack(alignment: .center, spacing: 5){
+                         
+                            
+                            
+                            HStack{
+                                Image(systemName: "figure.walk.arrival")
+                                    .foregroundColor(.orange)
+                                Text("Start")
+                                    .bold()
+                            }
+                            .font(.callout)
+                            Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
+                                .font(.title2.bold())
+                            
+                            Text(getTime(angle: startAngle).formatted(date: .abbreviated, time: .omitted))
+                                .font(.caption2)
+                                .foregroundColor(.gray)
+                                .bold()
+                            
+                            
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        //.padding()
                         
-                        Text("Selected Job:")
-                            .font(.title)
-                            .bold()
-                            .padding(.horizontal)
-                            .padding(.bottom, -50)
-                        
-                        
-                        CardPicker(selectedJob: $selectedJob, jobs: jobs, selectedIndex: $selectedIndex)
+                        VStack(alignment: .center, spacing: 5){
+                            HStack{
+                                Image(systemName: "figure.walk.departure")
+                                    .foregroundColor(.orange)
+                                Text("End")
+                                    .bold()
+                            }
+                            .font(.callout)
+                            
+                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .omitted, time: .shortened))
+                                .font(.title2.bold())
+                            
+                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .abbreviated, time: .omitted))
+                                .font(.caption2)
+                                .foregroundColor(.gray)
+                                .bold()
+                            
+                            
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
                         //.padding(.horizontal)
-                        
-                    }.padding(.top, -100)
-                    
-                    
-                    HStack{
-                    Button {
-                        startDate = getTime(angle: startAngle)
-                        endDate = getTime(angle: toAngle, isEndDate: true)
-                        selectedJob = jobs[selectedIndex]
-                        
-                        if enableRepeat {
-                            saveRepeatingShiftSeries(startDate: getTime(angle: startAngle), endDate: getTime(angle: toAngle, isEndDate: true), repeatEveryWeek: true)
-                        }
-                        else {
-                            createShift()
-                        }
-                    } label: {
-                        Text("Schedule Shift")
-                            .foregroundColor(.white)
-                            .bold()
-                            .padding(.vertical)
-                            .padding(.horizontal, 40)
-                            .background(.orange, in: Capsule())
+                    }.listRowSeparator(.hidden)
+                        .padding(.top, 10)
+                    VStack{
+                        sleepTimeSlider()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                        // .frame(maxHeight: screenBounds().height / 5)
+                            .padding(.top, 30)
+                        Spacer()
                     }
+                    .frame(minHeight: screenBounds().height / 3)
+                       //.padding(.bottom, -200)
+                }
+                    
+                Section{
+
+                    Picker("Job", selection: $selectedJob){
+                        ForEach(jobs, id: \.self) { job in
+                            HStack{
+                                Image(systemName: job.icon ?? "briefcase.circle")
+                                    .foregroundColor(Color(red: Double(job.colorRed ), green: Double(job.colorGreen ), blue: Double(job.colorBlue )))
+                                Text(job.name ?? "")
+                            }
+                        }
+                    }
+                        
+                        
+                        
+                }
+                Section {
                     VStack{
                         Toggle(isOn: $enableRepeat){
                             Text("Repeat")
@@ -291,11 +337,53 @@ struct CreateShiftForm: View {
                             .disabled(!enableRepeat)
                     }
                 }
-                    
+                Section {
+                    VStack{
+                        
+                        Toggle(isOn: $notifyMe){
+                            Text("Remind Me")
+                                .bold()
+                        }
+                        
+                        Picker("When", selection: $selectedReminderTime) {
+                            ForEach(ReminderTime.allCases) { reminderTime in
+                                Text(reminderTime.rawValue).tag(reminderTime)
+                            }
+                        }.disabled(!notifyMe)
+                        
+                    }
                 }
+
+                    
+
+                    
+                    
+              
                 
+            }//.scrollContentBackground(.hidden)
+            VStack(alignment: .center){
+                Button {
+                    startDate = getTime(angle: startAngle)
+                    endDate = getTime(angle: toAngle, isEndDate: true)
+                    selectedJob = jobs[selectedIndex]
+                    
+                    if enableRepeat {
+                        saveRepeatingShiftSeries(startDate: getTime(angle: startAngle), endDate: getTime(angle: toAngle, isEndDate: true), repeatEveryWeek: true)
+                    }
+                    else {
+                        createShift()
+                    }
+                } label: {
+                    Text("Schedule Shift")
+                        .foregroundColor(.white)
+                        .bold()
+                        .padding(.vertical)
+                        .padding(.horizontal, 40)
+                        .background(.orange, in: Capsule())
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
             }
-            .padding(.top, 35)
+            //.padding(.top, 35)
         
             .navigationBarTitle("Schedule a Shift")
         }
@@ -303,6 +391,10 @@ struct CreateShiftForm: View {
     
     @ViewBuilder
     func sleepTimeSlider() -> some View{
+        
+        let sliderBackgroundColor: Color = colorScheme == .dark ? .black : Color(.systemGray6)
+        let sliderColor: Color = colorScheme == .dark ? Color(.systemGray6) : .white
+        
         GeometryReader{ proxy in
             
             let width = proxy.size.width
@@ -322,14 +414,15 @@ struct CreateShiftForm: View {
                             .rotationEffect(.init(degrees: Double(index) * 6))
                     }
                     
-                    let texts = [12,18,24,6]
+                    let texts = ["12PM","   6PM","12AM","6AM   "]
                     ForEach(texts.indices, id: \.self){ index in
                         
                         Text("\(texts[index])")
                             .font(.caption.bold())
-                            .foregroundColor(.gray)
+                            
                             .rotationEffect(.init(degrees: Double(index) * -90))
                             .offset(y: (width - 90) / 2)
+                            //.offset(x: (width - 90) / 2)
                         
                             .rotationEffect(.init(degrees: Double(index) * 90))
                     }
@@ -342,25 +435,25 @@ struct CreateShiftForm: View {
                 
                 
                 Circle()
-                    .stroke(.black.opacity(0.9), lineWidth: 50)
+                    .stroke(sliderBackgroundColor, lineWidth: 45)
                 
                 
                 
                 let reverseRotation = (startProgress > toProgress) ? -Double((1 - startProgress) * 360) : 0
                 Circle()
                     .trim(from: startProgress > toProgress ? 0 : startProgress, to: toProgress + (-reverseRotation / 360))
-                    .stroke(Color(.systemGray5), style: StrokeStyle(lineWidth: 35, lineCap: .round, lineJoin: .round))
+                    .stroke(sliderColor, style: StrokeStyle(lineWidth: 30, lineCap: .round, lineJoin: .round))
                     .rotationEffect(.init(degrees: -90))
                     .rotationEffect(.init(degrees: reverseRotation))
                 
                 
                 Image(systemName: "figure.walk.arrival")
                     .font(.callout)
-                    .foregroundColor(.black)
+                    .foregroundColor(.gray)
                     .frame(width: 30, height: 30)
                     .rotationEffect(.init(degrees: 90))
                     .rotationEffect(.init(degrees: -startAngle))
-                    .background(.orange,in: Circle())
+                    //.background(.orange,in: Circle())
                     .offset(x: width / 2)
                     .rotationEffect(.init(degrees: startAngle))
                 
@@ -374,11 +467,11 @@ struct CreateShiftForm: View {
                 
                 Image(systemName: "figure.walk.departure")
                     .font(.callout)
-                    .foregroundColor(.black)
+                    .foregroundColor(.gray)
                     .frame(width: 30, height: 30)
                     .rotationEffect(.init(degrees: 90))
                     .rotationEffect(.init(degrees: -toAngle))
-                    .background(.orange,in: Circle())
+                    //.background(.orange,in: Circle())
                     .offset(x: width / 2)
                 
                     .rotationEffect(.init(degrees: toAngle))
@@ -394,7 +487,7 @@ struct CreateShiftForm: View {
                 
                 VStack(spacing: 8){
                     Text("\(getTimeDifference().0) hr")
-                        .font(.largeTitle.bold())
+                        .font(.title.bold())
                     Text("\(getTimeDifference().1) m")
                         .foregroundColor(.gray)
                 }
@@ -402,7 +495,7 @@ struct CreateShiftForm: View {
                 .haptics(onChangeOf: getTimeDifference().0, type: .light)
             }
         }
-        .frame(width: screenBounds().width / 1.6, height: screenBounds().height / 1.6)
+        .frame(width: screenBounds().width / 1.7) //, height: screenBounds().height / 1.8)
     }
     
     func onDrag(value: DragGesture.Value, fromSlider: Bool = false) {
@@ -581,11 +674,18 @@ struct ListViewRow: View {
             for futureShift in futureShifts {
                 viewContext.delete(futureShift)
             }
+            cancelNotifications(for: futureShifts)
             try viewContext.save()
         } catch {
             print("Error canceling repeating shift series: \(error)")
         }
     }
+    
+    func cancelNotifications(for shifts: [ScheduledShift]) {
+        let identifiers = shifts.map { "ScheduledShift-\($0.objectID)" }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
 
     
     var body: some View {
@@ -678,7 +778,7 @@ struct CardView: View {
                 Image(systemName: job.icon ?? "briefcase.circle")
                     .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
                     .font(.system(size: 30))
-                    .frame(width: UIScreen.main.bounds.width / 7)
+                    .frame(width: screenBounds().width / 7)
                 VStack(alignment: .leading, spacing: 5){
                     Text(job.name ?? "")
                         .font(.title2)
@@ -687,18 +787,18 @@ struct CardView: View {
                         .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
                         .font(.subheadline)
                         .bold()
-                    Text("$\(job.hourlyPay, specifier: "%.2f") / hr")
+                  /*  Text("$\(job.hourlyPay, specifier: "%.2f") / hr")
                         .foregroundColor(.gray)
                         .font(.footnote)
-                        .bold()
+                        .bold() */
                 }
             }.frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
+                //.padding()
             
         }
-        .background(Color(.systemGray5),in: RoundedRectangle(cornerRadius: 12))
-        .padding(.horizontal, 20)
-        .padding(.vertical, 10)
+        //.background(Color(.systemGray5),in: RoundedRectangle(cornerRadius: 12))
+        //.padding(.horizontal, 20)
+        //.padding(.vertical, 10)
     }
 }
 
@@ -726,7 +826,7 @@ struct RepeatEndPicker: View {
     }
     
     var body: some View {
-        Picker("Repeat End", selection: $selectedIndex) {
+        Picker("End Repeat", selection: $selectedIndex) {
             ForEach(0..<options.count) { index in
                 Text(options[index]).tag(index)
             }
@@ -737,6 +837,27 @@ struct RepeatEndPicker: View {
         }
     }
     
+}
+
+enum ReminderTime: String, CaseIterable, Identifiable {
+    case oneMinute = "1 minute before"
+    case fifteenMinutes = "15 minutes before"
+    case thirtyMinutes = "30 minutes before"
+    case oneHour = "1 hour before"
+
+    var id: String { self.rawValue }
+    var timeInterval: TimeInterval {
+        switch self {
+        case .oneMinute:
+            return 60
+        case .fifteenMinutes:
+            return 15 * 60
+        case .thirtyMinutes:
+            return 30 * 60
+        case .oneHour:
+            return 60 * 60
+        }
+    }
 }
 
 

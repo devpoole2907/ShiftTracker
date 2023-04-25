@@ -33,6 +33,11 @@ struct CalendarView: UIViewRepresentable {
         view.availableDateRange = interval
         let dateSelection = UICalendarSelectionSingleDate(delegate: context.coordinator)
         view.selectionBehavior = dateSelection
+        //view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        
         return view
     }
     func makeCoordinator() -> Coordinator {

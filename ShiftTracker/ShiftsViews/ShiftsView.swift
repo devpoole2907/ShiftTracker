@@ -712,7 +712,7 @@ struct ShiftsView: View {
             }
             }
             //.background(backgroundColor)
-            .navigationTitle("Shifts")
+            .navigationBarTitle("Shifts")
             .toolbar{
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: shareButton){
