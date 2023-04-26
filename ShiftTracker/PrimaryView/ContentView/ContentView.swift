@@ -167,7 +167,7 @@ struct ContentView: View {
                             
                             Text("Hourly pay:")
                                 .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
-                           
+                           //Spacer()
                             TextField("", value: $viewModel.hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
                                 .keyboardType(.decimalPad)
                                 .focused($payIsFocused)
@@ -195,7 +195,7 @@ struct ContentView: View {
                                 activeSheet = .sheet5
                             }) {
                                 HStack {
-                                    Text("Estimated tax:")
+                                    Text("Estimated Tax:")
                                     Spacer()
                                     Text("\(String(format: "%.1f", viewModel.taxPercentage))%")
                                 }
@@ -212,6 +212,32 @@ struct ContentView: View {
                             .background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor)
                             .cornerRadius(18)
                         }
+                        
+                            Button(action: {
+                                activeSheet = .sheet8
+                            }) {
+                                HStack {
+                                    Text("Job:")
+                                        .bold()
+                                    Spacer()
+                                    Image(systemName: "briefcase.circle")
+                                        .foregroundColor(.cyan)
+                                    Text("Apple Inc")
+                                        .bold()
+                                }
+                            }
+                            .disabled(viewModel.shift != nil)
+                            .foregroundColor(Color.white.opacity(0.8))
+                            .onChange(of: viewModel.taxPercentage) { _ in
+                                viewModel.saveTaxPercentage() // Save the value of hourlyPay whenever it changes
+                            }
+                            .frame(minWidth: UIScreen.main.bounds.width / 3)
+                            .bold()
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 11)
+                            .background(buttonColor)
+                            .cornerRadius(18)
+                        
 
                     }
                     .padding(.horizontal, 50)
@@ -494,7 +520,7 @@ struct ContentView: View {
                                 DetailView(shift: thisShift).navigationBarTitle("Shift Ended")
                                     .environment(\.managedObjectContext, context)
                             }.presentationDetents([ .large])
-                                .presentationBackground(.ultraThinMaterial)
+                               // .presentationBackground(.ultraThinMaterial)
                                 .presentationDragIndicator(.visible)
                                 .presentationCornerRadius(12)
                         }
@@ -503,7 +529,7 @@ struct ContentView: View {
                         //StartBreakView(viewModel: viewModel)
                             .environment(\.managedObjectContext, context)
                             .presentationDetents([ .fraction(0.4)])
-                            .presentationBackground(.ultraThinMaterial)
+                           // .presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(12)
                         
@@ -512,21 +538,21 @@ struct ContentView: View {
                         //EndShiftConfirmView(activeSheet: $activeSheet, viewModel: viewModel).navigationBarTitle("End Shift", displayMode: .inline)
                             .environment(\.managedObjectContext, context)
                             .presentationDetents([ .fraction(0.4)])
-                            .presentationBackground(.ultraThinMaterial)
+                           // .presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(12)
                     case .sheet4:
                         ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
                             .environment(\.managedObjectContext, context)
                             .presentationDetents([ .fraction(0.4)])
-                            .presentationBackground(.ultraThinMaterial)
+                           // .presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(12)
                     case .sheet5:
                         TaxPickerView(taxPercentage: $viewModel.taxPercentage)
                             .environment(\.managedObjectContext, context)
                             .presentationDetents([ .fraction(0.3)])
-                            .presentationBackground(.ultraThinMaterial)
+                            //.presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(12)
                         
@@ -534,7 +560,7 @@ struct ContentView: View {
                         ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Shift", actionType: .startShift)
                             .environment(\.managedObjectContext, context)
                             .presentationDetents([ .fraction(0.4)])
-                            .presentationBackground(.ultraThinMaterial)
+                            //.presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(12)
                     case .sheet7:
@@ -610,10 +636,11 @@ struct ContentView: View {
                         }
                             .environment(\.managedObjectContext, context)
                             .presentationDetents([ .fraction(0.4), .fraction(0.6)])
-                            .presentationBackground(.ultraThinMaterial)
+                            //.presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(12)
-                        
+                    case .sheet8:
+                        Text("list of jobs here")
                     }
                 }
                     
@@ -722,7 +749,7 @@ extension NSNotification.Name {
 
 
 enum ActiveSheet: Identifiable {
-    case sheet1, sheet2, sheet3, sheet4, sheet5, sheet6, sheet7
+    case sheet1, sheet2, sheet3, sheet4, sheet5, sheet6, sheet7, sheet8
 
     var id: Int {
         hashValue

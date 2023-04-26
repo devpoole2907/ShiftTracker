@@ -169,7 +169,9 @@ struct SummaryView: View {
 
 
         // Calculate the date for the previous Monday
-        let previousMonday = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
+        let previousMondayWithTime = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
+        let previousMondayComponents = calendar.dateComponents([.year, .month, .day], from: previousMondayWithTime)
+        let previousMonday = calendar.date(from: previousMondayComponents)!
 
         let lastWeekShifts = shifts.filter { shift in
             return shift.shiftStartDate! >= previousMonday

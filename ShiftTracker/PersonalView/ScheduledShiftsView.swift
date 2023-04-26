@@ -50,7 +50,7 @@ struct ScheduledShiftsView: View {
                     let shifts = shiftsForSelectedDate()
                     if !shifts.isEmpty {
                         List {
-                            ForEach(shifts, id: \.self) { shift in
+                            ForEach(shifts, id: \.objectID) { shift in
                                 ListViewRow(shift: shift)
                                     .swipeActions {
                                         Button(role: .destructive) {
@@ -314,7 +314,7 @@ struct CreateShiftForm: View {
                 Section{
 
                     Picker("Job", selection: $selectedJob){
-                        ForEach(jobs, id: \.self) { job in
+                        ForEach(jobs, id: \.objectID) { job in
                             HStack{
                                 Image(systemName: job.icon ?? "briefcase.circle")
                                     .foregroundColor(Color(red: Double(job.colorRed ), green: Double(job.colorGreen ), blue: Double(job.colorBlue )))
