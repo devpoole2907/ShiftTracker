@@ -8,6 +8,7 @@
 import SwiftUI
 import WatchConnectivity
 import CoreData
+import CloudKit
 
 
 struct ContentView: View {
@@ -127,7 +128,7 @@ struct TimerView: View {
                 VStack(alignment: .leading, spacing: 5){
                     Image(systemName: job.icon ?? "briefcase.circle")
                         .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                        .font(.title)
+                        .font(.largeTitle)
                     Text(job.name ?? "Unnamed Job")
                         .font(.headline)
                         .bold()
@@ -145,12 +146,13 @@ struct TimerView: View {
                     }) {
                         Image(systemName: "ellipsis.circle.fill")
                             .foregroundColor(.orange)
-                            .font(.title2)
+                            .font(.title3)
                     }
                     Spacer()
                 }
             }
-            .padding()
+            .padding(.vertical, 12)
+            .padding(.horizontal, 2)
         }
 }
  

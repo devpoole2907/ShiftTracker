@@ -12,7 +12,7 @@ import CoreData
 final class WatchConnectivityManager: NSObject, ObservableObject {
     static let shared = WatchConnectivityManager()
     
-    let persistenceController = WatchPersistenceController.shared
+    let persistenceController = PersistenceController.shared
     
     var onDeleteJob: ((UUID) -> Void)?
 

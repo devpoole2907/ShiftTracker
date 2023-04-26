@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1A0BA92B29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92929F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld */; };
-		1A0BA92D29F7D65700541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
-		1A0BA92E29F7D77200541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
-		1A0BA93129F7E40B00541F5B /* WatchPersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */; };
 		1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */; };
 		1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1629F11C03003C83F0 /* StatsView.swift */; };
 		1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */; };
@@ -19,7 +15,6 @@
 		1A13F18A29CE56CD009BE6B0 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F18929CE56CD009BE6B0 /* Location.swift */; };
 		1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */; };
 		1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */; };
-		1A13F18F29CEC63C009BE6B0 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1A13F19529D02914009BE6B0 /* ProView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F19429D02914009BE6B0 /* ProView.swift */; };
 		1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */; };
@@ -80,6 +75,9 @@
 		1ACA60BE29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */; };
 		1ACA60C029D8F98500B279CB /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BF29D8F98500B279CB /* SearchBarView.swift */; };
 		1ACA60C129D8F98500B279CB /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BF29D8F98500B279CB /* SearchBarView.swift */; };
+		1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
+		1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */; };
 		1AD72A9829F5237100534342 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72A9729F5237100534342 /* GoogleService-Info.plist */; };
 		1AD72A9B29F5268200534342 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD72A9A29F5268200534342 /* FirebaseAnalytics */; };
@@ -156,8 +154,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1A0BA92A29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ShiftTrackerWatchDataModel.xcdatamodel; sourceTree = "<group>"; };
-		1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPersistenceController.swift; sourceTree = "<group>"; };
 		1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightView.swift; sourceTree = "<group>"; };
 		1A0F5F1629F11C03003C83F0 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonView.swift; sourceTree = "<group>"; };
@@ -214,6 +210,8 @@
 		1ACA60B829D8528700B279CB /* LocationUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUpdateManager.swift; sourceTree = "<group>"; };
 		1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrangeToggleStyle.swift; sourceTree = "<group>"; };
 		1ACA60BF29D8F98500B279CB /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
+		1ACAA96829F92BAD002D86B5 /* ShiftTracker Watch Edition Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShiftTracker Watch Edition Watch App.entitlements"; sourceTree = "<group>"; };
+		1ACAA96929F92BBC002D86B5 /* ShiftTracker-Watch-Edition-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "ShiftTracker-Watch-Edition-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftsView.swift; sourceTree = "<group>"; };
 		1AD72A9729F5237100534342 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1AD72AB029F7809900534342 /* ShiftTracker Watch Edition Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShiftTracker Watch Edition Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -277,8 +275,6 @@
 		1A1DEC9029F0FF470002D9E4 /* DataStore */ = {
 			isa = PBXGroup;
 			children = (
-				1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */,
-				1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -344,6 +340,8 @@
 				1AC9DDF729F7B28700C15008 /* JobData.swift */,
 				1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */,
 				1A1D470B29C58444001E5C15 /* ShiftTrackerWidgetExtension.entitlements */,
+				1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */,
+				1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */,
 				1A9855D229C55F8A003F512C /* ShiftTracker */,
 				1A52AFA929C5616800415870 /* ShiftTrackerWidget */,
 				1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */,
@@ -466,12 +464,12 @@
 		1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				1ACAA96929F92BBC002D86B5 /* ShiftTracker-Watch-Edition-Watch-App-Info.plist */,
+				1ACAA96829F92BAD002D86B5 /* ShiftTracker Watch Edition Watch App.entitlements */,
 				1AD72AB229F7809900534342 /* ShiftTracker_Watch_EditionApp.swift */,
 				1AD72AB429F7809900534342 /* ContentView.swift */,
 				1AD72AB629F7809A00534342 /* Assets.xcassets */,
 				1AD72AB829F7809A00534342 /* Preview Content */,
-				1A0BA92929F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld */,
-				1A0BA92C29F7D65700541F5B /* WatchPersistenceController.swift */,
 			);
 			path = "ShiftTracker Watch Edition Watch App";
 			sourceTree = "<group>";
@@ -675,7 +673,6 @@
 				1AECCC5D29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1AA6A7B629EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1ACA60C129D8F98500B279CB /* SearchBarView.swift in Sources */,
-				1A0BA93129F7E40B00541F5B /* WatchPersistenceController.swift in Sources */,
 				1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AECCC5729DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */,
@@ -686,7 +683,7 @@
 				1AECCC5429DC218E00D879FE /* Tag.swift in Sources */,
 				1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */,
 				1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */,
-				1A13F18F29CEC63C009BE6B0 /* PersistenceController.swift in Sources */,
+				1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,7 +691,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A0BA92E29F7D77200541F5B /* WatchPersistenceController.swift in Sources */,
 				1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */,
 				1AECCC5329DC218E00D879FE /* Tag.swift in Sources */,
 				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
@@ -755,9 +751,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AC9DDF929F7B28700C15008 /* JobData.swift in Sources */,
-				1A0BA92B29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld in Sources */,
+				1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */,
 				1AD72AB529F7809900534342 /* ContentView.swift in Sources */,
-				1A0BA92D29F7D65700541F5B /* WatchPersistenceController.swift in Sources */,
+				1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */,
 				1AC9DDF529F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1AD72AB329F7809900534342 /* ShiftTracker_Watch_EditionApp.swift in Sources */,
 			);
@@ -891,7 +887,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -945,7 +941,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1036,12 +1032,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "ShiftTracker Watch Edition Watch App/ShiftTracker Watch Edition Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShiftTracker Watch Edition Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = L9DB7QA9DE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ShiftTracker-Watch-Edition-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "ShiftTracker Watch Edition";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = me.poole.james.ShiftTracker;
@@ -1066,12 +1064,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "ShiftTracker Watch Edition Watch App/ShiftTracker Watch Edition Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShiftTracker Watch Edition Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = L9DB7QA9DE;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ShiftTracker-Watch-Edition-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "ShiftTracker Watch Edition";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = me.poole.james.ShiftTracker;
@@ -1265,16 +1265,6 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		1A0BA92929F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				1A0BA92A29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodel */,
-			);
-			currentVersion = 1A0BA92A29F7D36F00541F5B /* ShiftTrackerWatchDataModel.xcdatamodel */;
-			path = ShiftTrackerWatchDataModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
 		1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (

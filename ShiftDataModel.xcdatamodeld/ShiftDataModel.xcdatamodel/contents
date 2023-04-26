@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Break" representedClassName="Break" syncable="YES" codeGenerationType="class">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isUnpaid" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="oldShift" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OldShift" inverseName="breaks" inverseEntity="OldShift"/>
+    </entity>
+    <entity name="Job" representedClassName="Job" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="autoClockIn" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="autoClockOut" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="clockInReminder" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="clockOutReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="colorBlue" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="colorGreen" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="colorRed" optional="YES" attributeType="Float" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="hourlyPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="overtimeAppliedAfter" optional="YES" attributeType="Double" defaultValueString="12" usesScalarValueType="YES"/>
+        <attribute name="overtimeEnabled" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="overtimeRate" optional="YES" attributeType="Double" defaultValueString="1.25" usesScalarValueType="YES"/>
+        <attribute name="payPeriodLength" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="payPeriodStartDay" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="oldShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="job" inverseEntity="OldShift"/>
+        <relationship name="scheduledShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ScheduledShift" inverseName="job" inverseEntity="ScheduledShift"/>
+    </entity>
+    <entity name="OldShift" representedClassName="OldShift" syncable="YES" codeGenerationType="class">
+        <attribute name="breakElapsed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="breakEndDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="breakStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="hourlyPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="overtimeDuration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="overtimeRate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="shiftEndDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="shiftNote" optional="YES" attributeType="String"/>
+        <attribute name="shiftStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="tax" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="taxedPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="totalPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="totalTips" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="breaks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Break" inverseName="oldShift" inverseEntity="Break"/>
+        <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="oldShifts" inverseEntity="Job"/>
+        <relationship name="tips" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tip" inverseName="oldShift" inverseEntity="Tip"/>
+    </entity>
+    <entity name="ScheduledShift" representedClassName="ScheduledShift" syncable="YES" codeGenerationType="class">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isRepeating" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="notifyMe" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="reminderTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="repeatID" optional="YES" attributeType="String"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="scheduledShifts" inverseEntity="Job"/>
+    </entity>
+    <entity name="Tip" representedClassName="Tip" syncable="YES" codeGenerationType="class">
+        <attribute name="value" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="oldShift" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OldShift" inverseName="tips" inverseEntity="OldShift"/>
+    </entity>
+</model>

@@ -12,7 +12,9 @@ struct ShiftTracker_Watch_Edition_Watch_AppApp: App {
     
    // let persistenceController = WatchPersistenceController.shared
     
-    @StateObject private var persistenceController = WatchPersistenceController.shared
+    @AppStorage("iCloudEnabled") private var iCloudSyncOn: Bool = true
+    
+    let persistenceController = PersistenceController.shared
     
     var body: some Scene {
         WindowGroup {
