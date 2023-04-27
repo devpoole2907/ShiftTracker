@@ -53,7 +53,7 @@ struct ContentView: View {
                 List{
                     ForEach(jobs, id: \.self) { job in
                         NavigationLink(destination: TimerView(job: job, viewModel: ContentViewModel()).environment(\.managedObjectContext, context)){
-                            JobRow(job: job)
+                            JobRow(job: job).environment(\.managedObjectContext, context)
                         }
                     }//.onDelete(perform: deleteJob)
                 }
@@ -225,6 +225,10 @@ struct TimerView: View {
     struct JobRow: View {
         var job: Job
         
+        @Environment(\.managedObjectContext) private var viewContext
+        
+        @State private var showPastShifts: Bool = false
+        
         var body: some View {
             HStack{
                 VStack(alignment: .leading, spacing: 5){
@@ -244,19 +248,125 @@ struct TimerView: View {
                 
                 VStack{
                     Button(action: {
-                        
+                        showPastShifts = true
                     }) {
                         Image(systemName: "ellipsis.circle.fill")
                             .foregroundColor(.orange)
-                            .font(.title3)
-                    }
+                            .font(.title2)
+                    }.buttonStyle(.plain)
                     Spacer()
                 }
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 2)
+            .sheet(isPresented: $showPastShifts) {
+                PastShiftsView(job: job).environment(\.managedObjectContext, viewContext)
+            }
         }
 }
+
+struct PastShiftsView: View {
+    
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    var job: Job
+    
+    @FetchRequest(
+            entity: OldShift.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)]
+        ) private var shifts: FetchedResults<OldShift>
+    
+    var body: some View{
+        
+        if shifts.isEmpty{
+            Text("No previous shifts")
+                .bold()
+        }
+        else {
+            List{
+                    Text(job.name ?? "Unnamed Job")
+                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                        .font(.title3)
+                        .bold()
+                        .listRowBackground(Color.clear)
+                ForEach(shifts, id: \.self){ shift in
+                    //if shift.job?.uuid == job.uuid {
+                        ShiftRow(shift: shift)
+                    //}
+                }
+            }
+        }
+        
+            //.navigationTitle("Past Shifts")
+    }
+}
+
+struct ShiftRow: View {
+    
+    var shift: OldShift
+    
+    @State private var showDetailView = false
+    
+    var body: some View {
+        Button(action: {
+            showDetailView = true
+        }) {
+            
+            let durationString = String(format: "%.1f", (shift.shiftEndDate!.timeIntervalSince(shift.shiftStartDate!) / 3600.0))
+            let dateString = dateFormatter.string(from: shift.shiftStartDate!)
+            let payString = String(format: "%.2f", shift.taxedPay)
+            
+            
+            
+            VStack(alignment: .leading, spacing: 2){
+                Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
+                    .font(.title2)
+                    .bold()
+                Text(" \(durationString) hours")
+                    .foregroundColor(.orange)
+                    .font(.subheadline)
+                    .bold()
+                Text(dateString)
+                    .foregroundColor(.gray)
+                    .font(.footnote)
+                    .bold()
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 2)
+        }.buttonStyle(.plain)
+        
+            
+        
+            .sheet(isPresented: $showDetailView){
+                DetailView(shift: shift)
+            }
+    }
+    
+    
+    private var currencyFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        return formatter
+    }
+    
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE, d MMM"
+        return formatter
+    }
+    
+}
+
+struct DetailView: View {
+    
+    var shift: OldShift
+    
+    var body: some View {
+        Text("\(shift.totalPay)")
+    }
+}
+
  
 enum ActiveSheet: Identifiable {
     case startShiftSheet, endShiftSheet, startBreakSheet, endBreakSheet
