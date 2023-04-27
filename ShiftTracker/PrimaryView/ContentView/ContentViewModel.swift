@@ -6,9 +6,12 @@
 //
 
 import Foundation
+#if os(iOS)
 import ActivityKit
+
 import CoreHaptics
 import UserNotifications
+#endif
 import CoreData
 
 
@@ -49,8 +52,9 @@ class ContentViewModel: ObservableObject {
     @Published  var overtimeStartDate: Date?
     @Published private var overtimeRate = 1.25
     @Published private var overtimeAppliedAfter: TimeInterval = 1.0
-    
+    #if os(iOS)
     @Published  var engine: CHHapticEngine?
+    #endif
     
     @Published  var automaticBreak = false
     
@@ -71,9 +75,10 @@ class ContentViewModel: ObservableObject {
     @Published  var shiftStartDate: Date = Date()// this needs to be the date the shift started, not Date()
     
     //  @State private var activity: Activity<ShiftTrackerWidgetAttributes>? = nil
-    
+    #if os(iOS)
     @Published  var isActivityEnabled: Bool = true
     @Published  var currentActivity: Activity<ShiftTrackerWidgetAttributes>?
+    #endif
     
     @Published  var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
@@ -332,7 +337,9 @@ class ContentViewModel: ObservableObject {
                 sharedUserDefaults.set(timeElapsed, forKey: shiftKeys.timeElapsedBeforeBreakKey)
             }
         if isUnpaid{
+            #if os(iOS)
             updateActivity(startDate: currentBreak.startDate)
+            #endif
             stopTimer(timer: &timer, timeElapsed: &timeElapsed)
             
             timeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as! TimeInterval
@@ -371,8 +378,11 @@ class ContentViewModel: ObservableObject {
         
     func endShift(using viewContext: NSManagedObjectContext, endDate: Date) {
             //updateActivity(startDate: Date())
+        #if os(iOS)
             stopActivity()
+        
             print("stopped 4 activities")
+        #endif
             stopTimer(timer: &timer, timeElapsed: &timeElapsed)
             breakTaken = false
             isOvertime = false
@@ -448,7 +458,9 @@ class ContentViewModel: ObservableObject {
             print("UPDATING ACTIVITY \(breakTimeElapsed)")
          
             isOnBreak = false
+            #if os(iOS)
          updateActivity(startDate: shift?.startDate.addingTimeInterval(totalBreakDuration()) ?? Date())
+            #endif
             
             
             stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
@@ -496,19 +508,22 @@ class ContentViewModel: ObservableObject {
                     
                     self.checkOvertime()
                 }
-                
+                #if os(iOS)
                    startActivity(startDate: adjustedStartDate.addingTimeInterval(breakElapsed), hourlyPay: hourlyPay)
+                #endif
             }
             else {
                 timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                     self.timeElapsed = Date().timeIntervalSince(startDate)
                     self.checkOvertime()
                 }
+                #if os(iOS)
                   startActivity(startDate: startDate, hourlyPay: hourlyPay)
+                #endif
             }
             
         }
-        
+    #if os(iOS)
         func startActivity(startDate: Date, hourlyPay: Double){
             let attributes = ShiftTrackerWidgetAttributes(name: "Shift started", hourlyPay: hourlyPay)
             let state = ShiftTrackerWidgetAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
@@ -538,6 +553,7 @@ class ContentViewModel: ObservableObject {
                 await currentActivity.update(using: updatedState)
             }
         }
+    #endif
         
         func startOvertime(startDate: Date) {
             print("Starting overtime")
@@ -636,7 +652,7 @@ class ContentViewModel: ObservableObject {
             dateFormatter.timeStyle = .short
             return dateFormatter.string(from: shiftStartDate)
         }
-        
+    #if os(iOS)
         func prepareHaptics() {
             guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
             
@@ -647,12 +663,14 @@ class ContentViewModel: ObservableObject {
                 print("There was an error creating the engine: \(error.localizedDescription)")
             }
         }
+    #endif
         
     func startShiftButtonAction(startDate: Date) {
             startShift(startDate: startDate)
             shiftStartDate = startDate
             // Add notification logic
             
+        #if os(iOS)
             if hourlyPay != 0 {
                 let content = UNMutableNotificationContent()
                 content.title = "ShiftTracker"
@@ -664,6 +682,7 @@ class ContentViewModel: ObservableObject {
                 
                 UNUserNotificationCenter.current().add(request)
             }
+        #endif
         }
         
         func startBreakButtonAction() {

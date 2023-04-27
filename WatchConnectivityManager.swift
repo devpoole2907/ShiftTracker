@@ -15,7 +15,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
     let persistenceController = PersistenceController.shared
     
     var onDeleteJob: ((UUID) -> Void)?
-
+    
     
     @Published var receivedJobs: [JobData] = []
     
@@ -23,12 +23,20 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
         super.init()
         
         if WCSession.isSupported() {
-                    WCSession.default.delegate = self
-                    WCSession.default.activate()
+            WCSession.default.delegate = self
+            WCSession.default.activate()
             print("watch session is supported")
-                }
+        }
         
     }
+    
+#if os(watchOS)
+    func requestJobsFromPhone() {
+        WCSession.default.transferUserInfo(["action": "requestUpdateJobs"])
+    }
+#endif
+    
+    
     
     
     func sendJobData(_ jobs: [Job]) {
@@ -44,22 +52,23 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
             print("Error encoding data: \(error.localizedDescription)")
         }
     }
-
+    
     /*
-    func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
-           let decoder = JSONDecoder()
-           do {
-               let decodedData = try decoder.decode([JobData].self, from: messageData)
-               saveReceivedJobsToCoreData(decodedData)
-           } catch {
-               print("Error decoding data: \(error.localizedDescription)")
-           }
-       } */
+     func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
+     let decoder = JSONDecoder()
+     do {
+     let decodedData = try decoder.decode([JobData].self, from: messageData)
+     saveReceivedJobsToCoreData(decodedData)
+     } catch {
+     print("Error decoding data: \(error.localizedDescription)")
+     }
+     } */
     
     private func saveReceivedJobsToCoreData(_ jobs: [JobData]) {
-            let context = persistenceController.container.viewContext
-
-            jobs.forEach { jobData in
+        let context = persistenceController.container.viewContext
+        
+        jobs.forEach { jobData in
+            if fetchJob(with: jobData.id, in: context) == nil {
                 let job = Job(context: context)
                 job.name = jobData.name
                 job.title = jobData.title
@@ -68,36 +77,44 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
                 job.colorGreen = jobData.colorGreen
                 job.colorBlue = jobData.colorBlue
                 job.uuid = jobData.id
-  
-            }
-
-            do {
-                try context.save()
-                DispatchQueue.main.async {
-                    self.receivedJobs = jobs
-                }
-            } catch {
-                print("Failed to save received jobs to Core Data: \(error.localizedDescription)")
             }
         }
+        
+        do {
+            try context.save()
+            DispatchQueue.main.async {
+                self.receivedJobs = jobs
+            }
+        } catch {
+            print("Failed to save received jobs to Core Data: \(error.localizedDescription)")
+        }
+    }
     
-    // watchos delete job function
+    
+    // multiplat delete job function
     func deleteJob(_ job: Job) {
-            if WCSession.default.isReachable {
-                WCSession.default.sendMessage(["action": "deleteJob", "jobId": job.uuid?.uuidString ?? UUID()], replyHandler: nil) { error in
-                    print("Error sending deleteJob message: \(error.localizedDescription)")
-                }
-            }
+        let context = persistenceController.container.viewContext
+        context.delete(job)
+        do {
+            try context.save()
+        } catch {
+            print("Failed to delete job on watch: \(error.localizedDescription)")
         }
+        
+        let userInfo = ["action": "deleteJob", "jobId": job.uuid?.uuidString ?? UUID().uuidString]
+        WCSession.default.transferUserInfo(userInfo)
+    }
+
+
     
     // send delete message to watch
-    #if os(iOS)
+#if os(iOS)
     func sendDeleteJobMessage(_ jobId: UUID) {
         let userInfo = ["action": "deleteJob", "jobId": jobId.uuidString]
         WCSession.default.transferUserInfo(userInfo)
     }
-
-    #endif
+    
+#endif
     // recieve message
     
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any]) {
@@ -116,11 +133,26 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
                     print("Error decoding data: \(error.localizedDescription)")
                 }
             }
+            else if action == "requestUpdateJobs" {
+            #if os(iOS)
+                
+                let context = persistenceController.container.viewContext
+                let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+                do {
+                    let jobs = try context.fetch(fetchRequest)
+                    sendJobData(jobs)
+                } catch {
+                    print("Failed to fetch jobs: \(error.localizedDescription)")
+                }
+                
+                #endif
+            }
         }
     }
-
-
-
+    
+    
+    
+    
     
     // need delete job here for ios version
     
@@ -129,7 +161,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
         guard let job = fetchJob(with: jobId, in: context) else {
             return
         }
-
+        
         context.delete(job)
         do {
             try context.save()
@@ -137,7 +169,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
             print("Failed to delete job: \(error.localizedDescription)")
         }
     }
-
+    
     
     
     
@@ -153,18 +185,18 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
         }
     }
     
- /*   func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        if let action = message["action"] as? String, action == "deleteJob", let jobIdString = message["jobId"] as? String {
-            if let jobId = UUID(uuidString: jobIdString) {
-                onDeleteJob?(jobId)
-
-            }
-        }
-    } */
-
-
-
-
+    /*   func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+     if let action = message["action"] as? String, action == "deleteJob", let jobIdString = message["jobId"] as? String {
+     if let jobId = UUID(uuidString: jobIdString) {
+     onDeleteJob?(jobId)
+     
+     }
+     }
+     } */
+    
+    
+    
+    
     
 }
 
@@ -173,10 +205,10 @@ extension WatchConnectivityManager: WCSessionDelegate {
                  activationDidCompleteWith activationState: WCSessionActivationState,
                  error: Error?) {}
     
-    #if os(iOS)
+#if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {
         session.activate()
     }
-    #endif
+#endif
 }

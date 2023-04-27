@@ -57,8 +57,14 @@
 		1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */; };
 		1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC400129F26B5B00E204C8 /* EditJobView.swift */; };
 		1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC400329F2B09A00E204C8 /* OvertimeView.swift */; };
+		1AB7C88129FA3E110008B3B3 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
+		1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
+		1AB7C88329FA572E0008B3B3 /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
+		1AB7C88429FA57580008B3B3 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
+		1AB7C88529FA575B0008B3B3 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		1AB7C88829FA5B1E0008B3B3 /* WatchDatePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 1AB7C88729FA5B1E0008B3B3 /* WatchDatePicker */; };
+		1AB7EAB029FA635E00AC9565 /* WatchTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7EAAF29FA635E00AC9565 /* WatchTimerView.swift */; };
 		1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
-		1AC048BE29E0D07700355767 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		1AC048C029E0D50E00355767 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
 		1AC048C129E0D50E00355767 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
 		1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */; };
@@ -78,6 +84,7 @@
 		1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		1ACB8A6429FA81A500B152EB /* WatchBreakTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB8A6329FA81A500B152EB /* WatchBreakTimerView.swift */; };
 		1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */; };
 		1AD72A9829F5237100534342 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72A9729F5237100534342 /* GoogleService-Info.plist */; };
 		1AD72A9B29F5268200534342 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 1AD72A9A29F5268200534342 /* FirebaseAnalytics */; };
@@ -201,6 +208,7 @@
 		1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddJobView.swift; sourceTree = "<group>"; };
 		1AAC400129F26B5B00E204C8 /* EditJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditJobView.swift; sourceTree = "<group>"; };
 		1AAC400329F2B09A00E204C8 /* OvertimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvertimeView.swift; sourceTree = "<group>"; };
+		1AB7EAAF29FA635E00AC9565 /* WatchTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTimerView.swift; sourceTree = "<group>"; };
 		1AC048BC29E0D07700355767 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		1AC048BF29E0D50E00355767 /* Shift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shift.swift; sourceTree = "<group>"; };
 		1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
@@ -212,6 +220,7 @@
 		1ACA60BF29D8F98500B279CB /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		1ACAA96829F92BAD002D86B5 /* ShiftTracker Watch Edition Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShiftTracker Watch Edition Watch App.entitlements"; sourceTree = "<group>"; };
 		1ACAA96929F92BBC002D86B5 /* ShiftTracker-Watch-Edition-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "ShiftTracker-Watch-Edition-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
+		1ACB8A6329FA81A500B152EB /* WatchBreakTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBreakTimerView.swift; sourceTree = "<group>"; };
 		1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftsView.swift; sourceTree = "<group>"; };
 		1AD72A9729F5237100534342 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1AD72AB029F7809900534342 /* ShiftTracker Watch Edition Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShiftTracker Watch Edition Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -266,6 +275,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AB7C88829FA5B1E0008B3B3 /* WatchDatePicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,6 +480,8 @@
 				1AD72AB429F7809900534342 /* ContentView.swift */,
 				1AD72AB629F7809A00534342 /* Assets.xcassets */,
 				1AD72AB829F7809A00534342 /* Preview Content */,
+				1AB7EAAF29FA635E00AC9565 /* WatchTimerView.swift */,
+				1ACB8A6329FA81A500B152EB /* WatchBreakTimerView.swift */,
 			);
 			path = "ShiftTracker Watch Edition Watch App";
 			sourceTree = "<group>";
@@ -575,6 +587,9 @@
 			dependencies = (
 			);
 			name = "ShiftTracker Watch Edition Watch App";
+			packageProductDependencies = (
+				1AB7C88729FA5B1E0008B3B3 /* WatchDatePicker */,
+			);
 			productName = "ShiftTracker Watch Edition Watch App";
 			productReference = 1AD72AB029F7809900534342 /* ShiftTracker Watch Edition Watch App.app */;
 			productType = "com.apple.product-type.application";
@@ -617,6 +632,7 @@
 				1A34588529D18D8800CADDD8 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
 				1AD1AC0E29E3CADA0050031B /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				1AD72A9929F5268200534342 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */,
 			);
 			productRefGroup = 1A9855D129C55F8A003F512C /* Products */;
 			projectDirPath = "";
@@ -666,9 +682,9 @@
 			files = (
 				1ACA60BA29D8528700B279CB /* LocationUpdateManager.swift in Sources */,
 				1A52AFAF29C5616800415870 /* ShiftTrackerWidget.swift in Sources */,
-				1AC048BE29E0D07700355767 /* ContentViewModel.swift in Sources */,
 				1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1AC048C129E0D50E00355767 /* Shift.swift in Sources */,
+				1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */,
 				1ACA60B729D7F07100B279CB /* AddShiftView.swift in Sources */,
 				1AECCC5D29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1AA6A7B629EEAF7A00B13057 /* CalendarView.swift in Sources */,
@@ -753,6 +769,12 @@
 				1AC9DDF929F7B28700C15008 /* JobData.swift in Sources */,
 				1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */,
 				1AD72AB529F7809900534342 /* ContentView.swift in Sources */,
+				1AB7C88129FA3E110008B3B3 /* ContentViewModel.swift in Sources */,
+				1AB7C88429FA57580008B3B3 /* Shift.swift in Sources */,
+				1AB7C88529FA575B0008B3B3 /* TempBreak.swift in Sources */,
+				1AB7C88329FA572E0008B3B3 /* ShiftKeys.swift in Sources */,
+				1AB7EAB029FA635E00AC9565 /* WatchTimerView.swift in Sources */,
+				1ACB8A6429FA81A500B152EB /* WatchBreakTimerView.swift in Sources */,
 				1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */,
 				1AC9DDF529F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1AD72AB329F7809900534342 /* ShiftTracker_Watch_EditionApp.swift in Sources */,
@@ -1173,6 +1195,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/freyaalminde/watch-date-picker";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.1;
+			};
+		};
 		1AD1AC0E29E3CADA0050031B /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
@@ -1216,6 +1246,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1A57D1F729CA751500305001 /* XCRemoteSwiftPackageReference "SwiftUI-Haptics" */;
 			productName = Haptics;
+		};
+		1AB7C88729FA5B1E0008B3B3 /* WatchDatePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */;
+			productName = WatchDatePicker;
 		};
 		1AD72A9A29F5268200534342 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
