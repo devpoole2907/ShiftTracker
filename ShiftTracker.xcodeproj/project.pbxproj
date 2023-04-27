@@ -100,7 +100,7 @@
 		1AD72AB529F7809900534342 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD72AB429F7809900534342 /* ContentView.swift */; };
 		1AD72AB729F7809A00534342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72AB629F7809A00534342 /* Assets.xcassets */; };
 		1AD72ABA29F7809A00534342 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72AB929F7809A00534342 /* Preview Assets.xcassets */; };
-		1AD72ABD29F7809A00534342 /* ShiftTracker Watch Edition Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1AD72AB029F7809900534342 /* ShiftTracker Watch Edition Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1AD72ABD29F7809A00534342 /* ShiftTracker Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845429D40D380002378F /* MoreOptionsView.swift */; };
 		1AE3845729D444060002378F /* TabItemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845629D444060002378F /* TabItemData.swift */; };
 		1AE3845929D444340002378F /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845829D444340002378F /* TabItemView.swift */; };
@@ -142,7 +142,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				1AD72ABD29F7809A00534342 /* ShiftTracker Watch Edition Watch App.app in Embed Watch Content */,
+				1AD72ABD29F7809A00534342 /* ShiftTracker Watch App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -219,11 +219,11 @@
 		1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrangeToggleStyle.swift; sourceTree = "<group>"; };
 		1ACA60BF29D8F98500B279CB /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		1ACAA96829F92BAD002D86B5 /* ShiftTracker Watch Edition Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShiftTracker Watch Edition Watch App.entitlements"; sourceTree = "<group>"; };
-		1ACAA96929F92BBC002D86B5 /* ShiftTracker-Watch-Edition-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "ShiftTracker-Watch-Edition-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
+		1ACAA96929F92BBC002D86B5 /* ShiftTracker-Watch-Edition-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ShiftTracker-Watch-Edition-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1ACB8A6329FA81A500B152EB /* WatchBreakTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBreakTimerView.swift; sourceTree = "<group>"; };
 		1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftsView.swift; sourceTree = "<group>"; };
 		1AD72A9729F5237100534342 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		1AD72AB029F7809900534342 /* ShiftTracker Watch Edition Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShiftTracker Watch Edition Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShiftTracker Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD72AB229F7809900534342 /* ShiftTracker_Watch_EditionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTracker_Watch_EditionApp.swift; sourceTree = "<group>"; };
 		1AD72AB429F7809900534342 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1AD72AB629F7809A00534342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -365,7 +365,7 @@
 			children = (
 				1A9855D029C55F8A003F512C /* ShiftTracker.app */,
 				1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */,
-				1AD72AB029F7809900534342 /* ShiftTracker Watch Edition Watch App.app */,
+				1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -574,9 +574,9 @@
 			productReference = 1A9855D029C55F8A003F512C /* ShiftTracker.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1AD72AAF29F7809800534342 /* ShiftTracker Watch Edition Watch App */ = {
+		1AD72AAF29F7809800534342 /* ShiftTracker Watch App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1AD72ABE29F7809A00534342 /* Build configuration list for PBXNativeTarget "ShiftTracker Watch Edition Watch App" */;
+			buildConfigurationList = 1AD72ABE29F7809A00534342 /* Build configuration list for PBXNativeTarget "ShiftTracker Watch App" */;
 			buildPhases = (
 				1AD72AAC29F7809800534342 /* Sources */,
 				1AD72AAD29F7809800534342 /* Frameworks */,
@@ -586,12 +586,12 @@
 			);
 			dependencies = (
 			);
-			name = "ShiftTracker Watch Edition Watch App";
+			name = "ShiftTracker Watch App";
 			packageProductDependencies = (
 				1AB7C88729FA5B1E0008B3B3 /* WatchDatePicker */,
 			);
 			productName = "ShiftTracker Watch Edition Watch App";
-			productReference = 1AD72AB029F7809900534342 /* ShiftTracker Watch Edition Watch App.app */;
+			productReference = 1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -640,7 +640,7 @@
 			targets = (
 				1A9855CF29C55F8A003F512C /* ShiftTracker */,
 				1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */,
-				1AD72AAF29F7809800534342 /* ShiftTracker Watch Edition Watch App */,
+				1AD72AAF29F7809800534342 /* ShiftTracker Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -791,7 +791,7 @@
 		};
 		1AD72ABC29F7809A00534342 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1AD72AAF29F7809800534342 /* ShiftTracker Watch Edition Watch App */;
+			target = 1AD72AAF29F7809800534342 /* ShiftTracker Watch App */;
 			targetProxy = 1AD72ABB29F7809A00534342 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1062,7 +1062,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "ShiftTracker-Watch-Edition-Watch-App-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "ShiftTracker Watch Edition";
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTracker;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = me.poole.james.ShiftTracker;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1094,7 +1094,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "ShiftTracker-Watch-Edition-Watch-App-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "ShiftTracker Watch Edition";
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTracker;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = me.poole.james.ShiftTracker;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1143,7 +1143,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1AD72ABE29F7809A00534342 /* Build configuration list for PBXNativeTarget "ShiftTracker Watch Edition Watch App" */ = {
+		1AD72ABE29F7809A00534342 /* Build configuration list for PBXNativeTarget "ShiftTracker Watch App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1AD72ABF29F7809A00534342 /* Debug */,

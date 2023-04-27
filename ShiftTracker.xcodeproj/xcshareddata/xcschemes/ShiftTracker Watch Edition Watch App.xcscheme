@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AD72AAF29F7809800534342"
-               BuildableName = "ShiftTracker Watch Edition Watch App.app"
-               BlueprintName = "ShiftTracker Watch Edition Watch App"
+               BuildableName = "ShiftTracker Watch App.app"
+               BlueprintName = "ShiftTracker Watch App"
                ReferencedContainer = "container:ShiftTracker.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -58,8 +58,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1AD72AAF29F7809800534342"
-            BuildableName = "ShiftTracker Watch Edition Watch App.app"
-            BlueprintName = "ShiftTracker Watch Edition Watch App"
+            BuildableName = "ShiftTracker Watch App.app"
+            BlueprintName = "ShiftTracker Watch App"
             ReferencedContainer = "container:ShiftTracker.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -75,8 +75,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1AD72AAF29F7809800534342"
-            BuildableName = "ShiftTracker Watch Edition Watch App.app"
-            BlueprintName = "ShiftTracker Watch Edition Watch App"
+            BuildableName = "ShiftTracker Watch App.app"
+            BlueprintName = "ShiftTracker Watch App"
             ReferencedContainer = "container:ShiftTracker.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

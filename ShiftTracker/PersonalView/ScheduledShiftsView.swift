@@ -103,6 +103,7 @@ struct CreateShiftForm: View {
     let jobs: FetchedResults<Job>
     var dateSelected: Date?
     
+    @State private var selectedJobIndex: Int = 0
     @State private var selectedJob: Job?
     @State private var startDate: Date
     @State private var endDate: Date
@@ -141,7 +142,7 @@ struct CreateShiftForm: View {
         let newShift = ScheduledShift(context: viewContext)
         newShift.startDate = startDate
         newShift.endDate = endDate
-        newShift.job = selectedJob
+        newShift.job = jobs[selectedJobIndex]
         newShift.id = UUID()
         newShift.notifyMe = notifyMe
         newShift.reminderTime = selectedReminderTime.timeInterval
@@ -169,7 +170,7 @@ struct CreateShiftForm: View {
             let shift = ScheduledShift(context: viewContext)
             shift.startDate = currentStartDate
             shift.endDate = currentEndDate
-            shift.job = selectedJob
+            shift.job = jobs[selectedJobIndex]
             shift.id = UUID()
             shift.isRepeating = repeatEveryWeek
             shift.repeatID = repeatEveryWeek ? repeatID : nil
@@ -311,21 +312,19 @@ struct CreateShiftForm: View {
                        //.padding(.bottom, -200)
                 }
                     
-                Section{
-
-                    Picker("Job", selection: $selectedJob){
-                        ForEach(jobs, id: \.objectID) { job in
-                            HStack{
-                                Image(systemName: job.icon ?? "briefcase.circle")
-                                    .foregroundColor(Color(red: Double(job.colorRed ), green: Double(job.colorGreen ), blue: Double(job.colorBlue )))
-                                Text(job.name ?? "")
+                Section {
+                            Picker("Job", selection: $selectedJobIndex) {
+                                ForEach(0..<jobs.count, id: \.self) { index in
+                                    HStack {
+                                        Image(systemName: jobs[index].icon ?? "briefcase.circle")
+                                            .foregroundColor(Color(red: Double(jobs[index].colorRed),
+                                                                   green: Double(jobs[index].colorGreen),
+                                                                   blue: Double(jobs[index].colorBlue)))
+                                        Text(jobs[index].name ?? "")
+                                    }
+                                }
                             }
                         }
-                    }
-                        
-                        
-                        
-                }
                 Section {
                     VStack{
                         Toggle(isOn: $enableRepeat){

@@ -112,50 +112,61 @@ struct TimerView: View {
     var body: some View{
         
         NavigationStack{
-            VStack(spacing: 2){
-
-                    WatchTimerView(timeElapsed: $viewModel.timeElapsed)
+            TabView{
                 
-                if viewModel.isOnBreak {
-                    WatchBreakTimerView(timeElapsed: $viewModel.breakTimeElapsed)
+                VStack(spacing: 2){
+                    
+                    WatchTimerView(timeElapsed: $viewModel.timeElapsed)
+                    
+                    if viewModel.isOnBreak {
+                        WatchBreakTimerView(timeElapsed: $viewModel.breakTimeElapsed)
+                    }
+                    
+                    HStack{
+                        if viewModel.shift == nil {
+                            Button(action: {
+                                activeSheet = .startShiftSheet
+                            }) {
+                                Text("Start")
+                                    .bold()
+                            }
+                        }
+                        else if !viewModel.isOnBreak{
+                            Button(action: {
+                                activeSheet = .startBreakSheet
+                            }) {
+                                Text("Break")
+                                    .bold()
+                            }
+                        }
+                        else {
+                            Button(action: {
+                                activeSheet = .endBreakSheet
+                            }) {
+                                Text("Break")
+                                    .foregroundColor(.indigo)
+                                    .bold()
+                            }
+                        }
+                        Button(action: {
+                            activeSheet = .endShiftSheet
+                        }) {
+                            Text("End")
+                                .bold()
+                        }.disabled(viewModel.shift == nil || viewModel.isOnBreak)
+                    }
+                    
                 }
-            
-                HStack{
-                    if viewModel.shift == nil {
-                        Button(action: {
-                            activeSheet = .startShiftSheet
-                        }) {
-                            Text("Start")
-                                .bold()
-                        }
-                    }
-                    else if !viewModel.isOnBreak{
-                        Button(action: {
-                            activeSheet = .startBreakSheet
-                        }) {
-                            Text("Break")
-                                .bold()
-                        }
-                    }
-                    else {
-                        Button(action: {
-                            activeSheet = .endBreakSheet
-                        }) {
-                            Text("Break")
-                                .foregroundColor(.indigo)
-                                .bold()
-                        }
-                    }
-                    Button(action: {
-                        activeSheet = .endShiftSheet
-                    }) {
-                        Text("End")
-                            .bold()
-                    }.disabled(viewModel.shift == nil || viewModel.isOnBreak)
+                
+                if !viewModel.tempBreaks.isEmpty{
+                    WatchTempBreakView(viewModel: viewModel)
                 }
-            
-        }
+                
+            }
             .navigationBarBackButtonHidden(viewModel.shift != nil ? true : false)
+            
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+            
        // .navigationBarTitle(job.name ?? "Unnamed Job")
     }
         .sheet(item: $activeSheet){ item in
@@ -268,6 +279,9 @@ struct ActionView: View {
     @ObservedObject var viewModel: ContentViewModel
     @Environment(\.managedObjectContext) private var context
     @Binding var activeSheet: ActiveSheet?
+    
+    @State private var isWatchTempBreakViewPresented = false
+    
     let navTitle: String
     var pickerStartDate: Date?
     
@@ -322,14 +336,14 @@ struct ActionView: View {
                             Text("Start Shift").bold()
                         }
                         
-                    }.background(.orange)
+                    }
                 case .endShift:
                     DatePicker(
                         "End Time",
                         selection: $actionDate,
                         displayedComponents: .hourAndMinute
                     )
-                    Spacer()
+            
                     Button(action: {
                         viewModel.endShift(using: context, endDate: actionDate)
                         presentationMode.wrappedValue.dismiss()
@@ -347,30 +361,26 @@ struct ActionView: View {
                         selection: $actionDate,
                         displayedComponents: .hourAndMinute
                     )
-                    Spacer()
+        
                     HStack{
                         Button(action: {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: true)
                             presentationMode.wrappedValue.dismiss()
                         }) {
                             HStack {
-                                Image(systemName: "bed.double.fill")
-                                    .foregroundColor(.indigo)
                                 Text("Unpaid").bold()
                             }
                             
-                        }
+                        }.buttonStyle(BorderedButtonStyle(tint: .indigo))
                         Button(action: {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: false)
                             presentationMode.wrappedValue.dismiss()
                         }) {
                             HStack {
-                                Image(systemName: "cup.and.saucer.fill")
-                                    .foregroundColor(.indigo)
                                 Text("Paid").bold()
                             }
                             
-                        }
+                        }.buttonStyle(BorderedButtonStyle(tint: .indigo))
                     }
                 case .endBreak:
                     DatePicker(
@@ -378,7 +388,7 @@ struct ActionView: View {
                         selection: $actionDate,
                         displayedComponents: .hourAndMinute
                     )
-                    Spacer()
+
                     Button(action: {
                         viewModel.endBreak(endDate: actionDate)
                         presentationMode.wrappedValue.dismiss()
@@ -399,3 +409,73 @@ struct ActionView: View {
 
 }
 
+struct WatchTempBreakView: View{
+    
+    @ObservedObject var viewModel: ContentViewModel
+    
+    var body: some View{
+            List{
+                ForEach(viewModel.tempBreaks, id: \.self) { breakItem in
+                    Section{
+                        VStack(alignment: .leading){
+                            if breakItem.isUnpaid{
+                                Text("Unpaid")
+                                    .font(.subheadline)
+                                    .foregroundColor(.indigo)
+                                    .bold()
+                            }
+                            else {
+                                Text("Paid")
+                                    .font(.subheadline)
+                                    .foregroundColor(.indigo)
+                                    .bold()
+                            }
+                            Text("\(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")
+                                .font(.subheadline)
+                                .bold()
+                     
+                    Divider()
+
+                            DatePicker(
+                                                    "Start Date",
+                                                    selection: Binding<Date>(
+                                                        get: {
+                                                            return breakItem.startDate
+                                                        },
+                                                        set: { newStartDate in
+                                                            let updatedBreak = TempBreak(
+                                                                startDate: newStartDate,
+                                                                endDate: breakItem.endDate,
+                                                                isUnpaid: breakItem.isUnpaid
+                                                            )
+                                                            viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
+                                                        }
+                                                    ),
+                                                    in: viewModel.minimumStartDate(for: breakItem)...Date.distantFuture,
+                                                    displayedComponents: [.hourAndMinute])
+                            DatePicker(
+                                                    "End Date",
+                                                    selection: Binding<Date>(
+                                                        get: {
+                                                            return breakItem.endDate ?? Date()
+                                                        },
+                                                        set: { newEndDate in
+                                                            let updatedBreak = TempBreak(
+                                                                startDate: breakItem.startDate,
+                                                                endDate: newEndDate,
+                                                                isUnpaid: breakItem.isUnpaid
+                                                            )
+                                                            viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
+                                                        }
+                                                    ),
+                                                    in: breakItem.startDate...Date.distantFuture,
+                                                    displayedComponents: [.hourAndMinute])
+                            .disabled(viewModel.isOnBreak)
+                                        
+                    }
+                        
+                }
+                }.onDelete(perform: viewModel.deleteBreaks)
+            }.navigationTitle("Breaks")
+    }
+}

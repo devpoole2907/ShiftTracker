@@ -76,6 +76,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
                 job.colorRed = jobData.colorRed
                 job.colorGreen = jobData.colorGreen
                 job.colorBlue = jobData.colorBlue
+                job.icon = jobData.icon
                 job.uuid = jobData.id
             }
         }
