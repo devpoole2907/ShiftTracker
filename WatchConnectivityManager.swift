@@ -25,6 +25,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
         if WCSession.isSupported() {
                     WCSession.default.delegate = self
                     WCSession.default.activate()
+            print("watch session is supported")
                 }
         
     }
@@ -33,19 +34,18 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
     func sendJobData(_ jobs: [Job]) {
         print("Sending jobs data to watchOS app...")
         let jobDataArray = jobs.map { jobData(from: $0) }
-        if WCSession.default.isReachable {
-            let encoder = JSONEncoder()
-            do {
-                let data = try encoder.encode(jobDataArray)
-                WCSession.default.sendMessageData(data, replyHandler: nil, errorHandler: { error in
-                    print("Error sending data: \(error.localizedDescription)")
-                })
-            } catch {
-                print("Error encoding data: \(error.localizedDescription)")
-            }
+        let encoder = JSONEncoder()
+        do {
+            let data = try encoder.encode(jobDataArray)
+            let userInfo = ["action": "updateJobs", "jobsData": data] as [String: Any]
+            WCSession.default.transferUserInfo(userInfo)
+            print("job data has been transferred from the ios app")
+        } catch {
+            print("Error encoding data: \(error.localizedDescription)")
         }
     }
-    
+
+    /*
     func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
            let decoder = JSONDecoder()
            do {
@@ -54,7 +54,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
            } catch {
                print("Error decoding data: \(error.localizedDescription)")
            }
-       }
+       } */
     
     private func saveReceivedJobsToCoreData(_ jobs: [JobData]) {
             let context = persistenceController.container.viewContext
@@ -90,6 +90,38 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
             }
         }
     
+    // send delete message to watch
+    #if os(iOS)
+    func sendDeleteJobMessage(_ jobId: UUID) {
+        let userInfo = ["action": "deleteJob", "jobId": jobId.uuidString]
+        WCSession.default.transferUserInfo(userInfo)
+    }
+
+    #endif
+    // recieve message
+    
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any]) {
+        if let action = userInfo["action"] as? String {
+            if action == "deleteJob", let jobIdString = userInfo["jobId"] as? String {
+                if let jobId = UUID(uuidString: jobIdString) {
+                    let context = persistenceController.container.viewContext
+                    deleteJob(with: jobId, in: context)
+                }
+            } else if action == "updateJobs", let jobsData = userInfo["jobsData"] as? Data {
+                let decoder = JSONDecoder()
+                do {
+                    let decodedData = try decoder.decode([JobData].self, from: jobsData)
+                    saveReceivedJobsToCoreData(decodedData)
+                } catch {
+                    print("Error decoding data: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+
+
+    
     // need delete job here for ios version
     
     
@@ -107,7 +139,6 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
     }
 
     
-    // need to fetch jobs here for the ios version
     
     
     private func fetchJob(with jobId: UUID, in context: NSManagedObjectContext) -> Job? {
@@ -122,14 +153,14 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
         }
     }
     
-    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+ /*   func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
         if let action = message["action"] as? String, action == "deleteJob", let jobIdString = message["jobId"] as? String {
             if let jobId = UUID(uuidString: jobIdString) {
                 onDeleteJob?(jobId)
 
             }
         }
-    }
+    } */
 
 
 

@@ -211,6 +211,8 @@ struct PersonalView: View {
                     }
 
                     // Delete the job
+            
+            deleteJobFromWatch(job)
                     viewContext.delete(job)
                     jobToDelete = nil
             
@@ -222,6 +224,13 @@ struct PersonalView: View {
         }
         deleteJobAlert = false
     }
+    
+    func deleteJobFromWatch(_ job: Job) {
+        if let jobId = job.uuid {
+            WatchConnectivityManager.shared.sendDeleteJobMessage(jobId)
+        }
+    }
+
 
     
 }
