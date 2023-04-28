@@ -31,8 +31,8 @@ struct ShiftTrackerApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()
-                .preferredColorScheme(getPreferredColorScheme())
-                //.preferredColorScheme(.dark)
+                //.preferredColorScheme(getPreferredColorScheme())
+                .preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .onAppear {
                     startMonitoringAllJobLocations()
