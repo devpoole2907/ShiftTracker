@@ -31,7 +31,8 @@ struct ContentView: View {
     
     @State private var activeSheet: ActiveSheet?
     
-    @State private var shakeTimes: CGFloat = 0
+    @State private var payShakeTimes: CGFloat = 0
+    @State private var jobShakeTimes: CGFloat = 0
     
     private let shiftKeys = ShiftKeys()
     
@@ -57,12 +58,12 @@ struct ContentView: View {
     
     //@ObservedObject var locationUpdateManager = LocationUpdateManager()
     
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
     
     @available(iOS 16.1, *)
     var body: some View {
@@ -76,143 +77,143 @@ struct ContentView: View {
         // VStack{
         NavigationStack{
             ZStack{
-                    VStack(alignment: .trailing){
-                     
-                     HStack{
-                     Spacer()
-                     
-                     Image("HomeIconSymbol")
-                     .font(.system(size: 200))
-                     .foregroundColor(bigImageColor)
-                     .rotationEffect(Angle(degrees: 345))
-                     .ignoresSafeArea()
-                     
-                     }
-                     .padding(.top, 0)
-                     .padding(.trailing, -55)
-                     
-                     Spacer()
-                     //Spacer(minLength: 600)
-                    }.blur(radius: colorScheme == .dark ? 3.0 : 0)
-            ScrollView{
-                Section{
-                    TimerView(timeElapsed: $viewModel.timeElapsed)
-                }
-                Section{
-                    if viewModel.shift == nil{
-                        Text("No current shift")
-                            .bold()
-                            .padding()
-                    }
+                VStack(alignment: .trailing){
                     
-                    else if viewModel.isOnBreak {
-                        VStack{
-                            HStack{
-                                BreakTimerView(timeElapsed: $viewModel.breakTimeElapsed)
-                                
-                                DatePicker("Break start: ", selection: Binding(get: { viewModel.tempBreaks.last?.startDate ?? Date() }, set: { newDate in
-                                    viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = newDate }), displayedComponents: [.hourAndMinute])
-                                .onChange(of: viewModel.tempBreaks.last?.startDate){ newDate in
-                                    if let newDate = newDate, newDate > Date() {
-                                        viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = Date()
-                                    }
-                                    if newDate ?? Date() > Date(){
-                                        viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = Date()
-                                    }
-                                    if newDate ?? Date() < viewModel.shiftStartDate{
-                                        viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = viewModel.shiftStartDate
-                                    }
-                                    viewModel.stopTimer(timer: &viewModel.breakTimer, timeElapsed: &viewModel.breakTimeElapsed)
-                                    viewModel.startBreakTimer(startDate: viewModel.tempBreaks.last?.startDate ?? Date())
-                                    
-                                }
-                                .disabled(viewModel.shift == nil || !viewModel.isEditing)
-                                
+                    HStack{
+                        Spacer()
+                        
+                        Image("HomeIconSymbol")
+                            .font(.system(size: 200))
+                            .foregroundColor(bigImageColor)
+                            .rotationEffect(Angle(degrees: 345))
+                            .ignoresSafeArea()
+                        
+                    }
+                    .padding(.top, 0)
+                    .padding(.trailing, -55)
+                    
+                    Spacer()
+                    //Spacer(minLength: 600)
+                }.blur(radius: colorScheme == .dark ? 3.0 : 0)
+                ScrollView{
+                    Section{
+                        TimerView(timeElapsed: $viewModel.timeElapsed)
+                    }
+                    Section{
+                        if viewModel.shift == nil{
+                            Text("No current shift")
                                 .bold()
-                                
-                                .padding(.vertical, 8)
-                                
-                                
-                            }.padding(.horizontal, 75)
-                            
+                                .padding()
                         }
-                    }
-                    else{
-                        DatePicker("Shift start: ", selection: $viewModel.shiftStartDate, displayedComponents: [.hourAndMinute])
-                            .onChange(of: viewModel.shiftStartDate) { newDate in
-                                if newDate > Date(){
-                                    viewModel.shiftStartDate = Date()
-                                }
-                                if let currentShift = viewModel.shift {
-                                    viewModel.shift = Shift(startDate: newDate, hourlyPay: currentShift.hourlyPay)
-                                }
-                                sharedUserDefaults.set(newDate, forKey: shiftKeys.shiftStartDateKey)
-                                viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
-                                //  stopActivity()
-                                // stopActivity()
-                                viewModel.startTimer(startDate: newDate)
+                        
+                        else if viewModel.isOnBreak {
+                            VStack{
+                                HStack{
+                                    BreakTimerView(timeElapsed: $viewModel.breakTimeElapsed)
+                                    
+                                    DatePicker("Break start: ", selection: Binding(get: { viewModel.tempBreaks.last?.startDate ?? Date() }, set: { newDate in
+                                        viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = newDate }), displayedComponents: [.hourAndMinute])
+                                    .onChange(of: viewModel.tempBreaks.last?.startDate){ newDate in
+                                        if let newDate = newDate, newDate > Date() {
+                                            viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = Date()
+                                        }
+                                        if newDate ?? Date() > Date(){
+                                            viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = Date()
+                                        }
+                                        if newDate ?? Date() < viewModel.shiftStartDate{
+                                            viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate = viewModel.shiftStartDate
+                                        }
+                                        viewModel.stopTimer(timer: &viewModel.breakTimer, timeElapsed: &viewModel.breakTimeElapsed)
+                                        viewModel.startBreakTimer(startDate: viewModel.tempBreaks.last?.startDate ?? Date())
+                                        
+                                    }
+                                    .disabled(viewModel.shift == nil || !viewModel.isEditing)
+                                    
+                                    .bold()
+                                    
+                                    .padding(.vertical, 8)
+                                    
+                                    
+                                }.padding(.horizontal, 75)
+                                
                             }
-                        
-                            .disabled(viewModel.breakTaken || viewModel.shift == nil || !viewModel.isEditing)
-                        
-                            .bold()
-                            .padding(.horizontal, 75)
-                            .padding(.vertical, 8)
-                    }
-                    
-                }
-                Section{
-                    VStack{
-                        HStack {
+                        }
+                        else{
+                            DatePicker("Shift start: ", selection: $viewModel.shiftStartDate, displayedComponents: [.hourAndMinute])
+                                .onChange(of: viewModel.shiftStartDate) { newDate in
+                                    if newDate > Date(){
+                                        viewModel.shiftStartDate = Date()
+                                    }
+                                    if let currentShift = viewModel.shift {
+                                        viewModel.shift = Shift(startDate: newDate, hourlyPay: currentShift.hourlyPay)
+                                    }
+                                    sharedUserDefaults.set(newDate, forKey: shiftKeys.shiftStartDateKey)
+                                    viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
+                                    //  stopActivity()
+                                    // stopActivity()
+                                    viewModel.startTimer(startDate: newDate)
+                                }
                             
-                            Text("Hourly pay:")
-                                .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
-                           //Spacer()
-                            TextField("", value: $viewModel.hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
-                                .keyboardType(.decimalPad)
-                                .focused($payIsFocused)
+                                .disabled(viewModel.breakTaken || viewModel.shift == nil || !viewModel.isEditing)
+                            
+                                .bold()
+                                .padding(.horizontal, 75)
+                                .padding(.vertical, 8)
+                        }
+                        
+                    }
+                    Section{
+                        VStack{
+                            HStack {
+                                
+                                Text("Hourly pay:")
+                                    .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
+                                //Spacer()
+                                TextField("", value: $viewModel.hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
+                                    .keyboardType(.decimalPad)
+                                    .focused($payIsFocused)
+                                    .disabled(!viewModel.isEditing && viewModel.shift != nil)
+                                    .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
+                                    .onChange(of: viewModel.hourlyPay) { _ in
+                                        viewModel.saveHourlyPay() // Save the value of hourlyPay whenever it changes
+                                    }
+                                
+                            }.frame(minWidth: UIScreen.main.bounds.width / 3)
+                                .bold()
+                            
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 11)
+                                .background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor)
+                            //.background(Color.gray.opacity(0.5))
+                                .foregroundColor(.white)
+                                .cornerRadius(18)
+                                .shake(times: payShakeTimes)
+                            
+                            
+                            /*    TaxPickerView(taxPercentage: $viewModel.taxPercentage).background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor).cornerRadius(20).disabled(!viewModel.isEditing && viewModel.shift != nil) */
+                            if taxEnabled {
+                                Button(action: {
+                                    activeSheet = .sheet5
+                                }) {
+                                    HStack {
+                                        Text("Estimated Tax:")
+                                        Spacer()
+                                        Text("\(String(format: "%.1f", viewModel.taxPercentage))%")
+                                    }
+                                }
                                 .disabled(!viewModel.isEditing && viewModel.shift != nil)
                                 .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
-                                .onChange(of: viewModel.hourlyPay) { _ in
-                                    viewModel.saveHourlyPay() // Save the value of hourlyPay whenever it changes
+                                .onChange(of: viewModel.taxPercentage) { _ in
+                                    viewModel.saveTaxPercentage() // Save the value of hourlyPay whenever it changes
                                 }
+                                .frame(minWidth: UIScreen.main.bounds.width / 3)
+                                .bold()
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 11)
+                                .background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor)
+                                .cornerRadius(18)
+                            }
                             
-                        }.frame(minWidth: UIScreen.main.bounds.width / 3)
-                            .bold()
-                        
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 11)
-                            .background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor)
-                        //.background(Color.gray.opacity(0.5))
-                            .foregroundColor(.white)
-                            .cornerRadius(18)
-                            .shake(times: shakeTimes)
-                        
-                        
-                        /*    TaxPickerView(taxPercentage: $viewModel.taxPercentage).background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor).cornerRadius(20).disabled(!viewModel.isEditing && viewModel.shift != nil) */
-                        if taxEnabled {
-                            Button(action: {
-                                activeSheet = .sheet5
-                            }) {
-                                HStack {
-                                    Text("Estimated Tax:")
-                                    Spacer()
-                                    Text("\(String(format: "%.1f", viewModel.taxPercentage))%")
-                                }
-                            }
-                            .disabled(!viewModel.isEditing && viewModel.shift != nil)
-                            .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
-                            .onChange(of: viewModel.taxPercentage) { _ in
-                                viewModel.saveTaxPercentage() // Save the value of hourlyPay whenever it changes
-                            }
-                            .frame(minWidth: UIScreen.main.bounds.width / 3)
-                            .bold()
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 11)
-                            .background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor)
-                            .cornerRadius(18)
-                        }
-                        
                             Button(action: {
                                 activeSheet = .sheet8
                             }) {
@@ -220,144 +221,199 @@ struct ContentView: View {
                                     Text("Job:")
                                         .bold()
                                     Spacer()
-                                    Image(systemName: "briefcase.circle")
-                                        .foregroundColor(.cyan)
-                                    Text("Apple Inc")
-                                        .bold()
+                                    if let job = viewModel.fetchJob(with: viewModel.selectedJobUUID, in: context) {
+                                        Image(systemName: job.icon ?? "briefcase.circle")
+                                            .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                                        Text(job.name ?? "No Job Selected")
+                                            .bold()
+                                    } else {
+                                        Image(systemName: "briefcase.circle")
+                                            .foregroundColor(.cyan)
+                                        Text("No Job Selected")
+                                            .bold()
+                                    }
                                 }
                             }
                             .disabled(viewModel.shift != nil)
                             .foregroundColor(Color.white.opacity(0.8))
-                            .onChange(of: viewModel.taxPercentage) { _ in
-                                viewModel.saveTaxPercentage() // Save the value of hourlyPay whenever it changes
-                            }
                             .frame(minWidth: UIScreen.main.bounds.width / 3)
                             .bold()
                             .padding(.horizontal, 20)
                             .padding(.vertical, 11)
                             .background(buttonColor)
                             .cornerRadius(18)
-                        
-
-                    }
-                    .padding(.horizontal, 50)
-                    Section{
-                        HStack{
+                            .shake(times: jobShakeTimes)
                             
-                            if viewModel.shift == nil {
-                                Button(action: {
-                                    //viewModel.startShiftButtonAction()
-                                    
-                                    
-                                    
-                                    if viewModel.hourlyPay == 0 {
-                                        withAnimation(.linear(duration: 0.4)) {
-                                                                shakeTimes += 2
-                                        }
-                                        
-                                    }
-                                    
-                                    
-                                    if viewModel.hourlyPay != 0 {
-                                        activeSheet = .sheet6
-                                        withAnimation {
-                                            viewModel.isStartShiftTapped = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                viewModel.isStartShiftTapped = false
-                                            }
-                                        }
-                                    }
-                                }){
-                                    Text("Start shift")
-                                        .frame(minWidth: UIScreen.main.bounds.width / 3)
-                                        .bold()
-                                        .padding()
-                                        .background(buttonColor)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(18)
-                                    
-                                }
+                            
+                        }
+                        .padding(.horizontal, 50)
+                        Section{
+                            HStack{
                                 
-                                .onAppear(perform: viewModel.prepareHaptics)
-                                .frame(maxWidth: .infinity)
-                                .scaleEffect(viewModel.isStartShiftTapped ? 1.1 : 1)
-                                .animation(.easeInOut(duration: 0.3))
-                                
-                                
-                            } else {
-                                if !viewModel.isOnBreak{
+                                if viewModel.shift == nil {
                                     Button(action: {
-                                            activeSheet = .sheet2
-                                    
-                                            //viewModel.startBreakButtonAction()
+                                        //viewModel.startShiftButtonAction()
                                         
-                                        self.isAnimating = true
-                                        withAnimation {
-                                            viewModel.isBreakTapped = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                viewModel.isBreakTapped = false
+                                        
+                                        
+                                        if viewModel.hourlyPay == 0 {
+                                            withAnimation(.linear(duration: 0.4)) {
+                                                payShakeTimes += 2
+                                            }
+                                            
+                                        }
+                                        if viewModel.selectedJobUUID == nil {
+                                            withAnimation(.linear(duration: 0.4)) {
+                                                jobShakeTimes += 2
+                                            }
+                                            
+                                        }
+                                        
+                                        
+                                        if viewModel.hourlyPay != 0 && viewModel.selectedJobUUID != nil {
+                                            activeSheet = .sheet6
+                                            withAnimation {
+                                                viewModel.isStartShiftTapped = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    viewModel.isStartShiftTapped = false
+                                                }
                                             }
                                         }
-                                    }) {
-                                        Text("Start break")
-                                            
-                                            .frame(minWidth: UIScreen.main.bounds.width / 3)
-                                            .bold()
-                                            .padding()
-                                            .background(!viewModel.isEditing ? buttonColor : disabledButtonColor)
-                                            .foregroundColor(.white)
-                                            .cornerRadius(18)
-                                    }.disabled(viewModel.isEditing)
-                                    //.disabled(viewModel.breakTaken)
-                                    .contextMenu{
-                                        Button("\(Image(systemName: "stopwatch")) Deduct 30m break"){
-                                            
-                                        }
-                                        Button("\(Image(systemName: "stopwatch")) Deduct 15m break"){
-                                            
-                                        }
-                                    }
-                                    .actionSheet(isPresented: $viewModel.showStartBreakAlert) {
-                                        ActionSheet(title: Text("Select Break Type"), buttons: [
-                                            .destructive(Text("Unpaid Break"), action: { viewModel.startBreak(startDate: Date(), isUnpaid: true)}),
-                                            .default(Text("Paid Break"), action: { viewModel.startBreak(startDate: Date(), isUnpaid: false)}),
-                                            .cancel()
-                                        ])
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .scaleEffect(viewModel.isBreakTapped ? 1.1 : 1)
-                                    .animation(.easeInOut(duration: 0.3))
-
-                                }
-                                else {
-                                    Button(action: {
-                                        //viewModel.endBreakButtonAction()
-                                        
-                                        activeSheet = .sheet4
-                                        
-                                        self.isAnimating = true
-                                        withAnimation {
-                                            viewModel.isBreakTapped = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                viewModel.isBreakTapped = false
-                                            }
-                                        }
-                                    }) {
-                                        Text("End break")
-                                        
+                                    }){
+                                        Text("Start shift")
                                             .frame(minWidth: UIScreen.main.bounds.width / 3)
                                             .bold()
                                             .padding()
                                             .background(buttonColor)
                                             .foregroundColor(.white)
                                             .cornerRadius(18)
+                                        
                                     }
-                                    .alert(isPresented: $viewModel.showEndBreakAlert) {
+                                    
+                                    .onAppear(perform: viewModel.prepareHaptics)
+                                    .frame(maxWidth: .infinity)
+                                    .scaleEffect(viewModel.isStartShiftTapped ? 1.1 : 1)
+                                    .animation(.easeInOut(duration: 0.3))
+                                    
+                                    
+                                } else {
+                                    if !viewModel.isOnBreak{
+                                        Button(action: {
+                                            activeSheet = .sheet2
+                                            
+                                            //viewModel.startBreakButtonAction()
+                                            
+                                            self.isAnimating = true
+                                            withAnimation {
+                                                viewModel.isBreakTapped = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    viewModel.isBreakTapped = false
+                                                }
+                                            }
+                                        }) {
+                                            Text("Start break")
+                                            
+                                                .frame(minWidth: UIScreen.main.bounds.width / 3)
+                                                .bold()
+                                                .padding()
+                                                .background(!viewModel.isEditing ? buttonColor : disabledButtonColor)
+                                                .foregroundColor(.white)
+                                                .cornerRadius(18)
+                                        }.disabled(viewModel.isEditing)
+                                        //.disabled(viewModel.breakTaken)
+                                            .contextMenu{
+                                                Button("\(Image(systemName: "stopwatch")) Deduct 30m break"){
+                                                    
+                                                }
+                                                Button("\(Image(systemName: "stopwatch")) Deduct 15m break"){
+                                                    
+                                                }
+                                            }
+                                            .actionSheet(isPresented: $viewModel.showStartBreakAlert) {
+                                                ActionSheet(title: Text("Select Break Type"), buttons: [
+                                                    .destructive(Text("Unpaid Break"), action: { viewModel.startBreak(startDate: Date(), isUnpaid: true)}),
+                                                    .default(Text("Paid Break"), action: { viewModel.startBreak(startDate: Date(), isUnpaid: false)}),
+                                                    .cancel()
+                                                ])
+                                            }
+                                            .frame(maxWidth: .infinity)
+                                            .scaleEffect(viewModel.isBreakTapped ? 1.1 : 1)
+                                            .animation(.easeInOut(duration: 0.3))
+                                        
+                                    }
+                                    else {
+                                        Button(action: {
+                                            //viewModel.endBreakButtonAction()
+                                            
+                                            activeSheet = .sheet4
+                                            
+                                            self.isAnimating = true
+                                            withAnimation {
+                                                viewModel.isBreakTapped = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    viewModel.isBreakTapped = false
+                                                }
+                                            }
+                                        }) {
+                                            Text("End break")
+                                            
+                                                .frame(minWidth: UIScreen.main.bounds.width / 3)
+                                                .bold()
+                                                .padding()
+                                                .background(buttonColor)
+                                                .foregroundColor(.white)
+                                                .cornerRadius(18)
+                                        }
+                                        .alert(isPresented: $viewModel.showEndBreakAlert) {
+                                            Alert(
+                                                title: Text("End break?"),
+                                                //message: Text("Are you sure you want to end this shift?"),
+                                                primaryButton: .destructive(Text("End break")) {
+                                                    viewModel.endBreak()
+                                                    presentationMode.wrappedValue.dismiss()
+                                                },
+                                                secondaryButton: .cancel(){
+                                                    
+                                                }
+                                            )
+                                        }
+                                        
+                                        .frame(maxWidth: .infinity)
+                                        .scaleEffect(viewModel.isBreakTapped ? 1.1 : 1)
+                                        .animation(.easeInOut(duration: 0.3))
+                                    }
+                                    
+                                    
+                                }
+                                Button(action: {
+                                    
+                                    activeSheet = .sheet3
+                                    
+                                    //viewModel.endShiftButtonAction()
+                                    self.isAnimating = true
+                                    withAnimation {
+                                        viewModel.isEndShiftTapped = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            viewModel.isEndShiftTapped = false
+                                        }
+                                    }
+                                }) {
+                                    Text("End shift")
+                                    
+                                        .frame(minWidth: UIScreen.main.bounds.width / 3)
+                                        .bold()
+                                        .padding()
+                                        .background((viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(18)
+                                }.disabled(viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing)
+                                    .alert(isPresented: $viewModel.showEndAlert) {
+                                        
                                         Alert(
-                                            title: Text("End break?"),
-                                            //message: Text("Are you sure you want to end this shift?"),
-                                            primaryButton: .destructive(Text("End break")) {
-                                                viewModel.endBreak()
+                                            title: Text("End shift?"),
+                                            message: Text("Are you sure you want to end this shift?"),
+                                            primaryButton: .destructive(Text("End shift")) {
+                                                viewModel.endShift(using: context, endDate: Date())
                                                 presentationMode.wrappedValue.dismiss()
                                             },
                                             secondaryButton: .cancel(){
@@ -365,106 +421,63 @@ struct ContentView: View {
                                             }
                                         )
                                     }
-                                    
                                     .frame(maxWidth: .infinity)
-                                    .scaleEffect(viewModel.isBreakTapped ? 1.1 : 1)
+                                    .scaleEffect(viewModel.isEndShiftTapped ? 1.1 : 1)
                                     .animation(.easeInOut(duration: 0.3))
-                                }
-                                
-                                
-                            }
-                            Button(action: {
-                        
-                                    activeSheet = .sheet3
+                            }.haptics(onChangeOf: payShakeTimes, type: .error)
+                                .haptics(onChangeOf: activeSheet, type: .light)
+                                .haptics(onChangeOf: jobShakeTimes, type: .error)
                             
-                                    //viewModel.endShiftButtonAction()
-                                self.isAnimating = true
-                                withAnimation {
-                                    viewModel.isEndShiftTapped = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        viewModel.isEndShiftTapped = false
-                                    }
-                                }
-                            }) {
-                                Text("End shift")
-                    
-                                    .frame(minWidth: UIScreen.main.bounds.width / 3)
-                                    .bold()
-                                    .padding()
-                                    .background((viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(18)
-                            }.disabled(viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing)
-                                .alert(isPresented: $viewModel.showEndAlert) {
-                                    
-                                    Alert(
-                                        title: Text("End shift?"),
-                                        message: Text("Are you sure you want to end this shift?"),
-                                        primaryButton: .destructive(Text("End shift")) {
-                                            viewModel.endShift(using: context, endDate: Date())
-                                            presentationMode.wrappedValue.dismiss()
-                                        },
-                                        secondaryButton: .cancel(){
-                                            
-                                        }
-                                    )
-                                }
-                                .frame(maxWidth: .infinity)
-                                .scaleEffect(viewModel.isEndShiftTapped ? 1.1 : 1)
-                                .animation(.easeInOut(duration: 0.3))
-                        }.haptics(onChangeOf: shakeTimes, type: .error)
-                            .haptics(onChangeOf: activeSheet, type: .light)
                             
+                        }.padding(.horizontal, 50)
                         
-                    }.padding(.horizontal, 50)
-                    
                         Section {
                             VStack{
                                 Button(action: {
                                     activeSheet = .sheet7
                                 }) {
                                     Text("Breaks")
-                                      
+                                    
                                 }
                                 .foregroundColor(.white.opacity(0.8))
                                 .accentColor(.white.opacity(0.7))
                                 .frame(minWidth: UIScreen.main.bounds.width / 3)
                                 .bold()
-                            
+                                
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 5)
                                 .background(!viewModel.tempBreaks.isEmpty ? buttonColor : disabledButtonColor)
                                 //.background(buttonColor)
-                            //.foregroundColor(.white)
+                                //.foregroundColor(.white)
                                 .cornerRadius(18)
                             }.padding(.horizontal, 50)
                         }.disabled(viewModel.tempBreaks.isEmpty)
-                            
                         
-                    
+                        
+                        
+                        
+                    }
+                    /*  Section{
+                     NavigationLink(destination: MoreOptionsView().navigationBarTitle(Text("Shift Settings"))){
+                     Text("Shift settings")
+                     // .foregroundColor(shift == nil ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
+                     .foregroundColor(.white.opacity(0.8))
+                     .accentColor(.white.opacity(0.7))
+                     .frame(minWidth: UIScreen.main.bounds.width / 3)
+                     .bold()
+                     
+                     .padding(.horizontal, 20)
+                     .padding(.vertical, 5)
+                     //.background(shift == nil ? buttonColor : disabledButtonColor)
+                     .background(buttonColor)
+                     //.foregroundColor(.white)
+                     .cornerRadius(18)
+                     }
+                     
+                     } */
                     
                 }
-              /*  Section{
-                    NavigationLink(destination: MoreOptionsView().navigationBarTitle(Text("Shift Settings"))){
-                        Text("Shift settings")
-                        // .foregroundColor(shift == nil ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
-                            .foregroundColor(.white.opacity(0.8))
-                            .accentColor(.white.opacity(0.7))
-                            .frame(minWidth: UIScreen.main.bounds.width / 3)
-                            .bold()
-                        
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 5)
-                        //.background(shift == nil ? buttonColor : disabledButtonColor)
-                            .background(buttonColor)
-                        //.foregroundColor(.white)
-                            .cornerRadius(18)
-                    }
-                    
-                } */
-                
             }
-        }
             .frame(maxWidth: .infinity)
             .toolbar{
                 ToolbarItemGroup(placement: .keyboard){
@@ -491,8 +504,8 @@ struct ContentView: View {
                                 viewModel.isEditing.toggle()
                             }
                         }
-                       
-                            .disabled(viewModel.shift == nil)
+                        
+                        .disabled(viewModel.shift == nil)
                     } else {
                         Button("\(Image(systemName: "pencil"))") {
                             withAnimation {
@@ -501,8 +514,8 @@ struct ContentView: View {
                             }
                         }
                         
-                 
-                            .disabled(viewModel.shift == nil)
+                        
+                        .disabled(viewModel.shift == nil)
                     }
                 }
             } .haptics(onChangeOf: viewModel.isEditing, type: .light)
@@ -511,145 +524,149 @@ struct ContentView: View {
         
         .sheet(item: $activeSheet){ item in
             
-                if #available(iOS 16.4, *) {
-                    
-                    switch item {
-                    case .sheet1:
-                        if let thisShift = shifts.first{
-                            NavigationStack{
-                                DetailView(shift: thisShift).navigationBarTitle("Shift Ended")
-                                    .environment(\.managedObjectContext, context)
-                            }.presentationDetents([ .large])
-                               // .presentationBackground(.ultraThinMaterial)
-                                .presentationDragIndicator(.visible)
-                                .presentationCornerRadius(12)
-                        }
-                    case .sheet2:
-                        ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
-                        //StartBreakView(viewModel: viewModel)
-                            .environment(\.managedObjectContext, context)
-                            .presentationDetents([ .fraction(0.4)])
-                           // .presentationBackground(.ultraThinMaterial)
-                            .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
-                        
-                    case .sheet3:
-                        ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
-                        //EndShiftConfirmView(activeSheet: $activeSheet, viewModel: viewModel).navigationBarTitle("End Shift", displayMode: .inline)
-                            .environment(\.managedObjectContext, context)
-                            .presentationDetents([ .fraction(0.4)])
-                           // .presentationBackground(.ultraThinMaterial)
-                            .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
-                    case .sheet4:
-                        ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
-                            .environment(\.managedObjectContext, context)
-                            .presentationDetents([ .fraction(0.4)])
-                           // .presentationBackground(.ultraThinMaterial)
-                            .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
-                    case .sheet5:
-                        TaxPickerView(taxPercentage: $viewModel.taxPercentage)
-                            .environment(\.managedObjectContext, context)
-                            .presentationDetents([ .fraction(0.3)])
-                            //.presentationBackground(.ultraThinMaterial)
-                            .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
-                        
-                    case .sheet6:
-                        ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Shift", actionType: .startShift)
-                            .environment(\.managedObjectContext, context)
-                            .presentationDetents([ .fraction(0.4)])
-                            //.presentationBackground(.ultraThinMaterial)
-                            .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
-                    case .sheet7:
-                        
-                        
-                        
-                        
-                        NavigationStack{
-                            List{
-                                ForEach(viewModel.tempBreaks, id: \.self) { breakItem in
-                                    Section{
-                                        VStack(alignment: .leading){
-                                            if breakItem.isUnpaid{
-                                                Text("Unpaid")
-                                                    .font(.subheadline)
-                                                    .foregroundColor(.indigo)
-                                                    .bold()
-                                            }
-                                            else {
-                                                Text("Paid")
-                                                    .font(.subheadline)
-                                                    .foregroundColor(.indigo)
-                                                    .bold()
-                                            }
-                                            Text("\(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")
-                                                .listRowSeparator(.hidden)
-                                                .font(.subheadline)
-                                                .bold()
-                                        
-                                    Divider()
-
-                                            DatePicker(
-                                                                    "Start Date",
-                                                                    selection: Binding<Date>(
-                                                                        get: {
-                                                                            return breakItem.startDate
-                                                                        },
-                                                                        set: { newStartDate in
-                                                                            let updatedBreak = TempBreak(
-                                                                                startDate: newStartDate,
-                                                                                endDate: breakItem.endDate,
-                                                                                isUnpaid: breakItem.isUnpaid
-                                                                            )
-                                                                            viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
-                                                                        }
-                                                                    ),
-                                                                    in: viewModel.minimumStartDate(for: breakItem)...Date.distantFuture,
-                                                                    displayedComponents: [.hourAndMinute])
-                                            DatePicker(
-                                                                    "End Date",
-                                                                    selection: Binding<Date>(
-                                                                        get: {
-                                                                            return breakItem.endDate ?? Date()
-                                                                        },
-                                                                        set: { newEndDate in
-                                                                            let updatedBreak = TempBreak(
-                                                                                startDate: breakItem.startDate,
-                                                                                endDate: newEndDate,
-                                                                                isUnpaid: breakItem.isUnpaid
-                                                                            )
-                                                                            viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
-                                                                        }
-                                                                    ),
-                                                                    in: breakItem.startDate...Date.distantFuture,
-                                                                    displayedComponents: [.hourAndMinute])
-                                            .disabled(viewModel.isOnBreak)
-                                                                    
-                                    }
-                                        
-                                }
-                                }.onDelete(perform: viewModel.deleteBreaks)
-                            }.navigationBarTitle("Breaks", displayMode: .inline)
-                        }
-                            .environment(\.managedObjectContext, context)
-                            .presentationDetents([ .fraction(0.4), .fraction(0.6)])
-                            //.presentationBackground(.ultraThinMaterial)
-                            .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
-                    case .sheet8:
-                        Text("list of jobs here")
-                    }
-                }
-                    
-                    
-                    
-                    
+            if #available(iOS 16.4, *) {
                 
-                else {
+                switch item {
+                case .sheet1:
                     if let thisShift = shifts.first{
+                        NavigationStack{
+                            DetailView(shift: thisShift).navigationBarTitle("Shift Ended")
+                                .environment(\.managedObjectContext, context)
+                        }.presentationDetents([ .large])
+                        // .presentationBackground(.ultraThinMaterial)
+                            .presentationDragIndicator(.visible)
+                            .presentationCornerRadius(12)
+                    }
+                case .sheet2:
+                    ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
+                    //StartBreakView(viewModel: viewModel)
+                        .environment(\.managedObjectContext, context)
+                        .presentationDetents([ .fraction(0.4)])
+                    // .presentationBackground(.ultraThinMaterial)
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
+                    
+                case .sheet3:
+                    ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
+                    //EndShiftConfirmView(activeSheet: $activeSheet, viewModel: viewModel).navigationBarTitle("End Shift", displayMode: .inline)
+                        .environment(\.managedObjectContext, context)
+                        .presentationDetents([ .fraction(0.4)])
+                    // .presentationBackground(.ultraThinMaterial)
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
+                case .sheet4:
+                    ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
+                        .environment(\.managedObjectContext, context)
+                        .presentationDetents([ .fraction(0.4)])
+                    // .presentationBackground(.ultraThinMaterial)
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
+                case .sheet5:
+                    TaxPickerView(taxPercentage: $viewModel.taxPercentage)
+                        .environment(\.managedObjectContext, context)
+                        .presentationDetents([ .fraction(0.3)])
+                    //.presentationBackground(.ultraThinMaterial)
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
+                    
+                case .sheet6:
+                    ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Shift", actionType: .startShift)
+                        .environment(\.managedObjectContext, context)
+                        .presentationDetents([ .fraction(0.4)])
+                    //.presentationBackground(.ultraThinMaterial)
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
+                case .sheet7:
+                    
+                    
+                    
+                    
+                    NavigationStack{
+                        List{
+                            ForEach(viewModel.tempBreaks, id: \.self) { breakItem in
+                                Section{
+                                    VStack(alignment: .leading){
+                                        if breakItem.isUnpaid{
+                                            Text("Unpaid")
+                                                .font(.subheadline)
+                                                .foregroundColor(.indigo)
+                                                .bold()
+                                        }
+                                        else {
+                                            Text("Paid")
+                                                .font(.subheadline)
+                                                .foregroundColor(.indigo)
+                                                .bold()
+                                        }
+                                        Text("\(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")
+                                            .listRowSeparator(.hidden)
+                                            .font(.subheadline)
+                                            .bold()
+                                        
+                                        Divider()
+                                        
+                                        DatePicker(
+                                            "Start Date",
+                                            selection: Binding<Date>(
+                                                get: {
+                                                    return breakItem.startDate
+                                                },
+                                                set: { newStartDate in
+                                                    let updatedBreak = TempBreak(
+                                                        startDate: newStartDate,
+                                                        endDate: breakItem.endDate,
+                                                        isUnpaid: breakItem.isUnpaid
+                                                    )
+                                                    viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
+                                                }
+                                            ),
+                                            in: viewModel.minimumStartDate(for: breakItem)...Date.distantFuture,
+                                            displayedComponents: [.hourAndMinute])
+                                        DatePicker(
+                                            "End Date",
+                                            selection: Binding<Date>(
+                                                get: {
+                                                    return breakItem.endDate ?? Date()
+                                                },
+                                                set: { newEndDate in
+                                                    let updatedBreak = TempBreak(
+                                                        startDate: breakItem.startDate,
+                                                        endDate: newEndDate,
+                                                        isUnpaid: breakItem.isUnpaid
+                                                    )
+                                                    viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
+                                                }
+                                            ),
+                                            in: breakItem.startDate...Date.distantFuture,
+                                            displayedComponents: [.hourAndMinute])
+                                        .disabled(viewModel.isOnBreak)
+                                        
+                                    }
+                                    
+                                }
+                            }.onDelete(perform: viewModel.deleteBreaks)
+                        }.navigationBarTitle("Breaks", displayMode: .inline)
+                    }
+                    .environment(\.managedObjectContext, context)
+                    .presentationDetents([ .fraction(0.4), .fraction(0.6)])
+                    //.presentationBackground(.ultraThinMaterial)
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(12)
+                case .sheet8:
+                    JobSelectionView(selectedJobUUID: $viewModel.selectedJobUUID)
+                        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+                        .presentationDetents([ .medium])
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
+                }
+            }
+            
+            
+            
+            
+            
+            else {
+                if let thisShift = shifts.first{
                     NavigationView{
                         DetailView(shift: thisShift)
                             .toolbar {
@@ -660,8 +677,8 @@ struct ContentView: View {
                                 }
                             }
                     }
-                    }
                 }
+            }
             
             
         }
@@ -703,7 +720,7 @@ struct ContentView: View {
             }
         }
         .onDisappear{
-           // viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
+            // viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
             
         }
         .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { _ in
@@ -750,7 +767,7 @@ extension NSNotification.Name {
 
 enum ActiveSheet: Identifiable {
     case sheet1, sheet2, sheet3, sheet4, sheet5, sheet6, sheet7, sheet8
-
+    
     var id: Int {
         hashValue
     }
@@ -761,11 +778,11 @@ enum ActionType {
 }
 
 struct ActionView: View {
-
+    
     @Environment(\.dismiss) var dismiss
     @State private var actionDate = Date()
     
-
+    
     @ObservedObject var viewModel: ContentViewModel
     @Environment(\.managedObjectContext) private var context
     @Binding var activeSheet: ActiveSheet?
@@ -773,13 +790,13 @@ struct ActionView: View {
     var pickerStartDate: Date?
     
     var actionType: ActionType
-
+    
     var body: some View {
         NavigationStack {
             VStack {
                 
-                    
-
+                
+                
                 if actionType == .startBreak {
                     if let limitStartDate = pickerStartDate {
                         DatePicker("", selection: $actionDate, in: limitStartDate...Date(), displayedComponents: [.date, .hourAndMinute])
@@ -798,16 +815,16 @@ struct ActionView: View {
                         }
                     }
                 } else {
-
+                    
                     switch actionType {
                     case .startShift:
                         
                         
                         
-                            DatePicker("", selection: $actionDate, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
+                        DatePicker("", selection: $actionDate, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(maxWidth: .infinity, alignment: .center)
                         
                         ActionButtonView(title: "Start Shift", backgroundColor: Color.orange.opacity(0.8), icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 100) {
                             viewModel.startShiftButtonAction(startDate: actionDate)
@@ -842,7 +859,7 @@ struct ActionView: View {
                     default:
                         fatalError("Unsupported action type")
                     }
-
+                    
                 }
                 
             }
@@ -856,12 +873,12 @@ struct ActionView: View {
 struct Shake: AnimatableModifier {
     var times: CGFloat = 0
     var amplitude: CGFloat = 5
-
+    
     var animatableData: CGFloat {
         get { times }
         set { times = newValue }
     }
-
+    
     func body(content: Content) -> some View {
         content.offset(x: sin(times * .pi * 2) * amplitude)
     }

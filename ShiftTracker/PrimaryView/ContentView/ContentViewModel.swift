@@ -82,7 +82,7 @@ class ContentViewModel: ObservableObject {
     
     @Published  var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
-    
+    @Published var selectedJobUUID: UUID?
     
     @Published private var overtimeDuration: TimeInterval = 0
     
@@ -114,6 +114,22 @@ class ContentViewModel: ObservableObject {
             return shift?.startDate ?? Date() // Return a default minimum date if no suitable break is found
         }
     }
+    
+    func fetchJob(with id: UUID?, in viewContext: NSManagedObjectContext) -> Job? {
+        guard let id = id else { return nil }
+        let request: NSFetchRequest<Job> = Job.fetchRequest()
+        request.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
+        request.fetchLimit = 1
+        
+        do {
+            let results = try viewContext.fetch(request)
+            return results.first
+        } catch {
+            print("Error fetching job: \(error)")
+            return nil
+        }
+    }
+
 
     
     public let percentageFormatter: NumberFormatter = {
@@ -149,6 +165,13 @@ class ContentViewModel: ObservableObject {
         self._isOvertime = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.isOvertimeKey))
         
         self._overtimeEnabled = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey))
+        
+        if let uuidString = sharedUserDefaults.string(forKey: "SelectedJobUUID"), let uuid = UUID(uuidString: uuidString) {
+            self._selectedJobUUID = .init(initialValue: uuid)
+        } else {
+            self._selectedJobUUID = .init(initialValue: nil)
+        }
+
         
     }
     
@@ -416,6 +439,8 @@ class ContentViewModel: ObservableObject {
                 latestShift.duration = endDate.timeIntervalSince(shift.startDate) - breakElapsed
                 latestShift.overtimeDuration = overtimeDuration
                 latestShift.overtimeRate = overtimeRate
+                
+                latestShift.job = fetchJob(with: selectedJobUUID, in: viewContext)
                 
                 
                 for tempBreak in tempBreaks {

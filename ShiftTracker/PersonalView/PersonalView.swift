@@ -31,6 +31,8 @@ struct PersonalView: View {
     
     @State private var showAllScheduledShiftsView = false
     
+    @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
+    
     var body: some View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
@@ -211,7 +213,7 @@ struct PersonalView: View {
                     }
 
                     // Delete the job
-            
+            sharedUserDefaults.removeObject(forKey: "SelectedJobUUID")
             deleteJobFromWatch(job)
                     viewContext.delete(job)
                     jobToDelete = nil
