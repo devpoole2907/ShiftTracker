@@ -65,7 +65,6 @@ struct EditJobView: View {
     
     
     var body: some View {
-        NavigationStack {
             Form {
                 Section(header: Text("Job Details")) {
                     TextField("Company Name", text: $name)
@@ -175,11 +174,10 @@ struct EditJobView: View {
                     }
                 }
                 
-                Button(action: saveJob) {
-                    Text("Save Job")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .navigationBarTitle("Edit Job", displayMode: .inline)
+            
+                
+                
+                
             }.sheet(isPresented: $showOvertimeTimeView){
                 OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                     .environment(\.managedObjectContext, viewContext)
@@ -188,7 +186,18 @@ struct EditJobView: View {
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(12)
             }
-        }
+        
+            .navigationBarTitle("Edit Job", displayMode: .inline)
+            
+            .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: saveJob) {
+                                Text("Save")
+                                    .bold()
+                            }
+                        }
+                    }
+        
     }
     
     private func saveJob() {

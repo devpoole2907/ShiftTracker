@@ -79,7 +79,7 @@ struct SummaryView: View {
                         }
                     }
                     
-                    //.listRowBackground(cardBackground)
+                    .listRowBackground(Color.primary.opacity(0.03))
                     .listRowSeparator(.hidden)
                     Section{
                         let (totalHoursLastWeek, totalBreakDurationLastWeek) = calculateTotalHoursAndBreaks()
@@ -101,7 +101,7 @@ struct SummaryView: View {
                             }
                         }
                     }
-                    //.listRowBackground(cardBackground)
+                    .listRowBackground(Color.primary.opacity(0.03))
                     .listRowSeparator(.hidden)
                     Section{
                         let (totalHoursLastWeek, totalBreakDurationLastWeek) = calculateTotalHoursAndBreaks()
@@ -124,7 +124,7 @@ struct SummaryView: View {
                             }
                         }
                     }
-                    //.listRowBackground(cardBackground)
+                    .listRowBackground(Color.primary.opacity(0.03))
                     .listRowSeparator(.hidden)
                 }.id(refreshingID)
                 
@@ -136,7 +136,7 @@ struct SummaryView: View {
                 //.padding(.top, 10)
                 .listStyle(InsetGroupedListStyle())
                 
-            }//.scrollContentBackground(.hidden)
+            }.scrollContentBackground(.hidden)
             .navigationTitle("Summary")
         }
     }

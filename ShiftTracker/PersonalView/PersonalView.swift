@@ -125,7 +125,7 @@ struct PersonalView: View {
                         }
                     }
                     
-                }
+                } 
                 Section{
                     
                     CalendarView(interval: DateInterval(start: .distantPast, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)

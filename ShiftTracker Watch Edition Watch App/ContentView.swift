@@ -9,8 +9,10 @@ import SwiftUI
 import WatchConnectivity
 import CoreData
 import CloudKit
-import WatchDatePicker
 
+#if os(watchOS)
+import WatchDatePicker
+#endif
 struct ContentView: View {
     
     private let connectivityManager = WatchConnectivityManager.shared

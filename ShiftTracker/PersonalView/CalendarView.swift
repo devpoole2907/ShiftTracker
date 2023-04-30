@@ -103,7 +103,7 @@ struct CalendarView: UIViewRepresentable {
                 if scheduledShifts.count > 1 {
                                 return .image(UIImage(systemName: "doc.on.doc.fill"),
                                               color: .orange,
-                                              size: .medium)
+                                              size: .large)
                             }
                 
                     

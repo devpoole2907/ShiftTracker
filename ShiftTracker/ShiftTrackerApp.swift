@@ -8,6 +8,8 @@
 import SwiftUI
 import CoreData
 import WatchConnectivity
+import Firebase
+import PopupView
 
 @main
 struct ShiftTrackerApp: App {
@@ -25,18 +27,25 @@ struct ShiftTrackerApp: App {
                 let context = PersistenceController.shared.container.viewContext
                 WatchConnectivityManager.shared.deleteJob(with: jobId, in: context)
             }
+        
+        
+        FirebaseApp.configure()
+        
+        
         }
     
     let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
-            MainView()
+            MainWithSideBarView()
+                .implementPopupView()
                 //.preferredColorScheme(getPreferredColorScheme())
                 .preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .onAppear {
                     startMonitoringAllJobLocations()
                 }
+                
 
         }
         

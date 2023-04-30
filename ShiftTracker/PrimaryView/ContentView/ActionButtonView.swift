@@ -33,8 +33,8 @@ struct ActionButtonView: View {
             .padding(.horizontal, 25)
             .frame(maxWidth: buttonWidth)
             .padding(.vertical, 8)
-            .background(backgroundColor)
-            .cornerRadius(12)
+            .background(backgroundColor.opacity(0.8))
+            .cornerRadius(50)
         }.haptics(onChangeOf: isActionButtonTapped, type: .success)
     }
 }

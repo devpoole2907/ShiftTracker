@@ -59,7 +59,7 @@ struct ContentView: View {
     //@ObservedObject var locationUpdateManager = LocationUpdateManager()
     
     
-    
+    @Binding var showMenu: Bool
     
     
     
@@ -70,12 +70,35 @@ struct ContentView: View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
         let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
-        let buttonColor: Color = colorScheme == .dark ? Color.gray.opacity(0.5) : Color.black.opacity(0.5)
-        let disabledButtonColor: Color = colorScheme == .dark ? Color.gray.opacity(0.2) : Color.black.opacity(0.2)
+        let buttonColor: Color = colorScheme == .dark ? Color.gray.opacity(0.5) : Color.black
+        let disabledButtonColor: Color = colorScheme == .dark ? Color.gray.opacity(0.2) : Color.primary.opacity(0.8)
         let bigImageColor: Color = colorScheme == .dark ? Color.gray.opacity(0.06) : Color.gray.opacity(0.05)
         
         // VStack{
         NavigationStack{
+            VStack{
+                VStack(spacing: 0){
+                    HStack{
+                    Button{
+                        withAnimation{
+                            showMenu.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "person.2.badge.gearshape")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35, height: 35)
+                            //.clipShape(Circle())
+                    }
+                    .foregroundColor(.black)
+                    Spacer()
+                    }.padding(.horizontal)
+                        .padding(.vertical, 10)
+                    
+                }
+            }
+            
+            
             ZStack{
                 VStack(alignment: .trailing){
                     
@@ -164,6 +187,10 @@ struct ContentView: View {
                     }
                     Section{
                         VStack{
+                            
+                            // DISABLED FOR REWRITES!!!!
+                            
+                            
                             HStack {
                                 
                                 Text("Hourly pay:")
@@ -191,7 +218,12 @@ struct ContentView: View {
                             
                             
                             /*    TaxPickerView(taxPercentage: $viewModel.taxPercentage).background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor).cornerRadius(20).disabled(!viewModel.isEditing && viewModel.shift != nil) */
-                            if taxEnabled {
+                            
+                            
+                            
+                            
+                            // DISABLED FOR REWRITES!!!!!!!!
+                        /*    if taxEnabled {
                                 Button(action: {
                                     activeSheet = .sheet5
                                 }) {
@@ -212,7 +244,7 @@ struct ContentView: View {
                                 .padding(.vertical, 11)
                                 .background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor)
                                 .cornerRadius(18)
-                            }
+                            } */
                             
                             Button(action: {
                                 activeSheet = .sheet8
@@ -488,8 +520,8 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarTitle(isProVersion ? Text("ShiftTracker Pro") : Text("ShiftTracker"))
-            .toolbar{
+           // .navigationBarTitle(isProVersion ? Text("ShiftTracker Pro") : Text("ShiftTracker"))
+         /*   .toolbar{
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if viewModel.isEditing {
                         Button("Done") {
@@ -518,7 +550,7 @@ struct ContentView: View {
                         .disabled(viewModel.shift == nil)
                     }
                 }
-            } .haptics(onChangeOf: viewModel.isEditing, type: .light)
+            } .haptics(onChangeOf: viewModel.isEditing, type: .light) */
         }
         //}
         
@@ -535,7 +567,7 @@ struct ContentView: View {
                         }.presentationDetents([ .large])
                         // .presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
+                            .presentationCornerRadius(50)
                     }
                 case .sheet2:
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
@@ -544,7 +576,7 @@ struct ContentView: View {
                         .presentationDetents([ .fraction(0.4)])
                     // .presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                        .presentationCornerRadius(50)
                     
                 case .sheet3:
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
@@ -553,21 +585,21 @@ struct ContentView: View {
                         .presentationDetents([ .fraction(0.4)])
                     // .presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                        .presentationCornerRadius(50)
                 case .sheet4:
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.4)])
                     // .presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                        .presentationCornerRadius(50)
                 case .sheet5:
                     TaxPickerView(taxPercentage: $viewModel.taxPercentage)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.3)])
                     //.presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                        .presentationCornerRadius(50)
                     
                 case .sheet6:
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Shift", actionType: .startShift)
@@ -575,7 +607,7 @@ struct ContentView: View {
                         .presentationDetents([ .fraction(0.4)])
                     //.presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                        .presentationCornerRadius(50)
                 case .sheet7:
                     
                     
@@ -651,13 +683,13 @@ struct ContentView: View {
                     .presentationDetents([ .fraction(0.4), .fraction(0.6)])
                     //.presentationBackground(.ultraThinMaterial)
                     .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(12)
+                    .presentationCornerRadius(50)
                 case .sheet8:
                     JobSelectionView(selectedJobUUID: $viewModel.selectedJobUUID)
                         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                         .presentationDetents([ .medium])
                         .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                        .presentationCornerRadius(50)
                 }
             }
             
@@ -683,18 +715,18 @@ struct ContentView: View {
             
         }
         
-        .popover(isPresented: $viewModel.isFirstLaunch) {
+    /*    .popover(isPresented: $viewModel.isFirstLaunch) {
             if #available(iOS 16.4, *) {
                 LaunchView()
                     .presentationDetents([ .large])
                     .presentationBackground(.black)
-                    .presentationCornerRadius(12)
+                    .presentationCornerRadius(50)
                     .interactiveDismissDisabled()
             }
             else {
                 LaunchView().background(.black)
             }
-        }
+        } */
         .onAppear{
             
             if let hourlyPayValue = UserDefaults.standard.object(forKey: shiftKeys.hourlyPayKey) as? Double {
@@ -753,7 +785,7 @@ private extension TimeInterval {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        MainWithSideBarView()
     }
 }
 

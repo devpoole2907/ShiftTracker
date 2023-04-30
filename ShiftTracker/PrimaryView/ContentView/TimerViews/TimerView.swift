@@ -65,7 +65,8 @@ struct TimerView: View {
         let totalBackgroundColor: Color = colorScheme == .dark ? Color.pink.opacity(0.5) : Color.pink.opacity(0.8)
         let timerBackgroundColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : Color.orange.opacity(0.8)
 
-        
+        var timeDigits = digitsFromTimeString(timeString: timeElapsed.stringFromTimeInterval())
+
         
         
         VStack(alignment: .center, spacing: 10) {
@@ -88,17 +89,49 @@ struct TimerView: View {
                     .fixedSize()
             }
             ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(width: 350, height: 100)
                 
-                   .foregroundColor(taxedBackgroundColor)
-                   .shadow(radius: 5, x: 0, y: 4)
+                Circle()
+                    .fill(Color.primary.opacity(0.05))
+                //.frame(width: 350, height: 100)
+                    .frame(width: UIScreen.main.bounds.width - 40)
+                // .foregroundColor(taxedBackgroundColor)
+                    .shadow(radius: 50, x: 4, y: 4)
+                Circle()
+                    .stroke(Color.black, lineWidth: 10)
+                    .frame(width: UIScreen.main.bounds.width - 40)
                 
-                Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 20)
-                    .font(.system(size: 70).monospacedDigit())
-                    .fontWeight(.black)
+                if timeElapsed > 0 {
+                VStack(spacing: 0){
+                    Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 20)
+                        .font(.system(size: 70).monospacedDigit())
+                        .fontWeight(.black)
+                    
+                    HStack(spacing: 0) {
+                        ForEach(0..<timeDigits.count, id: \.self) { index in
+                            RollingDigit(digit: timeDigits[index])
+                                .frame(width: 30, height: 50)
+                                .mask(FadeMask())
+                            if index == 1 || index == 3 {
+                                Text(":")
+                                    .font(.system(size: 50, weight: .bold).monospacedDigit())
+                            }
+                        }
+                    }
+                    .foregroundColor(.black)
+                    .frame(width: 250, height: 70)
+                }
+            }
+                else {
+                    VStack{
+                        Text("Upcoming shift in")
+                            .font(.system(size: 30, weight: .bold))
+                        Text("30m")
+                            .bold()
+                            .font(.system(size: 70))
+                    }
+                }
             }
             .frame(maxWidth: .infinity)
             .padding(.bottom, 10)
@@ -119,14 +152,8 @@ struct TimerView: View {
             .frame(maxWidth: .infinity)
             .padding(.bottom, 10)
         }
-            Text("\(timeElapsed.stringFromTimeInterval())")
-           
-                .foregroundColor(.orange)
-                //.shadow(radius: 2, x: 0, y: 1)
-                .font(.system(size: 50, weight: .bold).monospacedDigit())
-                .frame(width: 250, height: 70)
-                //.background(timerBackgroundColor)
-                .cornerRadius(20)
+            
+             
         }
             .ignoresSafeArea()
     }
@@ -154,3 +181,50 @@ private extension TimeInterval {
         return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
     }
 }
+
+struct RollingDigit: View {
+    let digit: Int
+    @State private var shouldAnimate = false
+
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                ForEach((0...10), id: \.self) { index in
+                    Text(index == 10 ? "0" : "\(index)")
+                        .font(.system(size: geometry.size.height).monospacedDigit())
+                        .bold()
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                }
+            }
+            .offset(y: -CGFloat(digit) * geometry.size.height)
+            .animation(shouldAnimate ? .easeOut(duration: 0.2) : nil)
+            .onAppear {
+                shouldAnimate = true
+            }
+            .onDisappear {
+                shouldAnimate = false
+            }
+        }
+    }
+}
+
+private func digitsFromTimeString(timeString: String) -> [Int] {
+    return timeString.flatMap { char in
+        if let digit = Int(String(char)) {
+            return [digit]
+        } else {
+            return []
+        }
+    }
+}
+struct FadeMask: View {
+    var body: some View {
+        LinearGradient(gradient: Gradient(stops: [
+            Gradient.Stop(color: Color.clear, location: 0),
+            Gradient.Stop(color: Color.black, location: 0.1), // Adjust these values
+            Gradient.Stop(color: Color.black, location: 0.9), // Adjust these values
+            Gradient.Stop(color: Color.clear, location: 1),
+        ]), startPoint: .top, endPoint: .bottom)
+    }
+}
+

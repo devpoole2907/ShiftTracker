@@ -167,6 +167,8 @@ struct ProView: View {
                         isProVersion.toggle()
                         // Save updated boolean value to shared user defaults
                         UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion")
+                        setUserSubscribed(true)
+                        print("setting user subscribed to true")
                         dismiss()
                     }) {
                         VStack{

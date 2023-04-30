@@ -253,7 +253,7 @@ struct StatsView: View {
                         .listRowSeparator(.hidden)
                         .pickerStyle(.segmented)
                         //.padding(.horizontal, 10)
-                    }
+                    }.listRowBackground(Color.primary.opacity(0.03))
                    // .listRowBackground(Color.clear)
                     Section{
                         HighlightView(title: "Earnings", subtitle: "You're earning an average of $\(String(format: "%.2f", averagePayPerShift)) per shift this week", titleColor: .green, subtitleColor: textColor, average: averagePayPerShift, statsMode: .earnings)
@@ -265,7 +265,7 @@ struct StatsView: View {
                             .textCase(nil)
                             .foregroundColor(textColor)
                             .padding(.leading, -12)
-                    }
+                    }.listRowBackground(Color.primary.opacity(0.03))
                  /*   Section{
                         HighlightView(title: "Earnings", subtitle: "You're averaging $\(String(format: "%.1f", abs(earningsDifference))) \(earningsDifference >= 0 ? "more" : "less") per shift this week compared to last week", titleColor: .green, subtitleColor: textColor, average: earningsDifference, lastWeekAverage: averagePayPerShiftPreviousWeek, thisWeekAverage: averagePayPerShift, statsMode: .earnings)
                     } */
@@ -301,7 +301,7 @@ struct StatsView: View {
                         .listRowSeparator(.hidden)
                         .pickerStyle(.segmented)
                         //.padding(.horizontal, 10)
-                    }
+                    }.listRowBackground(Color.primary.opacity(0.03))
                     //.listRowBackground(Color.clear)
                     Section{
                         HighlightView(title: "Hours", subtitle: "You're working \(String(format: "%.1f", averageHoursPerShift)) hours on average per shift this week", titleColor: .orange, subtitleColor: textColor, average: averageHoursPerShift, statsMode: .hours)
@@ -312,7 +312,7 @@ struct StatsView: View {
                             .textCase(nil)
                             .foregroundColor(textColor)
                             .padding(.leading, -12)
-                    }
+                    }.listRowBackground(Color.primary.opacity(0.03))
                  /*   Section{
                         HighlightView(title: "Hours", subtitle: "You're averaging \(String(format: "%.1f", abs(hoursDifference))) hours \(hoursDifference >= 0 ? "more" : "less") per shift this week compared to last week", titleColor: .orange, subtitleColor: textColor, average: hoursDifference, lastWeekAverage: averageHoursPerShiftPreviousWeek, thisWeekAverage: averageHoursPerShift, statsMode: .hours)
                     } */
@@ -349,7 +349,7 @@ struct StatsView: View {
                         .listRowSeparator(.hidden)
                         .pickerStyle(.segmented)
                         //.padding(.horizontal, 10)
-                    }
+                    }.listRowBackground(Color.primary.opacity(0.03))
                     //.listRowBackground(Color.clear)
                     Section{
                         HighlightView(title: "Breaks", subtitle: "You're on break for \(String(format: "%.1f", averageBreakPerShift)) hours on average per shift this week", titleColor: .indigo, subtitleColor: textColor, average: averageBreakPerShift, statsMode: .breaks)
@@ -360,12 +360,12 @@ struct StatsView: View {
                             .textCase(nil)
                             .foregroundColor(textColor)
                             .padding(.leading, -12)
-                    }
+                    }.listRowBackground(Color.primary.opacity(0.03))
                     Section{
                         Spacer()
                     }.listRowBackground(Color.clear)
                 }
-            }
+                }.scrollContentBackground(.hidden)
         }
     }
 }

@@ -61,6 +61,7 @@ struct ScheduledShiftsView: View {
                                             Image(systemName: "trash")
                                         }
                                     }
+                                    .listRowBackground(Color.primary.opacity(0.05))
                             }
                         }.scrollContentBackground(.hidden)
                     } else {
@@ -70,13 +71,14 @@ struct ScheduledShiftsView: View {
                     }
                 }
             }
-            .navigationBarTitle(dateSelected?.date?.formatted(date: .long, time: .omitted) ?? "")
+            .navigationBarTitle(dateSelected?.date?.formatted(date: .long, time: .omitted) ?? "", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button(action: {
                         showCreateShiftSheet = true
                     }) {
                         Image(systemName: "plus")
+                            .bold()
                     }
                 }
             }
@@ -87,6 +89,7 @@ struct ScheduledShiftsView: View {
             })
             .environment(\.managedObjectContext, viewContext)
             .presentationDetents([.large])
+            .presentationCornerRadius(50)
             //.presentationBackground(.thinMaterial)
             .presentationDragIndicator(.visible)
         }
@@ -310,7 +313,7 @@ struct CreateShiftForm: View {
                     }
                     .frame(minHeight: screenBounds().height / 3)
                        //.padding(.bottom, -200)
-                }
+                }.listRowBackground(Color.primary.opacity(0.05))
                     
                 Section {
                             Picker("Job", selection: $selectedJobIndex) {
@@ -324,25 +327,25 @@ struct CreateShiftForm: View {
                                     }
                                 }
                             }
-                        }
+                        }.listRowBackground(Color.primary.opacity(0.05))
                 Section {
                     VStack{
                         Toggle(isOn: $enableRepeat){
                             Text("Repeat")
                                 .bold()
-                        }
+                        }.toggleStyle(OrangeToggleStyle())
                         
                         RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)
                             .disabled(!enableRepeat)
                     }
-                }
+                }.listRowBackground(Color.primary.opacity(0.05))
                 Section {
                     VStack{
                         
                         Toggle(isOn: $notifyMe){
                             Text("Remind Me")
                                 .bold()
-                        }
+                        }.toggleStyle(OrangeToggleStyle())
                         
                         Picker("When", selection: $selectedReminderTime) {
                             ForEach(ReminderTime.allCases) { reminderTime in
@@ -351,7 +354,7 @@ struct CreateShiftForm: View {
                         }.disabled(!notifyMe)
                         
                     }
-                }
+                }.listRowBackground(Color.primary.opacity(0.05))
 
                     
 
@@ -359,32 +362,31 @@ struct CreateShiftForm: View {
                     
               
                 
-            }//.scrollContentBackground(.hidden)
-            VStack(alignment: .center){
-                Button {
-                    startDate = getTime(angle: startAngle)
-                    endDate = getTime(angle: toAngle, isEndDate: true)
-                    selectedJob = jobs[selectedIndex]
-                    
-                    if enableRepeat {
-                        saveRepeatingShiftSeries(startDate: getTime(angle: startAngle), endDate: getTime(angle: toAngle, isEndDate: true), repeatEveryWeek: true)
+            }.scrollContentBackground(.hidden)
+            
+                .toolbar{
+                    ToolbarItem(placement: .navigationBarTrailing){
+                        Button {
+                            startDate = getTime(angle: startAngle)
+                            endDate = getTime(angle: toAngle, isEndDate: true)
+                            selectedJob = jobs[selectedIndex]
+                            
+                            if enableRepeat {
+                                saveRepeatingShiftSeries(startDate: getTime(angle: startAngle), endDate: getTime(angle: toAngle, isEndDate: true), repeatEveryWeek: true)
+                            }
+                            else {
+                                createShift()
+                            }
+                        } label: {
+                            Text("Save")
+                                .bold()
+                                
+                        }
                     }
-                    else {
-                        createShift()
-                    }
-                } label: {
-                    Text("Schedule Shift")
-                        .foregroundColor(.white)
-                        .bold()
-                        .padding(.vertical)
-                        .padding(.horizontal, 40)
-                        .background(.orange, in: Capsule())
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-            }
             //.padding(.top, 35)
         
-            .navigationBarTitle("Schedule a Shift")
+            .navigationBarTitle("Schedule", displayMode: .inline)
         }
     }
     
@@ -435,7 +437,7 @@ struct CreateShiftForm: View {
                 
                 Circle()
                     .stroke(sliderBackgroundColor, lineWidth: 45)
-                
+                    .shadow(radius: 5, x: 2, y: 1)
                 
                 
                 let reverseRotation = (startProgress > toProgress) ? -Double((1 - startProgress) * 360) : 0

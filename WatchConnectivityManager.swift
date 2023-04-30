@@ -68,7 +68,7 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
         let context = persistenceController.container.viewContext
         
         jobs.forEach { jobData in
-            if fetchJob(with: jobData.id, in: context) == nil {
+            if fetchJob(with: jobData.id ?? UUID(), in: context) == nil {
                 let job = Job(context: context)
                 job.name = jobData.name
                 job.title = jobData.title

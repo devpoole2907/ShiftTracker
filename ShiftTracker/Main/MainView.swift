@@ -18,6 +18,7 @@ struct MainView: View {
     @AppStorage("AuthEnabled") private var authEnabled: Bool = false
         @State private var showingLockedView = false
 
+    @State var showMenu = false
     
     private func checkIfLocked() {
             if authEnabled {
@@ -27,7 +28,7 @@ struct MainView: View {
         
         
         var body: some View {
-
+/*
             TabView{
                 ContentView()
                     .environment(\.managedObjectContext, context)
@@ -67,7 +68,10 @@ struct MainView: View {
                         }
                     }
                 
-            }
+            } */
+            
+            Text("Cheese")
+            
             .sheet(isPresented: $showingLockedView) {
                 if #available(iOS 16.4, *) {
                     LockedView(isAuthenticated: $showingLockedView)

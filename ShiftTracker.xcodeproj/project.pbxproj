@@ -31,6 +31,11 @@
 		1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
+		1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4AB18629FCFE6D00AA62BC /* PopupView */; };
+		1A4AB18929FDE9BE00AA62BC /* GlobalFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions.swift */; };
+		1A4AB18B29FE1DB300AA62BC /* FirebaseJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */; };
+		1A4AB18D29FE1DFA00AA62BC /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */; };
+		1A4AB18F29FE315500AA62BC /* EditFirebaseJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */; };
 		1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610529C6D63A008AC8ED /* LaunchView.swift */; };
 		1A4E610829C7F861008AC8ED /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610729C7F861008AC8ED /* SummaryView.swift */; };
 		1A4E610B29C8081B008AC8ED /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E610A29C8081B008AC8ED /* SwiftUICharts */; };
@@ -64,6 +69,17 @@
 		1AB7C88529FA575B0008B3B3 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		1AB7C88829FA5B1E0008B3B3 /* WatchDatePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 1AB7C88729FA5B1E0008B3B3 /* WatchDatePicker */; };
 		1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D69029FB4C3300326AAA /* JobSelectionView.swift */; };
+		1AB7D69329FB6CE100326AAA /* MainWithSideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D69229FB6CE100326AAA /* MainWithSideBarView.swift */; };
+		1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D69529FB70F000326AAA /* SideMenu.swift */; };
+		1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D69729FB97C000326AAA /* ScheduleView.swift */; };
+		1AB7D69A29FBB1D500326AAA /* JobsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D69929FBB1D500326AAA /* JobsView.swift */; };
+		1AB7D69D29FBBDF700326AAA /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 1AB7D69C29FBBDF700326AAA /* GoogleSignIn */; };
+		1AB7D69F29FBBDF700326AAA /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1AB7D69E29FBBDF700326AAA /* GoogleSignInSwift */; };
+		1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D6A829FC040500326AAA /* PageIntro.swift */; };
+		1AB7D6AB29FC059500326AAA /* IntroMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D6AA29FC059500326AAA /* IntroMainView.swift */; };
+		1AB7D6AD29FC097700326AAA /* CustomIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D6AC29FC097700326AAA /* CustomIndicatorView.swift */; };
+		1AB7D6AF29FCAA1B00326AAA /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D6AE29FCAA1B00326AAA /* CustomTextField.swift */; };
+		1AB7D6B129FCC9E000326AAA /* FirebaseAuthModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7D6B029FCC9E000326AAA /* FirebaseAuthModel.swift */; };
 		1AB7EAB029FA635E00AC9565 /* WatchTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7EAAF29FA635E00AC9565 /* WatchTimerView.swift */; };
 		1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		1AC048C029E0D50E00355767 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
@@ -101,7 +117,6 @@
 		1AD72AB529F7809900534342 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD72AB429F7809900534342 /* ContentView.swift */; };
 		1AD72AB729F7809A00534342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72AB629F7809A00534342 /* Assets.xcassets */; };
 		1AD72ABA29F7809A00534342 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72AB929F7809A00534342 /* Preview Assets.xcassets */; };
-		1AD72ABD29F7809A00534342 /* ShiftTracker Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845429D40D380002378F /* MoreOptionsView.swift */; };
 		1AE3845729D444060002378F /* TabItemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845629D444060002378F /* TabItemData.swift */; };
 		1AE3845929D444340002378F /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845829D444340002378F /* TabItemView.swift */; };
@@ -127,27 +142,9 @@
 			remoteGlobalIDString = 1A52AFA229C5616800415870;
 			remoteInfo = ShiftTrackerWidgetExtension;
 		};
-		1AD72ABB29F7809A00534342 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1AD72AAF29F7809800534342;
-			remoteInfo = "ShiftTracker Watch Edition Watch App";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1A22EFFA29C5AEEF00A23F33 /* Embed Watch Content */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
-			files = (
-				1AD72ABD29F7809A00534342 /* ShiftTracker Watch App.app in Embed Watch Content */,
-			);
-			name = "Embed Watch Content";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1A52AFB629C5616A00415870 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -186,6 +183,10 @@
 		1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyPayCalculator.swift; sourceTree = "<group>"; };
 		1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFinderView.swift; sourceTree = "<group>"; };
+		1A4AB18829FDE9BE00AA62BC /* GlobalFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalFunctions.swift; sourceTree = "<group>"; };
+		1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseJob.swift; sourceTree = "<group>"; };
+		1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
+		1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFirebaseJobView.swift; sourceTree = "<group>"; };
 		1A4E610529C6D63A008AC8ED /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		1A4E610729C7F861008AC8ED /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
 		1A4E610C29C82DF9008AC8ED /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
@@ -210,6 +211,15 @@
 		1AAC400129F26B5B00E204C8 /* EditJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditJobView.swift; sourceTree = "<group>"; };
 		1AAC400329F2B09A00E204C8 /* OvertimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvertimeView.swift; sourceTree = "<group>"; };
 		1AB7D69029FB4C3300326AAA /* JobSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSelectionView.swift; sourceTree = "<group>"; };
+		1AB7D69229FB6CE100326AAA /* MainWithSideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWithSideBarView.swift; sourceTree = "<group>"; };
+		1AB7D69529FB70F000326AAA /* SideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenu.swift; sourceTree = "<group>"; };
+		1AB7D69729FB97C000326AAA /* ScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleView.swift; sourceTree = "<group>"; };
+		1AB7D69929FBB1D500326AAA /* JobsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsView.swift; sourceTree = "<group>"; };
+		1AB7D6A829FC040500326AAA /* PageIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageIntro.swift; sourceTree = "<group>"; };
+		1AB7D6AA29FC059500326AAA /* IntroMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroMainView.swift; sourceTree = "<group>"; };
+		1AB7D6AC29FC097700326AAA /* CustomIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIndicatorView.swift; sourceTree = "<group>"; };
+		1AB7D6AE29FCAA1B00326AAA /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		1AB7D6B029FCC9E000326AAA /* FirebaseAuthModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthModel.swift; sourceTree = "<group>"; };
 		1AB7EAAF29FA635E00AC9565 /* WatchTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTimerView.swift; sourceTree = "<group>"; };
 		1AC048BC29E0D07700355767 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		1AC048BF29E0D50E00355767 /* Shift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shift.swift; sourceTree = "<group>"; };
@@ -259,8 +269,11 @@
 				1AD72AA329F5268200534342 /* FirebaseDatabaseSwift in Frameworks */,
 				1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */,
 				1AD72AAB29F5268200534342 /* FirebaseMessaging in Frameworks */,
+				1AB7D69F29FBBDF700326AAA /* GoogleSignInSwift in Frameworks */,
 				1A4E611029C843ED008AC8ED /* SlideOverCard in Frameworks */,
+				1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */,
 				1AD72A9B29F5268200534342 /* FirebaseAnalytics in Frameworks */,
+				1AB7D69D29FBBDF700326AAA /* GoogleSignIn in Frameworks */,
 				1A4E610B29C8081B008AC8ED /* SwiftUICharts in Frameworks */,
 				1AD72A9D29F5268200534342 /* FirebaseAnalyticsSwift in Frameworks */,
 				1A12241029C92D2E0036D04C /* TabBar in Frameworks */,
@@ -306,6 +319,8 @@
 				1ACA60AC29D7913700B279CB /* ShiftKeys.swift */,
 				1A22EFFC29C652A900A23F33 /* MainView.swift */,
 				1A69DA2429C98C88008FA77F /* LocationDataManager.swift */,
+				1AB7D69229FB6CE100326AAA /* MainWithSideBarView.swift */,
+				1AB7D69529FB70F000326AAA /* SideMenu.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -320,6 +335,10 @@
 				1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */,
 				1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */,
 				1AAC400129F26B5B00E204C8 /* EditJobView.swift */,
+				1AB7D69729FB97C000326AAA /* ScheduleView.swift */,
+				1AB7D69929FBB1D500326AAA /* JobsView.swift */,
+				1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */,
+				1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */,
 			);
 			path = PersonalView;
 			sourceTree = "<group>";
@@ -348,6 +367,8 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */,
+				1A4AB18829FDE9BE00AA62BC /* GlobalFunctions.swift */,
 				1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */,
 				1AC9DDF729F7B28700C15008 /* JobData.swift */,
 				1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */,
@@ -375,6 +396,7 @@
 		1A9855D229C55F8A003F512C /* ShiftTracker */ = {
 			isa = PBXGroup;
 			children = (
+				1AB7D6A729FC03F400326AAA /* Intro */,
 				1AD72A9729F5237100534342 /* GoogleService-Info.plist */,
 				1AECCC4B29DBFCD700D879FE /* SettingsViews */,
 				1ACA60BB29D8EC1200B279CB /* Custom Toggle */,
@@ -405,6 +427,18 @@
 				1A9855DA29C55F8C003F512C /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		1AB7D6A729FC03F400326AAA /* Intro */ = {
+			isa = PBXGroup;
+			children = (
+				1AB7D6A829FC040500326AAA /* PageIntro.swift */,
+				1AB7D6AA29FC059500326AAA /* IntroMainView.swift */,
+				1AB7D6AC29FC097700326AAA /* CustomIndicatorView.swift */,
+				1AB7D6AE29FCAA1B00326AAA /* CustomTextField.swift */,
+				1AB7D6B029FCC9E000326AAA /* FirebaseAuthModel.swift */,
+			);
+			path = Intro;
 			sourceTree = "<group>";
 		};
 		1AC048BB29E0D02000355767 /* ContentView */ = {
@@ -548,13 +582,11 @@
 				1A9855CD29C55F8A003F512C /* Frameworks */,
 				1A9855CE29C55F8A003F512C /* Resources */,
 				1A52AFB629C5616A00415870 /* Embed Foundation Extensions */,
-				1A22EFFA29C5AEEF00A23F33 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				1A52AFB429C5616A00415870 /* PBXTargetDependency */,
-				1AD72ABC29F7809A00534342 /* PBXTargetDependency */,
 			);
 			name = ShiftTracker;
 			packageProductDependencies = (
@@ -572,6 +604,9 @@
 				1AD72AA629F5268200534342 /* FirebaseFirestoreSwift */,
 				1AD72AA829F5268200534342 /* FirebaseFunctions */,
 				1AD72AAA29F5268200534342 /* FirebaseMessaging */,
+				1AB7D69C29FBBDF700326AAA /* GoogleSignIn */,
+				1AB7D69E29FBBDF700326AAA /* GoogleSignInSwift */,
+				1A4AB18629FCFE6D00AA62BC /* PopupView */,
 			);
 			productName = ShiftTracker;
 			productReference = 1A9855D029C55F8A003F512C /* ShiftTracker.app */;
@@ -636,6 +671,8 @@
 				1AD1AC0E29E3CADA0050031B /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				1AD72A9929F5268200534342 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */,
+				1AB7D69B29FBBDF700326AAA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				1A4AB18529FCFE6D00AA62BC /* XCRemoteSwiftPackageReference "PopupView" */,
 			);
 			productRefGroup = 1A9855D129C55F8A003F512C /* Products */;
 			projectDirPath = "";
@@ -714,6 +751,7 @@
 				1AECCC5329DC218E00D879FE /* Tag.swift in Sources */,
 				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				1ACA60B929D8528700B279CB /* LocationUpdateManager.swift in Sources */,
+				1AB7D6B129FCC9E000326AAA /* FirebaseAuthModel.swift in Sources */,
 				1AECCC4D29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
@@ -723,15 +761,19 @@
 				1A22F00129C65E4D00A23F33 /* ShiftsView.swift in Sources */,
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
+				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
 				1AC9DDF829F7B28700C15008 /* JobData.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */,
 				1A13F18A29CE56CD009BE6B0 /* Location.swift in Sources */,
+				1AB7D69A29FBB1D500326AAA /* JobsView.swift in Sources */,
 				1A22EFFD29C652A900A23F33 /* MainView.swift in Sources */,
 				1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */,
+				1AB7D6AB29FC059500326AAA /* IntroMainView.swift in Sources */,
 				1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */,
 				1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */,
 				1ACA60C029D8F98500B279CB /* SearchBarView.swift in Sources */,
+				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
 				1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
@@ -745,21 +787,29 @@
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
 				1A13F19529D02914009BE6B0 /* ProView.swift in Sources */,
+				1A4AB18B29FE1DB300AA62BC /* FirebaseJob.swift in Sources */,
 				1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1A4E611229C84DF2008AC8ED /* TipView.swift in Sources */,
 				1AE3845929D444340002378F /* TabItemView.swift in Sources */,
 				1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */,
+				1A4AB18929FDE9BE00AA62BC /* GlobalFunctions.swift in Sources */,
 				1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */,
 				1A12240A29C900150036D04C /* RoundedSquareView.swift in Sources */,
 				1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */,
 				1A4E610829C7F861008AC8ED /* SummaryView.swift in Sources */,
+				1A4AB18D29FE1DFA00AA62BC /* JobsViewModel.swift in Sources */,
+				1AB7D6AD29FC097700326AAA /* CustomIndicatorView.swift in Sources */,
 				1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */,
+				1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */,
 				1A1DEC9E29F102230002D9E4 /* PersonalView.swift in Sources */,
 				1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1AECCC5629DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1AECCC5C29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */,
+				1A4AB18F29FE315500AA62BC /* EditFirebaseJobView.swift in Sources */,
 				1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */,
+				1AB7D69329FB6CE100326AAA /* MainWithSideBarView.swift in Sources */,
+				1AB7D6AF29FCAA1B00326AAA /* CustomTextField.swift in Sources */,
 				1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */,
 				1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */,
 				1AE3845B29D444800002378F /* TabBottomView.swift in Sources */,
@@ -792,11 +842,6 @@
 			isa = PBXTargetDependency;
 			target = 1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */;
 			targetProxy = 1A52AFB329C5616A00415870 /* PBXContainerItemProxy */;
-		};
-		1AD72ABC29F7809A00534342 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1AD72AAF29F7809800534342 /* ShiftTracker Watch App */;
-			targetProxy = 1AD72ABB29F7809A00534342 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -991,6 +1036,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftTracker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Authenticate yourself to unlock ShiftTracker";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
@@ -998,7 +1044,6 @@
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
@@ -1029,6 +1074,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftTracker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Authenticate yourself to unlock ShiftTracker";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
@@ -1036,7 +1082,6 @@
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
@@ -1059,6 +1104,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "ShiftTracker Watch Edition Watch App/ShiftTracker Watch Edition Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShiftTracker Watch Edition Watch App/Preview Content\"";
@@ -1076,6 +1122,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1091,6 +1138,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "ShiftTracker Watch Edition Watch App/ShiftTracker Watch Edition Watch App.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ShiftTracker Watch Edition Watch App/Preview Content\"";
@@ -1108,6 +1156,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1175,6 +1224,14 @@
 				minimumVersion = 0.8.1;
 			};
 		};
+		1A4AB18529FCFE6D00AA62BC /* XCRemoteSwiftPackageReference "PopupView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Mijick/PopupView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		1A4E610929C8081B008AC8ED /* XCRemoteSwiftPackageReference "ChartView" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AppPear/ChartView";
@@ -1207,6 +1264,14 @@
 				minimumVersion = 0.2.1;
 			};
 		};
+		1AB7D69B29FBBDF700326AAA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		1AD1AC0E29E3CADA0050031B /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
@@ -1236,6 +1301,11 @@
 			package = 1A34588529D18D8800CADDD8 /* XCRemoteSwiftPackageReference "SwiftCSV" */;
 			productName = SwiftCSV;
 		};
+		1A4AB18629FCFE6D00AA62BC /* PopupView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1A4AB18529FCFE6D00AA62BC /* XCRemoteSwiftPackageReference "PopupView" */;
+			productName = PopupView;
+		};
 		1A4E610A29C8081B008AC8ED /* SwiftUICharts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1A4E610929C8081B008AC8ED /* XCRemoteSwiftPackageReference "ChartView" */;
@@ -1255,6 +1325,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */;
 			productName = WatchDatePicker;
+		};
+		1AB7D69C29FBBDF700326AAA /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1AB7D69B29FBBDF700326AAA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		1AB7D69E29FBBDF700326AAA /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1AB7D69B29FBBDF700326AAA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
 		};
 		1AD72A9A29F5268200534342 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

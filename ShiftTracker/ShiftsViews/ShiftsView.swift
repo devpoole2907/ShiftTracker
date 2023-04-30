@@ -344,7 +344,7 @@ struct ShiftsView: View {
                     Section{
                         VStack(spacing: 15) {
                             HStack(spacing: 15) { // increased spacing between squares
-                                RoundedSquareView(text: "Shifts", count: "\(oldShifts.count)", color: squareColor, imageColor: .blue, systemImageName: "briefcase.circle.fill")
+                                RoundedSquareView(text: "Shifts", count: "\(oldShifts.count)", color: Color.primary.opacity(0.03), imageColor: .blue, systemImageName: "briefcase.circle.fill")
                                     .frame(maxWidth: .infinity) // increased width of the square
                                     .scaleEffect(isTotalShiftsTapped ? 1.1 : 1)
                                     .animation(.easeInOut(duration: 0.3))
@@ -360,7 +360,7 @@ struct ShiftsView: View {
                                         }
                                         
                                     }
-                                RoundedSquareView(text: "Taxed", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllTaxedPay())", color: squareColor, imageColor: .green, systemImageName: "dollarsign.circle.fill")
+                                RoundedSquareView(text: "Taxed", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllTaxedPay())", color: Color.primary.opacity(0.03), imageColor: .green, systemImageName: "dollarsign.circle.fill")
                                     .frame(maxWidth: .infinity)
                                     .scaleEffect(isTaxedPayTapped ? 1.1 : 1)
                                     .animation(.easeInOut(duration: 0.3))
@@ -381,7 +381,7 @@ struct ShiftsView: View {
                                 
                                 
                                 
-                                RoundedSquareView(text: "Hours", count: "\(addAllHours())", color: squareColor, imageColor: .orange, systemImageName: "stopwatch.fill")
+                                RoundedSquareView(text: "Hours", count: "\(addAllHours())", color: Color.primary.opacity(0.03), imageColor: .orange, systemImageName: "stopwatch.fill")
                                 
                                     .frame(maxWidth: .infinity)
                                     .scaleEffect(isTotalHoursTapped ? 1.1 : 1)
@@ -399,7 +399,7 @@ struct ShiftsView: View {
                                         
                                     }
                                 
-                                RoundedSquareView(text: "Total", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllPay())", color: squareColor, imageColor: .pink, systemImageName: "chart.line.downtrend.xyaxis.circle.fill")
+                                RoundedSquareView(text: "Total", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllPay())", color: Color.primary.opacity(0.03), imageColor: .pink, systemImageName: "chart.line.downtrend.xyaxis.circle.fill")
                                 
                                     .frame(maxWidth: .infinity)
                                     .scaleEffect(isTotalPayTapped ? 1.1 : 1)
@@ -444,7 +444,7 @@ struct ShiftsView: View {
                         }
                         
                         
-                    }
+                    }.listRowBackground(Color.primary.opacity(0.03))
                     
                     Section{
                     if sortOption == 0 {
@@ -462,8 +462,12 @@ struct ShiftsView: View {
                                                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                                                     .foregroundColor(isSelected ? .orange : .gray)
                                             }
-                                            let durationString = String(format: "%.1f", (shift.shiftEndDate!.timeIntervalSince(shift.shiftStartDate!) / 3600.0))
-                                            let dateString = dateFormatter.string(from: shift.shiftStartDate!)
+                                            let shiftStartDate = shift.shiftStartDate ?? Date()
+                                            let shiftEndDate = shift.shiftEndDate ?? Date()
+                                            let duration = shiftEndDate.timeIntervalSince(shiftStartDate) / 3600.0
+                                            let durationString = String(format: "%.1f", duration)
+
+                                            let dateString = dateFormatter.string(from: shiftStartDate)
                                             let payString = String(format: "%.2f", shift.taxedPay)
                                             
                                             VStack(alignment: .leading, spacing: 5){
@@ -487,7 +491,7 @@ struct ShiftsView: View {
                                             EmptyView()
                                         })
                                     }
-                                }
+                                }.listRowBackground(Color.primary.opacity(0.03))
                                 .swipeActions {
                                     if !isEditing {
                                         Button(role: .destructive) {
@@ -541,7 +545,7 @@ struct ShiftsView: View {
                                             EmptyView()
                                         })
                                     }
-                                }
+                                }.listRowBackground(Color.primary.opacity(0.03))
                                 .swipeActions {
                                     if !isEditing {
                                         Button(role: .destructive) {
@@ -596,7 +600,7 @@ struct ShiftsView: View {
                                                 EmptyView()
                                             })
                                         }
-                                    }
+                                    }.listRowBackground(Color.primary.opacity(0.03))
                                     .swipeActions {
                                         if !isEditing {
                                             Button(role: .destructive) {
@@ -649,7 +653,7 @@ struct ShiftsView: View {
                                                 EmptyView()
                                             })
                                         }
-                                    }
+                                    }.listRowBackground(Color.primary.opacity(0.03))
                                     .swipeActions {
                                         if !isEditing {
                                             Button(role: .destructive) {
@@ -704,7 +708,7 @@ struct ShiftsView: View {
                         }
                     }
                     
-                }
+                }.scrollContentBackground(.hidden)
             .onChange(of: isEditing) { newValue in
                 if !newValue {
                     selectedShifts.removeAll()

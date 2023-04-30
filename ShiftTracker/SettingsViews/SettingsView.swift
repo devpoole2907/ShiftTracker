@@ -37,8 +37,7 @@ struct SettingsView: View {
         
         
         
-        NavigationStack{
-            VStack(spacing: 16){
+
                 
                 List{
                     if !isProVersion{
@@ -96,12 +95,17 @@ struct SettingsView: View {
                         NavigationLink(destination: AppearanceView(userColorScheme: $userColorScheme)) {
                             HStack {
                                 Image("AppearanceIconSymbol")
-                                    .padding(.leading, -2)
+                                    .padding(.leading, -1)
                                 Spacer().frame(width: 10)
                                 Text("Appearance")
+                                    .font(.title2)
+                                    .bold()
+                                    .padding()
                                 Spacer()
                                 Text("\(userColorScheme)".capitalized)
                                     .foregroundColor(.gray)
+                                    .bold()
+                                    .padding()
                             }
                                         }
                     /*NavigationLink(destination: TagsView().navigationTitle("Tags")){
@@ -117,6 +121,9 @@ struct SettingsView: View {
                                     .padding(.leading, 2)
                                 Spacer().frame(width: 10)
                                 Text("App Lock")
+                                    .font(.title2)
+                                    .bold()
+                                    .padding()
                             }
                         }.toggleStyle(OrangeToggleStyle())
                             .onChange(of: authEnabled) { newValue in
@@ -138,6 +145,9 @@ struct SettingsView: View {
                                     .padding(.leading, -2)
                                 Spacer().frame(width: 10)
                                 Text("iCloud Sync")
+                                    .font(.title2)
+                                    .bold()
+                                    .padding()
                             }
                         }.toggleStyle(OrangeToggleStyle())
                             .onChange(of: iCloudSyncOn) { value in
@@ -149,8 +159,12 @@ struct SettingsView: View {
                                     .padding(.leading, -2)
                                 Spacer().frame(width: 10)
                                 Text("Tips")
+                                    .font(.title2)
+                                    .bold()
+                                    .padding()
                             }
                         }.toggleStyle(OrangeToggleStyle())
+                            //.padding()
                             
                         Toggle(isOn: $taxEnabled) {
                             HStack {
@@ -158,6 +172,9 @@ struct SettingsView: View {
                                     .padding(.leading, -1)
                                 Spacer().frame(width: 10)
                                 Text("Estimated Tax")
+                                    .font(.title2)
+                                    .bold()
+                                    .padding()
                             }
                         }.toggleStyle(OrangeToggleStyle())
                             .onChange(of: taxEnabled){ value in
@@ -174,6 +191,9 @@ struct SettingsView: View {
                                 Image(systemName: "hammer.circle.fill")
                                 Spacer().frame(width: 10)
                                 Text("Support the Developer")
+                                    .font(.title2)
+                                    .bold()
+                                    .padding()
                             }
                         }
                         
@@ -196,28 +216,34 @@ struct SettingsView: View {
                             .font(.caption)
                     }.listRowBackground(Color.clear)
                     
-                }//.scrollContentBackground(.hidden)
-
-                //Spacer()
+                }.scrollContentBackground(.hidden)
+                .padding(.horizontal)
+                .listStyle(.plain)
+            
+            
                 
                 
                 
-            }
+                
+            
             //.padding(.vertical, 16)
-            .navigationBarTitle("Settings")
+           // .navigationBarTitle("Settings", displayMode: .inline)
+               
+                .toolbarRole(.editor)
+            
             .sheet(isPresented: $showingProView) { // present the sheet with ProView
                 if #available(iOS 16.4, *) {
                     ProView()
                         .presentationDetents([.large])
                         .presentationBackground(.thinMaterial)
                         .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                        .presentationCornerRadius(50)
                 }
                 else {
                     ProView()
                 }
             }
-        }
+        
         
     }
     
@@ -268,8 +294,9 @@ struct ProSettingsView: View{
                         isProVersion.toggle()
                         // Save updated boolean value to shared user defaults
                         UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion")
+                        setUserSubscribed(isProVersion)
                     }) {
-                        Text(isProVersion ? "Pro version activated" : "Upgrade now")
+                        Text(isProVersion ? "Unsubscribe" : "Upgrade now")
                             .foregroundColor(.white)
                     }
                     .frame(maxWidth: UIScreen.main.bounds.width - 20) //maxHeight: 100)
@@ -279,6 +306,7 @@ struct ProSettingsView: View{
                 }
             }
         }.navigationTitle("ShiftTracker Pro")
+        
     }
 }
 
@@ -393,7 +421,8 @@ struct AppearanceView: View {
                     .listRowBackground(Color.clear)
             }
         }.scrollContentBackground(.hidden)
-        .navigationTitle("Appearance")
+        .navigationBarTitle("Appearance")
+        .toolbarRole(.editor)
     }
 }
 

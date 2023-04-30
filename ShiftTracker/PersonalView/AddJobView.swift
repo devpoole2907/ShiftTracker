@@ -8,10 +8,13 @@
 import SwiftUI
 import UIKit
 import CoreData
+import Firebase
 
 struct AddJobView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
+    
+    @ObservedObject var model = JobsViewModel()
     
     @ObservedObject private var locationManager = LocationDataManager()
     
@@ -74,8 +77,6 @@ struct AddJobView: View {
     
     var body: some View {
         
-        
-        NavigationStack {
             ScrollView {
                     VStack(alignment: .leading, spacing: 20){
                         
@@ -243,25 +244,60 @@ struct AddJobView: View {
             
             .navigationBarTitle("Add Job")
             .toolbar {
-                            ToolbarItem(placement: .navigationBarTrailing) {
-                                Button(action: saveJob) {
-                                    Text("Save")
-                                        .padding(.vertical, 5)
-                                        .padding(.horizontal, 15)
-                                        //.foregroundColor(.orange)
-                                        //.background(Color(.systemGray4))
-                                        .cornerRadius(8)
-                                 
-                                        
-                                }
-                            }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        if isSubscriptionActive() {
+                            saveJobToFirebase()
+                            print("saving job to firebase!")
+                        } else {
+                            saveJobToCoreData()
+                            print("saving job to core data!")
+                        }
+                    }) {
+                        Text("Save")
+                            .bold()
+                    }
+                }
+
                     
                         }
             
-        }
+        
     }
+
     
-    private func saveJob() {
+    private func saveJobToFirebase() {
+        let uiColor = UIColor($selectedColor.wrappedValue)
+        let colorComponents = uiColor.cgColor.components?.map { Float($0) } ?? [0, 0, 0, 0]
+
+
+        model.addData(
+            name: name,
+            title: title,
+            hourlyPay: hourlyPay,
+            address: selectedAddress ?? "",
+            clockInReminder: clockInReminder,
+            clockOutReminder: clockOutReminder,
+            autoClockIn: autoClockIn,
+            autoClockOut: autoClockOut,
+            overtimeEnabled: overtimeEnabled,
+            overtimeAppliedAfter: Int16(overtimeAppliedAfter),
+            overtimeRate: overtimeRate,
+            icon: selectedIcon,
+            colorRed: colorComponents[0],
+            colorGreen: colorComponents[1],
+            colorBlue: colorComponents[2],
+            payPeriodLength: Int16(payPeriodLength) ?? 0,
+            payPeriodStartDay: Int16(payPeriodStartDay ?? 0)
+        )
+        presentationMode.wrappedValue.dismiss()
+    }
+
+
+
+
+    
+    private func saveJobToCoreData() {
         let newJob = Job(context: viewContext)
         newJob.name = name
         newJob.title = title
@@ -308,6 +344,10 @@ struct AddJobView: View {
             print("Failed to save job: \(error.localizedDescription)")
         }
     }
+    
+    
+    
+    
 }
 
 struct AddJobView_Previews: PreviewProvider {
