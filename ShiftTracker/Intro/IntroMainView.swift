@@ -406,7 +406,6 @@ private extension LoginFailedPopup {
 
     func createDescription() -> some View {
         Text("Check your email and password.")
-                    //.foregroundColor(.onBackgroundSecondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
     }
