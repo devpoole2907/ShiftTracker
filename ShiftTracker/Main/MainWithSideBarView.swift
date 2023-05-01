@@ -11,7 +11,11 @@ import Firebase
 struct MainWithSideBarView: View {
     
     
+    @AppStorage("isFirstLaunch", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isFirstLaunch = true
+    
     @StateObject private var authModel = FirebaseAuthModel()
+    
+    @StateObject var viewModel = ContentViewModel()
     
     @State var showMenu: Bool = false
     
@@ -36,18 +40,22 @@ struct MainWithSideBarView: View {
         
 
         
-        if authModel.userIsLoggedIn{
+       // if authModel.userIsLoggedIn{
+        if !isFirstLaunch{
         NavigationView {
             
             
             HStack(spacing: 0){
                 SideMenu(showMenu: $showMenu)
                     .environmentObject(authModel)
+                    .environmentObject(viewModel)
                 VStack(spacing: 0){
                     
                     TabView(selection: $currentTab) {
                         ContentView(showMenu: $showMenu)
                             .environment(\.managedObjectContext, context)
+                            .environmentObject(viewModel)
+                        
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarHidden(true)
                             .tag(Tab.home)
@@ -131,18 +139,19 @@ struct MainWithSideBarView: View {
         .onChange(of: gestureOffset) { newValue in
             onChange()
         }
-        .onAppear{ authModel.checkUserLoginStatus()
+   /*     .onAppear{ authModel.checkUserLoginStatus()
                             if !isSubscriptionChecked {
                                 checkSubscriptionStatus()
                                 isSubscriptionChecked = true
-                            }    
+                            }
             
-        }
+        } */
         
         } else {
-            IntroMainView()
+            IntroMainView(isFirstLaunch: $isFirstLaunch)
                 .environmentObject(authModel)
-                .onAppear{ authModel.checkUserLoginStatus() }
+                //.onAppear{ authModel.checkUserLoginStatus() }
+                
         }
     }
     

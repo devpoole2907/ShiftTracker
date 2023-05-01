@@ -65,6 +65,7 @@ struct EditJobView: View {
     
     
     var body: some View {
+        NavigationView{
             Form {
                 Section(header: Text("Job Details")) {
                     TextField("Company Name", text: $name)
@@ -72,8 +73,8 @@ struct EditJobView: View {
                     TextField("Hourly Pay", text: $hourlyPay)
                         .keyboardType(.decimalPad)
                     ColorPicker("Job Color", selection: $selectedColor, supportsOpacity: false)
-
-
+                    
+                    
                     
                 }
                 
@@ -91,8 +92,8 @@ struct EditJobView: View {
                         }
                     }
                     .onChange(of: selectedAddress) { newAddress in
-                            job.address = newAddress
-                        }
+                        job.address = newAddress
+                    }
                     
                     Toggle(isOn: $clockInReminder){
                         HStack {
@@ -160,7 +161,7 @@ struct EditJobView: View {
                     }
                     
                 }
-
+                
                 
                 
                 Section(header: Text("Pay Period")) {
@@ -174,30 +175,30 @@ struct EditJobView: View {
                     }
                 }
                 
-            
+                
                 
                 
                 
             }.sheet(isPresented: $showOvertimeTimeView){
                 OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                     .environment(\.managedObjectContext, viewContext)
-                        .presentationDetents([ .fraction(0.2)])
-                        .presentationBackground(.ultraThinMaterial)
-                        .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(12)
+                    .presentationDetents([ .fraction(0.2)])
+                    .presentationBackground(.ultraThinMaterial)
+                    .presentationDragIndicator(.visible)
+                    .presentationCornerRadius(12)
             }
-        
+            
             .navigationBarTitle("Edit Job", displayMode: .inline)
             
             .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: saveJob) {
-                                Text("Save")
-                                    .bold()
-                            }
-                        }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: saveJob) {
+                        Text("Save")
+                            .bold()
                     }
-        
+                }
+            }
+        }
     }
     
     private func saveJob() {

@@ -14,10 +14,16 @@ struct IntroMainView: View {
     
     @State private var activeIntro: PageIntro = pageIntros[0]
     
+    @Environment(\.presentationMode) private var presentationMode
+    
     @State private var keyboardHeight: CGFloat = 0
     
     @State private var emailID: String = ""
     @State private var password: String = ""
+    
+    @State private var createAccount: Bool = false
+    
+    @Binding var isFirstLaunch: Bool
     
     @EnvironmentObject var authModel: FirebaseAuthModel
     
@@ -27,7 +33,7 @@ struct IntroMainView: View {
             
             IntroView(intro: $activeIntro, size: size){
                 VStack(spacing: 10){
-                    CustomTextField(text: $emailID, hint: "Email Address", leadingIcon: Image(systemName: "at.circle.fill"))
+                 /*   CustomTextField(text: $emailID, hint: "Email Address", leadingIcon: Image(systemName: "at.circle.fill"))
                     
                     CustomTextField(text: $password, hint: "Password", leadingIcon: Image(systemName: "lock.fill"), isPassword: true)
                     
@@ -36,15 +42,20 @@ struct IntroMainView: View {
                     HStack{
                         Text("Don't have an account?")
                         Button{
-                            register()
+                           // register()
+                            
+                            createAccount.toggle()
+                            
                         } label: {
                             Text("Sign up")
                                 .bold()
                         }
-                    }.padding()
+                    }.padding() */
                     
                     Button{
-                        login()
+                        //login()
+                        
+                        isFirstLaunch = false
                     } label: {
                         Text("Continue")
                             .fontWeight(.semibold)
@@ -56,7 +67,7 @@ struct IntroMainView: View {
                                     .fill(.black)
                             }
                     }
-                    Divider()
+                   /* Divider()
                     Text("OR")
                     Divider()
                     
@@ -90,7 +101,7 @@ struct IntroMainView: View {
                             Text("Skip sign in")
                                 .bold()
                         }
-                    }.padding()
+                    }.padding() */
                     
                     
                     
@@ -122,6 +133,15 @@ struct IntroMainView: View {
                     } */
             }
             
+            /*.fullScreenCover(isPresented: $createAccount){
+                RegisterView()
+                    .environmentObject(authModel)
+                    .padding(15)
+                
+                    //.presentationBackground(.thinMaterial)
+                    .interactiveDismissDisabled(false)
+            } */
+            
             
             
         }
@@ -140,14 +160,7 @@ struct IntroMainView: View {
         }
     }
     
-    func register() {
-        Auth.auth().createUser(withEmail: emailID, password: password) { result, error in
-            if error != nil {
-                print(error!.localizedDescription)
-            }
-           
-        }
-    }
+
     
 }
 
@@ -224,6 +237,16 @@ struct IntroView<ActionView: View>: View {
                                     .fill(.black)
                             }
                         }.frame(maxWidth: .infinity)
+                        
+                
+                            Button{
+                                changeIntro(isSkip: true)
+                            } label: {
+                                Text("Skip")
+                                    .bold()
+                            }.padding()
+                            .frame(maxWidth: .infinity)
+                        
                     }
                 
                 } else {
@@ -264,14 +287,19 @@ struct IntroView<ActionView: View>: View {
         }
     }
     
-    func changeIntro(_ isPrevious: Bool = false){
+    func changeIntro(_ isPrevious: Bool = false, isSkip: Bool = false){
         
         withAnimation(.spring(response: 0.8, dampingFraction: 0.8, blendDuration: 0)){
             hideWholeView = true
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-            if let index = pageIntros.firstIndex(of: intro), (isPrevious ? index != 0 : index != pageIntros.count - 1) {
+            
+            
+            if isSkip {
+                intro = pageIntros[pageIntros.count - 1]
+            }
+            else if let index = pageIntros.firstIndex(of: intro), (isPrevious ? index != 0 : index != pageIntros.count - 1) {
                 intro = isPrevious ? pageIntros[index - 1] : pageIntros[index + 1]
             }
             else {
@@ -289,6 +317,7 @@ struct IntroView<ActionView: View>: View {
         
         
     }
+
     
     var filteredPages: [PageIntro] {
         return pageIntros.filter { !$0.displaysAction }
@@ -429,4 +458,151 @@ private extension LoginFailedPopup {
         }
     }
 
+}
+
+struct RegisterView: View {
+    
+    @State private var emailID: String = ""
+    @State private var password: String = ""
+    @State private var profilePicture: Data?
+    
+    @Environment(\.presentationMode) private var presentationMode
+    
+    @EnvironmentObject var authModel: FirebaseAuthModel
+    
+    var body: some View{
+        
+        HStack{
+            Text("Sign up")
+                .font(.system(size: 40))
+                .fontWeight(.black)
+            Spacer()
+                
+        }.padding()
+        
+        ZStack{
+            if let profilePicture, let image = UIImage(data: profilePicture){
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                
+            } else {
+                ZStack{
+                    Image(systemName: "person.crop.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .foregroundColor(.black.opacity(0.3))
+                    
+                  //  Image(systemName: "camera")
+                    
+                }
+                
+            }
+            
+            
+        }.frame(width: 85, height: 85)
+            .clipShape(Circle())
+            .contentShape(Circle())
+        
+        VStack(spacing: 10){
+            CustomTextField(text: $emailID, hint: "Email Address", leadingIcon: Image(systemName: "at.circle.fill"))
+            
+            CustomTextField(text: $password, hint: "Password", leadingIcon: Image(systemName: "lock.fill"), isPassword: true)
+            
+          //  Spacer(minLength: 10)
+            
+            HStack{
+                Text("Already have an account?")
+                Button{
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Text("Sign in")
+                        .bold()
+                }
+            }.padding()
+            
+            Button{
+               register()
+            } label: {
+                Text("Continue")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .padding(.vertical, 15)
+                    .frame(maxWidth: .infinity)
+                    .background{
+                        Capsule()
+                            .fill(.black)
+                    }
+            }
+            Divider()
+            Text("OR")
+            Divider()
+            
+            HStack{
+                Image(systemName: "applelogo")
+                    .foregroundColor(.white)
+                Text("Sign up with Apple")
+            }
+            .fontWeight(.semibold)
+            .foregroundColor(.white)
+            .padding(.vertical, 15)
+            .frame(maxWidth: .infinity)
+            .background{
+                Capsule()
+                    .fill(.black)
+            }
+            .overlay(
+                SignInWithAppleButton { request in
+                   // authModel.handleSignInWithAppleRequest(request)
+                } onCompletion: { result in
+                   // authModel.handleSignInWithAppleCompletion(result)
+                }
+                .signInWithAppleButtonStyle(.white)
+                .blendMode(.overlay)
+            )
+            
+            HStack{
+                Button{
+                    
+                } label: {
+                    Text("Skip sign in")
+                        .bold()
+                }
+            }.padding()
+            
+            
+            
+           /* Button{
+                register()
+            } label: {
+                HStack{
+                    Image(systemName: "applelogo")
+                        .foregroundColor(.white)
+                    Text("Sign in with Apple")
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .padding(.vertical, 15)
+                }
+                    .frame(maxWidth: .infinity)
+                    .background{
+                        Capsule()
+                            .fill(.black)
+                    }
+            } */
+            
+        }.padding(.top, 25)
+        
+        
+    }
+    
+    
+    func register() {
+        Auth.auth().createUser(withEmail: emailID, password: password) { result, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            }
+           
+        }
+    }
+    
 }
