@@ -27,7 +27,9 @@ struct ContentView: View {
     
     @Environment(\.presentationMode) private var presentationMode
     
-    @StateObject var viewModel = ContentViewModel()
+    //@StateObject var viewModel = ContentViewModel()
+    
+    @EnvironmentObject var viewModel: ContentViewModel
     
     @State private var activeSheet: ActiveSheet?
     
@@ -84,7 +86,7 @@ struct ContentView: View {
                             showMenu.toggle()
                         }
                     } label: {
-                        Image(systemName: "person.2.badge.gearshape")
+                        Image(systemName: "line.3.horizontal")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 35, height: 35)

@@ -22,5 +22,5 @@ var pageIntros: [PageIntro] = [
     .init(introAssetImage: "Scheduling", title: "Schedule shifts", subTitle: "Enter your roster, and get reminded when you have an upcoming shift"),
         .init(introAssetImage: "Invoicing", title: "Invoice generation", subTitle: "Input your pay periods, and automatically generate invoices"),
     .init(introAssetImage: "Statistics", title: "Statistics & Summaries", subTitle: "View in depth statistics and summaries"),
-    .init(introAssetImage: "SignUp", title: "Get Started", subTitle: "Sign up and start ShiftTracking.", displaysAction: true),
+    .init(introAssetImage: "SignUp", title: "Get Started", subTitle: "Lets start ShiftTracking.", displaysAction: true),
           ]
