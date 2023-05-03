@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 import CoreData
 import Firebase
+import MapKit
 
 struct EditFirebaseJobView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -44,6 +45,8 @@ struct EditFirebaseJobView: View {
     @State private var selectedIcon = "briefcase.circle"
     
     @State private var activeSheet: ActiveSheet?
+    
+    @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
     enum ActiveSheet: Identifiable {
         case overtimeSheet, symbolSheet
@@ -135,7 +138,7 @@ struct EditFirebaseJobView: View {
 
                 
                 Section{
-                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress)) {
+                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)) {
                         HStack {
                             Image("LocationIconFilled")
                             

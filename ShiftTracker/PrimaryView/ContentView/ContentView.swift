@@ -78,27 +78,7 @@ struct ContentView: View {
         
         // VStack{
         NavigationStack{
-            VStack{
-                VStack(spacing: 0){
-                    HStack{
-                    Button{
-                        withAnimation{
-                            showMenu.toggle()
-                        }
-                    } label: {
-                        Image(systemName: "line.3.horizontal")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 35, height: 35)
-                            //.clipShape(Circle())
-                    }
-                    .foregroundColor(.black)
-                    Spacer()
-                    }.padding(.horizontal)
-                        .padding(.vertical, 10)
-                    
-                }
-            }
+            
             
             
             ZStack{
@@ -522,6 +502,24 @@ struct ContentView: View {
                     }
                 }
             }
+            
+            .toolbar{
+                ToolbarItem(placement: .navigationBarLeading){
+                    Button{
+                        withAnimation{
+                            showMenu.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35, height: 35)
+                            //.clipShape(Circle())
+                    }
+                    .foregroundColor(.black)
+                }
+            }
+            
            // .navigationBarTitle(isProVersion ? Text("ShiftTracker Pro") : Text("ShiftTracker"))
          /*   .toolbar{
                 ToolbarItem(placement: .navigationBarTrailing) {

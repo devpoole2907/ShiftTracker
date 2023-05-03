@@ -29,12 +29,23 @@ struct AddressFinderView: View {
     
     @ObservedObject private var locationManager = LocationDataManager()
     
-    @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+    @Binding var mapRegion: MKCoordinateRegion
     
-    init(selectedAddress: Binding<String?>) {
-            _selectedAddressString = selectedAddress
-            loadSavedAddress()
-        }
+    init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>) {
+           _selectedAddressString = selectedAddress
+           _mapRegion = mapRegion
+           loadSavedAddress()
+       }
+    
+    private func defaultCoordinateRegion() -> MKCoordinateRegion {
+        let defaultLatitude: CLLocationDegrees = 37.7749 // Default latitude (e.g., San Francisco)
+        let defaultLongitude: CLLocationDegrees = -122.4194 // Default longitude (e.g., San Francisco)
+            return MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: defaultLatitude, longitude: defaultLongitude),
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )
+        
+    }
     
     private func createAnnotation(for address: CLPlacemark) {
         let annotation = IdentifiablePointAnnotation()
@@ -221,7 +232,7 @@ struct AddressFinderView: View {
                 .background(bottomBackgroundColor)
                 
             }
-        }
+        }.toolbarRole(.editor)
 
         .onAppear{
             //locationManager.requestAuthorization()
@@ -326,19 +337,21 @@ struct AddressConfirmView: View {
                             dismiss()
                         }
                     }) {
-                        VStack(spacing: 10){
+                        HStack(spacing: 5){
                             Image(systemName: "briefcase.fill")
-                                .foregroundColor(.white)
                             Text("Set work address")
                                 .font(.subheadline)
-                                .bold()
-                                .foregroundColor(.white)
+                                
                                 
                         }
-                        .frame(minWidth: UIScreen.main.bounds.width - 50)
-                        .padding(.vertical, 8)
-                        .background(Color.orange)
-                        .cornerRadius(12)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .padding(.vertical, 15)
+                        .frame(maxWidth: .infinity)
+                        .background{
+                            Capsule()
+                                .fill(.black)
+                        }
                         
                     }.padding(.horizontal, 15)
                 Spacer()

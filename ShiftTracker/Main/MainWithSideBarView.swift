@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Firebase
+import UserNotifications
+import CoreData
 
 struct MainWithSideBarView: View {
     
@@ -235,6 +237,8 @@ struct MainWithSideBarView: View {
                // Perform any actions required when the subscription is not active
            }
        }
+    
+    
     
 }
 

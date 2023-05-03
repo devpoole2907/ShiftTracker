@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 import Haptics
+import PopupView
 
 struct ShiftsView: View {
     
@@ -718,21 +719,25 @@ struct ShiftsView: View {
             //.background(backgroundColor)
             .navigationBarTitle("Shifts")
             .toolbar{
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: shareButton){
-                        Text("\(Image(systemName: "square.and.arrow.up"))")
-                    }
-                    .disabled(isEditing || !isProVersion)
-                }
-                if isEditing{
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("\(Image(systemName: "trash"))") {
-                            
-                            showAlert = true
+                if !isEditing {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: shareButton){
+                                Text("\(Image(systemName: "square.and.arrow.up"))")
+                            }
+                            .disabled(isEditing || !isProVersion)
                         }
-                        
-                        .disabled(selectedShifts.isEmpty)
-                    }
+                    
+                }
+                else{
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("\(Image(systemName: "trash"))") {
+                                
+                                DeleteShiftAlert(action: deleteSelectedShifts).present()
+                            }
+                            
+                            .disabled(selectedShifts.isEmpty)
+                        }
+                    
                 }
                     
                 
@@ -924,4 +929,67 @@ struct PayPeriodView: View {
 }
 
 
+struct DeleteShiftAlert: CentrePopup {
+    let action: () -> Void
+    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
+        popup.horizontalPadding(28)
+    }
+    func createContent() -> some View {
+        VStack(spacing: 5) {
+            
+            createTitle()
+                .padding(.vertical)
+            //Spacer(minLength: 32)
+            //  Spacer.height(32)
+            createButtons()
+            // .padding()
+        }
+        .padding(.top, 12)
+        .padding(.bottom, 24)
+        .padding(.horizontal, 24)
+        .background(.primary.opacity(0.05))
+    }
+}
 
+private extension DeleteShiftAlert {
+    
+    func createTitle() -> some View {
+        Text("Are you sure you want to delete these shifts?")
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    func createButtons() -> some View {
+        HStack(spacing: 4) {
+            createCancelButton()
+            createUnlockButton()
+        }
+    }
+}
+
+private extension DeleteShiftAlert {
+    func createCancelButton() -> some View {
+        Button(action: dismiss) {
+            Text("Cancel")
+            
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .background(.primary.opacity(0.1))
+                .cornerRadius(8)
+        }
+    }
+    func createUnlockButton() -> some View {
+        Button(action: {
+            action()
+            dismiss()
+        }) {
+            Text("Confirm")
+                .bold()
+                .foregroundColor(.white)
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .background(.black)
+                .cornerRadius(8)
+        }
+    }
+}

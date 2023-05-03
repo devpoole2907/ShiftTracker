@@ -293,7 +293,7 @@ struct AllScheduledShiftsView: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         
         
-        
+        if !groupedShifts.isEmpty {
         List {
             ForEach(groupedShifts.keys.sorted(by: >), id: \.self) { date in
                 Section(header: Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(textColor)) {
@@ -315,16 +315,16 @@ struct AllScheduledShiftsView: View {
                             
                             VStack(alignment: .trailing){
                                 if let startDate = shift.startDate {
-                                                                   Text(timeFormatter.string(from: startDate))
+                                    Text(timeFormatter.string(from: startDate))
                                         .font(.subheadline)
                                         .bold()
-                                                               }
-                                                               if let endDate = shift.endDate {
-                                                                   Text(timeFormatter.string(from: endDate))
-                                                                       .font(.subheadline)
-                                                                       .bold()
-                                                                       .foregroundColor(.gray)
-                                                               }
+                                }
+                                if let endDate = shift.endDate {
+                                    Text(timeFormatter.string(from: endDate))
+                                        .font(.subheadline)
+                                        .bold()
+                                        .foregroundColor(.gray)
+                                }
                             }
                         }
                         .swipeActions {
@@ -341,6 +341,10 @@ struct AllScheduledShiftsView: View {
         }
         .listStyle(PlainListStyle())
         .scrollContentBackground(.hidden)
+        } else {
+            Text("You don't have any shifts scheduled.")
+                .bold()
+        }
     }
 }
 

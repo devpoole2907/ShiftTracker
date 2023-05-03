@@ -28,6 +28,8 @@ struct SideMenu: View {
     @State private var selectedJobForEditing: Job?
     @State private var isEditJobPresented: Bool = false
     
+    @State private var showAddJobView = false
+    
     var body: some View {
         
         VStack(alignment: .leading, spacing: 0){
@@ -118,16 +120,19 @@ struct SideMenu: View {
                                     .padding(.leading, 40)
                                 
                             }
-                            
-                            
+                   
                     } .transition(.move(edge: .top))
                         
-                        NavigationLink(destination: AddJobView()){
+                        Button(action: {
+                            showAddJobView = true
+                        }) {
                             Image(systemName: "plus")
                                 .resizable()
                                 .frame(width: 25, height: 25)
                                 .padding(.leading, 40)
                         }
+                        
+                        
                         
                         
                         
@@ -184,6 +189,9 @@ struct SideMenu: View {
                 .ignoresSafeArea(.container, edges: .vertical))
         .frame(maxWidth: .infinity, alignment: .leading)
         
+        .fullScreenCover(isPresented: $showAddJobView){
+            AddJobView()
+        }
         
     }
     

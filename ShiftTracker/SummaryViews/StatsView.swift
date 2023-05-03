@@ -29,7 +29,6 @@ struct StatsView: View {
         var body: some View{
             let textColor: Color = colorScheme == .dark ? .white : .black
             let subTextColor: Color = colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8)
-            NavigationStack{
                 List{
                     
                     
@@ -366,6 +365,9 @@ struct StatsView: View {
                     }.listRowBackground(Color.clear)
                 }
                 }.scrollContentBackground(.hidden)
-        }
+            
+            
+               
+        
     }
 }

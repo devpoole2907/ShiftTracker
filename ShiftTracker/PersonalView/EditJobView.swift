@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UIKit
+import MapKit
 
 struct EditJobView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -32,6 +33,8 @@ struct EditJobView: View {
     @State private var overtimeEnabled = false
     
     @State private var selectedAddress: String?
+    
+    @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 
 
     // Initialize state properties with job values
@@ -79,7 +82,7 @@ struct EditJobView: View {
                 }
                 
                 Section(header: Text("Location")){
-                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress)) {
+                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)) {
                         HStack {
                             Image("LocationIconFilled")
                             

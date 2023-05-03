@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 import CoreData
 import Firebase
+import MapKit
 
 struct AddJobView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -43,6 +44,8 @@ struct AddJobView: View {
     
     @State private var activeSheet: ActiveSheet?
     
+    @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+    
     enum ActiveSheet: Identifiable {
         case overtimeSheet, symbolSheet
 
@@ -50,6 +53,18 @@ struct AddJobView: View {
             hashValue
         }
     }
+    
+    private func centerMapOnCurrentLocation() {
+        guard let currentLocation = locationManager.location else { return }
+        
+        mapRegion = MKCoordinateRegion(
+            center: currentLocation.coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
+    }
+
+
+
 
     
     private let daysOfWeek = [
@@ -77,92 +92,138 @@ struct AddJobView: View {
     
     var body: some View {
         
-            ScrollView {
-                    VStack(alignment: .leading, spacing: 20){
-                        
-                        HStack(spacing: 10) {
-                            Image(systemName: selectedIcon)
-                                .foregroundColor(selectedColor)
-                                .font(.system(size: 60))
-                                .frame(width: UIScreen.main.bounds.width / 5)
-                            
-                                .onTapGesture {
-                                    activeSheet = .symbolSheet
-                                }
-                            Spacer()
-                            VStack(alignment: .leading){
-                                TextField("Company Name", text: $name)
-                                    .font(.title)
-                                    .bold()
+        
+        NavigationStack{
+            ScrollView{
+            VStack(spacing: 15){
+                
+                Image(systemName: selectedIcon)
+                    .foregroundColor(selectedColor)
+                    .font(.system(size: 60))
+                    .frame(width: UIScreen.main.bounds.width / 5)
+                
+                    .onTapGesture {
+                        activeSheet = .symbolSheet
+                    }
+                
+                Group{
+                    TextField("Company Name", text: $name)
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    
+                    TextField("Job Title", text: $name)
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    
+                    TextField("Hourly Pay", value: $hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous))
+                        .keyboardType(.decimalPad)
+                }.focused($textIsFocused)
+                
+                HStack(spacing: 0){
+                    ForEach(1...6, id: \.self) { index in
+                        let color = jobColors[index - 1]
+                        Circle()
+                            .fill(color)
+                            .frame(width: 30, height: 30)
+                            .overlay(content: {
+                                if color == selectedColor{
+                                    Image(systemName: "circle.fill")
+                                        .foregroundColor(.white.opacity(0.6))
+                                        .font(.caption.bold())
                                     
-                                TextField("Job Title", text: $title)
-                                    .bold()
-                                    .foregroundColor(.gray)
-                                HStack{
-                                    TextField("Hourly Pay", value: $hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
-                                        .bold()
-                                        .keyboardType(.decimalPad)
+                                }
+                            })
+                            .onTapGesture {
+                                withAnimation{
+                                    selectedColor = color
                                 }
                             }
-                        }
-                    .focused($textIsFocused)
-                    .padding(.vertical, 15)
-                    //.background(Color(.systemGray6))
-                   // .cornerRadius(12)
-                        
-                    
-                        ColorPicker("", selection: $selectedColor, supportsOpacity: false)
-
-                
-                Section{
-                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress)) {
-                        HStack {
-                            Image("LocationIconFilled")
-                            
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 20)
-                            
-                            Spacer().frame(width: 10)
-                            Text("Select Address")
-                        }
+                            .frame(maxWidth: .infinity)
                     }
-                    Toggle(isOn: $clockInReminder){
-                        HStack {
-                            Image(systemName: "bell.badge.circle")
-                            Spacer().frame(width: 10)
-                            Text("Remind me to clock in")
-                        }
-                    }.toggleStyle(OrangeToggleStyle())
-                    
-                    Toggle(isOn: $clockOutReminder){
-                        HStack {
-                            Image(systemName: "bell.badge.circle")
-                            Spacer().frame(width: 10)
-                            Text("Remind me to clock out")
-                        }
-                    }.toggleStyle(OrangeToggleStyle())
-                    
-                    Toggle(isOn: $autoClockIn){
-                        HStack {
-                            Image(systemName: "bell.badge.circle")
-                            Spacer().frame(width: 10)
-                            Text("Remind me to clock in")
-                        }
-                    }.toggleStyle(OrangeToggleStyle())
-                        .disabled(true)
-                    
-                    Toggle(isOn: $autoClockOut){
-                        HStack {
-                            Image(systemName: "bell.badge.circle")
-                            Spacer().frame(width: 10)
-                            Text("Remind me to clock out")
-                        }
-                    }.toggleStyle(OrangeToggleStyle())
-                        .disabled(true)
+                    Divider()
+                        .frame(height: 20)
+                        .padding(.leading)
+                    ColorPicker("", selection: $selectedColor, supportsOpacity: false)
+                        .padding()
                 }
                 
-                Section{
+                Divider()
+                
+                VStack(alignment: .leading, spacing: 10){
+                    
+                    
+                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)) {
+                        VStack(alignment: .leading){
+                            
+                            Map(coordinateRegion: $mapRegion, showsUserLocation: true)
+                                .onAppear {
+                                    centerMapOnCurrentLocation()
+                                }
+                            HStack{
+                                Text("Work Location")
+                                
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                            }.bold()
+                                .padding(.bottom, 10)
+                                .padding(.horizontal)
+                        }
+                    }.frame(minHeight: 120)
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 6, style: .continuous))
+                        .cornerRadius(20)
+                    Group{
+                        Toggle(isOn: $clockInReminder){
+                            HStack {
+                                Image(systemName: "bell.badge.circle")
+                                Spacer().frame(width: 10)
+                                Text("Remind me to clock in")
+                            }
+                        }.toggleStyle(OrangeToggleStyle())
+                        
+                        Toggle(isOn: $clockOutReminder){
+                            HStack {
+                                Image(systemName: "bell.badge.circle")
+                                Spacer().frame(width: 10)
+                                Text("Remind me to clock out")
+                            }
+                        }.toggleStyle(OrangeToggleStyle())
+                    }.padding(.horizontal, 5)
+                    /*
+                     Toggle(isOn: $autoClockIn){
+                     HStack {
+                     Image(systemName: "bell.badge.circle")
+                     Spacer().frame(width: 10)
+                     Text("Auto clock in")
+                     }
+                     }.toggleStyle(OrangeToggleStyle())
+                     .disabled(true)
+                     
+                     Toggle(isOn: $autoClockOut){
+                     HStack {
+                     Image(systemName: "bell.badge.circle")
+                     Spacer().frame(width: 10)
+                     Text("Auto clock out")
+                     }
+                     }.toggleStyle(OrangeToggleStyle())
+                     .disabled(true)
+                     */
+                    
+                    
+                    
+                }//.padding(.horizontal)
+                
+                Divider()
+                
+                VStack(alignment: .leading, spacing: 10){
                     Toggle(isOn: $overtimeEnabled) {
                         HStack {
                             Image(systemName: "person.crop.circle.badge.clock")
@@ -190,47 +251,110 @@ struct AddJobView: View {
                     .onTapGesture {
                         activeSheet = .overtimeSheet
                     }.disabled(!overtimeEnabled)
-                }
+                }.padding(.horizontal, 5)
                 
-                
-                
-                Section{
-                    TextField("Length in Days (Optional)", text: $payPeriodLength)
-                        .keyboardType(.numberPad)
-                    
-                    Picker("Start Day (Optional)", selection: $payPeriodStartDay) {
-                        ForEach(0 ..< daysOfWeek.count) { index in
-                            Text(self.daysOfWeek[index]).tag(index)
-                        }
-                    }
-                }
                 
                 
             }
-                .padding(.horizontal, 30)
-                //.padding(.vertical)
-            }.sheet(item: $activeSheet){ item in
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding()
+            .navigationBarTitle("Add Job", displayMode: .inline)
+            
+            /*
+             
+             
+             Section{
+             NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress)) {
+             HStack {
+             Image("LocationIconFilled")
+             
+             .resizable()
+             .aspectRatio(contentMode: .fit)
+             .frame(width: 20)
+             
+             Spacer().frame(width: 10)
+             Text("Select Address")
+             }
+             }
+             Toggle(isOn: $clockInReminder){
+             HStack {
+             Image(systemName: "bell.badge.circle")
+             Spacer().frame(width: 10)
+             Text("Remind me to clock in")
+             }
+             }.toggleStyle(OrangeToggleStyle())
+             
+             Toggle(isOn: $clockOutReminder){
+             HStack {
+             Image(systemName: "bell.badge.circle")
+             Spacer().frame(width: 10)
+             Text("Remind me to clock out")
+             }
+             }.toggleStyle(OrangeToggleStyle())
+             
+             Toggle(isOn: $autoClockIn){
+             HStack {
+             Image(systemName: "bell.badge.circle")
+             Spacer().frame(width: 10)
+             Text("Remind me to clock in")
+             }
+             }.toggleStyle(OrangeToggleStyle())
+             .disabled(true)
+             
+             Toggle(isOn: $autoClockOut){
+             HStack {
+             Image(systemName: "bell.badge.circle")
+             Spacer().frame(width: 10)
+             Text("Remind me to clock out")
+             }
+             }.toggleStyle(OrangeToggleStyle())
+             .disabled(true)
+             }
+             
+             
+             
+             
+             
+             Section{
+             TextField("Length in Days (Optional)", text: $payPeriodLength)
+             .keyboardType(.numberPad)
+             
+             Picker("Start Day (Optional)", selection: $payPeriodStartDay) {
+             ForEach(0 ..< daysOfWeek.count) { index in
+             Text(self.daysOfWeek[index]).tag(index)
+             }
+             }
+             }
+             
+             
+             }
+             .padding(.horizontal, 30)
+             //.padding(.vertical)
+             } */
+            
+            
+            .sheet(item: $activeSheet){ item in
                 
                 switch item {
                 case .overtimeSheet:
                     OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                         .environment(\.managedObjectContext, viewContext)
-                            .presentationDetents([ .fraction(0.2)])
-                            .presentationBackground(.ultraThinMaterial)
-                            .presentationDragIndicator(.visible)
-                            .presentationCornerRadius(12)
+                        .presentationDetents([ .fraction(0.2)])
+                        .presentationBackground(.ultraThinMaterial)
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
                     
                     
-            case .symbolSheet:
+                case .symbolSheet:
                     JobIconPicker(selectedIcon: $selectedIcon, iconColor: selectedColor)
-                    .environment(\.managedObjectContext, viewContext)
-                    .presentationDetents([ .medium])
-                    .presentationBackground(.ultraThinMaterial)
-                    .presentationDragIndicator(.visible)
-                    .presentationCornerRadius(12)
+                        .environment(\.managedObjectContext, viewContext)
+                        .presentationDetents([ .medium])
+                        .presentationBackground(.ultraThinMaterial)
+                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(12)
+                }
+                
             }
-            
-        }
             
             .toolbar{
                 ToolbarItemGroup(placement: .keyboard){
@@ -242,27 +366,37 @@ struct AddJobView: View {
                 }
             }
             
-            .navigationBarTitle("Add Job")
+            
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        if isSubscriptionActive() {
-                            saveJobToFirebase()
-                            print("saving job to firebase!")
-                        } else {
-                            saveJobToCoreData()
-                            print("saving job to core data!")
-                        }
+                        // if isSubscriptionActive() {
+                        //    saveJobToFirebase()
+                        //    print("saving job to firebase!")
+                        //} else {
+                        saveJobToCoreData()
+                        print("saving job to core data!")
+                        //}
                     }) {
                         Text("Save")
                             .bold()
                     }
                 }
-
-                    
-                        }
-            
-        
+                
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                            .bold()
+                    }
+                }
+                
+                
+            }
+        }
+    }
     }
 
     
@@ -361,11 +495,16 @@ let jobIcons = [
     "briefcase.circle", "display", "tshirt.fill", "takeoutbag.and.cup.and.straw.fill", "trash.fill",
     "wineglass.fill", "cup.and.saucer.fill", "film.fill", "building.columns.circle.fill", "camera.fill", "camera.macro.circle", "bus.fill", "box.truck", "fuelpump.circle", "popcorn.circle", "cross.case.circle", "frying.pan", "cart.circle", "paintbrush", "wrench.adjustable"]
 
+let jobColors = [
+    Color.pink, Color.green, Color.blue, Color.purple, Color.orange, Color.cyan]
+
 
 struct JobIconPicker: View {
     @Binding var selectedIcon: String
     var iconColor: Color
     @Environment(\.managedObjectContext) private var viewContext
+    
+    @Environment(\.presentationMode) private var presentationMode
 
     var body: some View {
         NavigationStack {
@@ -374,6 +513,7 @@ struct JobIconPicker: View {
                     ForEach(jobIcons, id: \.self) { icon in
                         Button(action: {
                             selectedIcon = icon
+                                presentationMode.wrappedValue.dismiss()
                         }) {
                             VStack {
                                 Image(systemName: icon)
