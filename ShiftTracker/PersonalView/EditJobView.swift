@@ -343,13 +343,23 @@ struct EditJobView: View {
                             textIsFocused = false
                         }
                     }
-                }
-                
-                
-                .toolbar {
+                    
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(action: saveJob) {
                             Text("Save")
+                                .bold()
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            deleteJob()
+                            presentationMode.wrappedValue.dismiss()
+                            
+                        }
+                        ) {
+                            Image(systemName: "trash")
+                                .foregroundColor(.red)
                                 .bold()
                         }
                     }
@@ -364,8 +374,8 @@ struct EditJobView: View {
                         }
                     }
                     
-                    
                 }
+                
             }
         }
     }
@@ -413,4 +423,15 @@ struct EditJobView: View {
             print("Failed to save job: \(error.localizedDescription)")
         }
     }
+    
+    private func deleteJob() {
+        viewContext.delete(job)
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
 }

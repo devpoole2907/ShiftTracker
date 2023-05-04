@@ -89,24 +89,22 @@ struct TimerView: View {
                     .fixedSize()
             }
             ZStack {
+                RoundedRectangle(cornerRadius: 20)
+                                   .frame(width: 350, height: 100)
+
+                                  .foregroundColor(taxedBackgroundColor)
+                                  .shadow(radius: 5, x: 0, y: 4)
                 
-                Circle()
-                    .fill(Color.primary.opacity(0.05))
-                //.frame(width: 350, height: 100)
-                    .frame(width: UIScreen.main.bounds.width - 40)
-                // .foregroundColor(taxedBackgroundColor)
-                    .shadow(radius: 50, x: 4, y: 4)
-                Circle()
-                    .stroke(Color.black, lineWidth: 10)
-                    .frame(width: UIScreen.main.bounds.width - 40)
+                Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 20)
+                    .font(.system(size: 70).monospacedDigit())
+                    .fontWeight(.black)
                 
-                if timeElapsed > 0 {
-                VStack(spacing: 0){
-                    Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
-                        .foregroundColor(.black)
-                        .padding(.horizontal, 20)
-                        .font(.system(size: 70).monospacedDigit())
-                        .fontWeight(.black)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 10)
+                    
                     
                     HStack(spacing: 0) {
                         ForEach(0..<timeDigits.count, id: \.self) { index in
@@ -119,22 +117,12 @@ struct TimerView: View {
                             }
                         }
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(.orange)
                     .frame(width: 250, height: 70)
-                }
-            }
-                else {
-                    VStack{
-                        Text("Upcoming shift in")
-                            .font(.system(size: 30, weight: .bold))
-                        Text("30m")
-                            .bold()
-                            .font(.system(size: 70))
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, 10)
+                
+            
+                
+            
             if taxEnabled{
             ZStack {
                 RoundedRectangle(cornerRadius: 20)

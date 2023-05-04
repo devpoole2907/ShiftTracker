@@ -364,10 +364,7 @@ struct AddJobView: View {
                         textIsFocused = false
                     }
                 }
-            }
-            
-            
-            .toolbar {
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         // if isSubscriptionActive() {
@@ -393,8 +390,10 @@ struct AddJobView: View {
                     }
                 }
                 
-                
             }
+            
+            
+        
         }
     }
     }
