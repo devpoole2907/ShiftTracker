@@ -27,7 +27,7 @@ struct AddressFinderView: View {
     private let defaults = UserDefaults.standard
     @Environment(\.colorScheme) var colorScheme
     
-    @ObservedObject private var locationManager = LocationDataManager()
+    @StateObject private var locationManager = LocationDataManager()
     
     @Binding var mapRegion: MKCoordinateRegion
     

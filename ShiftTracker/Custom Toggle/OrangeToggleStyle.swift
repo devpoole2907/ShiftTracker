@@ -11,15 +11,21 @@ import SwiftUI
 struct OrangeToggleStyle: ToggleStyle {
     
     @Environment(\.isEnabled) var isEnabled
+    
+    @Environment(\.colorScheme) var colorScheme
 
     
     func makeBody(configuration: Configuration) -> some View {
+        
+        let toggleColor: Color = colorScheme == .dark ? .orange : .cyan
+        let tickColor: Color = colorScheme == .dark ? .white : .black
+        
         HStack {
             configuration.label
             Spacer()
             RoundedRectangle(cornerRadius: 16)
                 .frame(width: 50, height: 30)
-                .foregroundColor(configuration.isOn ? Color.accentColor : Color.gray.opacity(0.25))
+                .foregroundColor(configuration.isOn ? toggleColor : Color.gray.opacity(0.25))
                 .overlay(
                     Circle()
                         .foregroundColor(.white)
@@ -31,7 +37,7 @@ struct OrangeToggleStyle: ToggleStyle {
                                                             .aspectRatio(contentMode: .fit)
                                                             .font(Font.title.weight(.black))
                                                             .frame(width: 8, height: 8, alignment: .center)
-                                                            .foregroundColor(configuration.isOn ? .accentColor : .gray)
+                                                            .foregroundColor(configuration.isOn ? tickColor : Color.gray.opacity(0.25))
                         )
                         .offset(x: configuration.isOn ? 10 : -10, y: 0)
                         .animation(Animation.linear(duration: 0.2))

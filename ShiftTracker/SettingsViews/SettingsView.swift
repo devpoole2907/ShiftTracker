@@ -85,13 +85,20 @@ struct SettingsView: View {
                                 }
                             }
                         }
-                      /*  NavigationLink(destination: NotificationView()){
+                        NavigationLink(destination: LocationView()){
+                             HStack {
+                                 Image(systemName: "bell.fill")
+                                 Spacer().frame(width: 10)
+                                 Text("Location")
+                             }
+                         }
+                       NavigationLink(destination: NotificationView()){
                             HStack {
                                 Image(systemName: "bell.fill")
                                 Spacer().frame(width: 10)
                                 Text("Notifications")
                             }
-                        } */
+                        }
                         NavigationLink(destination: AppearanceView(userColorScheme: $userColorScheme)) {
                             HStack {
                                 Image("AppearanceIconSymbol")

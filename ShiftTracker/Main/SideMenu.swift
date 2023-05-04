@@ -8,6 +8,7 @@
 import SwiftUI
 import PopupView
 
+
 struct SideMenu: View {
     
     
@@ -21,6 +22,13 @@ struct SideMenu: View {
     
     @State private var showJobs: Bool = false
     @EnvironmentObject var viewModel: ContentViewModel
+    
+    @State private var selectedJobOffset: CGFloat = 0
+
+    
+    @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
+
+
     
     @State private var isJobsExpanded: Bool = false
     @State private var selectedJobUUID: UUID?
@@ -48,7 +56,7 @@ struct SideMenu: View {
             ScrollView(.vertical, showsIndicators: false){
                 VStack{
                     VStack(alignment: .leading, spacing: 30) {
-                        //  TabButton(title: "Profile", image: "person.fill", destination: { AnyView(SettingsView()) })
+
                         
                         
                         
@@ -84,20 +92,33 @@ struct SideMenu: View {
                                         JobRow(job: job, isSelected: selectedJobUUID == job.uuid, editAction: {
                                             selectedJobForEditing = job
                                             isEditJobPresented = true
-                                        })
+                                        }, showEdit: true)
                                         .contentShape(Rectangle()) // Make the whole row tappable
                                         .onTapGesture {
-                                            selectedJobUUID = job.uuid
-                                            viewModel.selectedJobUUID = job.uuid
+                                            if let jobUUID = job.uuid {
+                                                let currentIndex = jobs.firstIndex(where: { $0.uuid == jobUUID }) ?? 0
+                                                let selectedIndex = jobs.firstIndex(where: { $0.uuid == selectedJobUUID }) ?? 0
+                                                withAnimation(.spring()) {
+                                                    selectedJobOffset = CGFloat(selectedIndex - currentIndex) * 60
+                                                }
+                                                selectedJobUUID = jobUUID
+                                                viewModel.selectedJobUUID = jobUUID
+                                                storedSelectedJobUUID = jobUUID.uuidString
+                                            }
                                         }
+
+
+
+
                                     }.padding()
                                         .background(selectedJobUUID == job.uuid ? .black : Color.primary.opacity(0.04))
                                         .cornerRadius(50)
-                                    
-                                    
+                                        .offset(y: isJobsExpanded ? 0 : selectedJobOffset)
+                                        .animation(.spring(), value: isJobsExpanded)
                                     
                                 }
                                 .padding(.leading, 40)
+                                
                                 .fullScreenCover(item: $selectedJobForEditing) { job in
                                     EditJobView(job: job)
                                         .onDisappear {
@@ -111,7 +132,7 @@ struct SideMenu: View {
                                     JobRow(job: findSelectedJob(), isSelected: selectedJobUUID == findSelectedJob().uuid, editAction: {
                                         selectedJobForEditing = findSelectedJob()
                                         isEditJobPresented = true
-                                    })
+                                    }, showEdit: false)
                                     .contentShape(Rectangle()) // Make the whole row tappable
                                    
                                 }.padding()
@@ -131,13 +152,7 @@ struct SideMenu: View {
                                 .frame(width: 25, height: 25)
                                 .padding(.leading, 40)
                         }
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+                    
                         
                         TabButton(title: "Upgrade", image: "plus.diamond.fill", destination: { AnyView(ProView()) })
                     }
@@ -145,9 +160,7 @@ struct SideMenu: View {
                     .padding(.leading)
                     .padding(.top, 35)
                     
-                    
-                    
-                    
+      
                     
                 }
             }
@@ -159,23 +172,7 @@ struct SideMenu: View {
                     .padding(.leading)
                 
                 
-                
-                /*
-                 Button(action: {
-                 //
-                 
-                 LogOutPopUp(logoutAction: authModel.signOut).present()
-                 
-                 }) {
-                 Text("Logout")
-                 .bold()
-                 .padding()
-                 .padding(.leading)
-                 
-                 }
-                 .frame(maxWidth: .infinity, alignment: .leading)
-                 
-                 */
+            
             }
             
         }
@@ -188,7 +185,17 @@ struct SideMenu: View {
                 .opacity(0.04)
                 .ignoresSafeArea(.container, edges: .vertical))
         .frame(maxWidth: .infinity, alignment: .leading)
-        
+        .onAppear {
+            // Initialize the selected job to be the stored job when the view appears
+            if let storedUUIDString = storedSelectedJobUUID,
+               let storedUUID = UUID(uuidString: storedUUIDString),
+               let storedJob = jobs.first(where: { $0.uuid == storedUUID }) {
+                selectedJobUUID = storedJob.uuid
+                viewModel.selectedJobUUID = storedJob.uuid
+            }
+        }
+
+
         .fullScreenCover(isPresented: $showAddJobView){
             AddJobView()
         }
@@ -312,6 +319,7 @@ struct JobRow: View {
     let job: Job
     let isSelected: Bool
     let editAction: () -> Void
+    var showEdit: Bool
     
     var body: some View {
         HStack {
@@ -327,12 +335,34 @@ struct JobRow: View {
                 .bold()
                 .foregroundColor(isSelected ? .white : .black)
             Spacer()
-            Button(action: editAction) {
-                Image(systemName: "pencil")
-                    .foregroundColor(isSelected ? .white : .black)
+            if showEdit{
+                Button(action: editAction) {
+                    Image(systemName: "pencil")
+                        .foregroundColor(isSelected ? .white : .black)
+                }
             }
       
             
         }
     }
 }
+
+
+/*
+ Button(action: {
+ //
+ 
+ LogOutPopUp(logoutAction: authModel.signOut).present()
+ 
+ }) {
+ Text("Logout")
+ .bold()
+ .padding()
+ .padding(.leading)
+ 
+ }
+ .frame(maxWidth: .infinity, alignment: .leading)
+ 
+ */
+
+//  TabButton(title: "Profile", image: "person.fill", destination: { AnyView(SettingsView()) })

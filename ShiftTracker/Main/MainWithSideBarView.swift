@@ -141,6 +141,11 @@ struct MainWithSideBarView: View {
         .onChange(of: gestureOffset) { newValue in
             onChange()
         }
+        .onAppear(perform: {
+                   let shifts = fetchUpcomingShifts()
+                   scheduleNotifications(for: shifts)
+               })
+           
    /*     .onAppear{ authModel.checkUserLoginStatus()
                             if !isSubscriptionChecked {
                                 checkSubscriptionStatus()
@@ -238,6 +243,46 @@ struct MainWithSideBarView: View {
            }
        }
     
+    func fetchUpcomingShifts() -> [ScheduledShift] {
+        let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "notifyMe == true")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.reminderTime, ascending: true)]
+        fetchRequest.fetchLimit = 15
+
+        do {
+            let shifts = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
+            return shifts
+        } catch {
+            print("Failed to fetch shifts: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    func scheduleNotifications(for shifts: [ScheduledShift]) {
+        let center = UNUserNotificationCenter.current()
+        
+        center.removeAllPendingNotificationRequests()
+        
+
+        for shift in shifts {
+            let content = UNMutableNotificationContent()
+            content.title = "Shift Reminder"
+        
+            
+            if let reminderDate = shift.startDate?.addingTimeInterval(-shift.reminderTime){
+                content.body = "Your scheduled shift starts at \(shift.startDate)"
+                
+                let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: reminderDate)
+                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+                
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+                center.add(request)
+            } else {
+                return
+            }
+        }
+    }
+
     
     
 }
