@@ -63,7 +63,7 @@ struct MainWithSideBarView: View {
                             .tag(Tab.home)
                         
                         // Your custom view for Timesheets
-                        ShiftsView()
+                        ShiftsView(showMenu: $showMenu)
                         //.navigationBarTitleDisplayMode(.inline)
                         //.navigationBarHidden(true)
                             .tag(Tab.timesheets)

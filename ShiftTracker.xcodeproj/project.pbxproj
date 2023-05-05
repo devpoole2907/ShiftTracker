@@ -29,6 +29,7 @@
 		1A22F00529C67AD400A23F33 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00429C67AD400A23F33 /* TimerView.swift */; };
 		1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3424982A04D406007AB271 /* JobSummaryView.swift */; };
 		1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
 		1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4AB18629FCFE6D00AA62BC /* PopupView */; };
@@ -181,6 +182,7 @@
 		1A22F00429C67AD400A23F33 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		1A22F00729C686A200A23F33 /* ShiftDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ShiftDataModel.xcdatamodel; sourceTree = "<group>"; };
 		1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		1A3424982A04D406007AB271 /* JobSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSummaryView.swift; sourceTree = "<group>"; };
 		1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyPayCalculator.swift; sourceTree = "<group>"; };
 		1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFinderView.swift; sourceTree = "<group>"; };
 		1A4AB18829FDE9BE00AA62BC /* GlobalFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalFunctions.swift; sourceTree = "<group>"; };
@@ -474,6 +476,7 @@
 				1ACA60B529D7F07100B279CB /* AddShiftView.swift */,
 				1ACA60BF29D8F98500B279CB /* SearchBarView.swift */,
 				1A88007029E3D98D009458BE /* BreaksListView.swift */,
+				1A3424982A04D406007AB271 /* JobSummaryView.swift */,
 			);
 			path = ShiftsViews;
 			sourceTree = "<group>";
@@ -778,6 +781,7 @@
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
+				1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */,
 				1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,

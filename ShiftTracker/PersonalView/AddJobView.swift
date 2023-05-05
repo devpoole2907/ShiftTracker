@@ -21,7 +21,7 @@ struct AddJobView: View {
     
     @State private var name = ""
     @State private var title = ""
-    @State private var hourlyPay: Double = 0.0
+    @State private var hourlyPay: String = ""
     @State private var payPeriodLength = ""
     @State private var payPeriodStartDay: Int? = nil
     @State private var selectedColor = Color.cyan
@@ -119,12 +119,12 @@ struct AddJobView: View {
                         .background(Color.primary.opacity(0.04),in:
                                         RoundedRectangle(cornerRadius: 6, style: .continuous))
                     
-                    TextField("Hourly Pay", value: $hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
+                    CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
                         .padding(.horizontal)
                         .padding(.vertical, 10)
-                        .background(Color.primary.opacity(0.04),in:
-                                        RoundedRectangle(cornerRadius: 6, style: .continuous))
+                        .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
                         .keyboardType(.decimalPad)
+
                 }.focused($textIsFocused)
                 
                 HStack(spacing: 0){
@@ -407,7 +407,7 @@ struct AddJobView: View {
         model.addData(
             name: name,
             title: title,
-            hourlyPay: hourlyPay,
+            hourlyPay: Double(hourlyPay) ?? 0,
             address: selectedAddress ?? "",
             clockInReminder: clockInReminder,
             clockOutReminder: clockOutReminder,
@@ -528,6 +528,19 @@ struct JobIconPicker: View {
                 .padding()
             }
             .navigationBarTitle("Job Icon", displayMode: .inline)
+        }
+    }
+}
+
+struct CurrencyTextField: View {
+    var placeholder: String
+    @Binding var text: String
+
+    var body: some View {
+        HStack {
+            Text(Locale.current.currencySymbol ?? "")
+                .foregroundColor(.gray)
+            TextField(placeholder, text: $text)
         }
     }
 }

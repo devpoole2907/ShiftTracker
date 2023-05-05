@@ -127,20 +127,25 @@ struct SideMenu: View {
                                 }
                             }
                         }
-                            else {
+                            else if let selectedJob = findSelectedJob() {
                                 VStack(spacing: 0) {
-                                    JobRow(job: findSelectedJob(), isSelected: selectedJobUUID == findSelectedJob().uuid, editAction: {
-                                        selectedJobForEditing = findSelectedJob()
+                                    JobRow(job: selectedJob, isSelected: selectedJobUUID == selectedJob.uuid, editAction: {
+                                        selectedJobForEditing = selectedJob
                                         isEditJobPresented = true
                                     }, showEdit: false)
                                     .contentShape(Rectangle()) // Make the whole row tappable
                                    
                                 }.padding()
-                                    .background(selectedJobUUID == findSelectedJob().uuid ? .black : Color.primary.opacity(0.04))
+                                    .background(selectedJobUUID == selectedJob.uuid ? .black : Color.primary.opacity(0.04))
                                     .cornerRadius(50)
                                     .padding(.leading, 40)
-                                
+                            } else {
+                                // Handle the case when the selected job is not found
+                                Text("No job selected")
+                                    .bold()
+                                    .foregroundColor(.black)
                             }
+
                    
                     } .transition(.move(edge: .top))
                         
@@ -221,8 +226,8 @@ struct SideMenu: View {
     }
     
     
-    func findSelectedJob() -> Job {
-        return jobs.first(where: { $0.uuid == viewModel.selectedJobUUID })!
+    func findSelectedJob() -> Job? {
+        return jobs.first(where: { $0.uuid == viewModel.selectedJobUUID })
             
         }
     

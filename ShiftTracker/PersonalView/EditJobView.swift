@@ -19,7 +19,7 @@ struct EditJobView: View {
     
     @State private var name: String
     @State private var title: String
-    @State private var hourlyPay: Double
+    @State private var hourlyPay: String
     @State private var payPeriodLength: String
     @State private var payPeriodStartDay: Int?
     @State private var selectedColor: Color
@@ -57,7 +57,7 @@ struct EditJobView: View {
         self.job = job
         _name = State(initialValue: job.name ?? "")
         _title = State(initialValue: job.title ?? "")
-        _hourlyPay = State(initialValue: job.hourlyPay)
+        _hourlyPay = State(initialValue: "\(job.hourlyPay)")
         _selectedIcon = State(initialValue: job.icon ?? "briefcase.circle")
         _payPeriodLength = State(initialValue: job.payPeriodLength >= 0 ? "\(job.payPeriodLength)" : "")
         _payPeriodStartDay = State(initialValue: job.payPeriodStartDay >= 0 ? Int(job.payPeriodStartDay) : nil)
@@ -113,11 +113,10 @@ struct EditJobView: View {
                             .background(Color.primary.opacity(0.04),in:
                                             RoundedRectangle(cornerRadius: 6, style: .continuous))
                         
-                        TextField("Hourly Pay", value: $hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
+                        CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
                             .padding(.horizontal)
                             .padding(.vertical, 10)
-                            .background(Color.primary.opacity(0.04),in:
-                                            RoundedRectangle(cornerRadius: 6, style: .continuous))
+                            .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
                             .keyboardType(.decimalPad)
                     }.focused($textIsFocused)
                     

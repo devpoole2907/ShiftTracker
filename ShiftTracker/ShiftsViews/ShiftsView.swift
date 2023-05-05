@@ -34,74 +34,9 @@ struct ShiftsView: View {
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var latestShiftsDuctTapeFix: FetchedResults<OldShift>
     
-    
-    
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: []) var oldShifts: FetchedResults<OldShift>
-        
-        @State private var selectedSortingOption = 0
-        
-        private var sortedOldShifts: [OldShift] {
-            switch selectedSortingOption {
-            case 0:
-                return oldShifts.sorted(by: { $0.shiftStartDate ?? Date() < $1.shiftStartDate ?? Date() })
-            case 1:
-                // Other sorting option, e.g. descending by shiftStartDate
-                return oldShifts.sorted(by: { $0.totalPay < $1.totalPay })
-            case 2:
-                // Another sorting option
-                return oldShifts.sorted(by: { $0.duration < $1.duration })
-            default:
-                return oldShifts.sorted(by: { $0.shiftStartDate ?? Date() < $1.shiftStartDate ?? Date() })
-            }
-        }
     
-    func generateTestData(context: NSManagedObjectContext) {
-        let calendar = Calendar.current
-        
-        // Calculate the start date for the 2 years ago period
-        let startDate = calendar.date(byAdding: .year, value: -2, to: Date())!
-        let endDate = Date()
-        
-        // Iterate through the days to create 600 OldShifts
-        var currentDate = startDate
-        var count = 0
-        while count < 600 && currentDate <= endDate {
-            let oldShift = OldShift(context: context)
-            
-            // Randomize values
-            let tax = Double.random(in: 10.0...40.0)
-            let totalPay = Double.random(in: 200.0...400.0)
-            let taxedPay = totalPay * (1 - tax / 100)
-            let totalTips = Double.random(in: 0.0...100.0)
-            let hourlyPay = (totalPay - totalTips) / 8.0
-            let duration = 8.0 // Assuming an 8-hour shift
-            let shiftEndDate = calendar.date(byAdding: .hour, value: Int(duration), to: currentDate)!
-            
-            // Assign values
-            oldShift.taxedPay = taxedPay
-            oldShift.totalPay = totalPay
-            oldShift.duration = duration
-            oldShift.shiftStartDate = currentDate
-            oldShift.shiftEndDate = shiftEndDate
-            oldShift.totalTips = totalTips
-            oldShift.hourlyPay = hourlyPay
-            oldShift.tax = tax
-            
-            // Save context
-            do {
-                try context.save()
-            } catch {
-                print("Error saving context: \(error)")
-            }
-            
-            // Move to the next day
-            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
-            count += 1
-        }
-    }
-
-    
-    @State private var searchText = ""
+    @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.title, ascending: true)]) private var jobs: FetchedResults<Job>
     
     @State private var isTotalShiftsTapped: Bool = false
     @State private var isTotalPayTapped: Bool = false
@@ -123,118 +58,8 @@ struct ShiftsView: View {
     
     @State private var totalShiftsPay: Double = 0.0
     
-    @State private var selectedShifts = Set<NSManagedObjectID>()
+    @Binding var showMenu: Bool
     
-    
-    var sortedByPayShifts: [OldShift] {
-        return shifts.sorted(by: { $0.taxedPay > $1.taxedPay })
-    }
-    
-    var sortedByLengthShifts: [OldShift] {
-        return shifts.sorted(by: { $0.duration > $1.duration })
-    }
-    
-    
-    
-    func startDateFromSectionKey(_ key: String) -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE d, MMMM yyyy"
-        
-        let dates = key.split(separator: "-")
-        let startDateString = String(dates[0]).trimmingCharacters(in: .whitespaces)
-        
-        return dateFormatter.date(from: startDateString)
-    }
-
-
-
-    
-    var shiftSections: [(key: String, value: [OldShift])] {
-        let sortedShifts: [OldShift]
-        sortedShifts = shifts.sorted(by: { $0.shiftStartDate! > $1.shiftStartDate! })
-        
-        let groupedShifts = Dictionary(grouping: sortedShifts) { shift in
-            let calendar = Calendar.current
-            let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: shift.shiftStartDate!))!
-            let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
-            dateFormatter.dateFormat = "EEEE d, MMMM yyyy"
-            return "\(dateFormatter.string(from: startOfWeek)) - \(dateFormatter.string(from: endOfWeek))"
-        }
-        
-        return groupedShifts.sorted(by: {
-            guard let date1 = startDateFromSectionKey($0.key), let date2 = startDateFromSectionKey($1.key) else {
-                return false
-            }
-            return date1 > date2
-        })
-    }
-
-    
-    var filteredShifts: [[OldShift]] {
-        let filteredLatestShifts = filterShifts(shifts: latestShifts)
-        let filteredHighPayShifts = filterShifts(shifts: highPayShifts)
-        let filteredLongestShifts = filterShifts(shifts: longestShifts)
-        // shitty workaround test
-        let filteredWorkaroundShifts = filterShifts(shifts: latestShiftsDuctTapeFix)
-        
-        return [filteredLatestShifts, filteredHighPayShifts, filteredLongestShifts, filteredWorkaroundShifts]
-    }
-    
-    func filterShifts(shifts: FetchedResults<OldShift>) -> [OldShift] {
-        if searchText.isEmpty {
-            return Array(shifts)
-        } else {
-            let components = searchText.lowercased().components(separatedBy: " ")
-
-            return shifts.filter { shift in
-                let shiftDateComponents = Calendar.current.dateComponents([.year, .month, .day, .weekday], from: shift.shiftStartDate!)
-
-                var matched = false
-                for component in components {
-                    if let day = Int(component.trimmingCharacters(in: CharacterSet.decimalDigits.inverted)),
-                       shiftDateComponents.day == day {
-                        matched = true
-                    } else if let month = DateFormatter().monthSymbols.firstIndex(where: { $0.lowercased().contains(component) }) {
-                        if shiftDateComponents.month == month + 1 {
-                            matched = true
-                        }
-                    } else if let month = DateFormatter().shortMonthSymbols.firstIndex(where: { $0.lowercased().contains(component) }) {
-                        if shiftDateComponents.month == month + 1 {
-                            matched = true
-                        }
-                    } else if let weekdayIndex = Calendar.current.weekdaySymbols.firstIndex(where: { $0.lowercased().contains(component) }) {
-                        if shiftDateComponents.weekday == weekdayIndex + 1 {
-                            matched = true
-                        }
-                    }
-                }
-
-                return matched
-            }
-        }
-    }
-
-
-
-
-
-
-    private func sortShifts(_ shifts: [OldShift]) -> [OldShift] {
-        switch sortOption {
-        case 0:
-            return shifts.sorted(by: { $0.shiftStartDate! > $1.shiftStartDate! })
-        case 1:
-            return shifts.sorted(by: { $0.taxedPay < $1.taxedPay })
-        case 2:
-            let duration: (OldShift) -> TimeInterval = { $0.shiftEndDate!.timeIntervalSince($0.shiftStartDate!) }
-            return shifts.sorted(by: { duration($0) > duration($1) })
-        default:
-            return shifts.sorted(by: { $0.shiftStartDate! > $1.shiftStartDate! })
-        }
-    }
-
-
-
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -243,89 +68,7 @@ struct ShiftsView: View {
         return formatter
     }
     
-    @State private var sortOption: Int = 0
-    @State private var ductTapeDisableLatest = false
     
-    // the fourth option is a copy of the first (0), which we switch to if the user searches
-    let sortOptions = ["Latest", "Pay", "Length", "Latest"]
-    
-    var shifts: FetchedResults<OldShift> {
-        switch sortOption {
-        case 0:
-            return latestShifts
-        case 1:
-            return highPayShifts
-        case 2:
-            return longestShifts
-        case 3:
-            return latestShiftsDuctTapeFix
-        default:
-            return latestShiftsDuctTapeFix
-        }
-    }
-    
-    
-    private var sortedShiftSections: [OldShift] {
-        switch sortOption {
-        case 0:
-            return shifts.sorted(by: { $0.shiftStartDate! > $1.shiftStartDate! })
-        case 1:
-            return shifts.sorted(by: { $0.taxedPay > $1.taxedPay })
-        case 2:
-            let duration: (OldShift) -> TimeInterval = { $0.shiftEndDate!.timeIntervalSince($0.shiftStartDate!) }
-            return shifts.sorted(by: { duration($0) > duration($1) })
-        default:
-            return shifts.sorted(by: { $0.shiftStartDate! > $1.shiftStartDate! })
-        }
-    }
-
-    
-    
-    private func toggleSelection(for shift: OldShift) {
-        let id = shift.objectID
-        if selectedShifts.contains(id) {
-            selectedShifts.remove(id)
-        } else {
-            selectedShifts.insert(id)
-        }
-    }
-    
-    private func deleteShift(_ shift: OldShift) {
-        viewContext.delete(shift)
-        do {
-            try viewContext.save()
-        } catch {
-            print("Error deleting shift: \(error)")
-        }
-    }
-    
-    private func deleteSelectedShifts() {
-        for id in selectedShifts {
-            if let shift = shifts.first(where: { $0.objectID == id }) {
-                viewContext.delete(shift)
-            }
-        }
-        do {
-            try viewContext.save()
-            selectedShifts.removeAll()
-        } catch {
-            print("Error deleting selected shifts: \(error)")
-        }
-    }
-    
-    var query: Binding<String>{
-        Binding{
-            searchText
-        } set: { newValue in
-            searchText = newValue
-            latestShifts.nsPredicate = newValue.isEmpty
-            ? nil
-            : NSPredicate(format: "shiftStartDate CONTAINS %@", newValue)
-        }
-        
-    }
-    
-    let searchMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     
     var body: some View {
         
@@ -344,481 +87,134 @@ struct ShiftsView: View {
                 List {
                     Section{
                         VStack(spacing: 15) {
-                            HStack(spacing: 15) { // increased spacing between squares
+                            HStack(spacing: 15) {
                                 RoundedSquareView(text: "Shifts", count: "\(oldShifts.count)", color: Color.primary.opacity(0.03), imageColor: .blue, systemImageName: "briefcase.circle.fill")
-                                    .frame(maxWidth: .infinity) // increased width of the square
-                                    .scaleEffect(isTotalShiftsTapped ? 1.1 : 1)
-                                    .animation(.easeInOut(duration: 0.3))
-                                    .onTapGesture {
-                                        withAnimation{
-                                            isTotalShiftsTapped.toggle()
-                                            sortOption = 0
-                                        }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            withAnimation {
-                                                isTotalShiftsTapped.toggle()
-                                            }
-                                        }
-                                        
-                                    }
+                                    .frame(maxWidth: .infinity)
+                                
                                 RoundedSquareView(text: "Taxed", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllTaxedPay())", color: Color.primary.opacity(0.03), imageColor: .green, systemImageName: "dollarsign.circle.fill")
                                     .frame(maxWidth: .infinity)
-                                    .scaleEffect(isTaxedPayTapped ? 1.1 : 1)
-                                    .animation(.easeInOut(duration: 0.3))
-                                    .onTapGesture {
-                                        withAnimation{
-                                            isTaxedPayTapped.toggle()
-                                            sortOption = 1
-                                        }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            withAnimation {
-                                                isTaxedPayTapped.toggle()
-                                            }
-                                        }
-                                        
-                                    }
+                                
                             }
                             HStack(spacing: 15) {
-                                
-                                
                                 
                                 RoundedSquareView(text: "Hours", count: "\(addAllHours())", color: Color.primary.opacity(0.03), imageColor: .orange, systemImageName: "stopwatch.fill")
                                 
                                     .frame(maxWidth: .infinity)
-                                    .scaleEffect(isTotalHoursTapped ? 1.1 : 1)
-                                    .animation(.easeInOut(duration: 0.3))
-                                    .onTapGesture {
-                                        withAnimation{
-                                            isTotalHoursTapped.toggle()
-                                            sortOption = 2
-                                        }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            withAnimation {
-                                                isTotalHoursTapped.toggle()
-                                            }
-                                        }
-                                        
-                                    }
+                                
                                 
                                 RoundedSquareView(text: "Total", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllPay())", color: Color.primary.opacity(0.03), imageColor: .pink, systemImageName: "chart.line.downtrend.xyaxis.circle.fill")
                                 
                                     .frame(maxWidth: .infinity)
-                                    .scaleEffect(isTotalPayTapped ? 1.1 : 1)
-                                    .animation(.easeInOut(duration: 0.3))
-                                    .onTapGesture {
-                                        withAnimation{
-                                            isTotalPayTapped.toggle()
-                                            sortOption = 1
-                                        }
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            withAnimation {
-                                                isTotalPayTapped.toggle()
-                                            }
-                                        }
-                                        
-                                    }
+                                
+                                
                             }
                         }.padding(.horizontal, -15)
-                        //  HStack{
+                        
                         
                     }.dynamicTypeSize(.small)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                         .padding(.top, 20)
                     
-                    Section{
-                        NavigationLink(destination: PayPeriodView()){
-                            HStack(spacing: 10){
-                                Image(systemName: "dollarsign.square.fill")
-                                    .font(.title)
-                                    .padding(.leading, -10)
-                                    .foregroundColor(.green)
-                                VStack(alignment: .leading, spacing: 5){
-                                    Text("Pay Period for --/-- to --/--")
-                                        .font(.subheadline)
-                                        .bold()
-                                    Text("Current earnings: $--")
-                                        .font(.caption)
-                                        .bold()
-                                }
-                            }
-                        }
-                        
-                        
-                    }.listRowBackground(Color.primary.opacity(0.03))
+                    ForEach(jobs.indices, id: \.self) { index in
+                                        let job = jobs[index]
+                                        Section(header: index == 0 ? summaryHeader() : nil) {
+                                            NavigationLink(destination: SummaryView()) {
+                                                summaryContent(for: job)
+                                            }
+                                        }
+                    }.listRowBackground(Color.primary.opacity(0.04))
                     
-                    Section{
-                    if sortOption == 0 {
-                     
-                            ForEach(filteredShifts[sortOption]) { shift in
-                                ZStack(alignment: .leading) {
-                                    Button(action: {
-                                        if isEditing {
-                                            toggleSelection(for: shift)
-                                        }
-                                    }, label: {
-                                        HStack{
-                                            let isSelected = selectedShifts.contains(shift.objectID)
-                                            if isEditing {
-                                                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                                                    .foregroundColor(isSelected ? .orange : .gray)
-                                            }
-                                            let shiftStartDate = shift.shiftStartDate ?? Date()
-                                            let shiftEndDate = shift.shiftEndDate ?? Date()
-                                            let duration = shiftEndDate.timeIntervalSince(shiftStartDate) / 3600.0
-                                            let durationString = String(format: "%.1f", duration)
-
-                                            let dateString = dateFormatter.string(from: shiftStartDate)
-                                            let payString = String(format: "%.2f", shift.taxedPay)
-                                            
-                                            VStack(alignment: .leading, spacing: 5){
-                                                Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
-                                                    .foregroundColor(textColor)
-                                                    .font(.title)
-                                                    .bold()
-                                                Text(" \(durationString) hours")
-                                                    .foregroundColor(.orange)
-                                                    .font(.subheadline)
-                                                    .bold()
-                                                Text(dateString)
-                                                    .foregroundColor(.gray)
-                                                    .font(.footnote)
-                                                    .bold()
-                                            }
-                                        }
-                                    })
-                                    if !isEditing {
-                                        NavigationLink(destination: DetailView(shift: shift).navigationBarTitle(Text("Shift Details")).background(backgroundColor), label: {
-                                            EmptyView()
-                                        })
-                                    }
-                                }.listRowBackground(Color.primary.opacity(0.03))
-                                .swipeActions {
-                                    if !isEditing {
-                                        Button(role: .destructive) {
-                                            deleteShift(shift)
-                                        } label: {
-                                            Image(systemName: "trash")
-                                        }
-                                    }
-                                }
-                            }.id(refreshingID)
-                        
-                    }
-
-                    else if sortOption == 1 {
-                     
-                            ForEach(filteredShifts[sortOption]) { shift in
-                                ZStack(alignment: .leading) {
-                                    Button(action: {
-                                        if isEditing {
-                                            toggleSelection(for: shift)
-                                        }
-                                    }, label: {
-                                        HStack{
-                                            let isSelected = selectedShifts.contains(shift.objectID)
-                                            if isEditing {
-                                                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                                                    .foregroundColor(isSelected ? .orange : .gray)
-                                            }
-                                            let durationString = String(format: "%.1f", (shift.shiftEndDate!.timeIntervalSince(shift.shiftStartDate!) / 3600.0))
-                                            let dateString = dateFormatter.string(from: shift.shiftStartDate!)
-                                            let payString = String(format: "%.2f", shift.taxedPay)
-                                            
-                                            VStack(alignment: .leading, spacing: 5){
-                                                Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
-                                                    .foregroundColor(textColor)
-                                                    .font(.title)
-                                                    .bold()
-                                                Text(" \(durationString) hours")
-                                                    .foregroundColor(.orange)
-                                                    .font(.subheadline)
-                                                    .bold()
-                                                Text(dateString)
-                                                    .foregroundColor(.gray)
-                                                    .font(.footnote)
-                                                    .bold()
-                                            }
-                                        }
-                                    })
-                                    if !isEditing {
-                                        NavigationLink(destination: DetailView(shift: shift).navigationBarTitle(Text("Shift Details")).background(backgroundColor), label: {
-                                            EmptyView()
-                                        })
-                                    }
-                                }.listRowBackground(Color.primary.opacity(0.03))
-                                .swipeActions {
-                                    if !isEditing {
-                                        Button(role: .destructive) {
-                                            deleteShift(shift)
-                                        } label: {
-                                            Image(systemName: "trash")
-                                        }
-                                    }
-                                }
-                            }.id(refreshingID)
-                        
-                    }
-
-
-                        else if sortOption == 2 {
-                           
-                                ForEach(filteredShifts[sortOption]) { shift in
-                                    ZStack(alignment: .leading) {
-                                        Button(action: {
-                                            if isEditing {
-                                                toggleSelection(for: shift)
-                                            }
-                                        }, label: {
-                                            HStack{
-                                                let isSelected = selectedShifts.contains(shift.objectID)
-                                                if isEditing {
-                                                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                                                        .foregroundColor(isSelected ? .orange : .gray)
-                                                }
-                                                let durationString = String(format: "%.1f", (shift.shiftEndDate!.timeIntervalSince(shift.shiftStartDate!) / 3600.0))
-                                                let dateString = dateFormatter.string(from: shift.shiftStartDate!)
-                                                let payString = String(format: "%.2f", shift.taxedPay)
-                                                
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
-                                                        .foregroundColor(textColor)
-                                                        .font(.title)
-                                                        .bold()
-                                                    Text(" \(durationString) hours")
-                                                        .foregroundColor(.orange)
-                                                        .font(.subheadline)
-                                                        .bold()
-                                                    Text(dateString)
-                                                        .foregroundColor(.gray)
-                                                        .font(.footnote)
-                                                        .bold()
-                                                }
-                                            }
-                                        })
-                                        if !isEditing {
-                                            NavigationLink(destination: DetailView(shift: shift).navigationBarTitle(Text("Shift Details")).background(backgroundColor), label: {
-                                                EmptyView()
-                                            })
-                                        }
-                                    }.listRowBackground(Color.primary.opacity(0.03))
-                                    .swipeActions {
-                                        if !isEditing {
-                                            Button(role: .destructive) {
-                                                deleteShift(shift)
-                                            } label: {
-                                                Image(systemName: "trash")
-                                            }
-                                        }
-                                    }
-                                }.id(refreshingID)
-                                
-                            }
-                        else {
-                           
-                                ForEach(filteredShifts[sortOption]) { shift in
-                                    ZStack(alignment: .leading) {
-                                        Button(action: {
-                                            if isEditing {
-                                                toggleSelection(for: shift)
-                                            }
-                                        }, label: {
-                                            HStack{
-                                                let isSelected = selectedShifts.contains(shift.objectID)
-                                                if isEditing {
-                                                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                                                        .foregroundColor(isSelected ? .orange : .gray)
-                                                }
-                                                let durationString = String(format: "%.1f", (shift.shiftEndDate!.timeIntervalSince(shift.shiftStartDate!) / 3600.0))
-                                                let dateString = dateFormatter.string(from: shift.shiftStartDate!)
-                                                let payString = String(format: "%.2f", shift.taxedPay)
-                                                
-                                                VStack(alignment: .leading, spacing: 5){
-                                                    Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
-                                                        .foregroundColor(textColor)
-                                                        .font(.title)
-                                                        .bold()
-                                                    Text(" \(durationString) hours")
-                                                        .foregroundColor(.orange)
-                                                        .font(.subheadline)
-                                                        .bold()
-                                                    Text(dateString)
-                                                        .foregroundColor(.gray)
-                                                        .font(.footnote)
-                                                        .bold()
-                                                }
-                                            }
-                                        })
-                                        if !isEditing {
-                                            NavigationLink(destination: DetailView(shift: shift).navigationBarTitle(Text("Shift Details")).background(backgroundColor), label: {
-                                                EmptyView()
-                                            })
-                                        }
-                                    }.listRowBackground(Color.primary.opacity(0.03))
-                                    .swipeActions {
-                                        if !isEditing {
-                                            Button(role: .destructive) {
-                                                deleteShift(shift)
-                                            } label: {
-                                                Image(systemName: "trash")
-                                            }
-                                        }
-                                    }
-                                }.id(refreshingID)
-                                
-                            }
-                            
-                    } header: {
-                        HStack{
-                            Text(sortOption == 0 ? "Latest Shifts" : sortOption == 1 ? "Highest Pay" : sortOption == 2 ? "Longest Shifts" : "Latest Shifts")
-                                .font(.title)
-                                .bold()
-                                .textCase(nil)
-                                .foregroundColor(textColor)
-                                .padding(.leading, -12)
-                            Spacer()
-                            Menu {
-                                ForEach(0 ..< 4) { index in
-                                    // duct tape stuff, if the boolean is true and the option is 0 then hide it from the menu so they cant return to the broken latestShifts
-                                    if (index == 0 && ductTapeDisableLatest) || (index == 3 && !ductTapeDisableLatest) {
-                                                // Exclude this menu option
-                                    } else {
-                                        Button(action: {
-                                            sortOption = index
-                                        }) {
-                                            HStack {
-                                                Text(self.sortOptions[index])
-                                                    .textCase(nil)
-                                                if index == sortOption {
-                                                    Spacer()
-                                                    Image(systemName: "checkmark")
-                                                        .foregroundColor(.accentColor) // Customize the color if needed
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "line.3.horizontal.decrease.circle")
-                                    .font(.title2)
-                            }
-                            .disabled(isEditing)
-                            
-                            //.padding(.horizontal, 50)
-                            .haptics(onChangeOf: sortOption, type: .soft)
-                        }
-                    }
-                    
-                }.scrollContentBackground(.hidden)
-            .onChange(of: isEditing) { newValue in
-                if !newValue {
-                    selectedShifts.removeAll()
-                }
+                }//.listStyle(GroupedListStyle())
+                .scrollContentBackground(.hidden)
+                
             }
-            }
-            //.background(backgroundColor)
-            .navigationBarTitle("Shifts")
+            .navigationBarTitle("Timesheets")
+            
             .toolbar{
-                if !isEditing {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: shareButton){
-                                Text("\(Image(systemName: "square.and.arrow.up"))")
-                            }
-                            .disabled(isEditing || !isProVersion)
+                ToolbarItem(placement: .navigationBarLeading){
+                    Button{
+                        withAnimation{
+                            showMenu.toggle()
                         }
-                    
-                }
-                else{
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button("\(Image(systemName: "trash"))") {
-                                
-                                DeleteShiftAlert(action: deleteSelectedShifts).present()
-                            }
-                            
-                            .disabled(selectedShifts.isEmpty)
-                        }
-                    
-                }
-                    
-                
-                
-           /*    ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        generateTestData(context: viewContext)
-                    }) {
-                        Label("Generate Test Data", systemImage: "arrow.clockwise")
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 35, height: 35)
+                            //.clipShape(Circle())
                     }
-                } */
-                
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if isEditing {
-                        Button("Done") {
-                            withAnimation {
-                                isEditing.toggle()
-                            }
-                        }
-                    } else {
-                        Button("\(Image(systemName: "pencil"))") {
-                            withAnimation {
-                                isEditing.toggle()
-                                
-                            }
-                        }
-                    }
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("\(Image(systemName: "plus"))") {
-                        showingAddShiftSheet.toggle()
-                    }
-                    
-                    .disabled(isEditing)
-                }
-                
-            }.haptics(onChangeOf: isEditing, type: .light)
-            .alert(isPresented: $showAlert) {
-                Alert(
-                    title: Text("Delete Shifts?"),
-                    message: Text("Are you sure you want to delete these shifts?"),
-                    primaryButton: .destructive(Text("Delete")) {
-                        deleteSelectedShifts()
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-            .sheet(isPresented: $showingAddShiftSheet) {
-                if #available(iOS 16.4, *) {
-                    AddShiftView().environment(\.managedObjectContext, viewContext)
-                        .presentationDetents([ .medium, .large])
-                        .presentationDragIndicator(.visible)
-                        .presentationBackground(.thinMaterial)
-                        .presentationCornerRadius(12)
-                }
-                else {
-                    AddShiftView().environment(\.managedObjectContext, viewContext)
+                    .foregroundColor(.black)
                 }
             }
             
-        }.searchable(text: query, placement: .navigationBarDrawer(displayMode: .always))
-            .searchSuggestions {
-                ForEach(searchMonths, id: \.self) { month in
-                    if searchText.isEmpty || month.lowercased().starts(with: searchText.lowercased()) {
-                                            Text(month).searchCompletion(month.lowercased())
-                                        }
-                }
-                }
-        // more ducttape fix stuff, if the sortOption is 0 when searching toggle the disable latest boolean which will then use the copy of latest shifts, which works
-            .onSubmit(of: .search) {  // Add the onSubmit closure
-                            // Perform search
-                if sortOption == 0 {
-                    sortOption = 3
-                    ductTapeDisableLatest.toggle()
-                }
-                        }
-            .onAppear{
-                viewContext.reset()
-                self.refreshingID = UUID()
-            }
+        }
+        
+        
     }
+    
+    private func summaryContent(for job: Job) -> some View {
+            VStack(alignment: .leading, spacing: 7) {
+                
+                HStack{
+                    Image(systemName: job.icon ?? "briefcase.circle")
+                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                        .bold()
+                        .font(.title)
+                    Text(job.name ?? "")
+                        .font(.title)
+                        .bold()
+                        .foregroundColor(.black)
+                }
+                Divider()
+                Text("Earnings")
+                    .foregroundColor(.green)
+                    .font(.subheadline)
+                    .bold()
+                
+                if let earnings = calculateEarningsForLastWeek(for: job) {
+                    HStack {
+                        Text("$\(earnings, specifier: "%.2f")")
+                            .foregroundColor(.black)
+                            .font(.title)
+                            .bold()
+                        
+                        Text("earned this week")
+                            .foregroundColor(.gray)
+                            .bold()
+                            .font(.caption)
+                    }
+                }
+                Text("Hours")
+                    .foregroundColor(.orange)
+                    .font(.subheadline)
+                    .bold()
+                if let hours = calculateHoursForLastWeek(for: job) {
+                    HStack {
+                        Text("\(hours, specifier: "%.1f")")
+                            .foregroundColor(.black)
+                            .font(.title2)
+                            .bold()
+                        Text("worked this week")
+                            .foregroundColor(.gray)
+                            .bold()
+                            .font(.caption)
+                    }
+                }
+            }
+        }
+    
+    private func summaryHeader() -> some View {
+            HStack {
+                Text("Summary")
+                    .font(.title)
+                    .foregroundColor(.black)
+                    .bold()
+                    .textCase(nil)
+                    .padding(.leading, -8)
+            }
+        }
+    
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, d MMM"
@@ -850,37 +246,57 @@ struct ShiftsView: View {
         return formatter.string(from: NSNumber(value: totalHours)) ?? "0.00"
     }
     
-    func shareButton() {
-        let fileName = "export.csv"
-        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "Start Date,End Date,Break Start,Break End,Before Tax,After Tax\n"
-        
-        for latestShift in latestShifts {
-            csvText += "\(latestShift.shiftStartDate ?? Date()),\(latestShift.shiftEndDate ?? Date()),\(latestShift.breakStartDate ?? Date())\(latestShift.breakEndDate ?? Date()),\(latestShift.shiftEndDate ?? Date()),\(latestShift.totalPay ),\(latestShift.taxedPay )\n"
-        }
-        
-        do {
-            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
-        } catch {
-            print("Failed to create file")
-            print("\(error)")
-        }
-        print(path ?? "not found")
-        
-        var filesToShare = [Any]()
-        filesToShare.append(path!)
-        
-        let av = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
-        
-        UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
-        
-        isShareSheetShowing.toggle()
-    }
+
+    private func calculateEarningsForLastWeek(for job: Job) -> Double? {
+           guard let oldShifts = job.oldShifts as? Set<OldShift> else { return nil }
+           
+           let now = Date()
+           let calendar = Calendar.current
+           
+           guard let lastMonday = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now, matchingPolicy: .nextTimePreservingSmallerComponents, repeatedTimePolicy: .first, direction: .backward) else { return nil }
+           
+           let lastWeekShifts = oldShifts.filter { shift in
+               if let shiftDate = shift.shiftStartDate, calendar.isDate(shiftDate, equalTo: lastMonday, toGranularity: .day) || calendar.isDate(shiftDate, inSameDayAs: lastMonday) {
+                   return true
+               }
+               return false
+           }
+           
+           let totalEarnings = lastWeekShifts.reduce(0) { result, shift in
+               result + shift.totalPay
+           }
+           
+           return totalEarnings
+       }
+    
+    private func calculateHoursForLastWeek(for job: Job) -> Double? {
+           guard let oldShifts = job.oldShifts as? Set<OldShift> else { return nil }
+           
+           let now = Date()
+           let calendar = Calendar.current
+           
+           guard let lastMonday = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now, matchingPolicy: .nextTimePreservingSmallerComponents, repeatedTimePolicy: .first, direction: .backward) else { return nil }
+           
+           let lastWeekShifts = oldShifts.filter { shift in
+               if let shiftDate = shift.shiftStartDate, calendar.isDate(shiftDate, equalTo: lastMonday, toGranularity: .day) || calendar.isDate(shiftDate, inSameDayAs: lastMonday) {
+                   return true
+               }
+               return false
+           }
+           
+           let totalHours = lastWeekShifts.reduce(0) { result, shift in
+               result + shift.duration
+           }
+           
+            return totalHours / 3600.0
+       }
+    
+    
 }
 
 struct ShiftsView_Previews: PreviewProvider {
     static var previews: some View {
-        ShiftsView()
+        ShiftsView(showMenu: .constant(false))
     }
 }
 
@@ -888,23 +304,23 @@ struct ShiftsView_Previews: PreviewProvider {
 // old search bar view:
 
 /*  SearchBarView(text: $searchText)
-  
-      .disabled(isEditing || sortOption == 0)
-  //.padding(.horizontal, 50)
-      //.padding(.top, 10)
-      .frame(maxWidth: .infinity)
-             .frame(height: (isEditing || sortOption == 0) ? 0 : nil)
-             .clipped() // <-- Clip the content when the frame height is reduced
-             .animation(.easeInOut(duration: 0.3)) */
+ 
+ .disabled(isEditing || sortOption == 0)
+ //.padding(.horizontal, 50)
+ //.padding(.top, 10)
+ .frame(maxWidth: .infinity)
+ .frame(height: (isEditing || sortOption == 0) ? 0 : nil)
+ .clipped() // <-- Clip the content when the frame height is reduced
+ .animation(.easeInOut(duration: 0.3)) */
 struct ShiftRow: View {
     var oldShift: OldShift
-
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text("\(oldShift.shiftStartDate ?? Date(), formatter: dateFormatter)")
                     .font(.headline)
-               
+                
             }
             Spacer()
         }
