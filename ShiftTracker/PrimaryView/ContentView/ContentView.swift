@@ -511,10 +511,8 @@ struct ContentView: View {
                         }
                     } label: {
                         Image(systemName: "line.3.horizontal")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 35, height: 35)
-                            //.clipShape(Circle())
+                            .bold()
+                     
                     }
                     .foregroundColor(.black)
                 }

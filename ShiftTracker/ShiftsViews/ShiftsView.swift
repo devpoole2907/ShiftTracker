@@ -119,7 +119,7 @@ struct ShiftsView: View {
                     ForEach(jobs.indices, id: \.self) { index in
                                         let job = jobs[index]
                                         Section(header: index == 0 ? summaryHeader() : nil) {
-                                            NavigationLink(destination: SummaryView()) {
+                                            NavigationLink(destination: StatsView(statsMode: .earnings)) {
                                                 summaryContent(for: job)
                                             }
                                         }
@@ -139,9 +139,7 @@ struct ShiftsView: View {
                         }
                     } label: {
                         Image(systemName: "line.3.horizontal")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 35, height: 35)
+                            .bold()
                             //.clipShape(Circle())
                     }
                     .foregroundColor(.black)
@@ -154,19 +152,20 @@ struct ShiftsView: View {
     }
     
     private func summaryContent(for job: Job) -> some View {
-            VStack(alignment: .leading, spacing: 7) {
-                
-                HStack{
-                    Image(systemName: job.icon ?? "briefcase.circle")
-                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                        .bold()
-                        .font(.title)
-                    Text(job.name ?? "")
-                        .font(.title)
-                        .bold()
-                        .foregroundColor(.black)
-                }
-                Divider()
+        VStack(alignment: .leading, spacing: 10) {
+            
+            HStack{
+                Image(systemName: job.icon ?? "briefcase.circle")
+                    .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                    .bold()
+                    .font(.system(size: 12))
+                Text(job.name ?? "")
+                    // .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                    .foregroundColor(.black)
+                    .bold()
+                    .font(.title3)
+            }
+            VStack(alignment: .leading, spacing: 3){
                 Text("Earnings")
                     .foregroundColor(.green)
                     .font(.subheadline)
@@ -179,28 +178,33 @@ struct ShiftsView: View {
                             .font(.title)
                             .bold()
                         
-                        Text("earned this week")
+                      /*  Text("earned this week")
                             .foregroundColor(.gray)
                             .bold()
-                            .font(.caption)
+                            .font(.caption) */
                     }
                 }
-                Text("Hours")
-                    .foregroundColor(.orange)
-                    .font(.subheadline)
-                    .bold()
-                if let hours = calculateHoursForLastWeek(for: job) {
-                    HStack {
-                        Text("\(hours, specifier: "%.1f")")
-                            .foregroundColor(.black)
-                            .font(.title2)
-                            .bold()
-                        Text("worked this week")
-                            .foregroundColor(.gray)
-                            .bold()
-                            .font(.caption)
-                    }
+            }
+            VStack(alignment: .leading, spacing: 3){
+            Text("Hours")
+                .foregroundColor(.orange)
+                .font(.subheadline)
+                .bold()
+            if let hours = calculateHoursForLastWeek(for: job) {
+                HStack {
+                    Text("\(hours, specifier: "%.1f")")
+                        .foregroundColor(.black)
+                        .font(.title2)
+                        .bold()
+                   
                 }
+            }
+                
+        }
+            Text(lastWeekDateRange())
+                .foregroundColor(.gray)
+                .bold()
+                .font(.caption)
             }
         }
     
@@ -290,6 +294,23 @@ struct ShiftsView: View {
            
             return totalHours / 3600.0
        }
+    
+    private func lastWeekDateRange() -> String {
+        let now = Date()
+        let calendar = Calendar.current
+
+        guard let lastMonday = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now, matchingPolicy: .nextTimePreservingSmallerComponents, repeatedTimePolicy: .first, direction: .backward) else { return "" }
+        guard let previousSunday = calendar.date(byAdding: .day, value: -6, to: lastMonday) else { return "" }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yy"
+
+        let startDate = dateFormatter.string(from: previousSunday)
+        let endDate = dateFormatter.string(from: lastMonday)
+
+        return "\(startDate) - \(endDate)"
+    }
+
     
     
 }
