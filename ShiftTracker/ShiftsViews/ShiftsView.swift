@@ -72,7 +72,7 @@ struct ShiftsView: View {
     
     var body: some View {
         
-        let textColor: Color = colorScheme == .dark ? .white : .black
+        
         let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
         let countColor: Color = colorScheme == .dark ? Color.blue.opacity(0.5) : .blue.opacity(0.8)
         let hourColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : .orange.opacity(0.8)
@@ -119,13 +119,13 @@ struct ShiftsView: View {
                     ForEach(jobs.indices, id: \.self) { index in
                                         let job = jobs[index]
                                         Section(header: index == 0 ? summaryHeader() : nil) {
-                                            NavigationLink(destination: StatsView(statsMode: .earnings)) {
+                                            NavigationLink(destination: StatsView(statsMode: .earnings, jobId: job.objectID)) {
                                                 summaryContent(for: job)
                                             }
                                         }
-                    }.listRowBackground(Color.primary.opacity(0.04))
+                    }.listRowBackground(Color.primary.opacity(0.03))
                     
-                }//.listStyle(GroupedListStyle())
+                }
                 .scrollContentBackground(.hidden)
                 
             }
@@ -140,9 +140,9 @@ struct ShiftsView: View {
                     } label: {
                         Image(systemName: "line.3.horizontal")
                             .bold()
-                            //.clipShape(Circle())
+                     
                     }
-                    .foregroundColor(.black)
+                    //.foregroundColor(.black)
                 }
             }
             
@@ -161,7 +161,7 @@ struct ShiftsView: View {
                     .font(.system(size: 12))
                 Text(job.name ?? "")
                     // .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                    .foregroundColor(.black)
+                   // .foregroundColor(.black)
                     .bold()
                     .font(.title3)
             }
@@ -174,7 +174,7 @@ struct ShiftsView: View {
                 if let earnings = calculateEarningsForLastWeek(for: job) {
                     HStack {
                         Text("$\(earnings, specifier: "%.2f")")
-                            .foregroundColor(.black)
+                          //  .foregroundColor(.black)
                             .font(.title)
                             .bold()
                         
@@ -193,7 +193,7 @@ struct ShiftsView: View {
             if let hours = calculateHoursForLastWeek(for: job) {
                 HStack {
                     Text("\(hours, specifier: "%.1f")")
-                        .foregroundColor(.black)
+                       // .foregroundColor(.black)
                         .font(.title2)
                         .bold()
                    
@@ -209,10 +209,11 @@ struct ShiftsView: View {
         }
     
     private func summaryHeader() -> some View {
-            HStack {
+        let textColor: Color = colorScheme == .dark ? .white : .black
+        return HStack {
                 Text("Summary")
                     .font(.title)
-                    .foregroundColor(.black)
+                    .foregroundColor(textColor)
                     .bold()
                     .textCase(nil)
                     .padding(.leading, -8)

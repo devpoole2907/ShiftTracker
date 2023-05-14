@@ -338,18 +338,7 @@ struct JobSummaryView: View {
         
         let squareColor: Color = colorScheme == .dark ? Color(.systemGray6) : Color.white
         
-        
-        NavigationStack{
-            VStack(spacing: 1){
-                List {
-                    Section{
-                        
-                       
-                        
-                    }.dynamicTypeSize(.small)
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .padding(.top, 20)
+                    
                 
                    /*
                     Section{
@@ -376,59 +365,7 @@ struct JobSummaryView: View {
                     Section{
                     if sortOption == 0 {
                      
-                            ForEach(filteredShifts[sortOption]) { shift in
-                                ZStack(alignment: .leading) {
-                                    Button(action: {
-                                        if isEditing {
-                                            toggleSelection(for: shift)
-                                        }
-                                    }, label: {
-                                        HStack{
-                                            let isSelected = selectedShifts.contains(shift.objectID)
-                                            if isEditing {
-                                                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                                                    .foregroundColor(isSelected ? .orange : .gray)
-                                            }
-                                            let shiftStartDate = shift.shiftStartDate ?? Date()
-                                            let shiftEndDate = shift.shiftEndDate ?? Date()
-                                            let duration = shiftEndDate.timeIntervalSince(shiftStartDate) / 3600.0
-                                            let durationString = String(format: "%.1f", duration)
-
-                                            let dateString = dateFormatter.string(from: shiftStartDate)
-                                            let payString = String(format: "%.2f", shift.taxedPay)
-                                            
-                                            VStack(alignment: .leading, spacing: 5){
-                                                Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
-                                                    .foregroundColor(textColor)
-                                                    .font(.title)
-                                                    .bold()
-                                                Text(" \(durationString) hours")
-                                                    .foregroundColor(.orange)
-                                                    .font(.subheadline)
-                                                    .bold()
-                                                Text(dateString)
-                                                    .foregroundColor(.gray)
-                                                    .font(.footnote)
-                                                    .bold()
-                                            }
-                                        }
-                                    })
-                                    if !isEditing {
-                                        NavigationLink(destination: DetailView(shift: shift).navigationBarTitle(Text("Shift Details")).background(backgroundColor), label: {
-                                            EmptyView()
-                                        })
-                                    }
-                                }.listRowBackground(Color.primary.opacity(0.03))
-                                .swipeActions {
-                                    if !isEditing {
-                                        Button(role: .destructive) {
-                                            deleteShift(shift)
-                                        } label: {
-                                            Image(systemName: "trash")
-                                        }
-                                    }
-                                }
-                            }.id(refreshingID)
+                            
                         
                     }
 
@@ -472,7 +409,7 @@ struct JobSummaryView: View {
                                             EmptyView()
                                         })
                                     }
-                                }.listRowBackground(Color.primary.opacity(0.03))
+                                }.listRowBackground(Color.primary.opacity(0.04))
                                 .swipeActions {
                                     if !isEditing {
                                         Button(role: .destructive) {
@@ -527,7 +464,7 @@ struct JobSummaryView: View {
                                                 EmptyView()
                                             })
                                         }
-                                    }.listRowBackground(Color.primary.opacity(0.03))
+                                    }.listRowBackground(Color.primary.opacity(0.04))
                                     .swipeActions {
                                         if !isEditing {
                                             Button(role: .destructive) {
@@ -580,7 +517,7 @@ struct JobSummaryView: View {
                                                 EmptyView()
                                             })
                                         }
-                                    }.listRowBackground(Color.primary.opacity(0.03))
+                                    }.listRowBackground(Color.primary.opacity(0.04))
                                     .swipeActions {
                                         if !isEditing {
                                             Button(role: .destructive) {
@@ -635,16 +572,14 @@ struct JobSummaryView: View {
                         }
                     }
                     
-                }.scrollContentBackground(.hidden)
             .onChange(of: isEditing) { newValue in
                 if !newValue {
                     selectedShifts.removeAll()
                 }
             }
-            }
-            //.background(backgroundColor)
-            .navigationBarTitle("Shifts", displayMode: .inline)
-            .toolbar{
+            
+            
+         /*   .toolbar{
                 if !isEditing {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(action: shareButton){
@@ -700,8 +635,8 @@ struct JobSummaryView: View {
                     .disabled(isEditing)
                 }
                 
-            }.haptics(onChangeOf: isEditing, type: .light)
-            .alert(isPresented: $showAlert) {
+            }.haptics(onChangeOf: isEditing, type: .light) */
+          /*  .alert(isPresented: $showAlert) {
                 Alert(
                     title: Text("Delete Shifts?"),
                     message: Text("Are you sure you want to delete these shifts?"),
@@ -722,9 +657,9 @@ struct JobSummaryView: View {
                 else {
                     AddShiftView().environment(\.managedObjectContext, viewContext)
                 }
-            }
+            }*/
             
-        }.searchable(text: query, placement: .navigationBarDrawer(displayMode: .always))
+        .searchable(text: query, placement: .navigationBarDrawer)
             .searchSuggestions {
                 ForEach(searchMonths, id: \.self) { month in
                     if searchText.isEmpty || month.lowercased().starts(with: searchText.lowercased()) {
@@ -821,68 +756,4 @@ private let dateFormatter: DateFormatter = {
 }()
 
 
-//rename this back to DeleteShiftAlert later
-struct DeleteJobShiftAlert: CentrePopup {
-    let action: () -> Void
-    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(28)
-    }
-    func createContent() -> some View {
-        VStack(spacing: 5) {
-            
-            createTitle()
-                .padding(.vertical)
-            //Spacer(minLength: 32)
-            //  Spacer.height(32)
-            createButtons()
-            // .padding()
-        }
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .padding(.horizontal, 24)
-        .background(.primary.opacity(0.05))
-    }
-}
 
-private extension DeleteJobShiftAlert {
-    
-    func createTitle() -> some View {
-        Text("Are you sure you want to delete these shifts?")
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-    
-    func createButtons() -> some View {
-        HStack(spacing: 4) {
-            createCancelButton()
-            createUnlockButton()
-        }
-    }
-}
-
-private extension DeleteJobShiftAlert {
-    func createCancelButton() -> some View {
-        Button(action: dismiss) {
-            Text("Cancel")
-            
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.primary.opacity(0.1))
-                .cornerRadius(8)
-        }
-    }
-    func createUnlockButton() -> some View {
-        Button(action: {
-            action()
-            dismiss()
-        }) {
-            Text("Confirm")
-                .bold()
-                .foregroundColor(.white)
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(8)
-        }
-    }
-}

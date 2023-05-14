@@ -39,8 +39,8 @@ struct ShiftTrackerApp: App {
         WindowGroup {
             MainWithSideBarView()
                 .implementPopupView()
-                //.preferredColorScheme(getPreferredColorScheme())
-                .preferredColorScheme(.light)
+                .preferredColorScheme(getPreferredColorScheme())
+                //.preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .onAppear {
                     startMonitoringAllJobLocations()

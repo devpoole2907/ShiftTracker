@@ -28,7 +28,7 @@ struct MainWithSideBarView: View {
     }
     
     @State var currentTab: Tab = .home
-
+    
     @State var offset: CGFloat = 0
     @State var lastStoredOffset: CGFloat = 0
     
@@ -40,125 +40,119 @@ struct MainWithSideBarView: View {
         
         let sideBarWidth = getRect().width - 90
         
-
         
-       // if authModel.userIsLoggedIn{
+        
+        // if authModel.userIsLoggedIn{
         if !isFirstLaunch{
-        NavigationView {
-            
-            
-            HStack(spacing: 0){
-                SideMenu(showMenu: $showMenu)
-                    .environmentObject(authModel)
-                    .environmentObject(viewModel)
-                VStack(spacing: 0){
-                    
-                    TabView(selection: $currentTab) {
-                        ContentView(showMenu: $showMenu)
-                            .environment(\.managedObjectContext, context)
-                            .environmentObject(viewModel)
-                        
-                            .navigationBarTitleDisplayMode(.inline)
-                            .navigationBarHidden(true)
-                            .tag(Tab.home)
-                        
-                        // Your custom view for Timesheets
-                        ShiftsView(showMenu: $showMenu)
-                        //.navigationBarTitleDisplayMode(.inline)
-                        //.navigationBarHidden(true)
-                            .tag(Tab.timesheets)
-                        
-                        ScheduleView()
-                            .navigationBarTitleDisplayMode(.inline)
-                            .navigationBarHidden(true)
-                            .tag(Tab.schedule)
-                        
-                        SummaryView()
-                        //.navigationBarTitleDisplayMode(.inline)
-                        //.navigationBarHidden(true)
-                            .tag(Tab.summary)
-                    }
-                    
-                    
-                    VStack(spacing: 0){
-                        Divider()
-                        HStack(spacing: 0) {
-                            TabButton(tab: .home, useSystemImage: true)
-                            TabButton(tab: .timesheets, useSystemImage: true) // Use system image for this tab only
-                            TabButton(tab: .schedule, useSystemImage: true)
-                            TabButton(tab: .summary, useSystemImage: true)
-                        }
-                        .padding([.top], 15)
-                    }
-                    
-                    
-                }
-                .frame(width: getRect().width)
-                .ignoresSafeArea(.keyboard)
+            NavigationView {
                 
-                .overlay(
-                    
-                    Rectangle()
-                        .fill(
-                            Color.primary.opacity(Double((offset / sideBarWidth) / 5))
-                        )
-                        .ignoresSafeArea(.container, edges: .vertical)
-                        .onTapGesture {
-                            withAnimation{
-                                showMenu.toggle()
-                            }
+                
+                HStack(spacing: 0){
+                    SideMenu(showMenu: $showMenu)
+                        .environmentObject(authModel)
+                        .environmentObject(viewModel)
+                    VStack(spacing: 0){
+                        
+                        TabView(selection: $currentTab) {
+                            ContentView(showMenu: $showMenu)
+                                .environment(\.managedObjectContext, context)
+                                .environmentObject(viewModel)
+                            
+                                .navigationBarTitleDisplayMode(.inline)
+                                .navigationBarHidden(true)
+                                .tag(Tab.home)
+                            
+                            
+                            ShiftsView(showMenu: $showMenu)
+                            
+                                .tag(Tab.timesheets)
+                            
+                            ScheduleView(showMenu: $showMenu)
+                                .navigationBarTitleDisplayMode(.inline)
+                                .navigationBarHidden(true)
+                                .tag(Tab.schedule)
+                            
                         }
-                )
-            }
-            .frame(width: getRect().width + sideBarWidth)
-            .offset(x: -sideBarWidth / 2)
-            .offset(x: offset > 0 ? offset : 0)
-            
-            .gesture(
-                currentTab == .home ? DragGesture()
-                    .updating($gestureOffset, body: { value, out, _ in
-                        out = value.translation.width
-                    })
-                    .onEnded(onEnd(value:)) : nil
-            )
-            
-            
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarHidden(true)
-            
-        }
-        .animation(.easeOut, value: offset == 0)
-        .onChange(of: showMenu) { newValue in
-            if showMenu && offset == 0{
-                offset = sideBarWidth
-                lastStoredOffset = offset
-            }
-            if !showMenu && offset == sideBarWidth{
-                offset = 0
-                lastStoredOffset = 0
-            }
-        }
-        .onChange(of: gestureOffset) { newValue in
-            onChange()
-        }
-        .onAppear(perform: {
-                   let shifts = fetchUpcomingShifts()
-                   scheduleNotifications(for: shifts)
-               })
-           
-   /*     .onAppear{ authModel.checkUserLoginStatus()
-                            if !isSubscriptionChecked {
-                                checkSubscriptionStatus()
-                                isSubscriptionChecked = true
+                        
+                        
+                        VStack(spacing: 0){
+                            Divider()
+                            HStack(spacing: 0) {
+                                TabButton(tab: .home, useSystemImage: true)
+                                TabButton(tab: .timesheets, useSystemImage: true) // Use system image for this tab only
+                                TabButton(tab: .schedule, useSystemImage: true)
                             }
+                            .padding([.top], 15)
+                        }
+                        
+                        
+                    }
+                    .frame(width: getRect().width)
+                    .ignoresSafeArea(.keyboard)
+                    
+                    .overlay(
+                        
+                        Rectangle()
+                            .fill(
+                                Color.primary.opacity(Double((offset / sideBarWidth) / 5))
+                            )
+                            .ignoresSafeArea(.container, edges: .vertical)
+                            .onTapGesture {
+                                withAnimation{
+                                    showMenu.toggle()
+                                }
+                            }
+                    )
+                }
+                .frame(width: getRect().width + sideBarWidth)
+                .offset(x: -sideBarWidth / 2)
+                .offset(x: offset > 0 ? offset : 0)
+                
+                .gesture(
+                    currentTab == .home ? DragGesture()
+                        .updating($gestureOffset, body: { value, out, _ in
+                            out = value.translation.width
+                        })
+                        .onEnded(onEnd(value:)) : nil
+                )
+                
+                
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarHidden(true)
+                
+            }
+            .animation(.easeOut, value: offset == 0)
+            .onChange(of: showMenu) { newValue in
+                if showMenu && offset == 0{
+                    offset = sideBarWidth
+                    lastStoredOffset = offset
+                }
+                if !showMenu && offset == sideBarWidth{
+                    offset = 0
+                    lastStoredOffset = 0
+                }
+            }
+            .onChange(of: gestureOffset) { newValue in
+                onChange()
+            }
+            .onAppear(perform: {
+                let shifts = fetchUpcomingShifts()
+                scheduleNotifications(for: shifts)
+            })
             
-        } */
-        
+            /*     .onAppear{ authModel.checkUserLoginStatus()
+             if !isSubscriptionChecked {
+             checkSubscriptionStatus()
+             isSubscriptionChecked = true
+             }
+             
+             } */
+            
         } else {
             IntroMainView(isFirstLaunch: $isFirstLaunch)
                 .environmentObject(authModel)
-                //.onAppear{ authModel.checkUserLoginStatus() }
-                
+            //.onAppear{ authModel.checkUserLoginStatus() }
+            
         }
     }
     
@@ -232,23 +226,23 @@ struct MainWithSideBarView: View {
             
         }
     }
-
+    
     private func checkSubscriptionStatus() {
-           if isSubscriptionActive() {
-               print("Subscription is active")
-               // Perform any actions required when the subscription is active
-           } else {
-               print("Subscription is not active")
-               // Perform any actions required when the subscription is not active
-           }
-       }
+        if isSubscriptionActive() {
+            print("Subscription is active")
+            // Perform any actions required when the subscription is active
+        } else {
+            print("Subscription is not active")
+            // Perform any actions required when the subscription is not active
+        }
+    }
     
     func fetchUpcomingShifts() -> [ScheduledShift] {
         let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "notifyMe == true")
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.reminderTime, ascending: true)]
         fetchRequest.fetchLimit = 15
-
+        
         do {
             let shifts = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
             return shifts
@@ -257,17 +251,17 @@ struct MainWithSideBarView: View {
             return []
         }
     }
-
+    
     func scheduleNotifications(for shifts: [ScheduledShift]) {
         let center = UNUserNotificationCenter.current()
         
         center.removeAllPendingNotificationRequests()
         
-
+        
         for shift in shifts {
             let content = UNMutableNotificationContent()
             content.title = "Shift Reminder"
-        
+            
             
             if let reminderDate = shift.startDate?.addingTimeInterval(-shift.reminderTime){
                 content.body = "Your scheduled shift starts at \(shift.startDate)"
@@ -282,7 +276,7 @@ struct MainWithSideBarView: View {
             }
         }
     }
-
+    
     
     
 }
@@ -298,7 +292,6 @@ enum Tab: String, CaseIterable {
     case home = "Home"
     case timesheets = "Timesheets"
     case schedule = "Schedule"
-    case summary = "Summary"
     
     var image: String? {
         switch self {
@@ -308,8 +301,6 @@ enum Tab: String, CaseIterable {
             return "Timesheets"
         case .schedule:
             return "Schedule"
-        case .summary:
-            return "Summary"
         }
     }
     
@@ -321,8 +312,6 @@ enum Tab: String, CaseIterable {
             return "clock.fill"
         case .schedule:
             return "calendar"
-        case .summary:
-            return "chart.bar.fill"
         }
     }
 }

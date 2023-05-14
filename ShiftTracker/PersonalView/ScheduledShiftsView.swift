@@ -79,7 +79,7 @@ struct ScheduledShiftsView: View {
                     }) {
                         Image(systemName: "plus")
                             .bold()
-                    }
+                    }.padding()
                 }
             }
         }
@@ -305,7 +305,7 @@ struct CreateShiftForm: View {
                     }.listRowSeparator(.hidden)
                         .padding(.top, 10)
                     VStack{
-                        sleepTimeSlider()
+                        scheduleSlider()
                             .frame(maxWidth: .infinity, alignment: .center)
                         // .frame(maxHeight: screenBounds().height / 5)
                             .padding(.top, 30)
@@ -381,17 +381,17 @@ struct CreateShiftForm: View {
                             Text("Save")
                                 .bold()
                                 
-                        }
+                        }.padding()
                     }
                 }
             //.padding(.top, 35)
         
-            .navigationBarTitle("Schedule", displayMode: .inline)
+                .navigationBarTitle("Schedule", displayMode: .inline).padding()
         }
     }
     
     @ViewBuilder
-    func sleepTimeSlider() -> some View{
+    func scheduleSlider() -> some View{
         
         let sliderBackgroundColor: Color = colorScheme == .dark ? .black : Color(.systemGray6)
         let sliderColor: Color = colorScheme == .dark ? Color(.systemGray6) : .white

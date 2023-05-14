@@ -5,6 +5,9 @@
 //  Created by James Poole on 20/03/23.
 //
 
+
+// deprecated
+
 import SwiftUI
 import SwiftUICharts
 import Charts
@@ -48,8 +51,6 @@ struct SummaryView: View {
                         // Calculate the number of days to subtract to get to the previous Monday
                         let daysToSubtract = currentWeekday == 1 ? 6 : (currentWeekday == 2 ? 0 : currentWeekday - 2)
 
-
-
                         // Calculate the date for the previous Monday
                         let previousMonday = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
 
@@ -61,7 +62,7 @@ struct SummaryView: View {
                         let taxedPayLastWeek = lastWeekShifts.reduce(0) { $0 + $1.taxedPay }
                         
                         /*Text("You earned \(totalPayLastWeek, specifier: "$%.2f") in the last 7 days, with \(totalPayLastWeek-taxedPayLastWeek, specifier: "$%.2f") going to tax.")*/
-                        NavigationLink(destination: StatsView(statsMode: .earnings).navigationTitle("Earnings")){
+                       /* NavigationLink(destination: StatsView(statsMode: .earnings).navigationTitle("Earnings")){
                             VStack(alignment: .leading, spacing: 5){
                                 Text("Earnings")
                                     .foregroundColor(.green)
@@ -76,7 +77,7 @@ struct SummaryView: View {
                                     .bold()
                                     .padding(.bottom, 5)
                             }
-                        }
+                        }*/
                     }
                     
                     .listRowBackground(Color.primary.opacity(0.03))
@@ -84,7 +85,7 @@ struct SummaryView: View {
                     Section{
                         let (totalHoursLastWeek, totalBreakDurationLastWeek) = calculateTotalHoursAndBreaks()
                         
-                        NavigationLink(destination: StatsView(statsMode: .hours).navigationTitle("Hours")){
+                      /*  NavigationLink(destination: StatsView(statsMode: .hours).navigationTitle("Hours")){
                             VStack(alignment: .leading, spacing: 5){
                                 Text("Hours Worked")
                                     .foregroundColor(.orange)
@@ -99,7 +100,7 @@ struct SummaryView: View {
                                     .bold()
                                     .padding(.bottom, 5)
                             }
-                        }
+                        }*/
                     }
                     .listRowBackground(Color.primary.opacity(0.03))
                     .listRowSeparator(.hidden)
@@ -107,7 +108,7 @@ struct SummaryView: View {
                         let (totalHoursLastWeek, totalBreakDurationLastWeek) = calculateTotalHoursAndBreaks()
                         
                         
-                        NavigationLink(destination: StatsView(statsMode: .breaks).navigationTitle("Breaks")){
+                    /*    NavigationLink(destination: StatsView(statsMode: .breaks).navigationTitle("Breaks")){
                             VStack(alignment: .leading, spacing: 5){
                                 Text("Breaks")
                                     .foregroundColor(.indigo)
@@ -122,7 +123,7 @@ struct SummaryView: View {
                                     .bold()
                                     .padding(.bottom, 5)
                             }
-                        }
+                        }*/
                     }
                     .listRowBackground(Color.primary.opacity(0.03))
                     .listRowSeparator(.hidden)

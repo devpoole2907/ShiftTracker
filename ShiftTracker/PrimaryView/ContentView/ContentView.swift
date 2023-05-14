@@ -514,7 +514,7 @@ struct ContentView: View {
                             .bold()
                      
                     }
-                    .foregroundColor(.black)
+                    .foregroundColor(textColor)
                 }
             }
             

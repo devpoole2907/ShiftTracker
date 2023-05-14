@@ -53,6 +53,7 @@ struct ChartView: View {
                         .bold()
                 }
                 Spacer()
+                
             }
             
             Chart{

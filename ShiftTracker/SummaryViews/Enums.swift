@@ -7,11 +7,23 @@
 
 import Foundation
 
-public enum StatsMode {
+public enum StatsMode: Int, CaseIterable {
     case earnings
     case hours
     case breaks
+
+    var description: String {
+        switch self {
+        case .earnings:
+            return "Earnings"
+        case .hours:
+            return "Hours"
+        case .breaks:
+            return "Breaks"
+        }
+    }
 }
+
 
 public enum ChartDataType {
     case hoursCount
