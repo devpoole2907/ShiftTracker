@@ -17,12 +17,12 @@
 		1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */; };
 		1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1A13F19529D02914009BE6B0 /* ProView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F19429D02914009BE6B0 /* ProView.swift */; };
+		1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */; };
 		1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */; };
 		1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */; };
 		1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9329F100950002D9E4 /* Enums.swift */; };
 		1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9629F101040002D9E4 /* ChartView.swift */; };
 		1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */; };
-		1A1DEC9E29F102230002D9E4 /* PersonalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9D29F102230002D9E4 /* PersonalView.swift */; };
 		1A22EFFD29C652A900A23F33 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EFFC29C652A900A23F33 /* MainView.swift */; };
 		1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EFFE29C6559100A23F33 /* SettingsView.swift */; };
 		1A22F00129C65E4D00A23F33 /* ShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00029C65E4D00A23F33 /* ShiftsView.swift */; };
@@ -38,7 +38,6 @@
 		1A4AB18D29FE1DFA00AA62BC /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */; };
 		1A4AB18F29FE315500AA62BC /* EditFirebaseJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */; };
 		1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610529C6D63A008AC8ED /* LaunchView.swift */; };
-		1A4E610829C7F861008AC8ED /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610729C7F861008AC8ED /* SummaryView.swift */; };
 		1A4E610B29C8081B008AC8ED /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E610A29C8081B008AC8ED /* SwiftUICharts */; };
 		1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610C29C82DF9008AC8ED /* DetailView.swift */; };
 		1A4E611029C843ED008AC8ED /* SlideOverCard in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E610F29C843ED008AC8ED /* SlideOverCard */; };
@@ -168,13 +167,13 @@
 		1A13F18929CE56CD009BE6B0 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidgetAttributes.swift; sourceTree = "<group>"; };
 		1A13F19429D02914009BE6B0 /* ProView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProView.swift; sourceTree = "<group>"; };
+		1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllScheduledShiftsView.swift; sourceTree = "<group>"; };
 		1A1D470A29C583F5001E5C15 /* ShiftTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftTracker.entitlements; sourceTree = "<group>"; };
 		1A1D470B29C58444001E5C15 /* ShiftTrackerWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftTrackerWidgetExtension.entitlements; sourceTree = "<group>"; };
 		1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		1A1DEC9329F100950002D9E4 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		1A1DEC9629F101040002D9E4 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftGroups.swift; sourceTree = "<group>"; };
-		1A1DEC9D29F102230002D9E4 /* PersonalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalView.swift; sourceTree = "<group>"; };
 		1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShiftTrackerStoreKitConfig.storekit; sourceTree = "<group>"; };
 		1A22EFFC29C652A900A23F33 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		1A22EFFE29C6559100A23F33 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -190,7 +189,6 @@
 		1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
 		1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFirebaseJobView.swift; sourceTree = "<group>"; };
 		1A4E610529C6D63A008AC8ED /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
-		1A4E610729C7F861008AC8ED /* SummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryView.swift; sourceTree = "<group>"; };
 		1A4E610C29C82DF9008AC8ED /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		1A4E611129C84DF2008AC8ED /* TipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipView.swift; sourceTree = "<group>"; };
 		1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -327,13 +325,12 @@
 			path = Main;
 			sourceTree = "<group>";
 		};
-		1A1DEC9C29F1020D0002D9E4 /* PersonalView */ = {
+		1A1DEC9C29F1020D0002D9E4 /* ScheduleView */ = {
 			isa = PBXGroup;
 			children = (
 				1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */,
 				1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */,
 				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
-				1A1DEC9D29F102230002D9E4 /* PersonalView.swift */,
 				1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */,
 				1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */,
 				1AAC400129F26B5B00E204C8 /* EditJobView.swift */,
@@ -341,8 +338,9 @@
 				1AB7D69929FBB1D500326AAA /* JobsView.swift */,
 				1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */,
 				1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */,
+				1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */,
 			);
-			path = PersonalView;
+			path = ScheduleView;
 			sourceTree = "<group>";
 		};
 		1A52AFA429C5616800415870 /* Frameworks */ = {
@@ -408,8 +406,7 @@
 				1ACA60AF29D7993F00B279CB /* SubViews */,
 				1A1DEC9029F0FF470002D9E4 /* DataStore */,
 				1A1DEC9229F0FFB00002D9E4 /* Main */,
-				1AECCC5E29E0BD2E00D879FE /* SummaryViews */,
-				1A1DEC9C29F1020D0002D9E4 /* PersonalView */,
+				1A1DEC9C29F1020D0002D9E4 /* ScheduleView */,
 				1A9855D329C55F8A003F512C /* ShiftTrackerApp.swift */,
 				1A12240D29C928EB0036D04C /* Info.plist */,
 				1A1D470A29C583F5001E5C15 /* ShiftTracker.entitlements */,
@@ -473,10 +470,10 @@
 			children = (
 				1A22F00029C65E4D00A23F33 /* ShiftsView.swift */,
 				1A4E610C29C82DF9008AC8ED /* DetailView.swift */,
+				1AECCC5E29E0BD2E00D879FE /* SummaryViews */,
 				1ACA60B529D7F07100B279CB /* AddShiftView.swift */,
 				1ACA60BF29D8F98500B279CB /* SearchBarView.swift */,
 				1A88007029E3D98D009458BE /* BreaksListView.swift */,
-				1A3424982A04D406007AB271 /* JobSummaryView.swift */,
 			);
 			path = ShiftsViews;
 			sourceTree = "<group>";
@@ -547,7 +544,7 @@
 		1AECCC5E29E0BD2E00D879FE /* SummaryViews */ = {
 			isa = PBXGroup;
 			children = (
-				1A4E610729C7F861008AC8ED /* SummaryView.swift */,
+				1A3424982A04D406007AB271 /* JobSummaryView.swift */,
 				1A1DEC9329F100950002D9E4 /* Enums.swift */,
 				1A1DEC9629F101040002D9E4 /* ChartView.swift */,
 				1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */,
@@ -800,13 +797,12 @@
 				1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */,
 				1A12240A29C900150036D04C /* RoundedSquareView.swift in Sources */,
 				1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */,
-				1A4E610829C7F861008AC8ED /* SummaryView.swift in Sources */,
 				1A4AB18D29FE1DFA00AA62BC /* JobsViewModel.swift in Sources */,
 				1AB7D6AD29FC097700326AAA /* CustomIndicatorView.swift in Sources */,
 				1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */,
 				1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */,
-				1A1DEC9E29F102230002D9E4 /* PersonalView.swift in Sources */,
 				1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
+				1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */,
 				1AECCC5629DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1AECCC5C29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */,

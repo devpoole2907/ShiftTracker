@@ -861,15 +861,3 @@ enum ReminderTime: String, CaseIterable, Identifiable {
     }
 }
 
-
-/*
-Toggle(isOn: $enableRepeat){
-    Text("Repeat")
-        .bold()
-}
-
-RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)
-    .disabled(!enableRepeat)
-
-cancelRepeatingShiftSeries(shift: shift)
-*/

@@ -20,6 +20,6 @@ func setUserSubscribed(_ subscribed: Bool) {
         print("set subscription to true ")
     }
     else {
-        print("wtf goin on mayne")
+        print("subscription is false")
     }
 }

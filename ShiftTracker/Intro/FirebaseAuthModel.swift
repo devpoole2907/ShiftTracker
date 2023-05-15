@@ -109,7 +109,7 @@ class FirebaseAuthModel: ObservableObject {
         Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
 
       let nonce = randomBytes.map { byte in
-        // Pick a random character from the set, wrapping around if needed.
+        //pick a random character from the set, wrapping around if needed
         charset[Int(byte) % charset.count]
       }
 
