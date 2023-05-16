@@ -33,7 +33,7 @@
 		1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
 		1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4AB18629FCFE6D00AA62BC /* PopupView */; };
-		1A4AB18929FDE9BE00AA62BC /* GlobalFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions.swift */; };
+		1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */; };
 		1A4AB18B29FE1DB300AA62BC /* FirebaseJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */; };
 		1A4AB18D29FE1DFA00AA62BC /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */; };
 		1A4AB18F29FE315500AA62BC /* EditFirebaseJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */; };
@@ -184,7 +184,7 @@
 		1A3424982A04D406007AB271 /* JobSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSummaryView.swift; sourceTree = "<group>"; };
 		1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyPayCalculator.swift; sourceTree = "<group>"; };
 		1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFinderView.swift; sourceTree = "<group>"; };
-		1A4AB18829FDE9BE00AA62BC /* GlobalFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalFunctions.swift; sourceTree = "<group>"; };
+		1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlobalFunctions+Extensions.swift"; sourceTree = "<group>"; };
 		1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseJob.swift; sourceTree = "<group>"; };
 		1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
 		1A4AB18E29FE315500AA62BC /* EditFirebaseJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditFirebaseJobView.swift; sourceTree = "<group>"; };
@@ -368,7 +368,7 @@
 			isa = PBXGroup;
 			children = (
 				1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */,
-				1A4AB18829FDE9BE00AA62BC /* GlobalFunctions.swift */,
+				1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */,
 				1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */,
 				1AC9DDF729F7B28700C15008 /* JobData.swift */,
 				1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */,
@@ -793,7 +793,7 @@
 				1A4E611229C84DF2008AC8ED /* TipView.swift in Sources */,
 				1AE3845929D444340002378F /* TabItemView.swift in Sources */,
 				1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */,
-				1A4AB18929FDE9BE00AA62BC /* GlobalFunctions.swift in Sources */,
+				1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */,
 				1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */,
 				1A12240A29C900150036D04C /* RoundedSquareView.swift in Sources */,
 				1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */,
