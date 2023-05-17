@@ -132,7 +132,8 @@ struct ChartView: View {
         }
         
         .chartYScale(domain: 0...yDomain)
-        .frame(height: 300)
+        .frame(height: 200)
+        .padding(.bottom)
         .opacity(viewOpacity)
         .onAppear {
             withAnimation(.easeInOut(duration: 0.3)) {

@@ -229,7 +229,7 @@ struct ContentView: View {
                             } */
                             
                             Button(action: {
-                                activeSheet = .sheet8
+                                showMenu.toggle()
                             }) {
                                 HStack {
                                     Text("Job:")
@@ -558,44 +558,37 @@ struct ContentView: View {
                 
                 switch item {
                 case .sheet1:
-                    if let thisShift = shifts.first{
+                    if let thisShift = viewModel.lastEndedShift {
                         NavigationStack{
                             DetailView(shift: thisShift).navigationBarTitle("Shift Ended")
                                 .environment(\.managedObjectContext, context)
                         }.presentationDetents([ .large])
-                        // .presentationBackground(.ultraThinMaterial)
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(50)
                     }
                 case .sheet2:
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
-                    //StartBreakView(viewModel: viewModel)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.4)])
-                    // .presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
                     
                 case .sheet3:
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
-                    //EndShiftConfirmView(activeSheet: $activeSheet, viewModel: viewModel).navigationBarTitle("End Shift", displayMode: .inline)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.4)])
-                    // .presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
                 case .sheet4:
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.4)])
-                    // .presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
                 case .sheet5:
                     TaxPickerView(taxPercentage: $viewModel.taxPercentage)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.3)])
-                    //.presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
                     
@@ -603,7 +596,6 @@ struct ContentView: View {
                     ActionView(viewModel: viewModel, activeSheet: $activeSheet, navTitle: "Start Shift", actionType: .startShift)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.4)])
-                    //.presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
                 case .sheet7:
@@ -682,12 +674,6 @@ struct ContentView: View {
                     //.presentationBackground(.ultraThinMaterial)
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(50)
-                case .sheet8:
-                    JobSelectionView(selectedJobUUID: $viewModel.selectedJobUUID)
-                        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
-                        .presentationDetents([ .medium])
-                        .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(50)
                 }
             }
             
@@ -796,7 +782,7 @@ extension NSNotification.Name {
 
 
 enum ActiveSheet: Identifiable {
-    case sheet1, sheet2, sheet3, sheet4, sheet5, sheet6, sheet7, sheet8
+    case sheet1, sheet2, sheet3, sheet4, sheet5, sheet6, sheet7
     
     var id: Int {
         hashValue
@@ -868,7 +854,7 @@ struct ActionView: View {
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
                         ActionButtonView(title: "End Shift", backgroundColor: Color.orange.opacity(0.8), icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 100) {
-                            viewModel.endShift(using: context, endDate: actionDate)
+                            self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate)
                             dismiss()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 activeSheet = .sheet1

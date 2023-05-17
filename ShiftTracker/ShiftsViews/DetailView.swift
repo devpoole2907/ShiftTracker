@@ -416,7 +416,7 @@ struct DetailView: View {
                         shift.totalPay = (shift.duration / 3600.0) * shift.hourlyPay
                         shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
                         saveContext()
-                    }
+                    }.padding(.vertical)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button(action: {
@@ -425,6 +425,7 @@ struct DetailView: View {
                         Image(systemName: "trash")
                     }
                     .foregroundColor(.red)
+                    .padding([.vertical, .trailing])
                     .alert(isPresented: $showingDeleteAlert) {
                         Alert(
                             title: Text("Delete shift?"),

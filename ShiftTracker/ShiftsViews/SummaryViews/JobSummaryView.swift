@@ -331,12 +331,6 @@ struct JobSummaryView: View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
         let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
-        let countColor: Color = colorScheme == .dark ? Color.blue.opacity(0.5) : .blue.opacity(0.8)
-        let hourColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : .orange.opacity(0.8)
-        let taxedColor: Color = colorScheme == .dark ? Color.green.opacity(0.5) : .green.opacity(0.8)
-        let totalColor: Color = colorScheme == .dark ? Color.pink.opacity(0.5) : .pink.opacity(0.8)
-        
-        let squareColor: Color = colorScheme == .dark ? Color(.systemGray6) : Color.white
         
                     
                 

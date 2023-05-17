@@ -118,7 +118,7 @@ struct ShiftsView: View {
                     
                     ForEach(jobs.indices, id: \.self) { index in
                                         let job = jobs[index]
-                                        Section(header: index == 0 ? summaryHeader() : nil) {
+                                        Section /*(header: index == 0 ? summaryHeader() : nil)*/ {
                                             NavigationLink(destination: StatsView(statsMode: .earnings, jobId: job.objectID)) {
                                                 summaryContent(for: job)
                                             }
@@ -129,7 +129,7 @@ struct ShiftsView: View {
                 .scrollContentBackground(.hidden)
                 
             }
-            .navigationBarTitle("Timesheets")
+            .navigationBarTitle("Summary")
             
             .toolbar{
                 ToolbarItem(placement: .navigationBarLeading){
@@ -208,6 +208,7 @@ struct ShiftsView: View {
             }
         }
     
+    // old summary header
     private func summaryHeader() -> some View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         return HStack {

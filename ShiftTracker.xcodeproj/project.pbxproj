@@ -92,8 +92,6 @@
 		1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B529D7F07100B279CB /* AddShiftView.swift */; };
 		1ACA60B729D7F07100B279CB /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B529D7F07100B279CB /* AddShiftView.swift */; };
-		1ACA60B929D8528700B279CB /* LocationUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B829D8528700B279CB /* LocationUpdateManager.swift */; };
-		1ACA60BA29D8528700B279CB /* LocationUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B829D8528700B279CB /* LocationUpdateManager.swift */; };
 		1ACA60BD29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */; };
 		1ACA60BE29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */; };
 		1ACA60C029D8F98500B279CB /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BF29D8F98500B279CB /* SearchBarView.swift */; };
@@ -227,7 +225,6 @@
 		1AC9DDF729F7B28700C15008 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		1ACA60AC29D7913700B279CB /* ShiftKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftKeys.swift; sourceTree = "<group>"; };
 		1ACA60B529D7F07100B279CB /* AddShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftView.swift; sourceTree = "<group>"; };
-		1ACA60B829D8528700B279CB /* LocationUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUpdateManager.swift; sourceTree = "<group>"; };
 		1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrangeToggleStyle.swift; sourceTree = "<group>"; };
 		1ACA60BF29D8F98500B279CB /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		1ACAA96829F92BAD002D86B5 /* ShiftTracker Watch Edition Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShiftTracker Watch Edition Watch App.entitlements"; sourceTree = "<group>"; };
@@ -414,7 +411,6 @@
 				1A9855D729C55F8C003F512C /* Assets.xcassets */,
 				1A9855D929C55F8C003F512C /* Preview Content */,
 				1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */,
-				1ACA60B829D8528700B279CB /* LocationUpdateManager.swift */,
 				1AAC400329F2B09A00E204C8 /* OvertimeView.swift */,
 			);
 			path = ShiftTracker;
@@ -720,7 +716,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1ACA60BA29D8528700B279CB /* LocationUpdateManager.swift in Sources */,
 				1A52AFAF29C5616800415870 /* ShiftTrackerWidget.swift in Sources */,
 				1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1AC048C129E0D50E00355767 /* Shift.swift in Sources */,
@@ -750,7 +745,6 @@
 				1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */,
 				1AECCC5329DC218E00D879FE /* Tag.swift in Sources */,
 				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
-				1ACA60B929D8528700B279CB /* LocationUpdateManager.swift in Sources */,
 				1AB7D6B129FCC9E000326AAA /* FirebaseAuthModel.swift in Sources */,
 				1AECCC4D29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,

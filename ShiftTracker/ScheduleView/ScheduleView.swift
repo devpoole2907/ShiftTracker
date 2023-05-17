@@ -49,7 +49,7 @@ struct ScheduleView: View {
                                 .padding(.horizontal)
                         }.listRowBackground(Color.primary.opacity(0.05))
                         Section{
-                            CalendarView(interval: DateInterval(start: .distantPast, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
+                            CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
                             //.fixedSize(horizontal: true, vertical: true)
                             // .scaleEffect(CGSize(width: 0.95, height: 0.95))
                             //.padding(.horizontal, 20)

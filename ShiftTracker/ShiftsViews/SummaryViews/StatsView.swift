@@ -607,12 +607,22 @@ struct StatsView: View {
                 }
             
                 .toolbar{
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        
+                        
+                        Button(action: shareButton){
+                            Text("\(Image(systemName: "square.and.arrow.up"))")
+                        }
+                        .disabled(isEditing || !isProVersion)
+                        
+                       
+                    }
                        if !isEditing {
                                ToolbarItem(placement: .navigationBarTrailing) {
-                                   Button(action: shareButton){
-                                       Text("\(Image(systemName: "square.and.arrow.up"))")
+                                   Button("\(Image(systemName: "plus"))") {
+                                       showingAddShiftSheet.toggle()
                                    }
-                                   .disabled(isEditing || !isProVersion)
+                                   .disabled(isEditing)
                                }
                            
                        }
@@ -620,7 +630,10 @@ struct StatsView: View {
                                ToolbarItem(placement: .navigationBarTrailing) {
                                    Button("\(Image(systemName: "trash"))") {
                                        
-                                       DeleteShiftAlert(action: deleteSelectedShifts).present()
+                                       DeleteShiftAlert(action: {
+                                           deleteSelectedShifts()
+                                           isEditing = false
+                                       }).present()
                                    }
                                    
                                    .disabled(selectedShifts.isEmpty)
@@ -654,13 +667,7 @@ struct StatsView: View {
                                }
                            }
                        }
-                       ToolbarItem(placement: .navigationBarTrailing) {
-                           Button("\(Image(systemName: "plus"))") {
-                               showingAddShiftSheet.toggle()
-                           }
-                           
-                           .disabled(isEditing)
-                       }
+                       
                        
                    }.haptics(onChangeOf: isEditing, type: .light)
             

@@ -17,6 +17,7 @@ import CoreData
 
 class ContentViewModel: ObservableObject {
     
+    @Published var lastEndedShift: OldShift? = nil // store the latest shift to return when popping the detail view
     @Published  var hourlyPay: Double = 0.0
     @Published  var lastPay: Double = 0.0
     @Published  var breakTime: Double = 30
@@ -229,6 +230,28 @@ class ContentViewModel: ObservableObject {
         return afterTax
     }
     
+    // this func is used for calculating the total pay when the shift is ended, as the user may provide a custom end date
+    func computeTotalPay(for endDate: Date) -> Double {
+        guard let shift = shift else { return 0 }
+        
+        let elapsed = endDate.timeIntervalSince(shift.startDate) - totalBreakDuration()
+        if elapsed <= overtimeAppliedAfter || !sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey) {
+            let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
+            return pay
+        }
+        else {
+            print("OVERTIME!!!!")
+            isOvertime = true
+            let regularTime = overtimeAppliedAfter //* 3600.0
+            let overtime = elapsed - regularTime
+            let regularPay = (regularTime / 3600.0) * Double(shift.hourlyPay)
+            let overtimePay = (overtime / 3600.0) * Double(shift.hourlyPay) * overtimeRate // Multiply by overtimeRate
+
+            return regularPay + overtimePay
+        }
+    }
+
+    
     func totalBreakDuration() -> TimeInterval {
         let totalDuration = tempBreaks.reduce(0) { (result, tempBreak) -> TimeInterval in
             if tempBreak.isUnpaid {
@@ -399,7 +422,7 @@ class ContentViewModel: ObservableObject {
             }
         }
         
-    func endShift(using viewContext: NSManagedObjectContext, endDate: Date) {
+    func endShift(using viewContext: NSManagedObjectContext, endDate: Date) -> OldShift? {
             //updateActivity(startDate: Date())
         #if os(iOS)
             stopActivity()
@@ -418,6 +441,8 @@ class ContentViewModel: ObservableObject {
             sharedUserDefaults.set(breakTaken, forKey: shiftKeys.breakTakenKey)
             sharedUserDefaults.set(true, forKey: shiftKeys.shiftEndedKey)
             
+        var latestShift: OldShift? = nil
+        
             if let shift = shift {
                 self.lastPay = totalPay
                 self.lastTaxedPay = taxedPay
@@ -426,26 +451,27 @@ class ContentViewModel: ObservableObject {
                 self.lastBreakElapsed = breakElapsed
                 saveLastBreak()
                 
+                let newTotalPay = computeTotalPay(for: endDate)
+                        let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
                 
+                latestShift = OldShift(context: viewContext)
+                latestShift!.hourlyPay = shift.hourlyPay
+                latestShift!.shiftStartDate = shift.startDate
+                latestShift!.shiftEndDate = endDate
+                latestShift!.totalPay = newTotalPay
+                latestShift!.taxedPay = newTaxedPay
+                latestShift!.tax = Double(taxPercentage)
+                latestShift!.breakElapsed = breakElapsed
+                latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
+                latestShift!.overtimeDuration = overtimeDuration
+                latestShift!.overtimeRate = overtimeRate
                 
-                let latestShift = OldShift(context: viewContext)
-                latestShift.hourlyPay = shift.hourlyPay
-                latestShift.shiftStartDate = shift.startDate
-                latestShift.shiftEndDate = endDate
-                latestShift.totalPay = totalPay
-                latestShift.taxedPay = taxedPay
-                latestShift.tax = Double(taxPercentage)
-                latestShift.breakElapsed = breakElapsed
-                latestShift.duration = endDate.timeIntervalSince(shift.startDate) - breakElapsed
-                latestShift.overtimeDuration = overtimeDuration
-                latestShift.overtimeRate = overtimeRate
-                
-                latestShift.job = fetchJob(with: selectedJobUUID, in: viewContext)
+                latestShift!.job = fetchJob(with: selectedJobUUID, in: viewContext)
                 
                 
                 for tempBreak in tempBreaks {
                     if let breakEndDate = tempBreak.endDate {
-                        createBreak(oldShift: latestShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid)
+                        createBreak(oldShift: latestShift!, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid)
                     }
                 }
                 
@@ -459,7 +485,9 @@ class ContentViewModel: ObservableObject {
                 }
                 
                 
+                
             }
+            
             sharedUserDefaults.removeObject(forKey: shiftKeys.lastBreakElapsedKey)
             shift = nil
             shiftEnded = true
@@ -471,6 +499,7 @@ class ContentViewModel: ObservableObject {
             tempBreaks.removeAll()
             clearTempBreaksFromUserDefaults()
             
+        return latestShift
         }
         
         func endBreak(endDate: Date? = nil) {
