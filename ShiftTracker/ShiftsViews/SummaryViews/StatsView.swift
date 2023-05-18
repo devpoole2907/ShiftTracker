@@ -393,56 +393,56 @@ struct StatsView: View {
                     if statsMode == .earnings {
                         if selection == 0{
                             
-                            ChartView(graphedShifts: weekShifts, chartDataType: .totalPay, chartDateType: .day, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayInWeek))")
+                            ChartView(graphedShifts: weekShifts, chartDataType: .totalPay, chartDateType: .day, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayInWeek))", statsMode: statsMode)
                             
                         }
                         else if selection == 1{
-                            ChartView(graphedShifts: monthShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayInMonth))")
+                            ChartView(graphedShifts: monthShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayInMonth))", statsMode: statsMode)
                             
                         }
                         else if selection == 2 {
-                            ChartView(graphedWeeks: sixMonthShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 6000, chartTitle: "$\(String(format: "%.2f", totalPayInSixMonths))")
+                            ChartView(graphedWeeks: sixMonthShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 6000, chartTitle: "$\(String(format: "%.2f", totalPayInSixMonths))", statsMode: statsMode)
                         }
                         else if selection == 3 {
-                            ChartView(graphedShifts: twelveMonthShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayInTwelveMonths))")
+                            ChartView(graphedShifts: twelveMonthShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayInTwelveMonths))", statsMode: statsMode)
                         }
                         else {
-                            ChartView(graphedShifts: allShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayAllTime))")
+                            ChartView(graphedShifts: allShifts, chartDataType: .totalPay, chartDateType: .date, barColor: .green, yDomain: 1000, chartTitle: "$\(String(format: "%.2f", totalPayAllTime))", statsMode: statsMode)
                         }
                     } else if statsMode == .hours {
                         
                         if selection == 0{
-                            ChartView(graphedShifts: weekShifts, chartDataType: .hoursCount, chartDateType: .day, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInWeek - totalBreaksInWeek))
+                            ChartView(graphedShifts: weekShifts, chartDataType: .hoursCount, chartDateType: .day, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInWeek - totalBreaksInWeek), statsMode: statsMode)
                         }
                         else if selection == 1{
-                            ChartView(graphedShifts: monthShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInMonth - totalBreaksInMonth))
+                            ChartView(graphedShifts: monthShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInMonth - totalBreaksInMonth), statsMode: statsMode)
                         }
                         else if selection == 2 {
-                            ChartView(graphedWeeks: sixMonthShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 110, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInSixMonths - totalBreaksInSixMonths))
+                            ChartView(graphedWeeks: sixMonthShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 110, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInSixMonths - totalBreaksInSixMonths), statsMode: statsMode)
                         }
                         else if selection == 3 {
-                            ChartView(graphedShifts: twelveMonthShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInTwelveMonths - totalBreaksInTwelveMonths))
+                            ChartView(graphedShifts: twelveMonthShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursInTwelveMonths - totalBreaksInTwelveMonths), statsMode: statsMode)
                         }
                         else {
-                            ChartView(graphedShifts: allShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursAllTime - totalBreaksAllTime))
+                            ChartView(graphedShifts: allShifts, chartDataType: .hoursCount, chartDateType: .date, barColor: .orange, yDomain: 16, chartTitle: convertHoursToHourMinuteFormat(hours: totalHoursAllTime - totalBreaksAllTime), statsMode: statsMode)
                         }
                         
                     } else {
                         if selection == 0{
-                            ChartView(graphedShifts: weekShifts, chartDataType: .breakDuration, chartDateType: .day, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInWeek))
+                            ChartView(graphedShifts: weekShifts, chartDataType: .breakDuration, chartDateType: .day, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInWeek), statsMode: statsMode)
                         }
                         else if selection == 1{
-                            ChartView(graphedShifts: monthShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInMonth))
+                            ChartView(graphedShifts: monthShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInMonth), statsMode: statsMode)
                             
                         }
                         else if selection == 2 {
-                            ChartView(graphedWeeks: sixMonthShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 35, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInSixMonths))
+                            ChartView(graphedWeeks: sixMonthShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 35, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInSixMonths), statsMode: statsMode)
                         }
                         else if selection == 3 {
-                            ChartView(graphedShifts: twelveMonthShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInTwelveMonths))
+                            ChartView(graphedShifts: twelveMonthShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksInTwelveMonths), statsMode: statsMode)
                         }
                         else {
-                            ChartView(graphedShifts: allShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksAllTime))
+                            ChartView(graphedShifts: allShifts, chartDataType: .breakDuration, chartDateType: .date, barColor: .indigo, yDomain: 4, chartTitle: convertHoursToHourMinuteFormat(hours: totalBreaksAllTime), statsMode: statsMode)
                         }
                     }
                     Picker(selection: $selection, label: Text("Duration")) {

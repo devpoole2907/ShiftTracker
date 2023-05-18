@@ -72,16 +72,6 @@ struct ShiftsView: View {
     
     var body: some View {
         
-        
-        let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
-        let countColor: Color = colorScheme == .dark ? Color.blue.opacity(0.5) : .blue.opacity(0.8)
-        let hourColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : .orange.opacity(0.8)
-        let taxedColor: Color = colorScheme == .dark ? Color.green.opacity(0.5) : .green.opacity(0.8)
-        let totalColor: Color = colorScheme == .dark ? Color.pink.opacity(0.5) : .pink.opacity(0.8)
-        
-        let squareColor: Color = colorScheme == .dark ? Color(.systemGray6) : Color.white
-        
-        
         NavigationStack{
             VStack(spacing: 1){
                 List {
@@ -117,12 +107,12 @@ struct ShiftsView: View {
                         .padding(.top, 20)
                     
                     ForEach(jobs.indices, id: \.self) { index in
-                                        let job = jobs[index]
-                                        Section /*(header: index == 0 ? summaryHeader() : nil)*/ {
-                                            NavigationLink(destination: StatsView(statsMode: .earnings, jobId: job.objectID)) {
-                                                summaryContent(for: job)
-                                            }
-                                        }
+                        let job = jobs[index]
+                        Section /*(header: index == 0 ? summaryHeader() : nil)*/ {
+                            NavigationLink(destination: StatsView(statsMode: .earnings, jobId: job.objectID)) {
+                                summaryContent(for: job)
+                            }
+                        }
                     }.listRowBackground(Color.primary.opacity(0.03))
                     
                 }
@@ -140,7 +130,7 @@ struct ShiftsView: View {
                     } label: {
                         Image(systemName: "line.3.horizontal")
                             .bold()
-                     
+                        
                     }
                     //.foregroundColor(.black)
                 }
@@ -160,8 +150,8 @@ struct ShiftsView: View {
                     .bold()
                     .font(.system(size: 12))
                 Text(job.name ?? "")
-                    // .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                   // .foregroundColor(.black)
+                // .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                // .foregroundColor(.black)
                     .bold()
                     .font(.title3)
             }
@@ -174,52 +164,52 @@ struct ShiftsView: View {
                 if let earnings = calculateEarningsForLastWeek(for: job) {
                     HStack {
                         Text("$\(earnings, specifier: "%.2f")")
-                          //  .foregroundColor(.black)
+                        //  .foregroundColor(.black)
                             .font(.title)
                             .bold()
                         
-                      /*  Text("earned this week")
-                            .foregroundColor(.gray)
-                            .bold()
-                            .font(.caption) */
+                        /*  Text("earned this week")
+                         .foregroundColor(.gray)
+                         .bold()
+                         .font(.caption) */
                     }
                 }
             }
             VStack(alignment: .leading, spacing: 3){
-            Text("Hours")
-                .foregroundColor(.orange)
-                .font(.subheadline)
-                .bold()
-            if let hours = calculateHoursForLastWeek(for: job) {
-                HStack {
-                    Text("\(hours, specifier: "%.1f")")
-                       // .foregroundColor(.black)
-                        .font(.title2)
-                        .bold()
-                   
+                Text("Hours")
+                    .foregroundColor(.orange)
+                    .font(.subheadline)
+                    .bold()
+                if let hours = calculateHoursForLastWeek(for: job) {
+                    HStack {
+                        Text("\(hours, specifier: "%.1f")")
+                        // .foregroundColor(.black)
+                            .font(.title2)
+                            .bold()
+                        
+                    }
                 }
-            }
                 
-        }
+            }
             Text(lastWeekDateRange())
                 .foregroundColor(.gray)
                 .bold()
                 .font(.caption)
-            }
         }
+    }
     
     // old summary header
     private func summaryHeader() -> some View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         return HStack {
-                Text("Summary")
-                    .font(.title)
-                    .foregroundColor(textColor)
-                    .bold()
-                    .textCase(nil)
-                    .padding(.leading, -8)
-            }
+            Text("Summary")
+                .font(.title)
+                .foregroundColor(textColor)
+                .bold()
+                .textCase(nil)
+                .padding(.leading, -8)
         }
+    }
     
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -252,67 +242,87 @@ struct ShiftsView: View {
         return formatter.string(from: NSNumber(value: totalHours)) ?? "0.00"
     }
     
-
+    
     private func calculateEarningsForLastWeek(for job: Job) -> Double? {
-           guard let oldShifts = job.oldShifts as? Set<OldShift> else { return nil }
-           
-           let now = Date()
-           let calendar = Calendar.current
-           
-           guard let lastMonday = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now, matchingPolicy: .nextTimePreservingSmallerComponents, repeatedTimePolicy: .first, direction: .backward) else { return nil }
-           
-           let lastWeekShifts = oldShifts.filter { shift in
-               if let shiftDate = shift.shiftStartDate, calendar.isDate(shiftDate, equalTo: lastMonday, toGranularity: .day) || calendar.isDate(shiftDate, inSameDayAs: lastMonday) {
-                   return true
-               }
-               return false
-           }
-           
-           let totalEarnings = lastWeekShifts.reduce(0) { result, shift in
-               result + shift.totalPay
-           }
-           
-           return totalEarnings
-       }
+        guard let oldShifts = job.oldShifts as? Set<OldShift> else { return nil }
+        
+        let today = Date()
+        let calendar = Calendar.current
+        let currentWeekday = calendar.component(.weekday, from: today)
+        
+        // Calculate the number of days to subtract to get to the previous Monday
+        let daysToSubtract = currentWeekday == 1 ? 6 : (currentWeekday == 2 ? 0 : currentWeekday - 2)
+        
+        
+        // Calculate the date for the previous Monday
+        // Calculate the date for the previous Monday without time components
+        let previousMondayWithTime = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
+        let previousMondayComponents = calendar.dateComponents([.year, .month, .day], from: previousMondayWithTime)
+        let previousMonday = calendar.date(from: previousMondayComponents)!
+        
+        let lastWeekShifts = oldShifts.filter { shift in
+            return shift.shiftStartDate! >= previousMonday
+        }
+        
+        let weekShifts = lastWeekShifts.map { shift in
+            return singleShift(shift: shift)
+        }.reversed()
+        
+        let totalPayInWeek = weekShifts.reduce(0) { total, weekShift in
+            total + weekShift.totalPay
+        }
+        
+        return totalPayInWeek
+    }
     
     private func calculateHoursForLastWeek(for job: Job) -> Double? {
-           guard let oldShifts = job.oldShifts as? Set<OldShift> else { return nil }
-           
-           let now = Date()
-           let calendar = Calendar.current
-           
-           guard let lastMonday = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now, matchingPolicy: .nextTimePreservingSmallerComponents, repeatedTimePolicy: .first, direction: .backward) else { return nil }
-           
-           let lastWeekShifts = oldShifts.filter { shift in
-               if let shiftDate = shift.shiftStartDate, calendar.isDate(shiftDate, equalTo: lastMonday, toGranularity: .day) || calendar.isDate(shiftDate, inSameDayAs: lastMonday) {
-                   return true
-               }
-               return false
-           }
-           
-           let totalHours = lastWeekShifts.reduce(0) { result, shift in
-               result + shift.duration
-           }
-           
-            return totalHours / 3600.0
-       }
+        guard let oldShifts = job.oldShifts as? Set<OldShift> else { return nil }
+        
+        let today = Date()
+        let calendar = Calendar.current
+        let currentWeekday = calendar.component(.weekday, from: today)
+        
+        // Calculate the number of days to subtract to get to the previous Monday
+        let daysToSubtract = currentWeekday == 1 ? 6 : (currentWeekday == 2 ? 0 : currentWeekday - 2)
+        
+        
+        // Calculate the date for the previous Monday
+        // Calculate the date for the previous Monday without time components
+        let previousMondayWithTime = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
+        let previousMondayComponents = calendar.dateComponents([.year, .month, .day], from: previousMondayWithTime)
+        let previousMonday = calendar.date(from: previousMondayComponents)!
+        
+        let lastWeekShifts = oldShifts.filter { shift in
+            return shift.shiftStartDate! >= previousMonday
+        }
+        
+        let weekShifts = lastWeekShifts.map { shift in
+            return singleShift(shift: shift)
+        }.reversed()
+        
+        let totalHoursInWeek = weekShifts.reduce(0) { total, weekShift in
+            total + weekShift.hoursCount
+        }
+        
+        return totalHoursInWeek
+    }
     
     private func lastWeekDateRange() -> String {
         let now = Date()
         let calendar = Calendar.current
-
+        
         guard let lastMonday = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: now, matchingPolicy: .nextTimePreservingSmallerComponents, repeatedTimePolicy: .first, direction: .backward) else { return "" }
         guard let previousSunday = calendar.date(byAdding: .day, value: -6, to: lastMonday) else { return "" }
-
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd/MM/yy"
-
+        
         let startDate = dateFormatter.string(from: previousSunday)
         let endDate = dateFormatter.string(from: lastMonday)
-
+        
         return "\(startDate) - \(endDate)"
     }
-
+    
     
     
 }

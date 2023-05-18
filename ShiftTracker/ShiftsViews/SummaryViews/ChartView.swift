@@ -21,6 +21,7 @@ struct ChartView: View {
     var barColor: Color
     var yDomain: Int
     var chartTitle: String
+    var statsMode: StatsMode
     
     @State private var selectedDay = ""
     @State private var selectedValue: Double = 0
@@ -60,7 +61,7 @@ struct ChartView: View {
                 if let graphedShifts = graphedShifts {
                     ForEach(graphedShifts) { weekShift in
                         
-                        var yValue: Double = {
+                        let yValue: Double = {
                             switch chartDataType {
                             case .hoursCount:
                                 return weekShift.hoursCount
@@ -71,7 +72,7 @@ struct ChartView: View {
                             }
                         }()
                         
-                        var xValue: String = {
+                        let xValue: String = {
                             switch chartDateType {
                             case .day:
                                 return weekShift.dayOfWeek
@@ -80,9 +81,14 @@ struct ChartView: View {
                             }
                         }()
                         
-                        
-                        BarMark(x: .value("Day", xValue), y: .value(yAxisTitle, yValue))
-                            .foregroundStyle(barColor.gradient.opacity(0.8))
+                        if statsMode == .hours || statsMode == .breaks {
+                            BarMark(x: .value("Day", xValue), y: .value(yAxisTitle, yValue))
+                                .foregroundStyle(barColor.gradient)
+                        }
+                        else {
+                            LineMark(x: .value("Day", xValue), y: .value(yAxisTitle, yValue))
+                                .foregroundStyle(barColor.gradient)
+                        }
                         /*  .annotation {
                          Text(String(format: "%.2f", yValue))
                          .font(.caption)
@@ -96,7 +102,7 @@ struct ChartView: View {
                     
                     ForEach(graphedWeeks) { weekShift in
                         
-                        var yValue: Double = {
+                        let yValue: Double = {
                             switch chartDataType {
                             case .hoursCount:
                                 return weekShift.hoursCount
@@ -107,7 +113,7 @@ struct ChartView: View {
                             }
                         }()
                         
-                        var xValue: String = {
+                        let xValue: String = {
                             switch chartDateType {
                             case .day:
                                 return "\(weekShift.startDate)-\(weekShift.endDate)"
@@ -116,9 +122,14 @@ struct ChartView: View {
                             }
                         }()
                         
-                        
-                        BarMark(x: .value("Day", xValue), y: .value(yAxisTitle, yValue))
-                            .foregroundStyle(barColor.gradient.opacity(0.8))
+                        if statsMode == .hours || statsMode == .breaks {
+                            BarMark(x: .value("Day", xValue), y: .value(yAxisTitle, yValue))
+                                .foregroundStyle(barColor.gradient)
+                        }
+                        else {
+                            LineMark(x: .value("Day", xValue), y: .value(yAxisTitle, yValue))
+                                .foregroundStyle(barColor.gradient)
+                        }
                         /*  .annotation {
                          Text(String(format: "%.2f", yValue))
                          .font(.caption)

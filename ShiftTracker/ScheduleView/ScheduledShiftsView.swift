@@ -222,9 +222,6 @@ struct CreateShiftForm: View {
             }
         }
     }
-
-
-    
     
     @State var startAngle: Double = 0
     @State var toAngle: Double = 180
@@ -234,27 +231,8 @@ struct CreateShiftForm: View {
     
     var body: some View {
         
-        
-        let textColor: Color = colorScheme == .dark ? .white : .black
-        
-        
         NavigationStack {
             List{
-                
-                //.padding(.top, 100)
-                
-                
-                
-                //.padding(.top, 45)
-                
-            
-             /*
-                    //.padding()
-                    .background(Color(.systemGray5),in: RoundedRectangle(cornerRadius: 12))
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .padding(.top, -50)
-                     */
                 Section{
                     HStack(spacing: 25){
                         VStack(alignment: .center, spacing: 5){
@@ -279,8 +257,6 @@ struct CreateShiftForm: View {
                             
                         }
                         .frame(maxWidth: .infinity, alignment: .center)
-                        //.padding()
-                        
                         VStack(alignment: .center, spacing: 5){
                             HStack{
                                 Image(systemName: "figure.walk.departure")
@@ -307,12 +283,10 @@ struct CreateShiftForm: View {
                     VStack{
                         scheduleSlider()
                             .frame(maxWidth: .infinity, alignment: .center)
-                        // .frame(maxHeight: screenBounds().height / 5)
                             .padding(.top, 30)
                         Spacer()
                     }
                     .frame(minHeight: screenBounds().height / 3)
-                       //.padding(.bottom, -200)
                 }.listRowBackground(Color.primary.opacity(0.05))
                     
                 Section {
@@ -355,13 +329,6 @@ struct CreateShiftForm: View {
                         
                     }
                 }.listRowBackground(Color.primary.opacity(0.05))
-
-                    
-
-                    
-                    
-              
-                
             }.scrollContentBackground(.hidden)
             
                 .toolbar{
@@ -384,8 +351,6 @@ struct CreateShiftForm: View {
                         }.padding()
                     }
                 }
-            //.padding(.top, 35)
-        
                 .navigationBarTitle("Schedule", displayMode: .inline).padding()
         }
     }
@@ -423,18 +388,9 @@ struct CreateShiftForm: View {
                             
                             .rotationEffect(.init(degrees: Double(index) * -90))
                             .offset(y: (width - 90) / 2)
-                            //.offset(x: (width - 90) / 2)
-                        
                             .rotationEffect(.init(degrees: Double(index) * 90))
                     }
-                    
-                    
-                    
-                    
                 }
-                
-                
-                
                 Circle()
                     .stroke(sliderBackgroundColor, lineWidth: 45)
                     .shadow(radius: 5, x: 2, y: 1)
@@ -454,7 +410,6 @@ struct CreateShiftForm: View {
                     .frame(width: 30, height: 30)
                     .rotationEffect(.init(degrees: 90))
                     .rotationEffect(.init(degrees: -startAngle))
-                    //.background(.orange,in: Circle())
                     .offset(x: width / 2)
                     .rotationEffect(.init(degrees: startAngle))
                 
@@ -472,7 +427,6 @@ struct CreateShiftForm: View {
                     .frame(width: 30, height: 30)
                     .rotationEffect(.init(degrees: 90))
                     .rotationEffect(.init(degrees: -toAngle))
-                    //.background(.orange,in: Circle())
                     .offset(x: width / 2)
                 
                     .rotationEffect(.init(degrees: toAngle))
@@ -496,7 +450,7 @@ struct CreateShiftForm: View {
                 .haptics(onChangeOf: getTimeDifference().0, type: .light)
             }
         }
-        .frame(width: screenBounds().width / 1.7) //, height: screenBounds().height / 1.8)
+        .frame(width: screenBounds().width / 1.7)
     }
     
     func onDrag(value: DragGesture.Value, fromSlider: Bool = false) {
@@ -559,15 +513,6 @@ struct CreateShiftForm: View {
         return resultingDate
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     func getTimeDifference() -> (Int, Int) {
         let calendar = Calendar.current
         
@@ -584,11 +529,10 @@ struct CreateShiftForm: View {
         
         return (components.hour ?? 0, components.minute ?? 0)
     }
-    
-    
-    
-    
+
 }
+
+
 
 struct CardPicker: View {
     @Binding var selectedJob: Job?
