@@ -103,6 +103,8 @@ struct SideMenu: View {
                                                 }
                                                 selectedJobUUID = jobUUID
                                                 viewModel.selectedJobUUID = jobUUID
+                                                viewModel.hourlyPay = job.hourlyPay
+                                                viewModel.saveHourlyPay()
                                                 storedSelectedJobUUID = jobUUID.uuidString
                                             }
                                         }

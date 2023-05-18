@@ -82,7 +82,7 @@ struct ContentView: View {
             
             
             ZStack{
-                VStack(alignment: .trailing){
+               /* VStack(alignment: .trailing){
                     
                     HStack{
                         Spacer()
@@ -99,19 +99,29 @@ struct ContentView: View {
                     
                     Spacer()
                     //Spacer(minLength: 600)
-                }.blur(radius: colorScheme == .dark ? 3.0 : 0)
+                }.blur(radius: colorScheme == .dark ? 3.0 : 0) */
                 ScrollView{
+                    
+                   
+                        Section{
+                            if viewModel.shift == nil{
+                                UpcomingShiftView()
+                                    .padding()
+                            }
+                            else {
+                                CurrentShiftView(jobUUID: viewModel.selectedJobUUID!, startDate: viewModel.shift!.startDate)
+                                    .padding()
+                            }
+                        }.frame(maxWidth: UIScreen.main.bounds.width - 40, alignment: .leading)
+                    
                     Section{
                         TimerView(timeElapsed: $viewModel.timeElapsed)
                     }
+                    
+                    
                     Section{
-                        if viewModel.shift == nil{
-                            Text("No current shift")
-                                .bold()
-                                .padding()
-                        }
                         
-                        else if viewModel.isOnBreak {
+                        if viewModel.isOnBreak {
                             VStack{
                                 HStack{
                                     BreakTimerView(timeElapsed: $viewModel.breakTimeElapsed)
@@ -143,63 +153,12 @@ struct ContentView: View {
                                 
                             }
                         }
-                        else{
-                            DatePicker("Shift start: ", selection: $viewModel.shiftStartDate, displayedComponents: [.hourAndMinute])
-                                .onChange(of: viewModel.shiftStartDate) { newDate in
-                                    if newDate > Date(){
-                                        viewModel.shiftStartDate = Date()
-                                    }
-                                    if let currentShift = viewModel.shift {
-                                        viewModel.shift = Shift(startDate: newDate, hourlyPay: currentShift.hourlyPay)
-                                    }
-                                    sharedUserDefaults.set(newDate, forKey: shiftKeys.shiftStartDateKey)
-                                    viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
-                                    //  stopActivity()
-                                    // stopActivity()
-                                    viewModel.startTimer(startDate: newDate)
-                                }
-                            
-                                .disabled(viewModel.breakTaken || viewModel.shift == nil || !viewModel.isEditing)
-                            
-                                .bold()
-                                .padding(.horizontal, 75)
-                                .padding(.vertical, 8)
-                        }
+                        
                         
                     }
                     Section{
-                        VStack{
-                            
-                            // DISABLED FOR REWRITES!!!!
-                            
-                            
-                            HStack {
-                                
-                                Text("Hourly pay:")
-                                    .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
-                                //Spacer()
-                                TextField("", value: $viewModel.hourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
-                                    .keyboardType(.decimalPad)
-                                    .focused($payIsFocused)
-                                    .disabled(!viewModel.isEditing && viewModel.shift != nil)
-                                    .foregroundColor(viewModel.shift == nil || viewModel.isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
-                                    .onChange(of: viewModel.hourlyPay) { _ in
-                                        viewModel.saveHourlyPay() // Save the value of hourlyPay whenever it changes
-                                    }
-                                
-                            }.frame(minWidth: UIScreen.main.bounds.width / 3)
-                                .bold()
-                            
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 11)
-                                .background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor)
-                            //.background(Color.gray.opacity(0.5))
-                                .foregroundColor(.white)
-                                .cornerRadius(18)
-                                .shake(times: payShakeTimes)
-                            
-                            
-                            /*    TaxPickerView(taxPercentage: $viewModel.taxPercentage).background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor).cornerRadius(20).disabled(!viewModel.isEditing && viewModel.shift != nil) */
+                          /*
+                               TaxPickerView(taxPercentage: $viewModel.taxPercentage).background(viewModel.shift == nil || viewModel.isEditing ? buttonColor : disabledButtonColor).cornerRadius(20).disabled(!viewModel.isEditing && viewModel.shift != nil) */
                             
                             
                             
@@ -231,36 +190,27 @@ struct ContentView: View {
                             Button(action: {
                                 showMenu.toggle()
                             }) {
-                                HStack {
-                                    Text("Job:")
-                                        .bold()
-                                    Spacer()
+                                
+                                
+                                
+             
+                        
                                     if let job = viewModel.fetchJob(with: viewModel.selectedJobUUID, in: context) {
-                                        Image(systemName: job.icon ?? "briefcase.circle")
-                                            .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                                        Text(job.name ?? "No Job Selected")
-                                            .bold()
+                                        
+                                        SelectedJobView(jobName: job.name, jobTitle: job.title, jobIcon: job.icon, jobColor: Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                                            .padding()
                                     } else {
-                                        Image(systemName: "briefcase.circle")
-                                            .foregroundColor(.cyan)
-                                        Text("No Job Selected")
-                                            .bold()
+                                        SelectedJobView()
+                                            .padding()
                                     }
-                                }
+                                
                             }
                             .disabled(viewModel.shift != nil)
-                            .foregroundColor(Color.white.opacity(0.8))
-                            .frame(minWidth: UIScreen.main.bounds.width / 3)
-                            .bold()
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 11)
-                            .background(buttonColor)
-                            .cornerRadius(18)
+                            .frame(maxWidth: UIScreen.main.bounds.width - 40, alignment: .leading)
                             .shake(times: jobShakeTimes)
                             
                             
-                        }
-                        .padding(.horizontal, 50)
+                       
                         Section{
                             HStack{
                                 
@@ -724,7 +674,7 @@ struct ContentView: View {
             print("I have appeared")
             if let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date {
                 if viewModel.hourlyPay != 0 {
-                    viewModel.startShift(startDate: shiftStartDate)
+                    viewModel.startShift(using: context, startDate: shiftStartDate)
                     print("Resuming app with saved shift start date")
                     
                     viewModel.loadTempBreaksFromUserDefaults()
@@ -742,7 +692,7 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { _ in
             
             if viewModel.shift == nil && autoClockIn && !viewModel.isOnBreak{
-                viewModel.startShift(startDate: Date())
+                viewModel.startShift(using: context, startDate: Date())
             }
             else if clockInReminder{
                 // DO SOMETHING HERE JAMES!!
@@ -754,16 +704,6 @@ struct ContentView: View {
                 viewModel.endShift(using: context, endDate: Date())
             }
         })
-    }
-}
-
-private extension TimeInterval {
-    func stringFromTimeInterval() -> String {
-        let time = NSInteger(self)
-        let hours = (time / 3600)
-        let minutes = (time / 60) % 60
-        let seconds = time % 60
-        return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
     }
 }
 
@@ -843,7 +783,7 @@ struct ActionView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                         
                         ActionButtonView(title: "Start Shift", backgroundColor: Color.orange.opacity(0.8), icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 100) {
-                            viewModel.startShiftButtonAction(startDate: actionDate)
+                            viewModel.startShiftButtonAction(using: context, startDate: actionDate)
                             dismiss()
                         }
                     case .endShift:
@@ -905,3 +845,27 @@ extension View {
         self.modifier(Shake(times: times))
     }
 }
+
+/*
+else{
+    DatePicker("Shift start: ", selection: $viewModel.shiftStartDate, displayedComponents: [.hourAndMinute])
+        .onChange(of: viewModel.shiftStartDate) { newDate in
+            if newDate > Date(){
+                viewModel.shiftStartDate = Date()
+            }
+            if let currentShift = viewModel.shift {
+                viewModel.shift = Shift(startDate: newDate, hourlyPay: currentShift.hourlyPay)
+            }
+            sharedUserDefaults.set(newDate, forKey: shiftKeys.shiftStartDateKey)
+            viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
+            //  stopActivity()
+            // stopActivity()
+            viewModel.startTimer(startDate: newDate)
+        }
+    
+        .disabled(viewModel.breakTaken || viewModel.shift == nil || !viewModel.isEditing)
+    
+        .bold()
+        .padding(.horizontal, 75)
+        .padding(.vertical, 8)
+} */

@@ -195,7 +195,6 @@ struct StatsView: View {
     var body: some View{
         let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
         let textColor: Color = colorScheme == .dark ? .white : .black
-        let subTextColor: Color = colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8)
         NavigationStack{
             List{
                 

@@ -627,13 +627,13 @@ class ContentViewModel: ObservableObject {
                 self.overtimeElapsed = Date().timeIntervalSince(startDate)
             }
         }
-        func startShift(startDate: Date) {
+        func startShift(using viewContext: NSManagedObjectContext, startDate: Date) {
             if shift == nil{ // PERHAPS YOU DONT NEED THIS?
                 if(hourlyPay == 0){
                     return
                 }
-                else {
-                    shift = Shift(startDate: startDate, hourlyPay: hourlyPay)
+                else { // lol this isnt actually using the hourly pay here...
+                    shift = Shift(startDate: startDate, hourlyPay: fetchJob(with: selectedJobUUID, in: viewContext)?.hourlyPay ?? 0)
                     sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
                     
                     
@@ -719,8 +719,8 @@ class ContentViewModel: ObservableObject {
         }
     #endif
         
-    func startShiftButtonAction(startDate: Date) {
-            startShift(startDate: startDate)
+    func startShiftButtonAction(using viewContext: NSManagedObjectContext, startDate: Date) {
+        startShift(using: viewContext, startDate: startDate)
             shiftStartDate = startDate
             // Add notification logic
             

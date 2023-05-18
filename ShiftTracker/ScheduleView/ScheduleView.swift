@@ -35,24 +35,12 @@ struct ScheduleView: View {
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
     var body: some View {
-        
-        let textColor: Color = colorScheme == .dark ? .white : .black
-        
-        
         NavigationStack {
             ZStack{
                 if !showAllScheduledShiftsView{
                     Form {
                         Section{
-                            Text("Upcoming shift")
-                                .padding(.vertical, 30)
-                                .padding(.horizontal)
-                        }.listRowBackground(Color.primary.opacity(0.05))
-                        Section{
                             CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
-                            //.fixedSize(horizontal: true, vertical: true)
-                            // .scaleEffect(CGSize(width: 0.95, height: 0.95))
-                            //.padding(.horizontal, 20)
                         }
                         
                         .listRowBackground(Color.clear)
@@ -72,7 +60,6 @@ struct ScheduleView: View {
                 ScheduledShiftsView(dateSelected: $dateSelected)
                     .presentationDetents([.medium, .large])
                     .presentationCornerRadius(50)
-                // .presentationBackground(.thinMaterial)
             }
             .alert(isPresented: $deleteJobAlert) {
                 Alert(title: Text("Delete Job"),
@@ -111,7 +98,6 @@ struct ScheduleView: View {
                             .bold()
                      
                     }
-                    //.foregroundColor(.black)
                 }
             }
         }

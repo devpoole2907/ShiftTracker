@@ -64,13 +64,17 @@ struct TimerView: View {
         let taxedBackgroundColor: Color = colorScheme == .dark ? Color.green.opacity(0.5) : Color.green.opacity(0.8)
         let totalBackgroundColor: Color = colorScheme == .dark ? Color.pink.opacity(0.5) : Color.pink.opacity(0.8)
         let timerBackgroundColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : Color.orange.opacity(0.8)
-
+        
         var timeDigits = digitsFromTimeString(timeString: timeElapsed.stringFromTimeInterval())
-
         
         
-        VStack(alignment: .center, spacing: 10) {
-            if isOvertime{
+        ZStack{
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundColor(.primary.opacity(0.04))
+                .frame(width: UIScreen.main.bounds.width - 40)
+                .shadow(radius: 5, x: 0, y: 4)
+        VStack(alignment: .center, spacing: 5) {
+           /* if isOvertime{
                 Text("OVERTIME")
                     .foregroundColor(.white)
                     .font(.system(size: 15, weight: .bold))
@@ -87,63 +91,75 @@ struct TimerView: View {
                     .background(Color.clear)
                     .cornerRadius(12)
                     .fixedSize()
-            }
+            } */
             ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                                   .frame(width: 350, height: 100)
-
-                                  .foregroundColor(taxedBackgroundColor)
-                                  .shadow(radius: 5, x: 0, y: 4)
+               /* RoundedRectangle(cornerRadius: 20)
+                    .frame(width: 350, height: 100)
+                
+                    .foregroundColor(taxedBackgroundColor)
+                    .shadow(radius: 5, x: 0, y: 4) */
                 
                 Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
-                    .foregroundColor(.white)
+                    //.foregroundColor(.white)
                     .padding(.horizontal, 20)
-                    .font(.system(size: 70).monospacedDigit())
-                    .fontWeight(.black)
+                    .font(.system(size: 60).monospacedDigit())
+                    .fontWeight(.bold)
                 
             }
             .frame(maxWidth: .infinity)
-            .padding(.bottom, 10)
-                    
-                    
-                    HStack(spacing: 0) {
-                        ForEach(0..<timeDigits.count, id: \.self) { index in
-                            RollingDigit(digit: timeDigits[index])
-                                .frame(width: 30, height: 50)
-                                .mask(FadeMask())
-                            if index == 1 || index == 3 {
-                                Text(":")
-                                    .font(.system(size: 50, weight: .bold).monospacedDigit())
-                            }
-                        }
+            .padding(.top)
+            //.padding(.bottom, 10)
+            
+            //if taxEnabled{
+                ZStack {
+                /*    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: 175, height: 50)
+                        .foregroundColor(totalBackgroundColor)
+                        .shadow(radius: 5, x: 0, y: 4) */
+                    HStack(spacing: 2){
+                        Image(systemName: "chart.line.downtrend.xyaxis")
+                            .font(.system(size: 15).monospacedDigit())
+                            .fontWeight(.light)
+                        Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
+                            .font(.system(size: 20).monospacedDigit())
+                            .bold()
+                    }.foregroundColor(.pink)
+                        
+                        .padding(.horizontal, 20)
+                        
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.bottom, 5)
+           // }
+            
+            Divider().frame(maxWidth: 200)
+            
+            HStack(spacing: 0) {
+                ForEach(0..<timeDigits.count, id: \.self) { index in
+                    RollingDigit(digit: timeDigits[index])
+                        .frame(width: 20, height: 30)
+                        .mask(FadeMask())
+                    if index == 1 || index == 3 {
+                        Text(":")
+                            .font(.system(size: 30, weight: .bold).monospacedDigit())
                     }
-                    .foregroundColor(.orange)
-                    .frame(width: 250, height: 70)
-                
-            
-                
-            
-            if taxEnabled{
-            ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(width: 175, height: 50)
-                    .foregroundColor(totalBackgroundColor)
-                    .shadow(radius: 5, x: 0, y: 4)
-                
-                Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
-                    .foregroundColor(.white)
-                
-                    .padding(.horizontal, 20)
-                    .font(.system(size: 30).monospacedDigit())
-                    .fontWeight(.heavy)
+                }
             }
+            .foregroundColor(.orange)
+            //.frame(width: 250, height: 70)
             .frame(maxWidth: .infinity)
-            .padding(.bottom, 10)
-        }
+            .padding(.bottom)
             
-             
+            
+            
+            
+           
+            
+            
         }
-            .ignoresSafeArea()
+       // .ignoresSafeArea()
+        
+        } //.padding(.vertical, 50)
     }
 }
 

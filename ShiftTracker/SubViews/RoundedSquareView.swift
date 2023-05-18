@@ -63,6 +63,8 @@ struct RoundedSquareView: View {
         .background(color)
         .cornerRadius(12)
         .frame(maxWidth: .infinity)
+        
+        
     }
 }
 
