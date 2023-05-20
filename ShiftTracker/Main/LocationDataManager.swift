@@ -13,6 +13,9 @@ import CoreData
 
 class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
+    
+    private let notificationManager = ShiftNotificationManager.shared
+    
     @Published var authorizationStatus: CLAuthorizationStatus?
     @Published var location: CLLocation?
         @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.33233141, longitude: -122.0312186), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
@@ -106,49 +109,22 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         if let job = try? context.existingObject(with: jobID) as? Job {
             if job.autoClockIn {
                 
-                // THIS NEEDS TO BE ADJUSTED, IN CONTENTVIEW WHEN IT RECIEVES THE NOTIFICATION IT MUST START THE CORRESPONDING JOB
-                
-                let content = UNMutableNotificationContent()
-                content.title = "ShiftTracker Pro"
-                content.body = "Clocking you in... Enjoy your shift!"
-                content.sound = .default
                 print("Region entered, sending notification") // debugging
                 
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-                let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
-                
-                // let trigger = UNLocationNotificationTrigger(region: region, repeats: false)
-                // let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
-
-                let center = UNUserNotificationCenter.current()
-                center.add(request) { error in
-                    if let error = error {
-                        print("Error scheduling notification: \(error.localizedDescription)")
-                    }
+                if let jobName = job.name {
+                    notificationManager.sendLocationNotification(with: "ShiftTracker Pro", body: "You're near \(jobName) - clocking you in... Enjoy your shift!")
                 }
             
-                    NotificationCenter.default.post(name: .didEnterRegion, object: nil)
+                NotificationCenter.default.post(name: .didEnterRegion, object: nil, userInfo: ["jobID": job.uuid!])
                 
                 
                 
                 
             } else if job.clockInReminder {
                 // Handle clock-in reminder for the job
-                
-                let content = UNMutableNotificationContent()
-                content.title = "You're near your workplace"
-                content.body = "Ready to track your shift? Let's make some bank."
-                content.sound = .default
                 print("Region entered, sending notification") // debugging
-                
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-                let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
-
-                let center = UNUserNotificationCenter.current()
-                center.add(request) { error in
-                    if let error = error {
-                        print("Error scheduling notification: \(error.localizedDescription)")
-                    }
+                if let jobName = job.name {
+                    notificationManager.sendLocationNotification(with: "You're near \(jobName)", body: "Ready to track your shift? Let's make some bank.")
                 }
             
                     NotificationCenter.default.post(name: .didEnterRegion, object: nil)
@@ -169,43 +145,23 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         if let job = try? context.existingObject(with: jobID) as? Job {
             if job.autoClockOut {
                 
-                // THIS NEEDS TO BE MODIFIED SAME AS didEnterRegion ABOVE
-                
-                let content = UNMutableNotificationContent()
-                content.title = "ShiftTracker Pro"
-                content.body = "Clocking you out... Look at how much you made today!"
-                content.sound = .default
                 print("Region exited, sending notification") // debugging
                 
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-                let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
-
-
-                let center = UNUserNotificationCenter.current()
-                center.add(request) { error in
-                    if let error = error {
-                        print("Error scheduling notification: \(error.localizedDescription)")
-                    }
+                if let jobName = job.name {
+                    notificationManager.sendLocationNotification(with: "ShiftTracker Pro", body: "Looks like you're leaving \(jobName) - clocking you out. Open ShiftTracker and see how much you made!")
                 }
+
             
             NotificationCenter.default.post(name: .didExitRegion, object: nil)
+                
             } else if job.clockOutReminder {
-                let content = UNMutableNotificationContent()
-                content.title = "Looks like you're leaving..."
-                content.body = "Don't forget to clock out - open ShiftTracker and see how much you made today!"
-                content.sound = .default
-                print("Region exited, sending notification") // debugging
                 
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-                let request = UNNotificationRequest(identifier: "LocationNotification", content: content, trigger: trigger)
                 
-
-                let center = UNUserNotificationCenter.current()
-                center.add(request) { error in
-                    if let error = error {
-                        print("Error scheduling notification: \(error.localizedDescription)")
-                    }
+                if let jobName = job.name {
+                    notificationManager.sendLocationNotification(with: "Looks like you're leaving \(jobName)...", body: "Don't forget to clock out - open ShiftTracker and see how much you made today!")
                 }
+
+                print("Region exited, sending notification") // debugging
             
             NotificationCenter.default.post(name: .didExitRegion, object: nil)
             }

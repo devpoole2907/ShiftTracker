@@ -26,7 +26,8 @@ struct ContentView: View {
     
     
     
-   
+    @FetchRequest(entity: Job.entity(), sortDescriptors: [])
+    private var jobs: FetchedResults<Job>
     
     
     
@@ -624,18 +625,16 @@ struct ContentView: View {
                 }
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { notification in
             
-            if viewModel.shift == nil && autoClockIn && !viewModel.isOnBreak{
-                viewModel.startShift(using: context, startDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
-            }
-            else if clockInReminder{
-                // DO SOMETHING HERE JAMES!!
+            if let jobID = notification.userInfo?["jobID"] as? UUID, let job = jobSelectionViewModel.fetchJob(with: jobID, in: context), viewModel.shift == nil && !viewModel.isOnBreak{
+                jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
+                viewModel.startShift(using: context, startDate: Date(), job: job)
             }
         })
         .onReceive(NotificationCenter.default.publisher(for: .didExitRegion), perform: { _ in
             
-            if viewModel.shift != nil && autoClockOut{
+            if viewModel.shift != nil && !viewModel.isOnBreak {
                 viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
             }
         })

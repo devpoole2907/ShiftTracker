@@ -13,6 +13,7 @@ import PopupView
 import MapKit
 import CoreData
 import Haptics
+import UserNotifications
 
 func isSubscriptionActive() -> Bool {
     
@@ -189,7 +190,7 @@ private extension CustomConfirmationAlert {
         }) {
             Text("Confirm")
                 .bold()
-                //.foregroundColor(.white)
+                .foregroundColor(.white)
                 .frame(height: 46)
                 .frame(maxWidth: .infinity)
                 .background(.black)
@@ -204,20 +205,22 @@ class JobSelectionViewModel: ObservableObject {
     @Published var storedSelectedJobUUID: String = ""
     
     
-    func fetchJob(in context: NSManagedObjectContext) -> Job? {
-            guard let id = selectedJobUUID else { return nil }
-            let request: NSFetchRequest<Job> = Job.fetchRequest()
-            request.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
-            request.fetchLimit = 1
-            
-            do {
-                let results = try context.fetch(request)
-                return results.first
-            } catch {
-                print("Error fetching job: \(error)")
-                return nil
-            }
+    func fetchJob(with uuid: UUID? = nil, in context: NSManagedObjectContext) -> Job? {
+        let id = uuid ?? selectedJobUUID
+        guard let uuidToFetch = id else { return nil }
+        let request: NSFetchRequest<Job> = Job.fetchRequest()
+        request.predicate = NSPredicate(format: "uuid == %@", uuidToFetch as CVarArg)
+        request.fetchLimit = 1
+
+        do {
+            let results = try context.fetch(request)
+            return results.first
+        } catch {
+            print("Error fetching job: \(error)")
+            return nil
         }
+    }
+
     
     func selectJob(_ job: Job, with jobs: FetchedResults<Job>, shiftViewModel: ContentViewModel) {
         if shiftViewModel.shift == nil {
@@ -273,3 +276,76 @@ func opaqueVersion(of color: Color, withOpacity opacity: Double, in colorScheme:
     // Convert the new color back to a SwiftUI color
     return Color(UIColor(red: newRed, green: newGreen, blue: newBlue, alpha: 1))
 }
+
+// scheduled shifts notification manager
+
+class ShiftNotificationManager {
+    static let shared = ShiftNotificationManager()
+    
+    private var shiftNotificationIdentifiers: [String] = []
+    
+    func fetchUpcomingShifts() -> [ScheduledShift] {
+        let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "notifyMe == true")
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.reminderTime, ascending: true)]
+        fetchRequest.fetchLimit = 20
+        
+        do {
+            let shifts = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
+            return shifts
+        } catch {
+            print("Failed to fetch shifts: \(error.localizedDescription)")
+            return []
+        }
+    }
+    
+    func scheduleNotifications() {
+        let shifts = fetchUpcomingShifts()
+        let center = UNUserNotificationCenter.current()
+        
+        center.removePendingNotificationRequests(withIdentifiers: shiftNotificationIdentifiers)
+        shiftNotificationIdentifiers.removeAll()
+        
+        for shift in shifts {
+            let content = UNMutableNotificationContent()
+            
+            
+            if let reminderDate = shift.startDate?.addingTimeInterval(-shift.reminderTime),
+               let startDate = shift.startDate, let jobName = shift.job?.name {
+                content.title = "\(jobName) Shift Reminder"
+                content.body = "Your scheduled shift starts at \(startDate)"
+                
+                let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: reminderDate)
+                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+                
+                let identifier = "Shift-\(shift.id?.uuidString ?? UUID().uuidString)"
+                let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+                center.add(request)
+                
+                shiftNotificationIdentifiers.append(identifier)
+            }
+        }
+    }
+    
+    // used for location based clock in and out/auto clock in and out
+    
+    func sendLocationNotification(with title: String, body: String) {
+           let content = UNMutableNotificationContent()
+           content.title = title
+           content.body = body
+           content.sound = .default
+           print("Sending notification") // debugging
+
+           let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+           let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+           let center = UNUserNotificationCenter.current()
+           center.add(request) { error in
+               if let error = error {
+                   print("Error scheduling notification: \(error.localizedDescription)")
+               }
+           }
+       }
+    
+}
+

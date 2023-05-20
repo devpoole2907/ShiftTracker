@@ -167,96 +167,99 @@ struct EditJobView: View {
                         VStack(alignment: .leading, spacing: 10){
                             
                             
-                            NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)
-                                .onDisappear {
-                                    // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
-                                    self.miniMapRegion = self.mapRegion
-                                }) {
-                                    VStack(alignment: .leading){
-                                        
-                                        Map(coordinateRegion: $miniMapRegion, showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
-                                            MapAnnotation(coordinate: annotation.coordinate) {
-                                                VStack {
-                                                    Image(systemName: selectedIcon)
-                                                        .font(.title2)
-                                                        .foregroundColor(selectedColor)
-                                                    
-                                                }
-                                            }
-                                        }
-                                        .onAppear{
-                                            //locationManager.requestAuthorization()
-                                            addressManager.loadSavedAddress(selectedAddressString: selectedAddress) { region, annotation in
-                                                self.miniMapRegion = region ?? self.miniMapRegion
-                                                self.miniMapAnnotation = annotation
-                                            }
-                                        }
-                                        HStack{
-                                            Text("Work Location")
-                                            
-                                            Spacer()
-                                            Image(systemName: "chevron.right")
-                                        }.bold()
-                                            .padding(.bottom, 10)
-                                            .padding(.horizontal)
-                                    }
-                                }.frame(minHeight: 120)
-                                .background(Color.primary.opacity(0.04),in:
-                                                RoundedRectangle(cornerRadius: 6, style: .continuous))
-                                .cornerRadius(20)
-                            Group{
+                            
+                            VStack{
                                 Toggle(isOn: $clockInReminder){
-                                    HStack {
-                                        Image(systemName: "bell.badge.circle")
-                                        Spacer().frame(width: 10)
-                                        Text("Remind me to clock in")
-                                    }
+                                    
+                                    Text("Remind me to clock in")
+                                    
                                 }.toggleStyle(OrangeToggleStyle())
+                                    .padding(.horizontal)
+                                    .padding(.top, 10)
+                                    
                                 
                                 Toggle(isOn: $clockOutReminder){
-                                    HStack {
-                                        Image(systemName: "bell.badge.circle")
-                                        Spacer().frame(width: 10)
-                                        Text("Remind me to clock out")
-                                    }
+                                    
+                                    Text("Remind me to clock out")
+                                    
                                 }.toggleStyle(OrangeToggleStyle())
-                            }.padding(.horizontal, 5)
-                            /*
-                             Toggle(isOn: $autoClockIn){
-                             HStack {
-                             Image(systemName: "bell.badge.circle")
-                             Spacer().frame(width: 10)
-                             Text("Auto clock in")
-                             }
-                             }.toggleStyle(OrangeToggleStyle())
-                             .disabled(true)
-                             
-                             Toggle(isOn: $autoClockOut){
-                             HStack {
-                             Image(systemName: "bell.badge.circle")
-                             Spacer().frame(width: 10)
-                             Text("Auto clock out")
-                             }
-                             }.toggleStyle(OrangeToggleStyle())
-                             .disabled(true)
-                             */
-                            
-                            
-                            
-                        }//.padding(.horizontal)
+                                    .padding(.horizontal)
+                                   
+                                Toggle(isOn: $autoClockIn){
+                                    Text("Auto clock in")
+                                    
+                                }.toggleStyle(OrangeToggleStyle())
+                                    .padding(.horizontal)
+                                    
+                                Toggle(isOn: $autoClockOut){
+                                    
+                                    Text("Auto clock out")
+                                    
+                                }.toggleStyle(OrangeToggleStyle())
+                                    .padding(.horizontal)
+                                    .padding(.bottom, 10)
+                                    
+                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)
+                                    .onDisappear {
+                                        // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
+                                        self.miniMapRegion = self.mapRegion
+                                    }) {
+                                        VStack(alignment: .leading){
+                                            
+                                            Map(coordinateRegion: $miniMapRegion, showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
+                                                MapAnnotation(coordinate: annotation.coordinate) {
+                                                    VStack {
+                                                        Image(systemName: selectedIcon)
+                                                            .font(.title2)
+                                                            .foregroundColor(selectedColor)
+                                                        
+                                                    }
+                                                }
+                                            }
+                                            .onAppear{
+                                                //locationManager.requestAuthorization()
+                                                addressManager.loadSavedAddress(selectedAddressString: selectedAddress) { region, annotation in
+                                                    self.miniMapRegion = region ?? self.miniMapRegion
+                                                    self.miniMapAnnotation = annotation
+                                                }
+                                            }
+                                            HStack{
+                                                Text("Work Location")
+                                                
+                                                Spacer()
+                                                Image(systemName: "chevron.right")
+                                            }.bold()
+                                                .padding(.bottom, 10)
+                                                .padding(.horizontal)
+                                        }
+                                    }.frame(minHeight: 120)
+                                    .background(Color.clear,in:
+                                                    RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                    .cornerRadius(20)
+                                
+                            }
+                                
+                        }.background(Color.primary.opacity(0.04))
+                            .cornerRadius(20)
                         
                         
                         Divider()
                         
                         VStack(alignment: .leading, spacing: 10){
                             Text("Estimated Tax")
+                                .bold()
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color.primary.opacity(0.04))
+                                .cornerRadius(20)
                             Picker("Estimated tax:", selection: $taxPercentage) {
                                 ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
                                     Text(index / 100, format: .percent)
                                 }
                                 
                             }.pickerStyle(.wheel)
-                        }.frame(maxHeight: 100)
+                                .frame(maxHeight: 100)
+                        }
                             .padding(.horizontal, 5)
                         
                         Divider()
@@ -415,8 +418,11 @@ struct EditJobView: View {
                         
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(action: {
-                                deleteJob()
+                                
                                 presentationMode.wrappedValue.dismiss()
+                                
+                                CustomConfirmationAlert(action: deleteJob, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").present()
+                                
                                 
                             }
                             ) {

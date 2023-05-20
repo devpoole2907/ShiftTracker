@@ -103,6 +103,8 @@ struct CreateShiftForm: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    private let notificationManager = ShiftNotificationManager.shared
+    
     let jobs: FetchedResults<Job>
     var dateSelected: Date?
     
@@ -153,7 +155,7 @@ struct CreateShiftForm: View {
         do {
             try viewContext.save()
             if notifyMe {
-                scheduleNotification(for: newShift, reminderTime: newShift.reminderTime)
+                notificationManager.scheduleNotifications()
             }
             onShiftCreated()
             dismiss()
@@ -179,10 +181,6 @@ struct CreateShiftForm: View {
             shift.repeatID = repeatEveryWeek ? repeatID : nil
             shift.notifyMe = notifyMe
             shift.reminderTime = selectedReminderTime.timeInterval
-            
-            if notifyMe {
-                scheduleNotification(for: shift, reminderTime: shift.reminderTime)
-                    }
 
             // Increment the start and end dates by 1 week
             currentStartDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentStartDate)!
@@ -192,34 +190,11 @@ struct CreateShiftForm: View {
         // Save the context after creating all the shifts
         do {
             try viewContext.save()
+                notificationManager.scheduleNotifications()
             onShiftCreated()
             dismiss()
         } catch {
             print("Error saving repeating shift series: \(error)")
-        }
-    }
-    
-    func scheduleNotification(for scheduledShift: ScheduledShift, reminderTime: TimeInterval) {
-        // Create the content of the notification
-        let content = UNMutableNotificationContent()
-        content.title = "Upcoming Shift"
-        content.body = "You have a shift starting soon!"
-        content.sound = .default
-
-        // Create a notification trigger based on the startDate and reminderTime
-        let triggerDate = Calendar.current.date(byAdding: .second, value: Int(-scheduledShift.reminderTime), to: scheduledShift.startDate ?? Date())!
-        let triggerComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: triggerDate)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerComponents, repeats: false)
-
-        // Create a unique identifier for the request
-        let identifier = "ScheduledShift-\(scheduledShift.objectID)"
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-
-        // Schedule the notification
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error)")
-            }
         }
     }
     
