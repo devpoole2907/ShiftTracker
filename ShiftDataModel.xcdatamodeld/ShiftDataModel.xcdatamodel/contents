@@ -31,6 +31,7 @@
     </entity>
     <entity name="JobLocation" representedClassName="JobLocation" syncable="YES" codeGenerationType="class">
         <attribute name="address" optional="YES" attributeType="String"/>
+        <attribute name="radius" optional="YES" attributeType="Double" defaultValueString="75" usesScalarValueType="YES"/>
         <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="locations" inverseEntity="Job"/>
     </entity>
     <entity name="OldShift" representedClassName="OldShift" syncable="YES" codeGenerationType="class">

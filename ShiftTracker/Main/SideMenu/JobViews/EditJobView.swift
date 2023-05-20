@@ -43,6 +43,8 @@ struct EditJobView: View {
     
     @State private var selectedIcon: String
     
+    @State private var selectedRadius: Double = 75
+    
     @State private var activeSheet: ActiveSheet?
     
     @FocusState private var textIsFocused: Bool
@@ -77,6 +79,7 @@ struct EditJobView: View {
         
         if let locationSet = job.locations, let location = locationSet.allObjects.first as? JobLocation {
             _selectedAddress = State(initialValue: location.address)
+            _selectedRadius = State(initialValue: location.radius)
             print("job has an address: \(location.address)")
         } else {
             print("job has no address")
@@ -210,7 +213,7 @@ struct EditJobView: View {
                                     .padding(.horizontal)
                                     .padding(.bottom, 10)
                                     
-                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)
+                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius)
                                     .onDisappear {
                                         // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
                                         self.miniMapRegion = self.mapRegion

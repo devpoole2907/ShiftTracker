@@ -37,6 +37,7 @@ struct EditFirebaseJobView: View {
     @State private var overtimeEnabled: Bool = false
     
     @State private var selectedAddress: String?
+    @State private var selectedRadius: Double = 75
     
     @State private var showOvertimeTimeView = false
     
@@ -138,7 +139,7 @@ struct EditFirebaseJobView: View {
 
                 
                 Section{
-                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)) {
+                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius)) {
                         HStack {
                             Image("LocationIconFilled")
                             

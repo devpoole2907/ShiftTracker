@@ -42,6 +42,7 @@ struct AddJobView: View {
     @State private var overtimeEnabled: Bool = false
     
     @State private var selectedAddress: String?
+    @State private var selectedRadius: Double = 75
     @State private var miniMapAnnotation: IdentifiablePointAnnotation?
     
     @State private var showFullCover = false
@@ -214,7 +215,7 @@ struct AddJobView: View {
                                     .padding(.horizontal)
                                     .padding(.bottom, 10)
                                     
-                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion)
+                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius)
                                     .onDisappear {
                                         // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
                                         self.miniMapRegion = self.mapRegion
@@ -473,6 +474,7 @@ struct AddJobView: View {
         print("Selected Address: \(String(describing: selectedAddress))")
         print("New Location Address: \(String(describing: newLocation.address))")
         newLocation.job = newJob
+        newLocation.radius = selectedRadius ?? 75
         
         newJob.addToLocations(newLocation)
         

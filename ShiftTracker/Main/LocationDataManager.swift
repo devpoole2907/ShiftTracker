@@ -82,15 +82,15 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
     public func startMonitoring(job: Job, clockOut: Bool = false) {
         
         
-        if let locationSet = job.locations, let location = locationSet.allObjects.first as? JobLocation {
-            if let savedAddress = location.address {
+        if let locationSet = job.locations, let jobLocation = locationSet.allObjects.first as? JobLocation {
+            if let savedAddress = jobLocation.address {
                 print("got an address to monitor, \(savedAddress)")
             let geocoder = CLGeocoder()
             geocoder.geocodeAddressString(savedAddress) { placemarks, error in
                 if let error = error {
                     print("Error geocoding address: \(error.localizedDescription)")
                 } else if let placemarks = placemarks, let firstPlacemark = placemarks.first, let location = firstPlacemark.location {
-                    let region = CLCircularRegion(center: location.coordinate, radius: 75, identifier: job.objectID.uriRepresentation().absoluteString)
+                    let region = CLCircularRegion(center: location.coordinate, radius: jobLocation.radius, identifier: job.objectID.uriRepresentation().absoluteString)
                     region.notifyOnEntry = !clockOut
                     region.notifyOnExit = clockOut
                     

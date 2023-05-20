@@ -32,10 +32,12 @@ struct AddressFinderView: View {
     @StateObject private var locationManager = LocationDataManager()
     
     @Binding var mapRegion: MKCoordinateRegion
+    @Binding var selectedRadius: Double
     
-    init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>) {
+    init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>, selectedRadius: Binding<Double>) {
         _selectedAddressString = selectedAddress
         _mapRegion = mapRegion
+        _selectedRadius = selectedRadius
         loadSavedAddress()
     }
     
@@ -152,8 +154,8 @@ struct AddressFinderView: View {
                     .interactiveDismissDisabled()
                     
                     .sheet(isPresented: $addressConfirmSheet){
-                        AddressConfirmView(address: $selectedAddress, onConfirm: setSelectedAddress)
-                            .presentationDetents([ .fraction(0.3)])
+                        AddressConfirmView(address: $selectedAddress, radius: $selectedRadius, onConfirm: setSelectedAddress)
+                            .presentationDetents([ .fraction(0.4), .medium])
                         // .presentationBackground(.thinMaterial)
                             .presentationCornerRadius(12)
                             .presentationDragIndicator(.visible)
@@ -316,6 +318,7 @@ class IdentifiablePointAnnotation: MKPointAnnotation, Identifiable {
 
 struct AddressConfirmView: View {
     @Binding var address: CLPlacemark?
+    @Binding var radius: Double
     @Environment(\.dismiss) var dismiss
     var onConfirm: ((CLPlacemark) -> Void)?
     
@@ -328,46 +331,93 @@ struct AddressConfirmView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                Text(formattedStreetAddress)
-                    .font(.title)
-                    .bold()
-                    .padding(.leading, 15)
-                    .padding(.top, -35)
+            VStack(alignment: .leading){
                 HStack{
-                    Spacer()
-                    Button(action: {
-                        if let address = address {
-                            onConfirm?(address)
-                            dismiss()
-                        }
-                    }) {
-                        HStack(spacing: 5){
-                            Image(systemName: "briefcase.fill")
-                            Text("Set work address")
-                                .font(.subheadline)
-                            
-                            
-                        }
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .padding(.vertical, 15)
-                        .frame(maxWidth: .infinity)
-                        .background{
-                            Capsule()
-                                .fill(.black)
-                        }
-                        
-                    }.padding(.horizontal, 15)
+                    Text(formattedStreetAddress)
+                        .font(.title)
+                        .bold()
+                        .padding(.leading, 15)
+                        .padding(.top, -35)
                     Spacer()
                 }
-                List{
-                    Section(header: Text("Details").bold()){
-                        Text(address?.formattedAddress ?? "")
-                        // .padding()
-                    }
-                }.scrollContentBackground(.hidden)
             }
+            
+            ScrollView{
+                LazyVStack(alignment: .leading){
+                Section{
+                    
+                    HStack{
+                        
+                        Button(action: {
+                            if let address = address {
+                                onConfirm?(address)
+                                dismiss()
+                            }
+                        }) {
+                            HStack(spacing: 5){
+                                Image(systemName: "briefcase.fill")
+                                Text("Set work address")
+                                    .font(.subheadline)
+                                
+                                
+                            }
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding(.vertical, 15)
+                            .frame(maxWidth: .infinity)
+                            .background(.black)
+                            .cornerRadius(20)
+                            
+                        }
+                    }
+                    
+                }.listRowBackground(Color.clear)
+                        .padding(.horizontal)
+               
+                    VStack(alignment: .leading){
+                        Text("Details").bold().textCase(nil).font(.title3)
+                            .padding(.leading, 22)
+                            .padding(.bottom, -2)
+                    }
+                    VStack(alignment: .leading, spacing: 5){
+                        
+                        
+                            VStack(alignment: .leading, spacing: 5){
+                            Text("Address")
+                                .foregroundColor(.gray)
+                                .font(.footnote)
+                            Text(address?.formattedAddress ?? "")
+                        }.padding()
+                       // Divider()
+                            //.padding(.horizontal, 10)
+                           // .padding(.vertical, -10)
+                            //.frame(maxHeight: 20)
+                            
+                            Divider()
+                                    .padding(.horizontal, 10)
+                            
+                            VStack(alignment: .leading, spacing: 5){
+                            Text("Radius")
+                                .foregroundColor(.gray)
+                                .font(.caption)
+                            HStack {
+                                Text("\(Int(radius ))m")
+                                    .font(.subheadline)
+                                    .bold()
+                                Slider(value: $radius, in: 25...200)
+                                    .padding(.horizontal, 15)
+                            }
+                        }.padding()
+                    
+                        
+                    }.background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
+                        .padding(.horizontal, 18)
+                
+            }
+            }.scrollContentBackground(.hidden)
+            
+
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
