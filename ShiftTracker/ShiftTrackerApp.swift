@@ -67,7 +67,7 @@ struct ShiftTrackerApp: App {
         do {
             let jobs = try persistenceController.container.viewContext.fetch(fetchRequest)
             for job in jobs {
-                if let _ = job.address {
+                if let locations = job.locations as? Set<JobLocation>, !locations.isEmpty {
                     locationManager.startMonitoring(job: job)
                 }
             }
@@ -75,6 +75,7 @@ struct ShiftTrackerApp: App {
             print("Error fetching jobs: \(error.localizedDescription)")
         }
     }
+
 
 }
 

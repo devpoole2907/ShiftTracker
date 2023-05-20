@@ -456,7 +456,6 @@ struct AddJobView: View {
         newJob.name = name
         newJob.title = title
         newJob.hourlyPay = Double(hourlyPay) ?? 0.0
-        newJob.address = selectedAddress
         newJob.clockInReminder = clockInReminder
         newJob.clockOutReminder = clockOutReminder
         newJob.tax = taxPercentage
@@ -467,6 +466,15 @@ struct AddJobView: View {
         newJob.overtimeRate = overtimeRate
         newJob.icon = selectedIcon
         newJob.uuid = UUID()
+        
+        let newLocation = JobLocation(context: viewContext)
+        
+        newLocation.address = selectedAddress
+        print("Selected Address: \(String(describing: selectedAddress))")
+        print("New Location Address: \(String(describing: newLocation.address))")
+        newLocation.job = newJob
+        
+        newJob.addToLocations(newLocation)
         
         let uiColor = UIColor(selectedColor)
         let (r, g, b) = uiColor.rgbComponents
@@ -493,7 +501,10 @@ struct AddJobView: View {
             //let jobDataArray = allJobs.map { jobData(from: $0) }
             WatchConnectivityManager.shared.sendJobData(allJobs)
             
-            locationManager.startMonitoring(job: newJob)
+
+                locationManager.startMonitoring(job: newJob) // might need to check clock out works with this, ive forgotten my implementation
+            
+            
             presentationMode.wrappedValue.dismiss()
         } catch {
             print("Failed to save job: \(error.localizedDescription)")

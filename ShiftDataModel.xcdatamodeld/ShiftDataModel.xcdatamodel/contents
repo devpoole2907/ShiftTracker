@@ -7,7 +7,6 @@
         <relationship name="oldShift" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OldShift" inverseName="breaks" inverseEntity="OldShift"/>
     </entity>
     <entity name="Job" representedClassName="Job" syncable="YES" codeGenerationType="class">
-        <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="autoClockIn" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="autoClockOut" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="clockInReminder" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
@@ -26,8 +25,13 @@
         <attribute name="tax" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="JobLocation" inverseName="job" inverseEntity="JobLocation"/>
         <relationship name="oldShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="job" inverseEntity="OldShift"/>
         <relationship name="scheduledShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ScheduledShift" inverseName="job" inverseEntity="ScheduledShift"/>
+    </entity>
+    <entity name="JobLocation" representedClassName="JobLocation" syncable="YES" codeGenerationType="class">
+        <attribute name="address" optional="YES" attributeType="String"/>
+        <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="locations" inverseEntity="Job"/>
     </entity>
     <entity name="OldShift" representedClassName="OldShift" syncable="YES" codeGenerationType="class">
         <attribute name="breakElapsed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

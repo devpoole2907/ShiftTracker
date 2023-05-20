@@ -51,12 +51,18 @@ struct JobData: Codable, Identifiable, Hashable {
 
 
 func jobData(from job: Job) -> JobData {
-    JobData(
+    
+    var address = ""
+        if let locationSet = job.locations, let location = locationSet.allObjects.first as? JobLocation {
+            address = location.address ?? ""
+        }
+    
+    return JobData(
         uuid: job.uuid ?? UUID(),
         name: job.name ?? "",
         title: job.title ?? "",
         hourlyPay: job.hourlyPay,
-        address: job.address ?? "",
+        address: address,
         clockInReminder: job.clockInReminder,
         clockOutReminder: job.clockOutReminder,
         autoClockIn: job.autoClockIn,

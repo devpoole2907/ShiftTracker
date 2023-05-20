@@ -78,21 +78,29 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         //print("error: \(error.localizedDescription)")
     }
     
+    
     public func startMonitoring(job: Job, clockOut: Bool = false) {
-        guard let savedAddress = job.address else { return }
-        let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(savedAddress) { placemarks, error in
-            if let error = error {
-                print("Error geocoding address: \(error.localizedDescription)")
-            } else if let placemarks = placemarks, let firstPlacemark = placemarks.first, let location = firstPlacemark.location {
-                let region = CLCircularRegion(center: location.coordinate, radius: 75, identifier: job.objectID.uriRepresentation().absoluteString)
-                region.notifyOnEntry = !clockOut
-                region.notifyOnExit = clockOut
-
-                self.locationManager.startMonitoring(for: region)
+        
+        
+        if let locationSet = job.locations, let location = locationSet.allObjects.first as? JobLocation {
+            if let savedAddress = location.address {
+                print("got an address to monitor, \(savedAddress)")
+            let geocoder = CLGeocoder()
+            geocoder.geocodeAddressString(savedAddress) { placemarks, error in
+                if let error = error {
+                    print("Error geocoding address: \(error.localizedDescription)")
+                } else if let placemarks = placemarks, let firstPlacemark = placemarks.first, let location = firstPlacemark.location {
+                    let region = CLCircularRegion(center: location.coordinate, radius: 75, identifier: job.objectID.uriRepresentation().absoluteString)
+                    region.notifyOnEntry = !clockOut
+                    region.notifyOnExit = clockOut
+                    
+                    self.locationManager.startMonitoring(for: region)
+                }
             }
         }
     }
+        }
+
 
     
     
@@ -165,38 +173,6 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
             
             NotificationCenter.default.post(name: .didExitRegion, object: nil)
             }
-        }
-    }
-
-
-
-    public func startMonitoringJobs() {
-        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "clockInReminder == %@", NSNumber(value: true))
-
-        let context = PersistenceController.shared.container.viewContext
-        do {
-            let jobsWithReminder = try context.fetch(fetchRequest)
-            for job in jobsWithReminder {
-                startMonitoring(job: job)
-            }
-        } catch {
-            print("Error fetching jobs with clockInReminder: \(error.localizedDescription)")
-        }
-    }
-    
-    public func startMonitoringClockOutJobs() {
-        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "clockOutReminder == %@", NSNumber(value: true))
-
-        let context = PersistenceController.shared.container.viewContext
-        do {
-            let jobsWithClockOutReminder = try context.fetch(fetchRequest)
-            for job in jobsWithClockOutReminder {
-                startMonitoring(job: job, clockOut: true)
-            }
-        } catch {
-            print("Error fetching jobs with clockOutReminder: \(error.localizedDescription)")
         }
     }
 

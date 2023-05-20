@@ -72,7 +72,18 @@ struct EditJobView: View {
         _payPeriodLength = State(initialValue: job.payPeriodLength >= 0 ? "\(job.payPeriodLength)" : "")
         _payPeriodStartDay = State(initialValue: job.payPeriodStartDay >= 0 ? Int(job.payPeriodStartDay) : nil)
         _selectedColor = State(initialValue: Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-        _selectedAddress = State(initialValue: job.address)
+        
+        // gets the first saved address, with the new address data model system for future multiple location implementation
+        
+        if let locationSet = job.locations, let location = locationSet.allObjects.first as? JobLocation {
+            _selectedAddress = State(initialValue: location.address)
+            print("job has an address: \(location.address)")
+        } else {
+            print("job has no address")
+        }
+
+        
+        
         _clockInReminder = State(initialValue: job.clockInReminder)
         _clockOutReminder = State(initialValue: job.clockOutReminder)
         _autoClockIn = State(initialValue: job.autoClockIn)
@@ -455,7 +466,6 @@ struct EditJobView: View {
         job.hourlyPay = Double(hourlyPay) ?? 0.0
         job.tax = taxPercentage
         job.icon = selectedIcon
-        job.address = selectedAddress
         job.clockInReminder = clockInReminder
         job.clockOutReminder = clockOutReminder
         job.autoClockIn = autoClockIn
@@ -463,6 +473,19 @@ struct EditJobView: View {
         job.overtimeEnabled = overtimeEnabled
         job.overtimeAppliedAfter = overtimeAppliedAfter
         job.overtimeRate = overtimeRate
+        
+        // replace this code with adding locations later when multiple address system update releases
+        if let locationSet = job.locations, let location = locationSet.allObjects.first as? JobLocation {
+            location.address = selectedAddress
+        } else { // for multi jobs we need this to add more
+            let location = JobLocation(context: viewContext)
+            location.address = selectedAddress
+            job.addToLocations(location)
+        }
+
+        
+
+        
         
         let uiColor = UIColor(selectedColor)
         let (r, g, b) = uiColor.rgbComponents
@@ -485,7 +508,9 @@ struct EditJobView: View {
         do {
             try viewContext.save()
             
-            locationManager.startMonitoring(job: job)
+        
+                locationManager.startMonitoring(job: job) // might need to check clock out works with this, ive forgotten my implementation
+            
             
             presentationMode.wrappedValue.dismiss()
         } catch {
