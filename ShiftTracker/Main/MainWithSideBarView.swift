@@ -13,6 +13,9 @@ import CoreData
 struct MainWithSideBarView: View {
     
     
+    @AppStorage("AuthEnabled") private var authEnabled: Bool = false
+        @State private var showingLockedView = false
+    
     @AppStorage("isFirstLaunch", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isFirstLaunch = true
     
     @StateObject private var authModel = FirebaseAuthModel()
@@ -36,6 +39,12 @@ struct MainWithSideBarView: View {
     @GestureState var gestureOffset: CGFloat = 0
     
     @State private var isSubscriptionChecked: Bool = false
+    
+    private func checkIfLocked() {
+            if authEnabled {
+                showingLockedView = true
+            }
+        }
     
     var body: some View {
         
@@ -138,9 +147,20 @@ struct MainWithSideBarView: View {
             .onChange(of: gestureOffset) { newValue in
                 onChange()
             }
+            
+            
+                .fullScreenCover(isPresented: $showingLockedView) {
+                        LockedView(isAuthenticated: $showingLockedView)
+                            .interactiveDismissDisabled()
+                        }
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                            checkIfLocked()
+                        }
+            
             .onAppear(perform: {
                 let shifts = fetchUpcomingShifts()
                 scheduleNotifications(for: shifts)
+                checkIfLocked()
             })
             
             /*     .onAppear{ authModel.checkUserLoginStatus()
@@ -157,6 +177,9 @@ struct MainWithSideBarView: View {
             //.onAppear{ authModel.checkUserLoginStatus() }
             
         }
+        
+        
+        
     }
     
     func onChange(){

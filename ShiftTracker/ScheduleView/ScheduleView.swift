@@ -61,15 +61,6 @@ struct ScheduleView: View {
                     .presentationDetents([.medium, .large])
                     .presentationCornerRadius(50)
             }
-            .alert(isPresented: $deleteJobAlert) {
-                Alert(title: Text("Delete Job"),
-                      message: Text("Are you sure you want to delete this job and all associated scheduled shifts?"),
-                      primaryButton: .destructive(Text("Delete")) {
-                    confirmDeleteJob()
-                },
-                      secondaryButton: .cancel()
-                )
-            }
             
             .navigationBarTitle("Schedule", displayMode: .inline)
             .toolbar{
@@ -80,10 +71,10 @@ struct ScheduleView: View {
                         }
                     }) {
                         Image(systemName: "list.bullet")
-                            .foregroundColor(showAllScheduledShiftsView ? Color.white : Color.accentColor)
+                            .foregroundColor(showAllScheduledShiftsView ? (colorScheme == .dark ? .black : .white) : Color.accentColor)
                             .background(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .fill(showAllScheduledShiftsView ? .black : .clear)
+                                    .fill(showAllScheduledShiftsView ? (colorScheme == .dark ? .white : .black) : .clear)
                                     .padding(-5)
                             )
                     }
@@ -103,41 +94,7 @@ struct ScheduleView: View {
         }
         
     }
-    
-    
-    private func deleteJob(at offsets: IndexSet) {
-        for index in offsets {
-            let job = jobs[index]
-            jobToDelete = job
-            deleteJobAlert = true
-        }
-    }
-    
-    
-    private func confirmDeleteJob() {
-        if let job = jobToDelete {
-            // Delete associated ScheduledShifts
-            if let scheduledShifts = job.scheduledShifts as? Set<ScheduledShift> {
-                for shift in scheduledShifts {
-                    viewContext.delete(shift)
-                }
-            }
-            
-            // Delete the job
-            sharedUserDefaults.removeObject(forKey: "SelectedJobUUID")
-            deleteJobFromWatch(job)
-            viewContext.delete(job)
-            jobToDelete = nil
-            
-            do {
-                try viewContext.save()
-            } catch {
-                print("Failed to delete job: \(error.localizedDescription)")
-            }
-        }
-        deleteJobAlert = false
-    }
-    
+    // old
     func deleteJobFromWatch(_ job: Job) {
         if let jobId = job.uuid {
             WatchConnectivityManager.shared.sendDeleteJobMessage(jobId)

@@ -22,12 +22,13 @@
 		1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A19141A2A15DC02000D0F8B /* CurrentShiftView.swift */; };
 		1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A19141C2A15F96D000D0F8B /* SelectedJobView.swift */; };
 		1A1914212A185281000D0F8B /* ShiftManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914202A185281000D0F8B /* ShiftManager.swift */; };
+		1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914222A187DF9000D0F8B /* LockedView.swift */; };
+		1A1914252A188256000D0F8B /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914242A188256000D0F8B /* ActionView.swift */; };
 		1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */; };
 		1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */; };
 		1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9329F100950002D9E4 /* Enums.swift */; };
 		1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9629F101040002D9E4 /* ChartView.swift */; };
 		1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */; };
-		1A22EFFD29C652A900A23F33 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EFFC29C652A900A23F33 /* MainView.swift */; };
 		1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EFFE29C6559100A23F33 /* SettingsView.swift */; };
 		1A22F00129C65E4D00A23F33 /* ShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00029C65E4D00A23F33 /* ShiftsView.swift */; };
 		1A22F00529C67AD400A23F33 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00429C67AD400A23F33 /* TimerView.swift */; };
@@ -172,6 +173,8 @@
 		1A19141A2A15DC02000D0F8B /* CurrentShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentShiftView.swift; sourceTree = "<group>"; };
 		1A19141C2A15F96D000D0F8B /* SelectedJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedJobView.swift; sourceTree = "<group>"; };
 		1A1914202A185281000D0F8B /* ShiftManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftManager.swift; sourceTree = "<group>"; };
+		1A1914222A187DF9000D0F8B /* LockedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedView.swift; sourceTree = "<group>"; };
+		1A1914242A188256000D0F8B /* ActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionView.swift; sourceTree = "<group>"; };
 		1A1D470A29C583F5001E5C15 /* ShiftTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftTracker.entitlements; sourceTree = "<group>"; };
 		1A1D470B29C58444001E5C15 /* ShiftTrackerWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftTrackerWidgetExtension.entitlements; sourceTree = "<group>"; };
 		1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
@@ -179,7 +182,6 @@
 		1A1DEC9629F101040002D9E4 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftGroups.swift; sourceTree = "<group>"; };
 		1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShiftTrackerStoreKitConfig.storekit; sourceTree = "<group>"; };
-		1A22EFFC29C652A900A23F33 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		1A22EFFE29C6559100A23F33 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1A22F00029C65E4D00A23F33 /* ShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftsView.swift; sourceTree = "<group>"; };
 		1A22F00429C67AD400A23F33 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
@@ -339,9 +341,9 @@
 			children = (
 				1A19141E2A16C232000D0F8B /* SideMenu */,
 				1ACA60AC29D7913700B279CB /* ShiftKeys.swift */,
-				1A22EFFC29C652A900A23F33 /* MainView.swift */,
-				1A69DA2429C98C88008FA77F /* LocationDataManager.swift */,
 				1AB7D69229FB6CE100326AAA /* MainWithSideBarView.swift */,
+				1A69DA2429C98C88008FA77F /* LocationDataManager.swift */,
+				1A1914222A187DF9000D0F8B /* LockedView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -471,6 +473,7 @@
 				1A1914182A15D43B000D0F8B /* UpcomingShiftView.swift */,
 				1A19141A2A15DC02000D0F8B /* CurrentShiftView.swift */,
 				1A19141C2A15F96D000D0F8B /* SelectedJobView.swift */,
+				1A1914242A188256000D0F8B /* ActionView.swift */,
 			);
 			path = ContentView;
 			sourceTree = "<group>";
@@ -786,7 +789,6 @@
 				1AB7D69A29FBB1D500326AAA /* JobsView.swift in Sources */,
 				1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */,
 				1A1914192A15D43B000D0F8B /* UpcomingShiftView.swift in Sources */,
-				1A22EFFD29C652A900A23F33 /* MainView.swift in Sources */,
 				1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */,
 				1AB7D6AB29FC059500326AAA /* IntroMainView.swift in Sources */,
 				1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */,
@@ -795,12 +797,14 @@
 				1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
+				1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */,
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
 				1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */,
 				1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
+				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
 				1ACA60BD29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */,
 				1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,

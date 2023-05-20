@@ -246,3 +246,30 @@ class JobSelectionViewModel: ObservableObject {
 }
 
 
+enum ActionType {
+    case startBreak, endShift, endBreak, startShift
+}
+
+// this is stupid and needs to be removed but itll do for now
+// gets the equivalent primary color opacity without the opacity
+
+func opaqueVersion(of color: Color, withOpacity opacity: Double, in colorScheme: ColorScheme) -> Color {
+    // Convert the SwiftUI color to a UIKit color
+    let uiColor = UIColor(color)
+
+    // Get the RGBA components of the color
+    var red: CGFloat = 0
+    var green: CGFloat = 0
+    var blue: CGFloat = 0
+    var alpha: CGFloat = 0
+    uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+    // Calculate the equivalent opaque color based on the color scheme
+    let background: CGFloat = colorScheme == .dark ? 0 : 1
+    let newRed = red * CGFloat(opacity) + (1 - CGFloat(opacity)) * background
+    let newGreen = green * CGFloat(opacity) + (1 - CGFloat(opacity)) * background
+    let newBlue = blue * CGFloat(opacity) + (1 - CGFloat(opacity)) * background
+
+    // Convert the new color back to a SwiftUI color
+    return Color(UIColor(red: newRed, green: newGreen, blue: newBlue, alpha: 1))
+}

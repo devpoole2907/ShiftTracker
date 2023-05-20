@@ -9,9 +9,11 @@ import SwiftUI
 import Haptics
 
 struct ActionButtonView: View {
+    
     @State private var isActionButtonTapped = false
     let title: String
     let backgroundColor: Color
+    let textColor: Color
     let icon: String
     let buttonWidth: CGFloat
     let action: () -> Void
@@ -24,17 +26,17 @@ struct ActionButtonView: View {
         }) {
             VStack(spacing: 10) {
                 Image(systemName: icon)
-                    .foregroundColor(.white)
+                    .foregroundColor(textColor)
                 Text(title)
                     .font(.subheadline)
                     .bold()
-                    .foregroundColor(.white)
+                    .foregroundColor(textColor)
             }
             .padding(.horizontal, 25)
             .frame(maxWidth: buttonWidth)
             .padding(.vertical, 8)
-            .background(backgroundColor.opacity(0.8))
-            .cornerRadius(50)
+            .background(backgroundColor)
+            .cornerRadius(20)
         }.haptics(onChangeOf: isActionButtonTapped, type: .success)
     }
 }

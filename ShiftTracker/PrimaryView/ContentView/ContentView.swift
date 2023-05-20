@@ -460,6 +460,7 @@ struct ContentView: View {
                         }.presentationDetents([ .large])
                             .presentationDragIndicator(.visible)
                             .presentationCornerRadius(50)
+                            .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                     }
                 case .sheet2:
                     ActionView(viewModel: viewModel, jobSelectionViewModel: jobSelectionViewModel, activeSheet: $activeSheet, navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
@@ -467,6 +468,7 @@ struct ContentView: View {
                         .presentationDetents([ .fraction(0.4)])
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
+                        .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                     
                 case .sheet3:
                     ActionView(viewModel: viewModel, jobSelectionViewModel: jobSelectionViewModel, activeSheet: $activeSheet, navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
@@ -474,18 +476,21 @@ struct ContentView: View {
                         .presentationDetents([ .fraction(0.4)])
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
+                        .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                 case .sheet4:
                     ActionView(viewModel: viewModel, jobSelectionViewModel: jobSelectionViewModel, activeSheet: $activeSheet, navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.4)])
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
+                        .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                 case .sheet5:
                     TaxPickerView(taxPercentage: $viewModel.taxPercentage)
                         .environment(\.managedObjectContext, context)
                         .presentationDetents([ .fraction(0.3)])
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
+                        .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                     
                 case .sheet6:
                     ActionView(viewModel: viewModel, jobSelectionViewModel: jobSelectionViewModel, activeSheet: $activeSheet, navTitle: "Start Shift", actionType: .startShift)
@@ -493,6 +498,7 @@ struct ContentView: View {
                         .presentationDetents([ .fraction(0.4)])
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(50)
+                        .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                 case .sheet7:
                     
                     
@@ -567,6 +573,7 @@ struct ContentView: View {
                     .environment(\.managedObjectContext, context)
                     .presentationDetents([ .fraction(0.4), .fraction(0.6)])
                     //.presentationBackground(.ultraThinMaterial)
+                    .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                     .presentationDragIndicator(.visible)
                     .presentationCornerRadius(50)
                 }
@@ -593,19 +600,6 @@ struct ContentView: View {
             
             
         }
-        
-    /*    .popover(isPresented: $viewModel.isFirstLaunch) {
-            if #available(iOS 16.4, *) {
-                LaunchView()
-                    .presentationDetents([ .large])
-                    .presentationBackground(.black)
-                    .presentationCornerRadius(50)
-                    .interactiveDismissDisabled()
-            }
-            else {
-                LaunchView().background(.black)
-            }
-        } */
         .onAppear{
             
             if let hourlyPayValue = UserDefaults.standard.object(forKey: shiftKeys.hourlyPayKey) as? Double {
@@ -629,10 +623,6 @@ struct ContentView: View {
                     sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
                 }
             }
-        }
-        .onDisappear{
-            // viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
-            
         }
         .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { _ in
             
@@ -671,103 +661,6 @@ enum ActiveSheet: Identifiable {
     
     var id: Int {
         hashValue
-    }
-}
-
-enum ActionType {
-    case startBreak, endShift, endBreak, startShift
-}
-
-struct ActionView: View {
-    
-    @Environment(\.dismiss) var dismiss
-    @State private var actionDate = Date()
-    
-    
-    @ObservedObject var viewModel: ContentViewModel
-    @ObservedObject var jobSelectionViewModel: JobSelectionViewModel
-    @Environment(\.managedObjectContext) private var context
-    @Binding var activeSheet: ActiveSheet?
-    let navTitle: String
-    var pickerStartDate: Date?
-    
-    var actionType: ActionType
-    
-    var body: some View {
-        NavigationStack {
-            VStack {
-                
-                
-                
-                if actionType == .startBreak {
-                    if let limitStartDate = pickerStartDate {
-                        DatePicker("", selection: $actionDate, in: limitStartDate...Date(), displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                    HStack {
-                        ActionButtonView(title: "Unpaid Break", backgroundColor: Color.indigo.opacity(0.8), icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
-                            viewModel.startBreak(startDate: actionDate, isUnpaid: true)
-                            dismiss()
-                        }
-                        ActionButtonView(title: "Paid Break", backgroundColor: Color.indigo.opacity(0.8), icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
-                            viewModel.startBreak(startDate: actionDate, isUnpaid: false)
-                            dismiss()
-                        }
-                    }
-                } else {
-                    
-                    switch actionType {
-                    case .startShift:
-                        
-                        
-                        
-                        DatePicker("", selection: $actionDate, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                        
-                        ActionButtonView(title: "Start Shift", backgroundColor: Color.orange.opacity(0.8), icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 100) {
-                            viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
-                            dismiss()
-                        }
-                    case .endShift:
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                        }
-                        ActionButtonView(title: "End Shift", backgroundColor: Color.orange.opacity(0.8), icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 100) {
-                            self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
-                            dismiss()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                activeSheet = .sheet1
-                            }
-                        }
-                    case .endBreak:
-                        
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                        }
-                        ActionButtonView(title: "End Break", backgroundColor: Color.orange.opacity(0.8), icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 100) {
-                            viewModel.endBreak(endDate: actionDate)
-                            dismiss()
-                        }
-                    default:
-                        fatalError("Unsupported action type")
-                    }
-                    
-                }
-                
-            }
-            .navigationBarTitle(navTitle, displayMode: .inline)
-        }
-        
     }
 }
 
