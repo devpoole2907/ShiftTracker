@@ -11,6 +11,7 @@ import PopupView
 
 struct SideMenu: View {
     
+    @Environment(\.colorScheme) var colorScheme
     
     @Binding var showMenu: Bool
     
@@ -22,16 +23,15 @@ struct SideMenu: View {
     
     @State private var showJobs: Bool = false
     @EnvironmentObject var viewModel: ContentViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     
-    @State private var selectedJobOffset: CGFloat = 0
-
+    
     
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
-
-
+    
+    
     
     @State private var isJobsExpanded: Bool = false
-    @State private var selectedJobUUID: UUID?
     
     @State private var selectedJobForEditing: Job?
     @State private var isEditJobPresented: Bool = false
@@ -39,6 +39,10 @@ struct SideMenu: View {
     @State private var showAddJobView = false
     
     var body: some View {
+        
+        
+        let jobBackground: Color = colorScheme == .dark ? Color(.systemGray5) : .black
+        
         
         VStack(alignment: .leading, spacing: 0){
             
@@ -56,11 +60,6 @@ struct SideMenu: View {
             ScrollView(.vertical, showsIndicators: false){
                 VStack{
                     VStack(alignment: .leading, spacing: 30) {
-
-                        
-                        
-                        
-                        
                         Button(action: {
                             withAnimation(.easeInOut) {
                                 isJobsExpanded.toggle()
@@ -82,63 +81,49 @@ struct SideMenu: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         VStack{
-                        if isJobsExpanded {
-                            VStack(spacing: 10){
-                                ForEach(jobs) { job in
-                                    
-                                    
-                                    
-                                    VStack(spacing: 0) {
-                                        JobRow(job: job, isSelected: selectedJobUUID == job.uuid, editAction: {
-                                            selectedJobForEditing = job
-                                            isEditJobPresented = true
-                                        }, showEdit: true)
-                                        .contentShape(Rectangle()) // Make the whole row tappable
-                                        .onTapGesture {
-                                            if let jobUUID = job.uuid {
-                                                let currentIndex = jobs.firstIndex(where: { $0.uuid == jobUUID }) ?? 0
-                                                let selectedIndex = jobs.firstIndex(where: { $0.uuid == selectedJobUUID }) ?? 0
-                                                withAnimation(.spring()) {
-                                                    selectedJobOffset = CGFloat(selectedIndex - currentIndex) * 60
-                                                }
-                                                selectedJobUUID = jobUUID
-                                                viewModel.selectedJobUUID = jobUUID
-                                                viewModel.hourlyPay = job.hourlyPay
-                                                viewModel.saveHourlyPay()
-                                                storedSelectedJobUUID = jobUUID.uuidString
+                            if isJobsExpanded {
+                                VStack(spacing: 10){
+                                    ForEach(jobs) { job in
+                                        
+                                        
+                                        
+                                        VStack(spacing: 0) {
+                                            JobRow(job: job, isSelected: jobSelectionViewModel.selectedJobUUID == job.uuid, editAction: {
+                                                selectedJobForEditing = job
+                                                isEditJobPresented = true
+                                            }, showEdit: true)
+                                            .contentShape(Rectangle()) // Make the whole row tappable
+                                            .onTapGesture {
+                                                jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
                                             }
-                                        }
-
-
-
-
-                                    }.padding()
-                                        .background(selectedJobUUID == job.uuid ? .black : Color.primary.opacity(0.04))
-                                        .cornerRadius(50)
-                                        .offset(y: isJobsExpanded ? 0 : selectedJobOffset)
-                                        .animation(.spring(), value: isJobsExpanded)
+                                            
+                                        }.padding()
+                                            .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
+                                            .cornerRadius(50)
+                                            .offset(y: isJobsExpanded ? 0 : jobSelectionViewModel.selectedJobOffset)
+                                            .animation(.spring(), value: isJobsExpanded)
+                                        
+                                    }
+                                    .padding(.leading, 40)
                                     
-                                }
-                                .padding(.leading, 40)
-                                
-                                .fullScreenCover(item: $selectedJobForEditing) { job in
-                                    EditJobView(job: job)
-                                        .onDisappear {
-                                            selectedJobForEditing = nil
-                                        }
+                                    .fullScreenCover(item: $selectedJobForEditing) { job in
+                                        EditJobView(job: job)
+                                            .onDisappear {
+                                                selectedJobForEditing = nil
+                                            }
+                                    }
                                 }
                             }
-                        }
                             else if let selectedJob = findSelectedJob() {
                                 VStack(spacing: 0) {
-                                    JobRow(job: selectedJob, isSelected: selectedJobUUID == selectedJob.uuid, editAction: {
+                                    JobRow(job: selectedJob, isSelected: jobSelectionViewModel.selectedJobUUID == selectedJob.uuid, editAction: {
                                         selectedJobForEditing = selectedJob
                                         isEditJobPresented = true
                                     }, showEdit: false)
                                     .contentShape(Rectangle()) // Make the whole row tappable
-                                   
+                                    
                                 }.padding()
-                                    .background(selectedJobUUID == selectedJob.uuid ? .black : Color.primary.opacity(0.04))
+                                    .background(jobSelectionViewModel.selectedJobUUID == selectedJob.uuid ? jobBackground : Color.primary.opacity(0.04))
                                     .cornerRadius(50)
                                     .padding(.leading, 40)
                             } else {
@@ -147,9 +132,9 @@ struct SideMenu: View {
                                     .bold()
                                     .foregroundColor(.black)
                             }
-
-                   
-                    } .transition(.move(edge: .top))
+                            
+                            
+                        } .transition(.move(edge: .top))
                         
                         Button(action: {
                             showAddJobView = true
@@ -159,7 +144,7 @@ struct SideMenu: View {
                                 .frame(width: 25, height: 25)
                                 .padding(.leading, 40)
                         }
-                    
+                        
                         
                         TabButton(title: "Upgrade", image: "plus.diamond.fill", destination: { AnyView(ProView()) })
                     }
@@ -167,7 +152,7 @@ struct SideMenu: View {
                     .padding(.leading)
                     .padding(.top, 35)
                     
-      
+                    
                     
                 }
             }
@@ -179,7 +164,7 @@ struct SideMenu: View {
                     .padding(.leading)
                 
                 
-            
+                
             }
             
         }
@@ -197,12 +182,12 @@ struct SideMenu: View {
             if let storedUUIDString = storedSelectedJobUUID,
                let storedUUID = UUID(uuidString: storedUUIDString),
                let storedJob = jobs.first(where: { $0.uuid == storedUUID }) {
-                selectedJobUUID = storedJob.uuid
+                jobSelectionViewModel.selectedJobUUID = storedJob.uuid
                 viewModel.selectedJobUUID = storedJob.uuid
             }
         }
-
-
+        
+        
         .fullScreenCover(isPresented: $showAddJobView){
             AddJobView()
         }
@@ -230,8 +215,8 @@ struct SideMenu: View {
     
     func findSelectedJob() -> Job? {
         return jobs.first(where: { $0.uuid == viewModel.selectedJobUUID })
-            
-        }
+        
+    }
     
     private func deleteJob(_ job: Job) {
         viewContext.delete(job)
@@ -328,27 +313,35 @@ struct JobRow: View {
     let editAction: () -> Void
     var showEdit: Bool
     
+    @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var viewModel: ContentViewModel
+    
     var body: some View {
+        
+        let textColor: Color = colorScheme == .dark ? .white : .black
+        
         HStack {
-            
-            
-            
-            
             
             Image(systemName: job.icon ?? "briefcase.circle")
                 .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
             
             Text(job.name ?? "")
                 .bold()
-                .foregroundColor(isSelected ? .white : .black)
+                .foregroundColor(isSelected ? .white : textColor)
             Spacer()
             if showEdit{
-                Button(action: editAction) {
-                    Image(systemName: "pencil")
-                        .foregroundColor(isSelected ? .white : .black)
-                }
+                Button(action: {
+                    if (isSelected && viewModel.shift == nil) || !isSelected {
+                        editAction()
+                    }
+                    else {
+                        OkButtonPopup(title: "End your current shift before editing.").present()
+                    }}) {
+                        Image(systemName: "pencil")
+                            .foregroundColor(isSelected ? .white : textColor)
+                    }
             }
-      
+            
             
         }
     }

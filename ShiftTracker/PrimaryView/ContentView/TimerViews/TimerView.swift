@@ -111,25 +111,28 @@ struct TimerView: View {
             //.padding(.bottom, 10)
             
             //if taxEnabled{
-                ZStack {
+             
                 /*    RoundedRectangle(cornerRadius: 20)
                         .frame(width: 175, height: 50)
                         .foregroundColor(totalBackgroundColor)
                         .shadow(radius: 5, x: 0, y: 4) */
-                    HStack(spacing: 2){
-                        Image(systemName: "chart.line.downtrend.xyaxis")
-                            .font(.system(size: 15).monospacedDigit())
-                            .fontWeight(.light)
-                        Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
-                            .font(.system(size: 20).monospacedDigit())
-                            .bold()
-                    }.foregroundColor(.pink)
-                        
-                        .padding(.horizontal, 20)
-                        
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 5)
+            
+            if sharedUserDefaults.double(forKey: shiftKeys.taxPercentageKey) > 0 {
+                HStack(spacing: 2){
+                    Image(systemName: "chart.line.downtrend.xyaxis")
+                        .font(.system(size: 15).monospacedDigit())
+                        .fontWeight(.light)
+                    Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
+                        .font(.system(size: 20).monospacedDigit())
+                        .bold()
+                }.foregroundColor(.pink)
+                
+                    .padding(.horizontal, 20)
+                
+                
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 5)
+            }
            // }
             
             Divider().frame(maxWidth: 200)

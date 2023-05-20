@@ -18,6 +18,7 @@ struct MainWithSideBarView: View {
     @StateObject private var authModel = FirebaseAuthModel()
     
     @StateObject var viewModel = ContentViewModel()
+    @StateObject var jobSelectionModel = JobSelectionViewModel()
     
     @State var showMenu: Bool = false
     
@@ -51,12 +52,14 @@ struct MainWithSideBarView: View {
                     SideMenu(showMenu: $showMenu)
                         .environmentObject(authModel)
                         .environmentObject(viewModel)
+                        .environmentObject(jobSelectionModel)
                     VStack(spacing: 0){
                         
                         TabView(selection: $currentTab) {
                             ContentView(showMenu: $showMenu)
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(viewModel)
+                                .environmentObject(jobSelectionModel)
                             
                                 .navigationBarTitleDisplayMode(.inline)
                                 .navigationBarHidden(true)

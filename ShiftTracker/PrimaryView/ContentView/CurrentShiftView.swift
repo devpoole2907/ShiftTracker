@@ -10,6 +10,7 @@ import CoreData
 
 struct CurrentShiftView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     let startDate: Date
     
     
@@ -21,28 +22,13 @@ struct CurrentShiftView: View {
     
     @State private var job: Job?
     
-    init(jobUUID: UUID, startDate: Date) {
-        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "uuid == %@", jobUUID as NSUUID)
-        fetchRequest.fetchLimit = 1
-        
-        do {
-            let fetchedJobs = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
-            _job = State(initialValue: fetchedJobs.first)
-        } catch {
-            print("Failed to fetch job: \(error)")
-            _job = State(initialValue: nil)
-        }
-        self.startDate = startDate
-        
-    }
-    
     var body: some View {
         VStack(alignment: .leading) {
             
             Text("Current Shift")
                 .font(.title3)
                 .bold()
+                .padding(.bottom, -1)
             Divider().frame(maxWidth: 200)
             
             if let job = job {
@@ -57,13 +43,15 @@ struct CurrentShiftView: View {
                             .bold()
                             .font(.footnote)
                     }
-                }.padding(.vertical, 5)
+                }.padding(.vertical, 2)
             } else {
                 Text("No Job Found")
                     .bold()
             }
             
             
+        }.onAppear {
+            job = jobSelectionViewModel.fetchJob(in: viewContext)
         }
     }
 }

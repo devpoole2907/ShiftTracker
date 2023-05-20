@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct TempBreak: Hashable, Codable {
-    let id = UUID()
+struct TempBreak: Hashable, Codable, Identifiable {
+    var id = UUID()
     var startDate: Date
     var endDate: Date?
     var isUnpaid: Bool

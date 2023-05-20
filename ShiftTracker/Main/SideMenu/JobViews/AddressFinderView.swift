@@ -13,14 +13,16 @@ struct AddressFinderView: View {
     @State private var searchText = ""
     @State private var searchResults: [CLPlacemark] = []
     @State private var selectedAddress: CLPlacemark?
-    @State private var mapAnnotations: [IdentifiablePointAnnotation] = []
-
+    @State private var mapAnnotation: IdentifiablePointAnnotation?
+    
     @State private var addressConfirmSheet: Bool = false
+    
+    private let addressManager = AddressManager()
     
     @State private var bottomSheet: Bool = true
     @State private var hideDragIndicator: Bool = false
     
-
+    
     @Binding var selectedAddressString: String?
     
     private let geocoder = CLGeocoder()
@@ -32,18 +34,18 @@ struct AddressFinderView: View {
     @Binding var mapRegion: MKCoordinateRegion
     
     init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>) {
-           _selectedAddressString = selectedAddress
-           _mapRegion = mapRegion
-           loadSavedAddress()
-       }
+        _selectedAddressString = selectedAddress
+        _mapRegion = mapRegion
+        loadSavedAddress()
+    }
     
     private func defaultCoordinateRegion() -> MKCoordinateRegion {
         let defaultLatitude: CLLocationDegrees = 37.7749 // Default latitude (e.g., San Francisco)
         let defaultLongitude: CLLocationDegrees = -122.4194 // Default longitude (e.g., San Francisco)
-            return MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: defaultLatitude, longitude: defaultLongitude),
-                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-            )
+        return MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: defaultLatitude, longitude: defaultLongitude),
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )
         
     }
     
@@ -51,11 +53,11 @@ struct AddressFinderView: View {
         let annotation = IdentifiablePointAnnotation()
         annotation.coordinate = address.location!.coordinate
         annotation.title = address.formattedAddress
-        mapAnnotations = [annotation]
+        mapAnnotation = annotation
     }
     
-
-
+    
+    
     
     var body: some View {
         
@@ -67,16 +69,16 @@ struct AddressFinderView: View {
         
         NavigationStack{
             if #available(iOS 16.4, *) {
-            VStack(spacing: 10) {
-                ZStack(alignment: .topTrailing){
-                    
-                    Map(coordinateRegion: $mapRegion, showsUserLocation: true, annotationItems: mapAnnotations) { annotation in
-                        MapAnnotation(coordinate: annotation.coordinate) {
-                            AnnotationView(coordinate: annotation.coordinate, addressConfirmSheet: $addressConfirmSheet)
-                                .id(annotation.id)
-                        }
-                    }.ignoresSafeArea()
-                    Button(action: {
+                VStack(spacing: 10) {
+                    ZStack(alignment: .topTrailing){
+                        
+                        Map(coordinateRegion: $mapRegion, showsUserLocation: true, annotationItems: mapAnnotation != nil ? [mapAnnotation!] : []) { annotation in
+                            MapAnnotation(coordinate: annotation.coordinate) {
+                                AnnotationView(coordinate: annotation.coordinate, addressConfirmSheet: $addressConfirmSheet)
+                                    .id(annotation.id)
+                            }
+                        }.ignoresSafeArea()
+                        Button(action: {
                             if let userLocation = locationManager.location?.coordinate {
                                 mapRegion = MKCoordinateRegion(center: userLocation, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
                             }
@@ -90,10 +92,10 @@ struct AddressFinderView: View {
                                 .padding(.trailing)
                                 .padding(.bottom)
                         }
+                        
+                    }
+                }.sheet(isPresented: $bottomSheet){
                     
-                }
-            }.sheet(isPresented: $bottomSheet){
-                
                     NavigationStack{
                         List{
                             Section(header: Text("Saved Address").bold()){
@@ -124,8 +126,8 @@ struct AddressFinderView: View {
                                             //setSelectedAddress(result)
                                         }
                                 }
-                                }
-                            }.scrollContentBackground(.hidden)
+                            }
+                        }.scrollContentBackground(.hidden)
                             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search work address")
                             .onSubmit(of: .search, {
                                 // do something when the user submits the search query
@@ -140,7 +142,7 @@ struct AddressFinderView: View {
                                     hideDragIndicator = false
                                 }
                             }
-                            
+                        
                     }
                     .presentationDetents([.fraction(0.35), .fraction(0.45), .fraction(0.8)])
                     .presentationDragIndicator(hideDragIndicator ? .hidden : .visible)
@@ -148,20 +150,20 @@ struct AddressFinderView: View {
                     .presentationCornerRadius(12)
                     .presentationBackgroundInteraction(.enabled)
                     .interactiveDismissDisabled()
-                
+                    
                     .sheet(isPresented: $addressConfirmSheet){
                         AddressConfirmView(address: $selectedAddress, onConfirm: setSelectedAddress)
                             .presentationDetents([ .fraction(0.3)])
-                            // .presentationBackground(.thinMaterial)
+                        // .presentationBackground(.thinMaterial)
                             .presentationCornerRadius(12)
                             .presentationDragIndicator(.visible)
                             .presentationBackgroundInteraction(.enabled)
-                           // .interactiveDismissDisabled()
-                }
+                        // .interactiveDismissDisabled()
+                    }
                     
+                }
+                
             }
-            
-        }
             else {
                 List{
                     Section{
@@ -233,12 +235,15 @@ struct AddressFinderView: View {
                 
             }
         }.toolbarRole(.editor)
-
-        .onAppear{
-            //locationManager.requestAuthorization()
-            loadSavedAddress()
-        }
-            
+        
+            .onAppear{
+                //locationManager.requestAuthorization()
+                addressManager.loadSavedAddress(selectedAddressString: selectedAddressString) { region, annotation in
+                    self.mapRegion = region ?? self.mapRegion
+                    self.mapAnnotation = annotation
+                }
+            }
+        
     }
     
     private func searchForAddress() {
@@ -250,21 +255,21 @@ struct AddressFinderView: View {
                 
                 
                 if let firstPlacemark = placemarks.first,
-                               let coordinate = firstPlacemark.location?.coordinate {
-                                DispatchQueue.main.async {
-                                    mapRegion = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-                                    createAnnotation(for: firstPlacemark)
-                                }
-                            }
+                   let coordinate = firstPlacemark.location?.coordinate {
+                    DispatchQueue.main.async {
+                        mapRegion = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+                        createAnnotation(for: firstPlacemark)
+                    }
+                }
             }
         }
     }
     
     private func setSelectedAddress(_ address: CLPlacemark) {
-       
+        
         // OLD SAVE ADDRESS FROM SINGLE JOB SYSTEM
-     /*   defaults.set(address.formattedAddress, forKey: "selectedAddress")
-        defaults.synchronize()*/
+        /*   defaults.set(address.formattedAddress, forKey: "selectedAddress")
+         defaults.synchronize()*/
         
         // NEW MULTI JOB SYSTEM, SAVE THE ADDRESS TO THE JOB
         selectedAddressString = address.formattedAddress
@@ -272,10 +277,10 @@ struct AddressFinderView: View {
         
     }
     
-
+    
     
     private func loadSavedAddress() {
-      // OLD SINGLE JOB SYSTEM LOAD //  if let savedAddress = defaults.string(forKey: "selectedAddress") {
+        // OLD SINGLE JOB SYSTEM LOAD //  if let savedAddress = defaults.string(forKey: "selectedAddress") {
         if let savedAddress = selectedAddressString {
             geocoder.geocodeAddressString(savedAddress) { placemarks, error in
                 if let error = error {
@@ -286,10 +291,10 @@ struct AddressFinderView: View {
                     
                     
                     if let coordinate = firstPlacemark.location?.coordinate {
-                                        DispatchQueue.main.async {
-                                            mapRegion = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-                                        }
-                                    }
+                        DispatchQueue.main.async {
+                            mapRegion = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+                        }
+                    }
                     createAnnotation(for: firstPlacemark)
                     
                 }
@@ -299,11 +304,11 @@ struct AddressFinderView: View {
 }
 
 /*
-struct AddressTextField_Previews: PreviewProvider {
-    static var previews: some View {
-        AddressFinderView(job: <#Job#>)
-    }
-} */
+ struct AddressTextField_Previews: PreviewProvider {
+ static var previews: some View {
+ AddressFinderView(job: <#Job#>)
+ }
+ } */
 
 class IdentifiablePointAnnotation: MKPointAnnotation, Identifiable {
     let id = UUID()
@@ -315,11 +320,11 @@ struct AddressConfirmView: View {
     var onConfirm: ((CLPlacemark) -> Void)?
     
     var formattedStreetAddress: String {
-            if let subThoroughfare = address?.subThoroughfare, let thoroughfare = address?.thoroughfare {
-                return "\(subThoroughfare) \(thoroughfare)"
-            }
-            return ""
+        if let subThoroughfare = address?.subThoroughfare, let thoroughfare = address?.thoroughfare {
+            return "\(subThoroughfare) \(thoroughfare)"
         }
+        return ""
+    }
     
     var body: some View {
         NavigationStack {
@@ -341,8 +346,8 @@ struct AddressConfirmView: View {
                             Image(systemName: "briefcase.fill")
                             Text("Set work address")
                                 .font(.subheadline)
-                                
-                                
+                            
+                            
                         }
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
@@ -354,7 +359,7 @@ struct AddressConfirmView: View {
                         }
                         
                     }.padding(.horizontal, 15)
-                Spacer()
+                    Spacer()
                 }
                 List{
                     Section(header: Text("Details").bold()){

@@ -27,6 +27,7 @@ struct SelectedJobView: View {
             Text("Selected Job")
                 .font(.headline)
                 .bold()
+                .padding(.bottom, -1)
             Divider().frame(maxWidth: 300)
             
             if let jobName = jobName, let jobTitle = jobTitle, let jobIcon = jobIcon, let jobColor = jobColor {
@@ -52,7 +53,7 @@ struct SelectedJobView: View {
                 }.foregroundColor(.gray)
                     .font(.caption)
                     .bold()
-                    .padding(.vertical, 3)
+                    .padding(.vertical, 2)
             }
             
             

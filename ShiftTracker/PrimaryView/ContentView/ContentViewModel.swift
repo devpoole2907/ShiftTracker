@@ -116,23 +116,6 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    func fetchJob(with id: UUID?, in viewContext: NSManagedObjectContext) -> Job? {
-        guard let id = id else { return nil }
-        let request: NSFetchRequest<Job> = Job.fetchRequest()
-        request.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
-        request.fetchLimit = 1
-        
-        do {
-            let results = try viewContext.fetch(request)
-            return results.first
-        } catch {
-            print("Error fetching job: \(error)")
-            return nil
-        }
-    }
-
-
-    
     public let percentageFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -422,7 +405,7 @@ class ContentViewModel: ObservableObject {
             }
         }
         
-    func endShift(using viewContext: NSManagedObjectContext, endDate: Date) -> OldShift? {
+    func endShift(using viewContext: NSManagedObjectContext, endDate: Date, job: Job) -> OldShift? {
             //updateActivity(startDate: Date())
         #if os(iOS)
             stopActivity()
@@ -466,7 +449,7 @@ class ContentViewModel: ObservableObject {
                 latestShift!.overtimeDuration = overtimeDuration
                 latestShift!.overtimeRate = overtimeRate
                 
-                latestShift!.job = fetchJob(with: selectedJobUUID, in: viewContext)
+                latestShift!.job = job
                 
                 
                 for tempBreak in tempBreaks {
@@ -627,13 +610,13 @@ class ContentViewModel: ObservableObject {
                 self.overtimeElapsed = Date().timeIntervalSince(startDate)
             }
         }
-        func startShift(using viewContext: NSManagedObjectContext, startDate: Date) {
+    func startShift(using viewContext: NSManagedObjectContext, startDate: Date, job: Job) {
             if shift == nil{ // PERHAPS YOU DONT NEED THIS?
                 if(hourlyPay == 0){
                     return
                 }
                 else { // lol this isnt actually using the hourly pay here...
-                    shift = Shift(startDate: startDate, hourlyPay: fetchJob(with: selectedJobUUID, in: viewContext)?.hourlyPay ?? 0)
+                    shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
                     sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
                     
                     
@@ -719,8 +702,8 @@ class ContentViewModel: ObservableObject {
         }
     #endif
         
-    func startShiftButtonAction(using viewContext: NSManagedObjectContext, startDate: Date) {
-        startShift(using: viewContext, startDate: startDate)
+    func startShiftButtonAction(using viewContext: NSManagedObjectContext, startDate: Date, job: Job) {
+        startShift(using: viewContext, startDate: startDate, job: job)
             shiftStartDate = startDate
             // Add notification logic
             

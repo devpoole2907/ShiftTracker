@@ -37,6 +37,8 @@ struct StatsView: View {
     @FetchRequest var longestShifts: FetchedResults<OldShift>
     @FetchRequest var latestShiftsDuctTapeFix: FetchedResults<OldShift>
     
+    let shiftDateManager = ShiftDateManager()
+    
     init(statsMode: StatsMode, jobId: NSManagedObjectID) {
         self.jobId = jobId
         
@@ -197,49 +199,24 @@ struct StatsView: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         NavigationStack{
             List{
-                
-                
                 let today = Date()
-                let calendar = Calendar.current
-                let currentWeekday = calendar.component(.weekday, from: today)
+                let todayNoTime = shiftDateManager.removeTime(from: today)
+                let previousMonday = shiftDateManager.getPreviousMonday()
+                let eightDaysAgo = shiftDateManager.subtractDays(from: todayNoTime, days: 8)
+                let fourteenDaysAgo = shiftDateManager.subtractDays(from: todayNoTime, days: 14)
+                let oneMonthAgo = shiftDateManager.subtractDays(from: Date(), days: 30)
                 
-                // Calculate the number of days to subtract to get to the previous Monday
-                let daysToSubtract = currentWeekday == 1 ? 6 : (currentWeekday == 2 ? 0 : currentWeekday - 2)
-                
-                
-                // Calculate the date for the previous Monday
-                // Calculate the date for the previous Monday without time components
-                let previousMondayWithTime = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
-                let previousMondayComponents = calendar.dateComponents([.year, .month, .day], from: previousMondayWithTime)
-                let previousMonday = calendar.date(from: previousMondayComponents)!
-                
-                
-                let lastWeekShifts = shifts.filter { shift in
-                    return shift.shiftStartDate! >= previousMonday
-                }
+                let lastWeekShifts = shiftDateManager.filterShifts(startingAfter: previousMonday, from: shifts)
                 
                 let weekShifts = lastWeekShifts.map { shift in
                     return singleShift(shift: shift)
                 }.reversed()
                 
-                let lastMonthShifts = shifts.filter { shift in
-                    let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
-                    return shift.shiftStartDate! > oneMonthAgo
-                }
+                let lastMonthShifts = shiftDateManager.filterShifts(startingAfter: oneMonthAgo, from: shifts)
                 
                 let monthShifts = lastMonthShifts.map { shift in
                     return singleShift(shift: shift)
                 }.reversed()
-                
-                let lastThreeMonthShifts = shifts.filter { shift in
-                    let threeMonthsAgo = Calendar.current.date(byAdding: .month, value: -3, to: Date())!
-                    return shift.shiftStartDate! > threeMonthsAgo
-                }
-                
-                let threeMonthShifts = lastThreeMonthShifts.map { shift in
-                    return singleShift(shift: shift)
-                }.reversed()
-                
                 
                 let groupedShifts = Dictionary(grouping: shifts) { shift -> Date in
                     let startOfWeek = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: shift.shiftStartDate!))!
@@ -267,10 +244,6 @@ struct StatsView: View {
                     
                     return fullWeekShifts(hoursCount: totalHoursCount, totalPay: totalPay, breakDuration: totalBreakDuration, startDate: startDateString, endDate: endDateString)
                 }.reversed()
-                
-                
-                
-                
                 
                 let lastTwelveMonthShifts = shifts.filter { shift in
                     let twelveMonthsAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
@@ -303,16 +276,6 @@ struct StatsView: View {
                     total + weekShift.hoursCount
                 }
                 let totalBreaksInMonth = monthShifts.reduce(0) { total, weekShift in
-                    total + weekShift.breakDuration
-                }
-                
-                let totalPayInThreeMonths = threeMonthShifts.reduce(0) { total, weekShift in
-                    total + weekShift.totalPay
-                }
-                let totalHoursInThreeMonths = threeMonthShifts.reduce(0) { total, weekShift in
-                    total + weekShift.hoursCount
-                }
-                let totalBreaksInThreeMonths = threeMonthShifts.reduce(0) { total, weekShift in
                     total + weekShift.breakDuration
                 }
                 
@@ -351,11 +314,7 @@ struct StatsView: View {
                 let averageHoursPerShift: Double = weekShifts.count > 0 ? Double(totalHoursInWeek) / Double(weekShifts.count) : 0
                 let averageBreakPerShift: Double = weekShifts.count > 0 ? totalBreaksInWeek / Double(weekShifts.count) : 0
                 
-                let todayComponents = calendar.dateComponents([.year, .month, .day], from: today)
-                let todayNoTime = calendar.date(from: todayComponents)!
                 
-                let eightDaysAgo = Calendar.current.date(byAdding: .day, value: -8, to: todayNoTime)!
-                let fourteenDaysAgo = Calendar.current.date(byAdding: .day, value: -14, to: todayNoTime)!
                 
                 let previousWeekShifts = shifts.filter { shift in
                     return shift.shiftStartDate! <= eightDaysAgo && shift.shiftStartDate! > fourteenDaysAgo
@@ -629,10 +588,10 @@ struct StatsView: View {
                                ToolbarItem(placement: .navigationBarTrailing) {
                                    Button("\(Image(systemName: "trash"))") {
                                        
-                                       DeleteShiftAlert(action: {
+                                       CustomConfirmationAlert(action: {
                                            deleteSelectedShifts()
                                            isEditing = false
-                                       }).present()
+                                       }, title: "Are you sure you want to delete these shifts?").present()
                                    }
                                    
                                    .disabled(selectedShifts.isEmpty)
@@ -726,68 +685,3 @@ struct StatsView: View {
     
 }
 
-//rename this back to DeleteShiftAlert later
-struct DeleteJobShiftAlert: CentrePopup {
-    let action: () -> Void
-    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(28)
-    }
-    func createContent() -> some View {
-        VStack(spacing: 5) {
-            
-            createTitle()
-                .padding(.vertical)
-            //Spacer(minLength: 32)
-            //  Spacer.height(32)
-            createButtons()
-            // .padding()
-        }
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .padding(.horizontal, 24)
-        .background(.primary.opacity(0.05))
-    }
-}
-
-private extension DeleteJobShiftAlert {
-    
-    func createTitle() -> some View {
-        Text("Are you sure you want to delete these shifts?")
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-    
-    func createButtons() -> some View {
-        HStack(spacing: 4) {
-            createCancelButton()
-            createUnlockButton()
-        }
-    }
-}
-
-private extension DeleteJobShiftAlert {
-    func createCancelButton() -> some View {
-        Button(action: dismiss) {
-            Text("Cancel")
-            
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.primary.opacity(0.1))
-                .cornerRadius(8)
-        }
-    }
-    func createUnlockButton() -> some View {
-        Button(action: {
-            action()
-            dismiss()
-        }) {
-            Text("Confirm")
-                .bold()
-                .foregroundColor(.white)
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(8)
-        }
-    }
-}
