@@ -487,7 +487,7 @@ struct StatsView: View {
                                 }
                             })
                             if !isEditing {
-                                NavigationLink(destination: DetailView(shift: shift).navigationBarTitle(Text("Shift Details")).background(backgroundColor), label: {
+                                NavigationLink(destination: DetailView(shift: shift, presentedAsSheet: false).navigationBarTitle(Text("Shift Details")), label: {
                                     EmptyView()
                                 })
                             }

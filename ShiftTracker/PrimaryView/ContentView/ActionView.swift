@@ -79,7 +79,7 @@ struct ActionView: View {
                             self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                             dismiss()
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                activeSheet = .sheet1
+                                activeSheet = .detailSheet
                             }
                         }
                     case .endBreak:

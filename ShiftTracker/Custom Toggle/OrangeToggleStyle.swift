@@ -18,7 +18,7 @@ struct OrangeToggleStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
         
         let toggleColor: Color = colorScheme == .dark ? .orange : .cyan
-        let tickColor: Color = colorScheme == .dark ? .white : .black
+        let tickColor: Color = colorScheme == .dark ? .black : .black
         
         HStack {
             configuration.label

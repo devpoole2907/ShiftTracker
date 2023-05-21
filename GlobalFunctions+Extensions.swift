@@ -50,7 +50,7 @@ extension CLPlacemark {
 }
 
 struct OkButtonPopup: CentrePopup {
-    
+    @Environment(\.colorScheme) var colorScheme
     let title: String
     
     func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
@@ -69,7 +69,7 @@ struct OkButtonPopup: CentrePopup {
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
-        .background(.primary.opacity(0.05))
+        .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
         .triggersHapticFeedbackWhenAppear()
     }
 }
@@ -92,6 +92,63 @@ extension OkButtonPopup {
 extension OkButtonPopup {
     func createConfirmButton() -> some View {
         Button(action: dismiss) {
+            Text("OK")
+                .bold()
+                .foregroundColor(.white)
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .background(.black)
+                .cornerRadius(8)
+        }
+    }
+}
+
+struct OkButtonPopupWithAction: CentrePopup {
+    @Environment(\.colorScheme) var colorScheme
+    let title: String
+    let action: () -> Void
+    
+    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
+        popup.horizontalPadding(28)
+    }
+    func createContent() -> some View {
+        VStack(spacing: 5) {
+            
+            createTitle()
+                .padding(.vertical)
+            //Spacer(minLength: 32)
+            //  Spacer.height(32)
+            createButtons()
+            // .padding()
+        }
+        .padding(.top, 12)
+        .padding(.bottom, 24)
+        .padding(.horizontal, 24)
+        .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
+        .triggersHapticFeedbackWhenAppear()
+    }
+}
+
+extension OkButtonPopupWithAction {
+    
+    func createTitle() -> some View {
+        Text(title)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    func createButtons() -> some View {
+        HStack(spacing: 4) {
+            createConfirmButton()
+        }
+    }
+}
+
+extension OkButtonPopupWithAction {
+    func createConfirmButton() -> some View {
+        Button(action: { dismiss()
+            action()
+        }) {
             Text("OK")
                 .bold()
                 .foregroundColor(.white)
@@ -175,6 +232,82 @@ private extension CustomConfirmationAlert {
 private extension CustomConfirmationAlert {
     func createCancelButton() -> some View {
         Button(action: dismiss) {
+            Text("Cancel")
+            
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .background(.primary.opacity(0.1))
+                .cornerRadius(8)
+        }
+    }
+    func createUnlockButton() -> some View {
+        Button(action: {
+            action()
+            dismiss()
+        }) {
+            Text("Confirm")
+                .bold()
+                .foregroundColor(.white)
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .background(.black)
+                .cornerRadius(8)
+        }
+    }
+}
+
+struct CustomConfirmAlertWithCancelAction: CentrePopup {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    let action: () -> Void
+    let cancelAction: () -> Void
+    let title: String
+    
+    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
+        popup.horizontalPadding(28)
+    }
+    func createContent() -> some View {
+        
+
+        
+        VStack(spacing: 5) {
+            
+            createTitle()
+                .padding(.vertical)
+            createButtons()
+        }
+
+        .padding(.top, 12)
+        .padding(.bottom, 24)
+        .padding(.horizontal, 24)
+        .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
+        .triggersHapticFeedbackWhenAppear()
+    }
+}
+
+private extension CustomConfirmAlertWithCancelAction {
+    
+    func createTitle() -> some View {
+        Text(title)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    func createButtons() -> some View {
+        HStack(spacing: 4) {
+            createCancelButton()
+            createUnlockButton()
+        }
+    }
+}
+
+private extension CustomConfirmAlertWithCancelAction {
+    func createCancelButton() -> some View {
+        Button(action: {
+            cancelAction()
+            dismiss()
+        }) {
             Text("Cancel")
             
                 .frame(height: 46)
@@ -347,5 +480,155 @@ class ShiftNotificationManager {
            }
        }
     
+}
+
+class BreaksManager {
+    static let shared = BreaksManager()
+    
+    let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
+    
+     func formattedDate(_ date: Date) -> String {
+            dateFormatter.string(from: date)
+        }
+    
+    func deleteBreak(context: NSManagedObjectContext, breakToDelete: Break) {
+        // Remove the relationship between the break and its shift
+        if let oldShift = breakToDelete.oldShift {
+            oldShift.removeFromBreaks(breakToDelete)
+        }
+
+        // Delete the break from the context
+        context.delete(breakToDelete)
+
+        // Save the changes
+        do {
+            try context.save()
+        } catch {
+            print("Error deleting break: \(error)")
+        }
+    }
+    
+    func addBreak(oldShift: OldShift, startDate: Date, endDate: Date, isUnpaid: Bool, context: NSManagedObjectContext) {
+        let newBreak = Break(context: context)
+        newBreak.startDate = startDate
+        newBreak.endDate = endDate
+        newBreak.isUnpaid = isUnpaid
+        oldShift.addToBreaks(newBreak)
+
+        do {
+            try context.save()
+        } catch {
+            print("Error adding break: \(error)")
+        }
+    }
+    
+     func saveChanges(in context: NSManagedObjectContext) {
+            do {
+                try context.save()
+            } catch {
+                print("Error saving changes: \(error)")
+            }
+        }
+    
+    
+    
+    func breakLengthInMinutes(startDate: Date?, endDate: Date?) -> String {
+        guard let start = startDate, let end = endDate else { return "N/A" }
+        let duration = end.timeIntervalSince(start)
+        let minutes = Int(duration) / 60
+        return "\(minutes) minutes"
+    }
+    
+    func previousBreakEndDate(for breakItem: Break, breaks: [Break]) -> Date? {
+        let sortedBreaks = breaks.sorted { $0.startDate! < $1.startDate! }
+        if let index = sortedBreaks.firstIndex(of: breakItem), index > 0 {
+            return sortedBreaks[index - 1].endDate
+        }
+        return nil
+    }
+    
+}
+
+extension NSNotification.Name {
+    static let didEnterRegion = NSNotification.Name("didEnterRegionNotification")
+    static let didExitRegion = NSNotification.Name("didExitRegionNotification")
+}
+
+struct AnimatedButton: View {
+    @Binding var isTapped: Bool
+    @Binding var activeSheet: ActiveSheet?
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    var activeSheetCase: ActiveSheet
+    var title: String
+    var backgroundColor: Color
+    var isDisabled: Bool
+
+    var body: some View {
+        
+        let foregroundColor: Color = colorScheme == .dark ? .black : .white
+        
+        Button(action: {
+            self.activeSheet = activeSheetCase
+            withAnimation {
+                self.isTapped = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    self.isTapped = false
+                }
+            }
+        }) {
+            Text(title)
+                .frame(minWidth: UIScreen.main.bounds.width / 3)
+                .bold()
+                .padding()
+                .background(backgroundColor)
+                .foregroundColor(foregroundColor)
+                .cornerRadius(18)
+        }
+        .buttonStyle(.borderless)
+        .disabled(isDisabled)
+        .frame(maxWidth: .infinity)
+        .scaleEffect(isTapped ? 1.1 : 1)
+        .animation(.easeInOut(duration: 0.3))
+    }
+}
+
+struct Shake: AnimatableModifier {
+    var times: CGFloat = 0
+    var amplitude: CGFloat = 5
+    
+    var animatableData: CGFloat {
+        get { times }
+        set { times = newValue }
+    }
+    
+    func body(content: Content) -> some View {
+        content.offset(x: sin(times * .pi * 2) * amplitude)
+    }
+}
+
+extension View {
+    func shake(times: CGFloat) -> some View {
+        self.modifier(Shake(times: times))
+    }
+}
+
+func getDayOfWeek(date: Date) -> Int {
+    let calendar = Calendar.current
+    let components = calendar.dateComponents([.weekday], from: date)
+    return components.weekday ?? 0
+}
+
+func getDayShortName(day: Int) -> String {
+    let formatter = DateFormatter()
+    let symbols = formatter.shortWeekdaySymbols
+    let symbol = symbols?[day % 7] ?? ""
+    return String(symbol.prefix(2))
 }
 

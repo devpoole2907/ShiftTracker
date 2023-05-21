@@ -19,7 +19,7 @@ struct ProView: View {
     
     var body: some View {
         
-        let proButtonColor: Color = colorScheme == .dark ? Color.orange.opacity(1.0) : Color.orange.opacity(1.0)
+        let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
         let textColor: Color = colorScheme == .dark ? Color.white.opacity(0.9) : Color.white
         let backgroundColor: Color = colorScheme == .dark ? .black : Color.white
         let upgradeButtonTextColor: Color = colorScheme == .dark ? .white : Color.black
@@ -36,10 +36,23 @@ struct ProView: View {
                     Text("PRO")
                         .font(.largeTitle)
                         .fontWeight(.heavy)
-                        .foregroundColor(.orange)
+                        .foregroundColor(proButtonColor)
                 }
                
                 List {
+                    HStack {
+                        Image(systemName: "clipboard")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(proButtonColor)
+                        Spacer().frame(width: 15)
+                        Text("Multiple Jobs")
+                            .font(.title2)
+                            .bold()
+                    }.listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .padding(.vertical, 5)
                     HStack {
                         Image(systemName: "play.rectangle")
                             .resizable()
@@ -55,7 +68,7 @@ struct ProView: View {
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)
                     HStack {
-                        Image(systemName: "location.fill")
+                        Image(systemName: "location")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 40, height: 40)
@@ -75,7 +88,7 @@ struct ProView: View {
                             .frame(width: 40, height: 40)
                             .foregroundColor(proButtonColor)
                         Spacer().frame(width: 15)
-                        Text("Data exporting")
+                        Text("Data Exporting")
                             .font(.title2)
                             .bold()
                     }.listRowSeparator(.hidden)
@@ -88,20 +101,20 @@ struct ProView: View {
                             .frame(width: 40, height: 40)
                             .foregroundColor(proButtonColor)
                         Spacer().frame(width: 15)
-                        Text("Automatic breaks")
+                        Text("Automatic Breaks")
                             .font(.title2)
                             .bold()
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)
                     HStack {
-                        Image(systemName: "chart.bar.xaxis")
+                        Image(systemName: "paperclip")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 40, height: 40)
                             .foregroundColor(proButtonColor)
                         Spacer().frame(width: 15)
-                        Text("Enhanced reports")
+                        Text("Invoice Generation")
                             .font(.title2)
                             .bold()
                     }.listRowSeparator(.hidden)
@@ -126,24 +139,14 @@ struct ProView: View {
                     }
                     
                     .foregroundColor(textColor)
-                   
-                    .foregroundColor(textColor)
-                    
-                    .foregroundColor(textColor)
-                   
-                    .foregroundColor(textColor)
                 }
                 .padding()
-                //.background(Color.gray.opacity(0.5))
                 .cornerRadius(20)
                 .frame(maxWidth: .infinity)
                 
-                //Spacer()
                 HStack(spacing: 1){
                     Button(action: {
-                        // Update isProVersion boolean value
                         isProVersion.toggle()
-                        // Save updated boolean value to shared user defaults
                         UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion")
                         dismiss()
                     }) {
@@ -154,18 +157,17 @@ struct ProView: View {
                                 .foregroundColor(upgradeButtonTextColor)
                                 
                             Text("$2.49")
-                                .foregroundColor(.orange)
+                                .foregroundColor(proButtonColor)
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 80)
-                        //.background(proButtonColor)
                         .cornerRadius(20)
                         .padding()
                     }
                     Button(action: {
-                        // Update isProVersion boolean value
+               
                         isProVersion.toggle()
-                        // Save updated boolean value to shared user defaults
+       
                         UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion")
                         setUserSubscribed(true)
                         print("setting user subscribed to true")
@@ -178,11 +180,11 @@ struct ProView: View {
                                 .foregroundColor(upgradeButtonTextColor)
                                 
                             Text("$21.49")
-                                .foregroundColor(.orange)
+                                .foregroundColor(proButtonColor)
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 80)
-                        //.background(proButtonColor)
+          
                         .cornerRadius(20)
                         .padding()
                     }
@@ -190,7 +192,7 @@ struct ProView: View {
                 Spacer(minLength: 50)
             }
             
-           // .padding(.horizontal, 16)
+    
         }.background(backgroundColor)
     }
 }

@@ -16,6 +16,8 @@ struct ScheduleView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)], animation: .default)
+    private var scheduledShifts: FetchedResults<ScheduledShift>
     
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
@@ -40,7 +42,9 @@ struct ScheduleView: View {
                 if !showAllScheduledShiftsView{
                     Form {
                         Section{
-                            CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents)
+                            CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents, someScheduledShifts: scheduledShifts)
+                                .id(scheduledShifts.count)
+                            
                         }
                         
                         .listRowBackground(Color.clear)
@@ -57,9 +61,10 @@ struct ScheduleView: View {
             }
             
             .sheet(isPresented: $displayEvents) {
-                ScheduledShiftsView(dateSelected: $dateSelected)
+                ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu)
                     .presentationDetents([.medium, .large])
                     .presentationCornerRadius(50)
+                    .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
             }
             
             .navigationBarTitle("Schedule", displayMode: .inline)

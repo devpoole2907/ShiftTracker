@@ -29,21 +29,24 @@ struct AddressFinderView: View {
     private let defaults = UserDefaults.standard
     @Environment(\.colorScheme) var colorScheme
     
+    let iconColor: Color
+    
     @StateObject private var locationManager = LocationDataManager()
     
     @Binding var mapRegion: MKCoordinateRegion
     @Binding var selectedRadius: Double
     
-    init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>, selectedRadius: Binding<Double>) {
+    init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>, selectedRadius: Binding<Double>, iconColor: Color) {
         _selectedAddressString = selectedAddress
         _mapRegion = mapRegion
         _selectedRadius = selectedRadius
+        self.iconColor = iconColor
         loadSavedAddress()
     }
     
     private func defaultCoordinateRegion() -> MKCoordinateRegion {
-        let defaultLatitude: CLLocationDegrees = 37.7749 // Default latitude (e.g., San Francisco)
-        let defaultLongitude: CLLocationDegrees = -122.4194 // Default longitude (e.g., San Francisco)
+        let defaultLatitude: CLLocationDegrees = 37.7749
+        let defaultLongitude: CLLocationDegrees = -122.4194
         return MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: defaultLatitude, longitude: defaultLongitude),
             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
@@ -76,7 +79,7 @@ struct AddressFinderView: View {
                         
                         Map(coordinateRegion: $mapRegion, showsUserLocation: true, annotationItems: mapAnnotation != nil ? [mapAnnotation!] : []) { annotation in
                             MapAnnotation(coordinate: annotation.coordinate) {
-                                AnnotationView(coordinate: annotation.coordinate, addressConfirmSheet: $addressConfirmSheet)
+                                AnnotationView(coordinate: annotation.coordinate, addressConfirmSheet: $addressConfirmSheet, iconColor: iconColor)
                                     .id(annotation.id)
                             }
                         }.ignoresSafeArea()
@@ -102,7 +105,7 @@ struct AddressFinderView: View {
                         List{
                             Section(header: Text("Saved Address").bold()){
                                 VStack{
-                                    Text(selectedAddress?.formattedAddress ?? "No address saved")
+                                    Text(selectedAddressString ?? "No address saved")
                                         .font(.title3)
                                     
                                 }
@@ -244,7 +247,11 @@ struct AddressFinderView: View {
                     self.mapRegion = region ?? self.mapRegion
                     self.mapAnnotation = annotation
                 }
+                
+           
+                
             }
+  
         
     }
     
@@ -442,12 +449,14 @@ struct AnnotationView: View {
     @Binding var addressConfirmSheet: Bool
     @State private var id = UUID()
     
+    let iconColor: Color
+    
     
     var body: some View {
         Image(systemName: "mappin.circle")
             .font(.system(size: 50))
             .foregroundColor(.white)
-            .background(.orange)
+            .background(iconColor)
             .cornerRadius(100)
             .offset(y: show ? 0 : -30)
             .animation(.easeInOut(duration: 0.8), value: show)

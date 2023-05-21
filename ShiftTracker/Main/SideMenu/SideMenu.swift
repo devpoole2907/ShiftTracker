@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PopupView
+import Haptics
 
 
 struct SideMenu: View {
@@ -95,6 +96,10 @@ struct SideMenu: View {
                                             .contentShape(Rectangle()) // Make the whole row tappable
                                             .onTapGesture {
                                                 jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
+                                                withAnimation(.easeInOut) {
+                                                    isJobsExpanded = false
+                                                }
+                                                
                                             }
                                             
                                         }.padding()
@@ -130,13 +135,13 @@ struct SideMenu: View {
                                 // Handle the case when the selected job is not found
                                 Text("No job selected")
                                     .bold()
-                                    .foregroundColor(.black)
                             }
                             
                             
                         } .transition(.move(edge: .top))
                         
                         Button(action: {
+                            isJobsExpanded = true
                             showAddJobView = true
                         }) {
                             Image(systemName: "plus")
@@ -154,7 +159,7 @@ struct SideMenu: View {
                     
                     
                     
-                }
+                }.haptics(onChangeOf: isJobsExpanded, type: .light)
             }
             VStack{
                 Divider()

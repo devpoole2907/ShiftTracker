@@ -18,9 +18,15 @@ struct DetailView: View {
     
     @Environment(\.presentationMode) private var presentationMode
     
+    let breakManager = BreaksManager()
+    
+    var presentedAsSheet: Bool
+    @Binding var activeSheet: ActiveSheet?
+    
     @State private var notes: String
     @FocusState private var noteIsFocused: Bool
-    @State private var isEditing: Bool = false
+    @State var isEditing: Bool = false
+    @State private var isAddingBreak: Bool = false
     
     @State private var showingDeleteAlert = false
     
@@ -36,9 +42,9 @@ struct DetailView: View {
     @State private var selectedBreakStartDate: Date
     @State private var selectedBreakEndDate: Date
     @State private var selectedTaxPercentage: Double
-    @State private var selectedHourlyPay: Double
+    @State private var selectedHourlyPay: String = ""
     @State private var shiftDuration: TimeInterval
-    @State private var selectedTotalTips: Double
+    @State private var selectedTotalTips: String = ""
     @State private var addTipsToTotal: Bool = false
     
     //tags stuff
@@ -57,7 +63,7 @@ struct DetailView: View {
     
     @ObservedObject var shift: OldShift
     
-    init(shift: OldShift) {
+    init(shift: OldShift, presentedAsSheet: Bool, activeSheet: Binding<ActiveSheet?>? = nil) {
         self.shift = shift
         _notes = State(wrappedValue: shift.shiftNote ?? "")
         _selectedStartDate = State(wrappedValue: shift.shiftStartDate ?? Date())
@@ -65,10 +71,12 @@ struct DetailView: View {
         _selectedBreakStartDate = State(wrappedValue: shift.breakStartDate ?? Date())
         _selectedBreakEndDate = State(wrappedValue: shift.breakEndDate ?? Date())
         _selectedTaxPercentage = State(wrappedValue: shift.tax )
-        _selectedHourlyPay = State(wrappedValue: shift.hourlyPay)
+        _selectedHourlyPay = State(initialValue: "\(shift.hourlyPay)")
         //_selectedTag = State(wrappedValue: shift.tag)
         _shiftDuration = State(wrappedValue: shift.duration)
-        _selectedTotalTips = State(wrappedValue: shift.totalTips)
+        _selectedTotalTips = State(wrappedValue: "\(shift.totalTips)")
+        self.presentedAsSheet = presentedAsSheet
+        _activeSheet = activeSheet ?? Binding.constant(nil)
     }
     
     func totalBreakDuration(for breaks: Set<Break>) -> TimeInterval {
@@ -156,18 +164,16 @@ struct DetailView: View {
                             Text("Taxed Pay ")
                                 .font(.title)
                                 .bold()
-                        Text("\(currencyFormatter.currencySymbol ?? "")\(shift.taxedPay, specifier: "%.2f")")
-                        
+                            Text("\(currencyFormatter.currencySymbol ?? "")\(shift.taxedPay, specifier: "%.2f")")
+                            
                                 .font(.system(size: 40))
-                            .fontWeight(.black)
-                            .foregroundColor(taxedBackgroundColor)
-                            //.frame(maxWidth: 200, minHeight: 75)
-                            //.background(taxedBackgroundColor)
-                        
-                        //.fixedSize()
-                            .cornerRadius(20)
-                            .padding(.bottom, 10)
-                    }
+                                .fontWeight(.black)
+                                .foregroundColor(taxedBackgroundColor)
+                            
+                            //.fixedSize()
+                                .cornerRadius(20)
+                                .padding(.bottom, 10)
+                        }
                         if shift.tax > 0 {
                             VStack(alignment: .trailing, spacing: 8){
                                 Divider()
@@ -176,11 +182,11 @@ struct DetailView: View {
                                     .fontWeight(.bold)
                                 
                                 Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalPay, specifier: "%.2f")")
-                                    //.padding(.horizontal, 20)
+                                
                                     .font(.title3)
                                     .fontWeight(.heavy)
                                     .foregroundColor(totalBackgroundColor)
-
+                                
                                     .cornerRadius(20)
                                     .padding(.bottom, 10)
                             }
@@ -192,11 +198,11 @@ struct DetailView: View {
                                     .font(.title2)
                                     .fontWeight(.bold)
                                 Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalTips, specifier: "%.2f")")
-                                    //.padding(.horizontal, 20)
+                                //.padding(.horizontal, 20)
                                     .font(.system(size: 30))
                                     .fontWeight(.heavy)
                                     .foregroundColor(tipsBackgroundColor)
-                              
+                                
                             }
                         }
                         VStack(alignment: .trailing, spacing: 8){
@@ -208,11 +214,7 @@ struct DetailView: View {
                                 .foregroundColor(.orange)
                                 .font(.largeTitle)
                                 .bold()
-                                //.frame(width: 250, height: 70)
-                            // .background(timerBackgroundColor)
-                                //.cornerRadius(20)
-                                //.fixedSize()
-                                //.padding()
+                            
                         }
                         VStack(alignment: .trailing, spacing: 8){
                             if let breaks = shift.breaks as? Set<Break> {
@@ -225,114 +227,143 @@ struct DetailView: View {
                                     Text("\(durationFormatter.string(from: duration) ?? "")")
                                         .foregroundColor(.indigo)
                                         .font(.headline)
-                                            .bold()
-                                        //.frame(width: 100, height: 30)
-                                        //.background(.indigo)
-                                        //.cornerRadius(12)
-                                       // .fixedSize()
-                                    // .padding(.bottom, 10)
+                                        .bold()
+                                    
                                 }
                             }
                         }
                         
                         
-                        
-                        /*   HStack(spacing: 20) { // increased spacing between squares
-                         RoundedSquareView(text: "Duration", count: "\(shiftLengthString())", color: timerBackgroundColor, imageColor: .white, systemImageName: "stopwatch") // added opacity to background color
-                         .frame(maxWidth: .infinity) // increased width of the square
-                         RoundedSquareView(text: "Hourly Pay", count: "\(currencyFormatter.currencySymbol ?? "")\(shift.hourlyPay)", color: .indigo.opacity(0.5), imageColor: .white, systemImageName: "dollarsign.circle")
-                         .frame(maxWidth: .infinity)
-                         }*/
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .frame(maxWidth: .infinity)
                 }.padding()
-                
-                //VStack(alignment: .leading, spacing: 10){
-            }
-            /*   Section {
-             NavigationLink(destination: ShiftTipsView(shift: shift)) {
-             HStack {
-             Text("View Tips")
-             //  Spacer()
-             //Image(systemName: "chevron.right")
-             //   .foregroundColor(Color.gray)
-             }
-             }
-             }
-             .listRowSeparator(.hidden)
-             .listRowBackground(Color.clear) */
+            }.listRowBackground(Color.clear)
             
             
             Section{
                 VStack{
-                    DatePicker("Start: ", selection: $selectedStartDate)
-                        .onChange(of: selectedStartDate) { _ in
-                            if selectedStartDate > selectedEndDate {
-                                selectedStartDate = selectedEndDate
+                    VStack(alignment: .leading){
+                        Text("Start:")
+                            .bold()
+                        //.padding(.horizontal, 15)
+                            .padding(.vertical, 5)
+                        
+                        DatePicker("Start: ", selection: $selectedStartDate)
+                            .labelsHidden()
+                            .onChange(of: selectedStartDate) { _ in
+                                if selectedStartDate > selectedEndDate {
+                                    selectedStartDate = selectedEndDate
+                                }
+                                //shift.shiftStartDate = selectedStartDate
+                                //saveContext() // Save the value of tax percent whenever it changes
                             }
-                            //shift.shiftStartDate = selectedStartDate
-                            //saveContext() // Save the value of tax percent whenever it changes
-                        }
-                        .disabled(!isEditing)
-                        .onAppear {
-                            noteIsFocused = false // Dismiss the text editor when the picker appears
-                        }
-                        .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
-                        .animation(.easeInOut(duration: 0.2))
-                    
-                    DatePicker("End: ", selection: $selectedEndDate)
-                        .onChange(of: selectedEndDate) { _ in
-                            if selectedEndDate < selectedStartDate {
-                                selectedEndDate = selectedStartDate
+                            .disabled(!isEditing)
+                            .onAppear {
+                                noteIsFocused = false // Dismiss the text editor when the picker appears
                             }
-                            //shift.shiftEndDate = selectedEndDate
-                            //saveContext() // Save the value of tax percent whenever it changes
-                        }.disabled(!isEditing)
-                        .onAppear {
-                            noteIsFocused = false // Dismiss the text editor when the picker appears
-                        }
-                        .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
-                        .animation(.easeInOut(duration: 0.2)) // Add an animation modifier to create the pulse effect
-                    
-                    
-                    
+                            .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
+                            .animation(.easeInOut(duration: 0.2))
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .background(Color.primary.opacity(0.04),in:
+                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                    VStack(alignment: .leading){
+                        Text("End:")
+                            .bold()
+                        //.padding(.horizontal, 15)
+                            .padding(.vertical, 5)
+                        
+                        DatePicker("", selection: $selectedEndDate)
+                            .labelsHidden()
+                            .onChange(of: selectedEndDate) { _ in
+                                if selectedEndDate < selectedStartDate {
+                                    selectedEndDate = selectedStartDate
+                                }
+                                //shift.shiftEndDate = selectedEndDate
+                                //saveContext() // Save the value of tax percent whenever it changes
+                            }.disabled(!isEditing)
+                            .onAppear {
+                                noteIsFocused = false // Dismiss the text editor when the picker appears
+                            }
+                            .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
+                            .animation(.easeInOut(duration: 0.2)) // Add an animation modifier to create the pulse effect
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .background(Color.primary.opacity(0.04),in:
+                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
+                    }
                 }
             }.listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             Section{
-                HStack {
+                VStack(alignment: .leading) {
                     
                     Text("Hourly pay:")
-                    //.foregroundColor(isEditing ? Color.black.opacity(0.8) : Color.white.opacity(0.5))
+                        .bold()
                     
-                    TextField("", value: $selectedHourlyPay, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
+                        .padding(.vertical, 5)
+                    
+                        .cornerRadius(20)
+                    
+                    
+                    CurrencyTextField(placeholder: "Hourly Pay", text: $selectedHourlyPay)
                         .disabled(!isEditing)
                         .keyboardType(.decimalPad)
                         .focused($payIsFocused)
-                    //.foregroundColor(isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    
+                    
+                    
                     
                     
                     
                 }
                 if shift.tax > 0 || taxEnabled {
-                    Picker("Estimated tax: ", selection: $selectedTaxPercentage){
-                        ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self){ index in
-                            Text(index/100, format: .percent)
-                        }
-                    }.disabled(!isEditing)
+                    
+                    VStack(alignment: .leading){
+                        Text("Estimated Tax")
+                            .bold()
+                            .padding(.vertical, 5)
+                            .padding(.leading, -2)
+                        Picker("Estimated tax:", selection: $selectedTaxPercentage) {
+                            ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
+                                Text(index / 100, format: .percent)
+                            }
+                        }.pickerStyle(.wheel)
+                            .frame(maxHeight: 100)
+                            .disabled(!isEditing)
+                    }
+                    .padding(.horizontal, 5)
                 }
                 
                 if tipsEnabled || shift.totalTips > 0 {
-                    HStack {
+                    VStack(alignment: .leading) {
                         
                         Text("Total tips:")
-                        //.foregroundColor(isEditing ? Color.black.opacity(0.8) : Color.white.opacity(0.5))
+                            .bold()
                         
-                        TextField("", value: $selectedTotalTips, format: .currency(code: Locale.current.currency?.identifier ?? "NZD"))
+                            .padding(.vertical, 5)
+                        
+                            .cornerRadius(20)
+                        
+                        
+                        CurrencyTextField(placeholder: "Total tips", text: $selectedTotalTips)
                             .disabled(!isEditing)
                             .keyboardType(.decimalPad)
                             .focused($payIsFocused)
-                        //.foregroundColor(isEditing ? Color.white.opacity(0.8) : Color.white.opacity(0.5))
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .background(Color.primary.opacity(0.04),in:
+                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
                         
                         
                     }
@@ -345,37 +376,61 @@ struct DetailView: View {
                      }.toggleStyle(OrangeToggleStyle()) */
                     
                 }
-                
-            }.listRowSeparator(.hidden)
-            /*.frame(height: (isEditing) ? nil : 0)
-             .clipped() // <-- Clip the content when the frame height is reduced
-             .animation(.easeInOut(duration: 0.3))*/
-            
-            // Inside your existing view body
-            
-            
-            
-            //.listRowBackground(Color.clear)
-            Section{
-                if let breaks = shift.breaks as? Set<Break> {
-                    let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
-                    NavigationLink(destination: BreaksListView(breaks: sortedBreaks, shift: shift)){
-                        Text("Breaks")
-                    }
+                VStack(alignment: .leading){
+                    Text("Notes:")
+                        .bold()
+                    //.padding(.horizontal, 15)
+                        .padding(.vertical, 5)
+                    //.background(Color.primary.opacity(0.04))
+                        .cornerRadius(20)
+                    
+                    TextEditor(text: $notes)
+                    
+                    //.textFieldStyle(PlainTextFieldStyle())
+                        .focused($noteIsFocused)
+                    //.padding()
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    
+                    
+                    
+                        .frame(minHeight: 200, maxHeight: .infinity)
                 }
             }.listRowSeparator(.hidden)
-            Section(header: Text("Notes").font(.title3).bold()){
-                TextEditor(text: $notes)
+                .listRowBackground(Color.clear)
+            
+            
+            HStack{
+                Text("Breaks:")
+                    .bold()
                 
-                //.textFieldStyle(PlainTextFieldStyle())
-                    .focused($noteIsFocused)
-                //.padding()
-                
-                    .cornerRadius(20)
-                
-                    .frame(minHeight: 200, maxHeight: .infinity)
-                
+                    .padding(.vertical, 5)
+                Spacer()
+                Button(action: {
+                    isAddingBreak = true
+                }) {
+                    Image(systemName: "plus")
+                        .bold()
+                }
+            }.font(.title2)
+                .padding(.horizontal, 5)
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+                .sheet(isPresented: $isAddingBreak){
+                    // view goes here
+                    AddBreakView(shift: shift, isAddingBreak: $isAddingBreak)
+                        .presentationDetents([ .fraction(0.4)])
+                        .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                        .presentationCornerRadius(50)
+                        .presentationDragIndicator(.visible)
+                }
+            if let breaks = shift.breaks as? Set<Break> {
+                let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
+                BreaksListView(breaks: sortedBreaks, isEditing: $isEditing, shift: shift)
             }
+            
             Spacer()
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
@@ -395,6 +450,8 @@ struct DetailView: View {
             // }
             
         }.onAppear(perform: loadData)
+            .scrollContentBackground(.hidden)
+            .listStyle(.inset)
         //.padding(.horizontal, 30)
         
             .toolbar {
@@ -406,9 +463,9 @@ struct DetailView: View {
                         shift.breakStartDate = selectedBreakStartDate
                         shift.breakEndDate = selectedBreakEndDate
                         shift.tax = selectedTaxPercentage
-                        shift.hourlyPay = selectedHourlyPay
+                        shift.hourlyPay = Double(selectedHourlyPay) ?? 0.0
                         //shift.tag = selectedTag
-                        shift.totalTips = selectedTotalTips
+                        shift.totalTips = Double(selectedTotalTips) ?? 0.0
                         let newBreakElapsed = selectedBreakEndDate.timeIntervalSince(selectedBreakStartDate)
                         shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate) - newBreakElapsed
                         
@@ -416,27 +473,29 @@ struct DetailView: View {
                         shift.totalPay = (shift.duration / 3600.0) * shift.hourlyPay
                         shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
                         saveContext()
+                        breakManager.saveChanges(in: context)
                     }.padding(.vertical)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button(action: {
                         showingDeleteAlert = true
+                        if presentedAsSheet{
+                            presentationMode.wrappedValue.dismiss()
+                            
+                            CustomConfirmAlertWithCancelAction(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").present()
+                            
+                        }
+                        else {
+                            CustomConfirmationAlert(action: {
+                                deleteShift()
+                                presentationMode.wrappedValue.dismiss()
+                            }, title: "Are you sure you want to delete this shift?").present()
+                        }
                     }) {
                         Image(systemName: "trash")
                     }
                     .foregroundColor(.red)
                     .padding([.vertical, .trailing])
-                    .alert(isPresented: $showingDeleteAlert) {
-                        Alert(
-                            title: Text("Delete shift?"),
-                            message: Text("Are you sure you want to delete this shift?"),
-                            primaryButton: .destructive(Text("Delete")) {
-                                deleteShift()
-                                presentationMode.wrappedValue.dismiss()
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
                     
                 }
             }
@@ -503,7 +562,7 @@ struct DetailView_Previews: PreviewProvider {
         shift.totalTips = 50.0
         
         return NavigationStack {
-            DetailView(shift: shift)
+            DetailView(shift: shift, presentedAsSheet: false)
         }
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }

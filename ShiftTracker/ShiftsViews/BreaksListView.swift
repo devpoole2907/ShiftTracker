@@ -13,286 +13,201 @@ struct BreaksListView: View {
     
     @Environment(\.managedObjectContext) private var context
     
-    @State private var isEditing: Bool = false
+    @Binding var isEditing: Bool
+    
+    let breakManager = BreaksManager()
     
     @State private var isAddingBreak = false
-        @State private var newBreakStartDate = Date()
-        @State private var newBreakEndDate = Date()
+    @State private var newBreakStartDate = Date()
+    @State private var newBreakEndDate = Date()
     @State private var isUnpaid = false
     
     let shift: OldShift
     
-    func previousBreakEndDate(for breakItem: Break) -> Date? {
-        let sortedBreaks = breaks.sorted { $0.startDate! < $1.startDate! }
-        if let index = sortedBreaks.firstIndex(of: breakItem), index > 0 {
-            return sortedBreaks[index - 1].endDate
-        }
-        return nil
-    }
-
-    
-    
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter
-    }()
-    
-    private func formattedDate(_ date: Date) -> String {
-            dateFormatter.string(from: date)
-        }
-    
-    func deleteBreak(context: NSManagedObjectContext, breakToDelete: Break) {
-        // Remove the relationship between the break and its shift
-        if let oldShift = breakToDelete.oldShift {
-            oldShift.removeFromBreaks(breakToDelete)
-        }
-
-        // Delete the break from the context
-        context.delete(breakToDelete)
-
-        // Save the changes
-        do {
-            try context.save()
-        } catch {
-            print("Error deleting break: \(error)")
-        }
-    }
-    
-    func addBreak(oldShift: OldShift, startDate: Date, endDate: Date, isUnpaid: Bool) {
-        let newBreak = Break(context: context)
-        newBreak.startDate = startDate
-        newBreak.endDate = endDate
-        newBreak.isUnpaid = isUnpaid
-        oldShift.addToBreaks(newBreak)
-
-        do {
-            try context.save()
-        } catch {
-            print("Error adding break: \(error)")
-        }
-    }
-
-    
-    private func delete(at offsets: IndexSet) {
-            for index in offsets {
-                let breakToDelete = breaks[index]
-                deleteBreak(context: context, breakToDelete: breakToDelete)
-            }
-        }
-    private func saveChanges() {
-            do {
-                try context.save()
-            } catch {
-                print("Error saving changes: \(error)")
-            }
-        }
-
-    private func breakLengthInMinutes(startDate: Date?, endDate: Date?) -> String {
-        guard let start = startDate, let end = endDate else { return "N/A" }
-        let duration = end.timeIntervalSince(start)
-        let minutes = Int(duration) / 60
-        return "\(minutes) minutes"
-    }
-
     var minimumStartDate: Date {
-            return shift.shiftStartDate ?? Date()
-        }
+        return shift.shiftStartDate ?? Date()
+    }
     
     var maximumEndDate: Date {
-            return shift.shiftEndDate ?? Date()
+        return shift.shiftEndDate ?? Date()
+    }
+    
+    private func delete(at offsets: IndexSet) {
+        for index in offsets {
+            let breakToDelete = breaks[index]
+            breakManager.deleteBreak(context: context, breakToDelete: breakToDelete)
         }
+    }
     
     var body: some View {
-        NavigationStack{
-            List{
-                ForEach(breaks, id: \.self) { breakItem in
-                    Section{
-                        VStack(alignment: .leading){
-                            if breakItem.isUnpaid{
-                                Text("Unpaid")
-                                    .font(.subheadline)
-                                    .foregroundColor(.indigo)
-                                    .bold()
-                            }
-                            else {
-                                Text("Paid")
-                                    .font(.subheadline)
-                                    .foregroundColor(.indigo)
-                                    .bold()
-                            }
-                            Text("\(breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")
-                                .listRowSeparator(.hidden)
+        ForEach(breaks, id: \.self) { breakItem in
+            Section{
+                VStack(alignment: .leading){
+                    VStack(alignment: .leading, spacing: 8){
+                        if breakItem.isUnpaid{
+                            Text("Unpaid")
                                 .font(.subheadline)
+                                .foregroundColor(.indigo)
                                 .bold()
-                        
+                        }
+                        else {
+                            Text("Paid")
+                                .font(.subheadline)
+                                .foregroundColor(.indigo)
+                                .bold()
+                        }
+                        Text("\(breakManager.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")
+                            .listRowSeparator(.hidden)
+                            .font(.subheadline)
+                            .bold()
+                    }
                     Divider()
-                            DatePicker("Start:", selection: Binding(
-                                                    get: { breakItem.startDate ?? Date() },
-                                                    set: { newValue in
-                                                        let minStartDate = previousBreakEndDate(for: breakItem) ?? minimumStartDate
-                                                        if newValue >= minStartDate && newValue <= maximumEndDate {
-                                                            breakItem.startDate = newValue
-                                                            if let endDate = breakItem.endDate, endDate < newValue {
-                                                                breakItem.endDate = newValue
-                                                            }
-                                                        }
-                                                    }), displayedComponents: [.date, .hourAndMinute])
-                                                .disabled(!isEditing)
-                                                
-                                                DatePicker("End:", selection: Binding(
-                                                    get: { breakItem.endDate ?? Date() },
-                                                    set: { newValue in
-                                                        if let startDate = breakItem.startDate, newValue >= startDate && newValue <= maximumEndDate {
-                                                            breakItem.endDate = newValue
-                                                        }
-                                                    }), displayedComponents: [.date, .hourAndMinute])
-                                                .disabled(!isEditing)
+                    HStack{
+                        Text("Start:")
+                            .bold()
+                        //.padding(.horizontal, 15)
+                            .frame(width: 50, alignment: .leading)
+                            .padding(.vertical, 5)
+                        DatePicker("Start:", selection: Binding(
+                            get: { breakItem.startDate ?? Date() },
+                            set: { newValue in
+                                let minStartDate = breakManager.previousBreakEndDate(for: breakItem, breaks: breaks) ?? minimumStartDate
+                                if newValue >= minStartDate && newValue <= maximumEndDate {
+                                    breakItem.startDate = newValue
+                                    if let endDate = breakItem.endDate, endDate < newValue {
+                                        breakItem.endDate = newValue
+                                    }
+                                }
+                            }), displayedComponents: [.date, .hourAndMinute])
+                        .labelsHidden()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
+                        .animation(.easeInOut(duration: 0.2))
+                        .disabled(!isEditing)
                     }
+                    HStack{
+                        Text("End:")
+                            .bold()
+                            .frame(width: 50, alignment: .leading)
+                        //.padding(.horizontal, 15)
+                            .padding(.vertical, 5)
+                        DatePicker("End:", selection: Binding(
+                            get: { breakItem.endDate ?? Date() },
+                            set: { newValue in
+                                if let startDate = breakItem.startDate, newValue >= startDate && newValue <= maximumEndDate {
+                                    breakItem.endDate = newValue
+                                }
+                            }), displayedComponents: [.date, .hourAndMinute])
+                        .labelsHidden()
                         
-                }
-                }.onDelete(perform: delete)
-            }
-        }.navigationTitle("Breaks")
-            .toolbar{
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(isEditing ? "Done" : "\(Image(systemName: "pencil"))") {
-                        isEditing.toggle()
-                        saveChanges()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
+                        .animation(.easeInOut(duration: 0.2))
+                        .disabled(!isEditing)
                     }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("\(Image(systemName: "plus"))") {
-                        isAddingBreak = true
-                    }
-                }
-            }.sheet(isPresented: $isAddingBreak) {
+                }.padding()
+                    .background(Color.primary.opacity(0.04),in:
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
                 
-                if #available(iOS 16.4, *) {
-                    NavigationView {
-                        List {
-                            
-                            Section{
-                                VStack(alignment: .leading, spacing: 10){
-                                    Text("Shift Start")
-                                        .foregroundColor(.gray)
-                                        .font(.title3)
-                                        .bold()
-                                    Text("\(formattedDate(shift.shiftStartDate ?? Date()))")
-                                        //.foregroundColor(.white)
-                                        .font(.subheadline)
-                                  //  bold()
-                                    Text("Shift End")
-                                        .foregroundColor(.gray)
-                                        .font(.title3)
-                                        .bold()
-                                    Text("\(formattedDate(shift.shiftEndDate ?? Date()))")
-                                        //.foregroundColor(.white)
-                                        .font(.subheadline)
-                                                                    }
-                            
-                
-                                
-                                VStack{
-                                    DatePicker("Start:", selection: $newBreakStartDate, displayedComponents: [.date, .hourAndMinute])
-                                    DatePicker("End:", selection: $newBreakEndDate, displayedComponents: [.date, .hourAndMinute])
-                                    Picker(selection: $isUnpaid, label: Text("Break Type")) {
-                                        Text("Paid").tag(false)
-                                        Text("Unpaid").tag(true)
-                                    }.pickerStyle(SegmentedPickerStyle())
-
-                                }
-                          
-                            }.listRowSeparator(.hidden)
-                       
-                            Button(action: {
-                                addBreak(oldShift: shift, startDate: newBreakStartDate, endDate: newBreakEndDate, isUnpaid: isUnpaid)
-                                isAddingBreak = false
-                            }) {
-                                Text("Add Break")
-                                
-                                    .bold()
-                                
-                            }.listRowSeparator(.hidden)
-                               
-                                    .listRowBackground(Color.clear)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.orange.opacity(0.8))
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                        }
-                        .navigationBarTitle("Add Break", displayMode: .inline)
-                    }.presentationDetents([ .medium])
-                        .presentationBackground(.ultraThinMaterial)
-                        .presentationCornerRadius(12)
-                        .presentationDragIndicator(.visible)
-                }
-                else {
-                    NavigationStack {
-                        List {
-                            Section{
-                                VStack(alignment: .leading, spacing: 10){
-                                    Text("Shift Start")
-                                        .foregroundColor(.gray)
-                                        .font(.title2)
-                                        .bold()
-                                    Text("\(formattedDate(shift.shiftStartDate ?? Date()))")
-                                        .foregroundColor(.white)
-                                        .font(.title3)
-                                        .bold()
-                                  //  bold()
-                                    Text("Shift End")
-                                        .foregroundColor(.gray)
-                                        .font(.title2)
-                                        .bold()
-                                    Text("\(formattedDate(shift.shiftEndDate ?? Date()))")
-                                        .foregroundColor(.white)
-                                        .font(.title3)
-                                        .bold()
-                                                                    }
-                            
-                                VStack{
-                                    DatePicker("Start:", selection: $newBreakStartDate, displayedComponents: [.date, .hourAndMinute])
-                                    DatePicker("End:", selection: $newBreakEndDate, displayedComponents: [.date, .hourAndMinute])
-                                    Picker(selection: $isUnpaid, label: Text("Break Type")) {
-                                        Text("Paid").tag(true)
-                                        Text("Unpaid").tag(false)
-                                    }.pickerStyle(SegmentedPickerStyle())
-                                }
-                            }.listRowSeparator(.hidden)
-                      
-                            
-                            Button(action: {
-                                addBreak(oldShift: shift, startDate: newBreakStartDate, endDate: newBreakEndDate, isUnpaid: isUnpaid)
-                                isAddingBreak = false
-                            }) {
-                                Text("Add Break")
-                                
-                                    .bold()
-                                
-                            }.listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
-                            
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.orange.opacity(0.8))
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                        }
-                        .navigationBarTitle("Add Break", displayMode: .inline)
-                    }
-                }
-                
-                
-                
-                
-                
-                
-                
-            }
+            }.listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+        }.onDelete(perform: delete)
     }
 }
 
-
+struct AddBreakView: View {
+    
+    let breakManager = BreaksManager()
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    @Environment(\.managedObjectContext) private var context
+    
+    let shift: OldShift
+    
+    @State private var newBreakStartDate = Date()
+    @State private var newBreakEndDate = Date()
+    @State private var isUnpaid = false
+    @Binding var isAddingBreak: Bool
+    
+    var body: some View{
+        
+        NavigationStack{
+            ScrollView {
+                
+                VStack(alignment: .leading, spacing: 15){
+                    /*VStack(alignment: .leading, spacing: 10){
+                        Text("Shift Start")
+                            .foregroundColor(.gray)
+                            .font(.title3)
+                            .bold()
+                        Text("\(breakManager.formattedDate(shift.shiftStartDate ?? Date()))")
+                        //.foregroundColor(.white)
+                            .font(.subheadline)
+                        //  bold()
+                        Text("Shift End")
+                            .foregroundColor(.gray)
+                            .font(.title3)
+                            .bold()
+                        Text("\(breakManager.formattedDate(shift.shiftEndDate ?? Date()))")
+                        //.foregroundColor(.white)
+                            .font(.subheadline)
+                    } */
+                    
+                    
+                    
+                    VStack(alignment: .leading){
+                        HStack{
+                            Text("Start:")
+                                .bold()
+                                .frame(width: 50, alignment: .leading)
+                            //.padding(.horizontal, 15)
+                                .padding(.vertical, 5)
+                            DatePicker("Start:", selection: $newBreakStartDate, displayedComponents: [.date, .hourAndMinute])
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        HStack{
+                            Text("End:")
+                                .bold()
+                                .frame(width: 50, alignment: .leading)
+                            //.padding(.horizontal, 15)
+                            DatePicker("End:", selection: $newBreakEndDate, displayedComponents: [.date, .hourAndMinute])
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        Picker(selection: $isUnpaid, label: Text("Break Type")) {
+                            Text("Paid").tag(false)
+                            Text("Unpaid").tag(true)
+                        }.pickerStyle(SegmentedPickerStyle())
+                        
+                    }.padding()
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    
+                    Button(action: {
+                        breakManager.addBreak(oldShift: shift, startDate: newBreakStartDate, endDate: newBreakEndDate, isUnpaid: isUnpaid, context: context)
+                        isAddingBreak = false
+                    }) {
+                        Text("Add Break")
+                        
+                            .bold()
+                        
+                    }.listRowSeparator(.hidden)
+                    
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(colorScheme == .dark ? .white : .black)
+                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                        .cornerRadius(20)
+                    
+                }.listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .padding(20)
+                
+                
+            }.scrollContentBackground(.hidden)
+                .navigationBarTitle("Add Break", displayMode: .inline)
+        }
+    }
+}

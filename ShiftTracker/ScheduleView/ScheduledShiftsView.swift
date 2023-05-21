@@ -15,7 +15,13 @@ import UserNotifications
 struct ScheduledShiftsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    @Environment(\.presentationMode) var presentationMode
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    
     @Binding var dateSelected: DateComponents?
+    @Binding var showMenu: Bool
     
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)], animation: .default)
     private var scheduledShifts: FetchedResults<ScheduledShift>
@@ -75,7 +81,13 @@ struct ScheduledShiftsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button(action: {
-                        showCreateShiftSheet = true
+                        if jobs.isEmpty {
+                            presentationMode.wrappedValue.dismiss()
+                            OkButtonPopupWithAction(title: "You need to create a job before scheduling a shift!", action: {showMenu.toggle()}).present()
+                                
+                        } else {
+                            showCreateShiftSheet = true
+                        }
                     }) {
                         Image(systemName: "plus")
                             .bold()
@@ -90,7 +102,7 @@ struct ScheduledShiftsView: View {
             .environment(\.managedObjectContext, viewContext)
             .presentationDetents([.large])
             .presentationCornerRadius(50)
-            //.presentationBackground(.thinMaterial)
+            .presentationBackground(colorScheme == .dark ? .black : .white)
             .presentationDragIndicator(.visible)
         }
     }
@@ -112,6 +124,7 @@ struct CreateShiftForm: View {
     @State private var selectedJob: Job?
     @State private var startDate: Date
     @State private var endDate: Date
+    @State var selectedDays = Array(repeating: false, count: 7)
     
     @State private var enableRepeat = false
     
@@ -169,34 +182,56 @@ struct CreateShiftForm: View {
     func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool) {
         let repeatID = generateUniqueID()
 
+        let calendar = Calendar.current
+        let daysToAdd = 1
         var currentStartDate = startDate
         var currentEndDate = endDate
-        while currentStartDate <= selectedRepeatEnd {
-            let shift = ScheduledShift(context: viewContext)
-            shift.startDate = currentStartDate
-            shift.endDate = currentEndDate
-            shift.job = jobs[selectedJobIndex]
-            shift.id = UUID()
-            shift.isRepeating = repeatEveryWeek
-            shift.repeatID = repeatEveryWeek ? repeatID : nil
-            shift.notifyMe = notifyMe
-            shift.reminderTime = selectedReminderTime.timeInterval
 
-            // Increment the start and end dates by 1 week
-            currentStartDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentStartDate)!
-            currentEndDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentEndDate)!
+        while currentStartDate <= selectedRepeatEnd {
+            if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
+                let shift = ScheduledShift(context: viewContext)
+                shift.startDate = currentStartDate
+                shift.endDate = currentEndDate
+                shift.job = jobs[selectedJobIndex]
+                shift.id = UUID()
+                shift.isRepeating = repeatEveryWeek
+                shift.repeatID = repeatEveryWeek ? repeatID : nil
+                shift.notifyMe = notifyMe
+                shift.reminderTime = selectedReminderTime.timeInterval
+
+                for _ in 1...daysToAdd {
+                    currentStartDate = calendar.date(byAdding: .day, value: 1, to: currentStartDate)!
+                    currentEndDate = calendar.date(byAdding: .day, value: 1, to: currentEndDate)!
+                    
+                    if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
+                        let shift = ScheduledShift(context: viewContext)
+                        shift.startDate = currentStartDate
+                        shift.endDate = currentEndDate
+                        shift.job = jobs[selectedJobIndex]
+                        shift.id = UUID()
+                        shift.isRepeating = repeatEveryWeek
+                        shift.repeatID = repeatEveryWeek ? repeatID : nil
+                        shift.notifyMe = notifyMe
+                        shift.reminderTime = selectedReminderTime.timeInterval
+                    }
+                }
+            } else {
+                currentStartDate = calendar.date(byAdding: .day, value: 1, to: currentStartDate)!
+                currentEndDate = calendar.date(byAdding: .day, value: 1, to: currentEndDate)!
+            }
         }
 
         // Save the context after creating all the shifts
         do {
             try viewContext.save()
-                notificationManager.scheduleNotifications()
+            notificationManager.scheduleNotifications()
             onShiftCreated()
             dismiss()
         } catch {
             print("Error saving repeating shift series: \(error)")
         }
     }
+
     
     @State var startAngle: Double = 0
     @State var toAngle: Double = 180
@@ -206,6 +241,8 @@ struct CreateShiftForm: View {
     
     var body: some View {
         
+        let iconColor: Color = colorScheme == .dark ? .orange : .cyan
+        let jobBackground: Color = colorScheme == .dark ? Color(.systemGray5) : .black
         NavigationStack {
             List{
                 Section{
@@ -216,7 +253,7 @@ struct CreateShiftForm: View {
                             
                             HStack{
                                 Image(systemName: "figure.walk.arrival")
-                                    .foregroundColor(.orange)
+                                    .foregroundColor(iconColor)
                                 Text("Start")
                                     .bold()
                             }
@@ -235,7 +272,7 @@ struct CreateShiftForm: View {
                         VStack(alignment: .center, spacing: 5){
                             HStack{
                                 Image(systemName: "figure.walk.departure")
-                                    .foregroundColor(.orange)
+                                    .foregroundColor(iconColor)
                                 Text("End")
                                     .bold()
                             }
@@ -262,27 +299,85 @@ struct CreateShiftForm: View {
                         Spacer()
                     }
                     .frame(minHeight: screenBounds().height / 3)
-                }.listRowBackground(Color.primary.opacity(0.05))
+                }.listRowBackground(Color.clear)
                     
                 Section {
-                            Picker("Job", selection: $selectedJobIndex) {
-                                ForEach(0..<jobs.count, id: \.self) { index in
-                                    HStack {
-                                        Image(systemName: jobs[index].icon ?? "briefcase.circle")
-                                            .foregroundColor(Color(red: Double(jobs[index].colorRed),
-                                                                   green: Double(jobs[index].colorGreen),
-                                                                   blue: Double(jobs[index].colorBlue)))
-                                        Text(jobs[index].name ?? "")
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 20) {
+                                    ForEach(0..<jobs.count, id: \.self) { index in
+                                        Button(action: {
+                                            selectedJobIndex = index
+                                        }) {
+                                            HStack(spacing: 10) {
+                                                Image(systemName: jobs[index].icon ?? "briefcase.circle")
+                                                    .foregroundColor(Color(red: Double(jobs[index].colorRed),
+                                                                           green: Double(jobs[index].colorGreen),
+                                                                           blue: Double(jobs[index].colorBlue)))
+                                                Text(jobs[index].name ?? "")
+                                                    .bold()
+                                                    .foregroundColor(selectedJobIndex == index ? .white : .gray)
+                                            }
+                                            .padding()
+                                            .background(selectedJobIndex == index ? jobBackground : Color.primary.opacity(0.04))
+                                            .cornerRadius(50)
+                                        }
                                     }
                                 }
-                            }
+                               // .padding(.horizontal)
+                            }.mask(
+                                HStack(spacing: 0) {
+                                    LinearGradient(gradient:
+                                       Gradient(
+                                        colors: [Color.primary.opacity(0.04), Color.black]),
+                                           startPoint: .leading, endPoint: .trailing
+                                       )
+                                       .frame(width: 7)
+
+                                    Rectangle().fill(Color.black)
+
+                                    LinearGradient(gradient:
+                                       Gradient(
+                                        colors: [Color.black, Color.primary.opacity(0.04)]),
+                                           startPoint: .leading, endPoint: .trailing
+                                       )
+                                       .frame(width: 7)
+                                }
+                             )
+                    
+                    
                         }.listRowBackground(Color.primary.opacity(0.05))
                 Section {
-                    VStack{
+                    VStack(spacing: 18){
                         Toggle(isOn: $enableRepeat){
                             Text("Repeat")
                                 .bold()
                         }.toggleStyle(OrangeToggleStyle())
+                        
+                        HStack {
+                                    ForEach(0..<7) { i in
+                                        Button(action: {
+                                            if i == getDayOfWeek(date: startDate) - 1 {
+                                                return
+                                            }
+                                            selectedDays[i].toggle()
+                                        }) {
+                                            Text(getDayShortName(day: i))
+                                                .font(.system(size: 14))
+                                                .bold()
+                                        }
+                                      //  .padding()
+                                        .background(selectedDays[i] ? (colorScheme == .dark ? .white : .black) : Color(.systemGray6))
+                                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                                        .cornerRadius(8)
+                                        .buttonStyle(.bordered)
+                                        .frame(height: 15)
+                                        .disabled(!enableRepeat)
+                                    }
+                                }.onAppear {
+                                    selectedDays[getDayOfWeek(date: startDate) - 1] = true
+                                }
+                        
                         
                         RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)
                             .disabled(!enableRepeat)
@@ -326,15 +421,15 @@ struct CreateShiftForm: View {
                         }.padding()
                     }
                 }
-                .navigationBarTitle("Schedule", displayMode: .inline).padding()
+                .navigationBarTitle("Schedule", displayMode: .inline)
         }
     }
     
     @ViewBuilder
     func scheduleSlider() -> some View{
         
-        let sliderBackgroundColor: Color = colorScheme == .dark ? .black : Color(.systemGray6)
-        let sliderColor: Color = colorScheme == .dark ? Color(.systemGray6) : .white
+        let sliderBackgroundColor: Color = colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6)
+        let sliderColor: Color = colorScheme == .dark ? .black.opacity(0.8) : .white
         
         GeometryReader{ proxy in
             
@@ -525,32 +620,6 @@ struct CardPicker: View {
     }
 }
 
-
-
-
-// old add scheduled shift
-
-/* Form {
- Section {
- Picker("Job", selection: $selectedJob) {
- ForEach(jobs, id: \.self) { job in
- Text(job.name ?? "").tag(job as Job?)
- }
- }
- }
- 
- Section(header: Text("Shift Time")) {
- DatePicker("Start Date", selection: $startDate, displayedComponents: [.date, .hourAndMinute])
- DatePicker("End Date", selection: $endDate, displayedComponents: [.date, .hourAndMinute])
- }
- }.scrollContentBackground(.hidden)
- .navigationBarTitle("Create Shift")
- .toolbar {
- ToolbarItem(placement: .confirmationAction) {
- Button("Save", action: createShift)
- }
- } */
-
 extension View {
     func screenBounds() -> CGRect {
         return UIScreen.main.bounds
@@ -560,9 +629,8 @@ extension View {
 
 struct ListViewRow: View {
     
-    @State private var showEndRepeatAlert = false
-    
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
     
     let shift: ScheduledShift
     
@@ -644,24 +712,16 @@ struct ListViewRow: View {
             
             if shift.isRepeating {
                 Button{
-                    showEndRepeatAlert.toggle()
+                    dismiss()
+                    CustomConfirmationAlert(action: {
+                        cancelRepeatingShiftSeries(shift: shift)
+                    }, title: "End all future repeating shifts for this shift?").present()
                 } label: {
                     Text("End Repeat").bold()
                 }
             }
             /*  Text("From \(dateFormatter.string(from: shift.startDate ?? Date())) to \(dateFormatter.string(from: shift.endDate ?? Date()))")
              .bold() */
-        }.alert(isPresented: $showEndRepeatAlert){
-            Alert(
-                title: Text("End all repeating shifts?"),
-                //message: Text("Are you sure you want to end this shift?"),
-                primaryButton: .destructive(Text("End Repeat")) {
-                    cancelRepeatingShiftSeries(shift: shift)
-                },
-                secondaryButton: .cancel(){
-                    
-                }
-            )
         }
         
         
@@ -682,7 +742,7 @@ struct ScheduledShiftView_Previews: PreviewProvider {
         return dateComponents
     }
     static var previews: some View {
-        ScheduledShiftsView(dateSelected: .constant(dateComponents))
+        ScheduledShiftsView(dateSelected: .constant(dateComponents), showMenu: .constant(false))
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

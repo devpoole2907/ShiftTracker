@@ -1060,7 +1060,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftTracker/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTracker;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Authenticate yourself to unlock ShiftTracker";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
@@ -1098,7 +1098,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShiftTracker/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTracker;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Authenticate yourself to unlock ShiftTracker";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";

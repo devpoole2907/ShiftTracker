@@ -12,6 +12,8 @@ struct CalendarView: UIViewRepresentable {
     let interval: DateInterval
     @Binding var dateSelected: DateComponents?
     @Binding var displayEvents: Bool
+    var someScheduledShifts: FetchedResults<ScheduledShift>
+    
     
     
     @Environment(\.managedObjectContext) private var viewContext

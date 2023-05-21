@@ -258,6 +258,12 @@ class ContentViewModel: ObservableObject {
             tempBreaks.remove(atOffsets: offsets)
         }
     
+    func deleteSpecificBreak(breakItem: TempBreak) {
+        if let index = tempBreaks.firstIndex(where: { $0 == breakItem }) {
+            tempBreaks.remove(at: index)
+        }
+    }
+    
     func previousBreakEndDate(for breakItem: TempBreak) -> Date? {
         let sortedBreaks = tempBreaks.sorted { $0.startDate < $1.startDate }
         if let index = sortedBreaks.firstIndex(of: breakItem), index > 0 {

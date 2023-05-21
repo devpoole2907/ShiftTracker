@@ -139,7 +139,7 @@ struct EditFirebaseJobView: View {
 
                 
                 Section{
-                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius)) {
+                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, iconColor: selectedColor)) {
                         HStack {
                             Image("LocationIconFilled")
                             

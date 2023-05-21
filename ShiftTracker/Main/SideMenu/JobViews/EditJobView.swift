@@ -129,24 +129,37 @@ struct EditJobView: View {
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color.primary.opacity(0.04),in:
-                                                RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .shake(times: nameShakeTimes)
+                             
                             
                             TextField("Job Title", text: $title)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color.primary.opacity(0.04),in:
-                                                RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
                             
                             CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .keyboardType(.decimalPad)
                                 .shake(times: payShakeTimes)
+                         
                         }.focused($textIsFocused)
                             .haptics(onChangeOf: payShakeTimes, type: .error)
                             .haptics(onChangeOf: nameShakeTimes, type: .error)
+                        
+                            .toolbar {
+                                ToolbarItemGroup(placement: .keyboard){
+                                    Spacer()
+                                    
+                                    Button("Done"){
+                                        textIsFocused = false
+                                    }
+                                }
+                            }
                         
                         HStack(spacing: 0){
                             ForEach(1...6, id: \.self) { index in
@@ -213,7 +226,7 @@ struct EditJobView: View {
                                     .padding(.horizontal)
                                     .padding(.bottom, 10)
                                     
-                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius)
+                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, iconColor: selectedColor)
                                     .onDisappear {
                                         // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
                                         self.miniMapRegion = self.mapRegion
@@ -248,7 +261,7 @@ struct EditJobView: View {
                                         }
                                     }.frame(minHeight: 120)
                                     .background(Color.clear,in:
-                                                    RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
                                     .cornerRadius(20)
                                 
                             }
