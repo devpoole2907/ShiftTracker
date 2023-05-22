@@ -556,8 +556,8 @@ struct StatsView: View {
                         AddShiftView().environment(\.managedObjectContext, viewContext)
                             .presentationDetents([ .medium, .large])
                             .presentationDragIndicator(.visible)
-                            .presentationBackground(.thinMaterial)
-                            .presentationCornerRadius(12)
+                            .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                            .presentationCornerRadius(50)
                     }
                     else {
                         AddShiftView().environment(\.managedObjectContext, viewContext)
