@@ -83,7 +83,7 @@ struct ScheduledShiftsView: View {
                     Button(action: {
                         if jobs.isEmpty {
                             presentationMode.wrappedValue.dismiss()
-                            OkButtonPopupWithAction(title: "You need to create a job before scheduling a shift!", action: {showMenu.toggle()}).present()
+                            OkButtonPopupWithAction(title: "Create a job before scheduling a shift.", action: {showMenu.toggle()}).present()
                                 
                         } else {
                             showCreateShiftSheet = true

@@ -103,6 +103,34 @@ struct DetailView: View {
         ]
     }
     
+    struct ShiftInterval: Identifiable {
+        var type: String
+        var duration: TimeInterval
+        var color: String
+        var id = UUID()
+    }
+
+
+    
+    func intervals(from shift: OldShift) -> [ShiftInterval] {
+        var intervals: [ShiftInterval] = []
+        guard let startTime = shift.shiftStartDate, let endTime = shift.shiftEndDate else { return intervals }
+        var currentStartTime = startTime
+        let breakArray = shift.breaks?.allObjects as? [Break] ?? []
+        for breakTime in breakArray.sorted(by: { $0.startDate! < $1.startDate! }) {
+            guard let breakStartTime = breakTime.startDate, let breakEndTime = breakTime.startDate else { continue }
+            let workInterval = ShiftInterval(type: "Work", duration: breakStartTime.timeIntervalSince(currentStartTime), color: "Orange")
+            intervals.append(workInterval)
+            let breakInterval = ShiftInterval(type: "Break", duration: breakEndTime.timeIntervalSince(breakStartTime), color: "Indigo")
+            intervals.append(breakInterval)
+            currentStartTime = breakEndTime
+        }
+        let finalWorkInterval = ShiftInterval(type: "Work", duration: endTime.timeIntervalSince(currentStartTime), color: "Orange")
+        intervals.append(finalWorkInterval)
+        return intervals
+    }
+
+    
     @State private var offsetX = 0.0
     @State private var offsetY = 150.0
     
@@ -122,6 +150,20 @@ struct DetailView: View {
         
         
         List{
+            /*
+            Section{
+                Chart {
+                            ForEach(intervals(from: shift)) { interval in
+                                BarMark(
+                                    x: .value("Shift", 1),  // Each bar represents one shift
+                                    y: .value("Duration", interval.duration)
+                                )
+                                .foregroundStyle(by: .value("Interval Color", interval.color))
+                            }
+                        }
+                        .chartForegroundStyleScale(["Green": .green, "Red": .red])
+            }*/
+            
             Section{
                 HStack{
                     VStack(alignment: .center){
@@ -237,8 +279,12 @@ struct DetailView: View {
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .frame(maxWidth: .infinity)
-                }.padding()
+                }.padding(.horizontal)
+                    .padding(.vertical, 10)
+                    .background(Color.primary.opacity(0.04),in:
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
             }.listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             
             
             Section{

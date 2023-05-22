@@ -12,6 +12,7 @@ import LocalAuthentication
 
 struct SettingsView: View {
     
+    @Environment(\.managedObjectContext) private var viewContext
     @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
     @State private var showingProView = false
     @AppStorage("iCloudEnabled") private var iCloudSyncOn: Bool = false
@@ -22,6 +23,8 @@ struct SettingsView: View {
     
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     private let shiftKeys = ShiftKeys()
+    
+    @State private var deleteData = false
     
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
@@ -222,6 +225,18 @@ struct SettingsView: View {
                             .foregroundColor(.gray.opacity(0.3))
                             .font(.caption)
                     }.listRowBackground(Color.clear)
+                    Section{
+                        VStack(alignment: .leading){
+                            Button(action: {
+                                
+                                CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, title: "Are you sure you want to delete all your data?").present()
+                            } ){
+                                Text("Delete Data")
+                                
+                            }.buttonStyle(.bordered)
+                                .tint(.red)
+                        }
+                    }.listRowSeparator(.hidden)
                     
                 }.scrollContentBackground(.hidden)
                 .padding(.horizontal)

@@ -253,7 +253,7 @@ struct AddJobView: View {
                                     }.frame(minHeight: 120)
                                     .background(Color.clear,in:
                                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                    .cornerRadius(20)
+                         
                                 
                             }
                                
@@ -281,6 +281,8 @@ struct AddJobView: View {
                             .padding(.horizontal, 10)
                         
                         Divider()
+                        
+                     
                         
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $overtimeEnabled) {

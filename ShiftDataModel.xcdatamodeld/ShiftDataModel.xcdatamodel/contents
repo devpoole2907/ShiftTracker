@@ -22,6 +22,9 @@
         <attribute name="overtimeRate" optional="YES" attributeType="Double" defaultValueString="1.25" usesScalarValueType="YES"/>
         <attribute name="payPeriodLength" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="payPeriodStartDay" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="rosterDayOfWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="rosterReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="rosterTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="tax" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>

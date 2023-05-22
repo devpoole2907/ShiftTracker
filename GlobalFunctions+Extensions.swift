@@ -335,7 +335,7 @@ private extension CustomConfirmAlertWithCancelAction {
 class JobSelectionViewModel: ObservableObject {
     @Published var selectedJobUUID: UUID?
     @Published var selectedJobOffset: CGFloat = 0.0
-    @Published var storedSelectedJobUUID: String = ""
+    @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String = ""
     
     
     func fetchJob(with uuid: UUID? = nil, in context: NSManagedObjectContext) -> Job? {
@@ -631,4 +631,121 @@ func getDayShortName(day: Int) -> String {
     let symbol = symbols?[day % 7] ?? ""
     return String(symbol.prefix(2))
 }
+
+// used for auto rounding a job start date:
+
+func roundDate(_ date: Date) -> Date {
+    let calendar = Calendar.current
+    
+    // Get components for year, month, day, hour, and minute.
+    let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+    
+    guard let hour = components.hour, let minute = components.minute else {
+        fatalError("Invalid date components")
+    }
+
+    var roundedHour = hour
+    var roundedMinute: Int
+
+    switch minute {
+    case 0...7:
+        roundedMinute = 0
+    case 8...22:
+        roundedMinute = 15
+    case 23...37:
+        roundedMinute = 30
+    case 38...52:
+        roundedMinute = 45
+    case 53...59:
+        roundedMinute = 0
+        roundedHour += 1
+    default:
+        fatalError("Invalid minute component")
+    }
+
+    var newComponents = DateComponents()
+    newComponents.year = components.year
+    newComponents.month = components.month
+    newComponents.day = components.day
+    newComponents.hour = roundedHour
+    newComponents.minute = roundedMinute
+    return calendar.date(from: newComponents) ?? date
+}
+
+// for calculating a week ahead
+
+func nextDate(dayOfWeek: Int, time: Date) -> Date? {
+    let calendar = Calendar.current
+    let now = Date()
+
+    let timeComponents = calendar.dateComponents([.hour, .minute], from: time)
+    var dateComponents = DateComponents()
+    dateComponents.weekday = dayOfWeek
+    dateComponents.hour = timeComponents.hour
+    dateComponents.minute = timeComponents.minute
+
+    let nextDate = calendar.nextDate(after: now, matching: dateComponents, matchingPolicy: .nextTime)
+
+    return nextDate
+}
+
+func updateRosterNotifications(viewContext: NSManagedObjectContext) {
+    let center = UNUserNotificationCenter.current()
+
+    // Cancel all existing notifications
+    center.removePendingNotificationRequests(withIdentifiers: ["roster"])
+
+    let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+    fetchRequest.predicate = NSPredicate(format: "rosterReminder == true")
+
+    do {
+        let jobs = try viewContext.fetch(fetchRequest)
+
+        // Loop through the jobs and reschedule
+        for job in jobs {
+            if let time = job.rosterTime,
+               let nextDate = nextDate(dayOfWeek: Int(job.rosterDayOfWeek), time: time) {
+                
+                // Schedule the notification
+                
+                let content = UNMutableNotificationContent()
+                content.title = "Time to check your roster"
+                content.body = "Open the app to schedule your shifts for \(job.name ?? "")"
+
+                let triggerDate = Calendar.current.dateComponents([.weekday, .hour, .minute], from: nextDate)
+                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
+
+                let request = UNNotificationRequest(identifier: "roster", content: content, trigger: trigger)
+                center.add(request, withCompletionHandler: { (error) in
+                    if let error = error {
+                        // handle the error
+                        print("Notification error: ", error)
+                    }
+                })
+            }
+        }
+    } catch let error as NSError {
+        print("Could not fetch. \(error), \(error.userInfo)")
+    }
+}
+
+public func wipeCoreData(in viewContext: NSManagedObjectContext) {
+    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "EntityName")
+    let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+    
+    let entityNames = ["Job", "OldShift", "Break", "JobLocation", "ScheduledShift", "Tip"]
+
+    for entityName in entityNames {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try viewContext.execute(deleteRequest)
+        } catch let error as NSError {
+            // Handle the error
+            print("Could not delete \(entityName). \(error), \(error.userInfo)")
+        }
+    }
+}
+
 

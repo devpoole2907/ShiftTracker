@@ -14,7 +14,7 @@ struct ActionView: View {
     
     @Environment(\.dismiss) var dismiss
     @State private var actionDate = Date()
-    
+    @State private var isRounded = false
     
     @ObservedObject var viewModel: ContentViewModel
     @ObservedObject var jobSelectionViewModel: JobSelectionViewModel
@@ -32,7 +32,25 @@ struct ActionView: View {
         
         NavigationStack {
             VStack {
-                
+                HStack{
+                    Toggle(isOn: $isRounded){
+                        Text("Auto Round")
+                            .bold()
+                    }.toggleStyle(OrangeToggleStyle())
+                        
+                        .onChange(of: isRounded) { value in
+                            
+                            if isRounded == true {
+                                actionDate = roundDate(actionDate)
+                            } else {
+                                actionDate = Date()
+                            }
+                        }
+                }.padding(.horizontal)
+                    .frame(maxWidth: UIScreen.main.bounds.width - 200)
+                    .padding(.vertical, 10)
+                    .background(Color.primary.opacity(0.04),in:
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
                 
                 
                 if actionType == .startBreak {
@@ -41,6 +59,7 @@ struct ActionView: View {
                             .datePickerStyle(.wheel)
                             .labelsHidden()
                             .frame(maxWidth: .infinity, alignment: .center)
+                            .disabled(isRounded)
                     }
                     HStack {
                         ActionButtonView(title: "Unpaid Break", backgroundColor: Color.indigo, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
@@ -63,7 +82,7 @@ struct ActionView: View {
                             .datePickerStyle(.wheel)
                             .labelsHidden()
                             .frame(maxWidth: .infinity, alignment: .center)
-                        
+                            .disabled(isRounded)
                         ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 80) {
                             viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                             dismiss()
@@ -74,6 +93,7 @@ struct ActionView: View {
                                 .datePickerStyle(.wheel)
                                 .labelsHidden()
                                 .frame(maxWidth: .infinity, alignment: .center)
+                                .disabled(isRounded)
                         }
                         ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 80) {
                             self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
@@ -89,6 +109,7 @@ struct ActionView: View {
                                 .datePickerStyle(.wheel)
                                 .labelsHidden()
                                 .frame(maxWidth: .infinity, alignment: .center)
+                                .disabled(isRounded)
                         }
                         ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 80) {
                             viewModel.endBreak(endDate: actionDate)

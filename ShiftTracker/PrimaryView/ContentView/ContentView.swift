@@ -357,11 +357,17 @@ struct ContentView: View {
             print("I have appeared")
             if let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date {
                 if viewModel.hourlyPay != 0 {
-                    viewModel.startShift(using: context, startDate: shiftStartDate, job: jobSelectionViewModel.fetchJob(in: context)!)
-                    print("Resuming app with saved shift start date")
                     
-                    viewModel.loadTempBreaksFromUserDefaults()
-                    print("Loading breaks from user defaults")
+                    
+                    // CODE HERE IS BROKEN - THERE IS NO JOB SELECTED WHEN KILLING THE APP!
+                    
+                    if let jobSelected = jobSelectionViewModel.fetchJob(in: context) {
+                        viewModel.startShift(using: context, startDate: shiftStartDate, job: jobSelectionViewModel.fetchJob(in: context)!)
+                        print("Resuming app with saved shift start date")
+                        
+                        viewModel.loadTempBreaksFromUserDefaults()
+                        print("Loading breaks from user defaults")
+                    }
                 } else {
                     viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
                     sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)

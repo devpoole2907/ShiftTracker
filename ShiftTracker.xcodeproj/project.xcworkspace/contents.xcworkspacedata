@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/james/Library/Mobile Documents/com~apple~CloudDocs/Xcode/ShiftTracker/ShiftTracker.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>
