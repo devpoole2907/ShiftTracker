@@ -323,7 +323,7 @@ struct CreateShiftForm: View {
                                             .cornerRadius(50)
                                         }
                                     }
-                                }
+                                }.haptics(onChangeOf: selectedJobIndex, type: .light)
                                // .padding(.horizontal)
                             }.mask(
                                 HStack(spacing: 0) {
@@ -377,6 +377,7 @@ struct CreateShiftForm: View {
                                 }.onAppear {
                                     selectedDays[getDayOfWeek(date: startDate) - 1] = true
                                 }
+                                .haptics(onChangeOf: selectedDays, type: .light)
                         
                         
                         RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)

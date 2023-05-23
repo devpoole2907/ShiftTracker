@@ -57,6 +57,7 @@ struct ScheduleView: View {
                     AllScheduledShiftsView()
                         .opacity(showAllScheduledShiftsView ? 1 : 0)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
+                        
                 }
             }
             
@@ -95,7 +96,7 @@ struct ScheduleView: View {
                      
                     }
                 }
-            }
+            }.haptics(onChangeOf: showAllScheduledShiftsView, type: .light)
         }
         
     }

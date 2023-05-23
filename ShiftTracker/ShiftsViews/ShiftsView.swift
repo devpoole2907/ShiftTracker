@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreData
-import Haptics
 import PopupView
 
 struct ShiftsView: View {
@@ -78,21 +77,21 @@ struct ShiftsView: View {
                     Section{
                         VStack(spacing: 15) {
                             HStack(spacing: 15) {
-                                RoundedSquareView(text: "Shifts", count: "\(oldShifts.count)", color: Color.primary.opacity(0.03), imageColor: .blue, systemImageName: "briefcase.circle.fill")
+                                RoundedSquareView(text: "Shifts", count: "\(oldShifts.count)", color: Color.primary.opacity(0.04), imageColor: .blue, systemImageName: "briefcase.circle.fill")
                                     .frame(maxWidth: .infinity)
                                 
-                                RoundedSquareView(text: "Taxed", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllTaxedPay())", color: Color.primary.opacity(0.03), imageColor: .green, systemImageName: "dollarsign.circle.fill")
+                                RoundedSquareView(text: "Taxed", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllTaxedPay())", color: Color.primary.opacity(0.04), imageColor: .green, systemImageName: "dollarsign.circle.fill")
                                     .frame(maxWidth: .infinity)
                                 
                             }
                             HStack(spacing: 15) {
                                 
-                                RoundedSquareView(text: "Hours", count: "\(addAllHours())", color: Color.primary.opacity(0.03), imageColor: .orange, systemImageName: "stopwatch.fill")
+                                RoundedSquareView(text: "Hours", count: "\(addAllHours())", color: Color.primary.opacity(0.04), imageColor: .orange, systemImageName: "stopwatch.fill")
                                 
                                     .frame(maxWidth: .infinity)
                                 
                                 
-                                RoundedSquareView(text: "Total", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllPay())", color: Color.primary.opacity(0.03), imageColor: .pink, systemImageName: "chart.line.downtrend.xyaxis.circle.fill")
+                                RoundedSquareView(text: "Total", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllPay())", color: Color.primary.opacity(0.04), imageColor: .pink, systemImageName: "chart.line.downtrend.xyaxis.circle.fill")
                                 
                                     .frame(maxWidth: .infinity)
                                 
@@ -113,7 +112,7 @@ struct ShiftsView: View {
                                 summaryContent(for: job)
                             }
                         }
-                    }.listRowBackground(Color.primary.opacity(0.03))
+                    }.listRowBackground(Color.primary.opacity(0.04))
                     
                 }
                 .scrollContentBackground(.hidden)
@@ -132,7 +131,6 @@ struct ShiftsView: View {
                             .bold()
                         
                     }
-                    //.foregroundColor(.black)
                 }
             }
             
@@ -150,8 +148,6 @@ struct ShiftsView: View {
                     .bold()
                     .font(.system(size: 12))
                 Text(job.name ?? "")
-                // .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                // .foregroundColor(.black)
                     .bold()
                     .font(.title3)
             }
@@ -164,14 +160,8 @@ struct ShiftsView: View {
                 if let earnings = calculateEarningsForLastWeek(for: job) {
                     HStack {
                         Text("$\(earnings, specifier: "%.2f")")
-                        //  .foregroundColor(.black)
                             .font(.title)
                             .bold()
-                        
-                        /*  Text("earned this week")
-                         .foregroundColor(.gray)
-                         .bold()
-                         .font(.caption) */
                     }
                 }
             }
@@ -197,19 +187,7 @@ struct ShiftsView: View {
                 .font(.caption)
         }
     }
-    
-    // old summary header
-    private func summaryHeader() -> some View {
-        let textColor: Color = colorScheme == .dark ? .white : .black
-        return HStack {
-            Text("Summary")
-                .font(.title)
-                .foregroundColor(textColor)
-                .bold()
-                .textCase(nil)
-                .padding(.leading, -8)
-        }
-    }
+
     
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()

@@ -24,13 +24,26 @@ struct CurrentShiftView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            
-            Text("Current Shift")
-                .font(.title3)
-                .bold()
-                .padding(.bottom, -1)
-            Divider().frame(maxWidth: 200)
-            
+             
+                HStack{
+                    Text("Current Shift")
+                        .font(.title3)
+                        .bold()
+                        .padding(.bottom, -1)
+                    if startDate > Date(){
+                        Text("Starting Soon")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            .bold()
+                            .padding(.bottom, -1)
+                    }
+                }
+            if startDate > Date(){
+                Divider().frame(maxWidth: 240)
+            }
+            else {
+                Divider().frame(maxWidth: 200)
+            }
             if let job = job {
                 HStack{
                     Image(systemName: job.icon ?? "briefcase.circle")

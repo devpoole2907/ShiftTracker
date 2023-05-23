@@ -37,9 +37,13 @@ struct TimerView: View {
         let overtimeRate = sharedUserDefaults.double(forKey: shiftKeys.overtimeMultiplierKey)
         let overtimeAppliedAfter = sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey)
         let overtimeEnabled = sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey)
+        
 
             if !isOvertime {
                 let pay = (timeElapsed / 3600.0) * hourlyPay
+                if pay < 0 {
+                    return 0
+                }
                 return pay
             } else {
                 let regularTime = overtimeAppliedAfter //* 3600.0
@@ -189,49 +193,6 @@ private extension TimeInterval {
     }
 }
 
-struct RollingDigit: View {
-    let digit: Int
-    @State private var shouldAnimate = false
 
-    var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                ForEach((0...10), id: \.self) { index in
-                    Text(index == 10 ? "0" : "\(index)")
-                        .font(.system(size: geometry.size.height).monospacedDigit())
-                        .bold()
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                }
-            }
-            .offset(y: -CGFloat(digit) * geometry.size.height)
-            .animation(shouldAnimate ? .easeOut(duration: 0.2) : nil)
-            .onAppear {
-                shouldAnimate = true
-            }
-            .onDisappear {
-                shouldAnimate = false
-            }
-        }
-    }
-}
 
-private func digitsFromTimeString(timeString: String) -> [Int] {
-    return timeString.flatMap { char in
-        if let digit = Int(String(char)) {
-            return [digit]
-        } else {
-            return []
-        }
-    }
-}
-struct FadeMask: View {
-    var body: some View {
-        LinearGradient(gradient: Gradient(stops: [
-            Gradient.Stop(color: Color.clear, location: 0),
-            Gradient.Stop(color: Color.black, location: 0.1), // Adjust these values
-            Gradient.Stop(color: Color.black, location: 0.9), // Adjust these values
-            Gradient.Stop(color: Color.clear, location: 1),
-        ]), startPoint: .top, endPoint: .bottom)
-    }
-}
 

@@ -748,4 +748,65 @@ public func wipeCoreData(in viewContext: NSManagedObjectContext) {
     }
 }
 
+// for rolling digit timer on TimerView
 
+public func digitsFromTimeString(timeString: String) -> [Int] {
+    return timeString.flatMap { char in
+        if let digit = Int(String(char)) {
+            return [abs(digit)]
+        } else {
+            return []
+        }
+    }
+}
+
+
+struct CurrencyTextField: View {
+    var placeholder: String
+    @Binding var text: String
+    
+    var body: some View {
+        HStack {
+            Text(Locale.current.currencySymbol ?? "")
+                .foregroundColor(.gray)
+            TextField(placeholder, text: $text)
+        }
+    }
+}
+
+struct FadeMask: View {
+    var body: some View {
+        LinearGradient(gradient: Gradient(stops: [
+            Gradient.Stop(color: Color.clear, location: 0),
+            Gradient.Stop(color: Color.black, location: 0.1), 
+            Gradient.Stop(color: Color.black, location: 0.9),
+            Gradient.Stop(color: Color.clear, location: 1),
+        ]), startPoint: .top, endPoint: .bottom)
+    }
+}
+
+struct RollingDigit: View {
+    let digit: Int
+    @State private var shouldAnimate = false
+
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                ForEach((0...10), id: \.self) { index in
+                    Text(index == 10 ? "0" : "\(index)")
+                        .font(.system(size: geometry.size.height).monospacedDigit())
+                        .bold()
+                        .frame(width: geometry.size.width, height: geometry.size.height)
+                }
+            }
+            .offset(y: -CGFloat(digit) * geometry.size.height)
+            .animation(shouldAnimate ? .easeOut(duration: 0.2) : nil)
+            .onAppear {
+                shouldAnimate = true
+            }
+            .onDisappear {
+                shouldAnimate = false
+            }
+        }
+    }
+}

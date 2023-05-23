@@ -465,14 +465,14 @@ class ContentViewModel: ObservableObject {
                 }
                 
                 //PersistenceController.shared.save()
-                
-                do {
-                    try viewContext.save()
-                 
-                } catch {
-                    print("Error saving new shift: \(error)")
+                if latestShift!.duration > 0 {
+                    do {
+                        try viewContext.save()
+                        
+                    } catch {
+                        print("Error saving new shift: \(error)")
+                    }
                 }
-                
                 
                 
             }

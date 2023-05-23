@@ -114,16 +114,26 @@ struct EditJobView: View {
             ZStack{
                 Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 ScrollView{
+                    
+                    GeometryReader { geometry in
+                                    let offset = geometry.frame(in: .global).minY
+                        VStack{
+                            Spacer()
+                            Image(systemName: selectedIcon)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .foregroundColor(selectedColor)
+                                .scaleEffect(1 + (offset / 1000))
+                                .onTapGesture {
+                                    activeSheet = .symbolSheet
+                                }
+                                .frame(maxWidth: .infinity)
+                        }
+                    }.frame(height: 80)
+                    
+                    
+                    
                     VStack(spacing: 15){
-                        
-                        Image(systemName: selectedIcon)
-                            .foregroundColor(selectedColor)
-                            .font(.system(size: 60))
-                            .frame(width: UIScreen.main.bounds.width / 5)
-                        
-                            .onTapGesture {
-                                activeSheet = .symbolSheet
-                            }
                         
                         Group{
                             TextField("Company Name", text: $name)

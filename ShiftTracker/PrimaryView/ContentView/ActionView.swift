@@ -78,7 +78,7 @@ struct ActionView: View {
                         
                         
                         
-                        DatePicker("", selection: $actionDate, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
+                        DatePicker("", selection: $actionDate, displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.wheel)
                             .labelsHidden()
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -96,11 +96,14 @@ struct ActionView: View {
                                 .disabled(isRounded)
                         }
                         ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 80) {
+                            
                             self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                             dismiss()
+                            
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 activeSheet = .detailSheet
                             }
+                            
                         }
                     case .endBreak:
                         

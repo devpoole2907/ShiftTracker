@@ -103,32 +103,6 @@ struct DetailView: View {
         ]
     }
     
-    struct ShiftInterval: Identifiable {
-        var type: String
-        var duration: TimeInterval
-        var color: String
-        var id = UUID()
-    }
-
-
-    
-    func intervals(from shift: OldShift) -> [ShiftInterval] {
-        var intervals: [ShiftInterval] = []
-        guard let startTime = shift.shiftStartDate, let endTime = shift.shiftEndDate else { return intervals }
-        var currentStartTime = startTime
-        let breakArray = shift.breaks?.allObjects as? [Break] ?? []
-        for breakTime in breakArray.sorted(by: { $0.startDate! < $1.startDate! }) {
-            guard let breakStartTime = breakTime.startDate, let breakEndTime = breakTime.startDate else { continue }
-            let workInterval = ShiftInterval(type: "Work", duration: breakStartTime.timeIntervalSince(currentStartTime), color: "Orange")
-            intervals.append(workInterval)
-            let breakInterval = ShiftInterval(type: "Break", duration: breakEndTime.timeIntervalSince(breakStartTime), color: "Indigo")
-            intervals.append(breakInterval)
-            currentStartTime = breakEndTime
-        }
-        let finalWorkInterval = ShiftInterval(type: "Work", duration: endTime.timeIntervalSince(currentStartTime), color: "Orange")
-        intervals.append(finalWorkInterval)
-        return intervals
-    }
 
     
     @State private var offsetX = 0.0
@@ -142,147 +116,86 @@ struct DetailView: View {
     
     var body: some View {
         
-        let taxedBackgroundColor: Color = colorScheme == .dark ? Color.green.opacity(0.7) : Color.green.opacity(0.8)
-        let totalBackgroundColor: Color = colorScheme == .dark ? Color.pink.opacity(0.7) : Color.pink.opacity(0.8)
-        let tipsBackgroundColor: Color = colorScheme == .dark ? Color.teal.opacity(0.7) : Color.teal.opacity(0.8)
-        let timerBackgroundColor: Color = colorScheme == .dark ? Color.orange.opacity(0.7) : Color.orange.opacity(0.8)
-        let indigoBackgroundColor: Color = colorScheme == .dark ? Color.indigo.opacity(0.7) : Color.indigo.opacity(0.8)
-        
+        var timeDigits = digitsFromTimeString(timeString: shift.duration.stringFromTimeInterval())
         
         List{
-            /*
-            Section{
-                Chart {
-                            ForEach(intervals(from: shift)) { interval in
-                                BarMark(
-                                    x: .value("Shift", 1),  // Each bar represents one shift
-                                    y: .value("Duration", interval.duration)
-                                )
-                                .foregroundStyle(by: .value("Interval Color", interval.color))
-                            }
-                        }
-                        .chartForegroundStyleScale(["Green": .green, "Red": .red])
-            }*/
             
             Section{
-                HStack{
-                    VStack(alignment: .center){
-                        Chart {
-                            ForEach(shiftData) { data in
-                                BarMark(
-                                    y: .value("Profit", data.profit)
-                                )
-                                .foregroundStyle(by: .value("Pay Category", data.payCategory))
-                                
-                            }
-                        }//.chartYScale(domain: 0...shift.totalPay)
-                        
-                        //.fixedSize()
-                        .frame(width: 80)
-                        .padding()
-                        
-                        .chartLegend(.hidden)
-                        .chartForegroundStyleScale(["After Tax": LinearGradient(gradient: Gradient(colors: [taxedBackgroundColor]), startPoint: .top, endPoint: .bottom), "Tax": LinearGradient(gradient: Gradient(colors: [totalBackgroundColor]), startPoint: .top, endPoint: .bottom), "Tips": LinearGradient(gradient: Gradient(colors: [tipsBackgroundColor]), startPoint: .top, endPoint: .bottom)])
-                        
-                        
-                        
-                    }
-                    VStack(alignment: .trailing, spacing: 10) {
-                        
-                        
-                        
-                        
-                        //Spacer()
-                        if shift.overtimeDuration > 0 {
-                            Text("OVERTIME")
-                                .foregroundColor(.white)
-                                .font(.system(size: 25, weight: .bold).monospacedDigit())
-                                .frame(width: 200, height: 40)
-                                .background(.red)
-                                .cornerRadius(12)
-                                .fixedSize()
-                        }
-                        VStack(alignment: .trailing, spacing: 8){
-                            Text("Taxed Pay ")
-                                .font(.title)
-                                .bold()
-                            Text("\(currencyFormatter.currencySymbol ?? "")\(shift.taxedPay, specifier: "%.2f")")
-                            
-                                .font(.system(size: 40))
-                                .fontWeight(.black)
-                                .foregroundColor(taxedBackgroundColor)
-                            
-                            //.fixedSize()
-                                .cornerRadius(20)
-                                .padding(.bottom, 10)
-                        }
-                        if shift.tax > 0 {
-                            VStack(alignment: .trailing, spacing: 8){
-                                Divider()
-                                Text("Before Tax ")
-                                    .font(.title2)
+              //  HStack{
+                    
+                    ZStack{
+                        RoundedRectangle(cornerRadius: 12)
+                            .foregroundColor(.primary.opacity(0.04))
+                            .frame(width: UIScreen.main.bounds.width - 40)
+                            .shadow(radius: 5, x: 0, y: 4)
+                        VStack(alignment: .center, spacing: 5) {
+                            VStack {
+                                Text("\(currencyFormatter.string(from: NSNumber(value: shift.taxedPay)) ?? "")")
+                                //.foregroundColor(.white)
+                                    .padding(.horizontal, 20)
+                                    .font(.system(size: 60).monospacedDigit())
                                     .fontWeight(.bold)
                                 
-                                Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalPay, specifier: "%.2f")")
-                                
-                                    .font(.title3)
-                                    .fontWeight(.heavy)
-                                    .foregroundColor(totalBackgroundColor)
-                                
-                                    .cornerRadius(20)
-                                    .padding(.bottom, 10)
                             }
-                        }
-                        if shift.totalTips > 0 {
-                            VStack(alignment: .trailing, spacing: 8){
-                                Divider()
-                                Text("Tips ")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalTips, specifier: "%.2f")")
-                                //.padding(.horizontal, 20)
-                                    .font(.system(size: 30))
-                                    .fontWeight(.heavy)
-                                    .foregroundColor(tipsBackgroundColor)
-                                
-                            }
-                        }
-                        VStack(alignment: .trailing, spacing: 8){
-                            Divider()
-                            Text("Duration ")
-                                .font(.body)
-                                .bold()
-                            Text(shiftLengthString(shiftLength: shift.duration))
-                                .foregroundColor(.orange)
-                                .font(.largeTitle)
-                                .bold()
-                            
-                        }
-                        VStack(alignment: .trailing, spacing: 8){
-                            if let breaks = shift.breaks as? Set<Break> {
-                                let duration = totalBreakDuration(for: breaks)
-                                if duration > 0 {
-                                    Divider()
-                                    Text("Unpaid Breaks ")
-                                        .font(.subheadline)
-                                        .bold()
-                                    Text("\(durationFormatter.string(from: duration) ?? "")")
-                                        .foregroundColor(.indigo)
-                                        .font(.headline)
-                                        .bold()
-                                    
+                            .frame(maxWidth: .infinity)
+                            .padding(.top)
+                            HStack(spacing: 10){
+                                if shift.tax > 0 {
+                                    HStack(spacing: 2){
+                                        Image(systemName: "chart.line.downtrend.xyaxis")
+                                            .font(.system(size: 15).monospacedDigit())
+                                            .fontWeight(.light)
+                                        Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalPay)) ?? "")")
+                                            .font(.system(size: 20).monospacedDigit())
+                                            .bold()
+                                    }.foregroundColor(.pink)
+                                }
+                                if shift.totalTips > 0 {
+                                    HStack(spacing: 2){
+                                        Image(systemName: "chart.line.uptrend.xyaxis")
+                                            .font(.system(size: 15).monospacedDigit())
+                                            .fontWeight(.light)
+                                        Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalTips)) ?? "")")
+                                            .font(.system(size: 20).monospacedDigit())
+                                            .bold()
+                                    }.foregroundColor(.teal)
                                 }
                             }
+                                
+                                    .padding(.horizontal, 20)
+                                
+                                
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom, 5)
+                            
+                            // }
+                            
+                            Divider().frame(maxWidth: 200)
+                            
+                            HStack(spacing: 0) {
+                                ForEach(0..<timeDigits.count, id: \.self) { index in
+                                    RollingDigit(digit: timeDigits[index])
+                                        .frame(width: 20, height: 30)
+                                        .mask(FadeMask())
+                                    if index == 1 || index == 3 {
+                                        Text(":")
+                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                    }
+                                }
+                            }
+                            .foregroundColor(.orange)
+                            //.frame(width: 250, height: 70)
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom)
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                         }
-                        
-                        
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .frame(maxWidth: .infinity)
-                }.padding(.horizontal)
-                    .padding(.vertical, 10)
-                    .background(Color.primary.opacity(0.04),in:
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
             }.listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
             
@@ -512,9 +425,9 @@ struct DetailView: View {
                         shift.hourlyPay = Double(selectedHourlyPay) ?? 0.0
                         //shift.tag = selectedTag
                         shift.totalTips = Double(selectedTotalTips) ?? 0.0
+                        // this is old code....
                         let newBreakElapsed = selectedBreakEndDate.timeIntervalSince(selectedBreakStartDate)
                         shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate) - newBreakElapsed
-                        
                         
                         shift.totalPay = (shift.duration / 3600.0) * shift.hourlyPay
                         shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
@@ -614,6 +527,16 @@ struct DetailView_Previews: PreviewProvider {
     }
 }
 
+private extension TimeInterval {
+    func stringFromTimeInterval() -> String {
+        let time = NSInteger(self)
+        let hours = (time / 3600)
+        let minutes = (time / 60) % 60
+        let seconds = time % 60
+        return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
+    }
+}
+
 
 struct ShiftTipsView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -689,3 +612,123 @@ struct ShiftProfitCategory: Identifiable {
 }
 
 
+
+/*
+
+VStack(alignment: .center){
+    Chart {
+        ForEach(shiftData) { data in
+            BarMark(
+                y: .value("Profit", data.profit)
+            )
+            .foregroundStyle(by: .value("Pay Category", data.payCategory))
+            
+        }
+    }//.chartYScale(domain: 0...shift.totalPay)
+    
+    //.fixedSize()
+    .frame(width: 80)
+    .padding()
+    
+    .chartLegend(.hidden)
+    .chartForegroundStyleScale(["After Tax": LinearGradient(gradient: Gradient(colors: [taxedBackgroundColor]), startPoint: .top, endPoint: .bottom), "Tax": LinearGradient(gradient: Gradient(colors: [totalBackgroundColor]), startPoint: .top, endPoint: .bottom), "Tips": LinearGradient(gradient: Gradient(colors: [tipsBackgroundColor]), startPoint: .top, endPoint: .bottom)])
+    
+    
+    
+}
+VStack(alignment: .trailing, spacing: 10) {
+    
+    
+    
+    
+    //Spacer()
+    if shift.overtimeDuration > 0 {
+        Text("OVERTIME")
+            .foregroundColor(.white)
+            .font(.system(size: 25, weight: .bold).monospacedDigit())
+            .frame(width: 200, height: 40)
+            .background(.red)
+            .cornerRadius(12)
+            .fixedSize()
+    }
+    VStack(alignment: .trailing, spacing: 8){
+        Text("Taxed Pay ")
+            .font(.title)
+            .bold()
+        Text("\(currencyFormatter.currencySymbol ?? "")\(shift.taxedPay, specifier: "%.2f")")
+        
+            .font(.system(size: 40))
+            .fontWeight(.black)
+            .foregroundColor(taxedBackgroundColor)
+        
+        //.fixedSize()
+            .cornerRadius(20)
+            .padding(.bottom, 10)
+    }
+    if shift.tax > 0 {
+        VStack(alignment: .trailing, spacing: 8){
+            Divider()
+            Text("Before Tax ")
+                .font(.title2)
+                .fontWeight(.bold)
+            
+            Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalPay, specifier: "%.2f")")
+            
+                .font(.title3)
+                .fontWeight(.heavy)
+                .foregroundColor(totalBackgroundColor)
+            
+                .cornerRadius(20)
+                .padding(.bottom, 10)
+        }
+    }
+    if shift.totalTips > 0 {
+        VStack(alignment: .trailing, spacing: 8){
+            Divider()
+            Text("Tips ")
+                .font(.title2)
+                .fontWeight(.bold)
+            Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalTips, specifier: "%.2f")")
+            //.padding(.horizontal, 20)
+                .font(.system(size: 30))
+                .fontWeight(.heavy)
+                .foregroundColor(tipsBackgroundColor)
+            
+        }
+    }
+    VStack(alignment: .trailing, spacing: 8){
+        Divider()
+        Text("Duration ")
+            .font(.body)
+            .bold()
+        Text(shiftLengthString(shiftLength: shift.duration))
+            .foregroundColor(.orange)
+            .font(.largeTitle)
+            .bold()
+        
+    }
+    VStack(alignment: .trailing, spacing: 8){
+        if let breaks = shift.breaks as? Set<Break> {
+            let duration = totalBreakDuration(for: breaks)
+            if duration > 0 {
+                Divider()
+                Text("Unpaid Breaks ")
+                    .font(.subheadline)
+                    .bold()
+                Text("\(durationFormatter.string(from: duration) ?? "")")
+                    .foregroundColor(.indigo)
+                    .font(.headline)
+                    .bold()
+                
+            }
+        }
+    }
+    
+    
+}.listRowSeparator(.hidden)
+    .listRowBackground(Color.clear)
+    .frame(maxWidth: .infinity) */
+/*  }.padding(.horizontal)
+.padding(.vertical, 10)
+.background(Color.primary.opacity(0.04),in:
+                RoundedRectangle(cornerRadius: 12, style: .continuous)) */

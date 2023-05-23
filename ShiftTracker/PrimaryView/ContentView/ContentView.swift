@@ -70,6 +70,7 @@ struct ContentView: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
         let disabledButtonColor: Color = colorScheme == .dark ? Color.primary.opacity(0.04) : Color.primary.opacity(0.04)
+        let foregroundColor: Color = colorScheme == .dark ? .black : .white
         
         NavigationStack{
             Form{
@@ -130,38 +131,68 @@ struct ContentView: View {
                                 }
                                 
                             } else {
-                                if !viewModel.isOnBreak{
-                                    AnimatedButton(
-                                        isTapped: $viewModel.isBreakTapped,
-                                        activeSheet: $activeSheet,
-                                        activeSheetCase: .startBreakSheet,
-                                        title: "Start break",
-                                        backgroundColor: !viewModel.isEditing ? buttonColor : disabledButtonColor,
-                                        isDisabled: viewModel.isEditing
-                                    )
+                                // this is not clean and is visually going to cause issues when a shift is started
+                                if viewModel.timeElapsed > 0 {
+                                    if !viewModel.isOnBreak{
+                                        AnimatedButton(
+                                            isTapped: $viewModel.isBreakTapped,
+                                            activeSheet: $activeSheet,
+                                            activeSheetCase: .startBreakSheet,
+                                            title: "Start break",
+                                            backgroundColor: !viewModel.isEditing ? buttonColor : disabledButtonColor,
+                                            isDisabled: viewModel.isEditing
+                                        )
+                                    }
+                                    else {
+                                        AnimatedButton(
+                                            isTapped: $viewModel.isBreakTapped,
+                                            activeSheet: $activeSheet,
+                                            activeSheetCase: .endBreakSheet,
+                                            title: "End break",
+                                            backgroundColor: buttonColor,
+                                            isDisabled: false
+                                        )
+                                    }
+                                    
                                 }
-                                else {
-                                    AnimatedButton(
-                                        isTapped: $viewModel.isBreakTapped,
-                                        activeSheet: $activeSheet,
-                                        activeSheetCase: .endBreakSheet,
-                                        title: "End break",
-                                        backgroundColor: buttonColor,
-                                        isDisabled: false
-                                    )
-                                }
-                                
-                                
                             }
                             if viewModel.shift != nil {
-                                AnimatedButton(
-                                    isTapped: $viewModel.isEndShiftTapped,
-                                    activeSheet: $activeSheet,
-                                    activeSheetCase: .endShiftSheet,
-                                    title: "End shift",
-                                    backgroundColor: (viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
-                                    isDisabled: viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing
-                                )
+                                if viewModel.timeElapsed > 0 {
+                                    AnimatedButton(
+                                        isTapped: $viewModel.isEndShiftTapped,
+                                        activeSheet: $activeSheet,
+                                        activeSheetCase: .endShiftSheet,
+                                        title: "End shift",
+                                        backgroundColor: (viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
+                                        isDisabled: viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing
+                                    )
+                                } else {
+                                    Button(action: {
+                                        CustomConfirmationAlert(action: {
+                                            viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
+                                        }, title: "Cancel your upcoming shift?").present()
+                                        withAnimation {
+                                            viewModel.isEndShiftTapped = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                viewModel.isEndShiftTapped = false
+                                            }
+                                        }
+                                    }) {
+                                        Text("Cancel shift")
+                                            .frame(minWidth: UIScreen.main.bounds.width / 3)
+                                            .bold()
+                                            .padding()
+                                            .background((viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor)
+                                            .foregroundColor(foregroundColor)
+                                            .cornerRadius(18)
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .frame(maxWidth: .infinity)
+                                    .scaleEffect(viewModel.isEndShiftTapped ? 1.1 : 1)
+                                    .animation(.easeInOut(duration: 0.3))
+                                    
+                                    
+                                }
                             }
                         }.haptics(onChangeOf: payShakeTimes, type: .error)
                             .haptics(onChangeOf: activeSheet, type: .light)

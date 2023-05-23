@@ -541,7 +541,7 @@ struct StatsView: View {
                         //.padding(.horizontal, 50)
                         .haptics(onChangeOf: sortOption, type: .soft)
                     }
-                }
+                }.listRowBackground(Color.primary.opacity(0.04))
                 
                 
                 Section{
@@ -551,16 +551,13 @@ struct StatsView: View {
                 
             }.scrollContentBackground(.hidden)
             
-                .sheet(isPresented: $showingAddShiftSheet) {
-                    if #available(iOS 16.4, *) {
-                        AddShiftView().environment(\.managedObjectContext, viewContext)
-                            .presentationDetents([ .medium, .large])
-                            .presentationDragIndicator(.visible)
+                .fullScreenCover(isPresented: $showingAddShiftSheet) {
+                    if let job = job {
+                        AddShiftView(job: job).environment(\.managedObjectContext, viewContext)
+                            .presentationDetents([.large])
                             .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                            .presentationCornerRadius(50)
-                    }
-                    else {
-                        AddShiftView().environment(\.managedObjectContext, viewContext)
+                    } else {
+                        Text("error")
                     }
                 }
             
