@@ -13,6 +13,7 @@ import CoreData
 struct EditJobView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     
     @ObservedObject var job: Job
     @ObservedObject private var locationManager = LocationDataManager()

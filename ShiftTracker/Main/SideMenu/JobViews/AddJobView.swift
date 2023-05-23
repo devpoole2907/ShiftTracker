@@ -15,6 +15,7 @@ import Haptics
 struct AddJobView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     
     @ObservedObject var model = JobsViewModel()
     
