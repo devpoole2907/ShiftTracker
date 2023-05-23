@@ -284,7 +284,7 @@ struct AddJobView: View {
                         
                      
                         
-                        VStack(alignment: .leading, spacing: 10){
+                        /* VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $overtimeEnabled) {
                                 HStack {
                                     Text("Enable Overtime")
@@ -310,7 +310,7 @@ struct AddJobView: View {
                             .onTapGesture {
                                 activeSheet = .overtimeSheet
                             }.disabled(!overtimeEnabled)
-                        }.padding(.horizontal, 5)
+                        }.padding(.horizontal, 5) */
                         
                         
                         
@@ -354,6 +354,7 @@ struct AddJobView: View {
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .fraction(0.4)])
                                 .presentationDragIndicator(.visible)
+                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
                             
                             
@@ -362,6 +363,7 @@ struct AddJobView: View {
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .medium])
                                 .presentationDragIndicator(.visible)
+                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
                         }
                         
