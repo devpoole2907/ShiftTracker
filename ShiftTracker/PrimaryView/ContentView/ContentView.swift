@@ -182,7 +182,7 @@ struct ContentView: View {
                                     .scaleEffect(viewModel.isEndShiftTapped ? 1.1 : 1)
                                     .animation(.easeInOut(duration: 0.3))
                             }
-                                else if viewModel.timeElapsed {
+                                else {
                                     AnimatedButton(
                                         isTapped: $viewModel.isEndShiftTapped,
                                         activeSheet: $activeSheet,
