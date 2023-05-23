@@ -170,8 +170,6 @@ struct AddShiftView: View {
                         } 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: saveShift) {
-                        saveShift()
-                    }){
                     Image(systemName: "folder.badge.plus")
                     .bold()
                     .padding()
