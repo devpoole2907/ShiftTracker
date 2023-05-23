@@ -402,7 +402,7 @@ struct AddJobView: View {
                                 }
                                 //}
                             }) {
-                                Image(systemName: "folder.badge.plus"))
+                                Image(systemName: "folder.badge.plus")
                                     .bold()
                             }
                         }

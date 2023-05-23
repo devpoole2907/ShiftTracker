@@ -172,7 +172,7 @@ struct AddShiftView: View {
                     Button(action: saveShift) {
                         saveShift()
                     }){
-                    Image(systemName: "folder.badge.plus"))
+                    Image(systemName: "folder.badge.plus")
                     .bold()
                     .padding()
                     }
