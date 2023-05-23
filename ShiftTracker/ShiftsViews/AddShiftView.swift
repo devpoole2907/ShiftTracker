@@ -145,7 +145,8 @@ struct AddShiftView: View {
                                                     }
                                                 }
                 }.listRowSeparator(.hidden) */
-            }.toolbar{
+            }.scrollContentBackground(.hidden)
+            .toolbar{
                 ToolbarItemGroup(placement: .keyboard){
                     Spacer()
                     
@@ -157,14 +158,23 @@ struct AddShiftView: View {
             }
             .navigationBarTitle("Add Shift", displayMode: .inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                }
+                ToolbarItem{
+                            Button(action: {
+                                presentationMode.wrappedValue.dismiss()
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                                    .bold()
+                                    .padding()
+                            }
+                        } 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("\(Image(systemName: "folder.badge.plus"))") {
+                    Button(action: saveShift) {
                         saveShift()
+                    }){
+                    Image(systemName: "folder.badge.plus"))
+                    .bold()
+                    .padding()
                     }
                     .disabled(hourlyPay <= 0 || (totalPay <= 0 && !autoCalcPay) || (taxedPay <= 0 && !autoCalcPay))
                 }

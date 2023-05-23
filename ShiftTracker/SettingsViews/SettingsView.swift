@@ -221,7 +221,7 @@ struct SettingsView: View {
                         Text("Made by James Poole")
                             .foregroundColor(.gray.opacity(0.3))
                             .font(.caption)
-                        Text("Icons & sounds by Louie Kolodzinksi")
+                        Text("Icons by Louie Kolodzinksi")
                             .foregroundColor(.gray.opacity(0.3))
                             .font(.caption)
                     }.listRowBackground(Color.clear)
@@ -232,6 +232,7 @@ struct SettingsView: View {
                                 CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, title: "Are you sure you want to delete all your data?").present()
                             } ){
                                 Text("Delete Data")
+                                .bold()
                                 
                             }.buttonStyle(.bordered)
                                 .tint(.red)
