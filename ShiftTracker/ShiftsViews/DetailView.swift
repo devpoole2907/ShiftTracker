@@ -63,6 +63,8 @@ struct DetailView: View {
     
     @ObservedObject var shift: OldShift
     
+    @EnvironmentObject var navigationState: NavigationState
+    
     init(shift: OldShift, presentedAsSheet: Bool, activeSheet: Binding<ActiveSheet?>? = nil) {
         self.shift = shift
         _notes = State(wrappedValue: shift.shiftNote ?? "")
@@ -411,6 +413,8 @@ struct DetailView: View {
         }.onAppear(perform: loadData)
             .scrollContentBackground(.hidden)
             .listStyle(.inset)
+        
+
         //.padding(.horizontal, 30)
         
             .toolbar {

@@ -21,6 +21,8 @@ struct AllScheduledShiftsView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var navigationState: NavigationState
+    
     func formattedDate(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE, d MMM"
@@ -61,6 +63,10 @@ struct AllScheduledShiftsView: View {
                             scrollProxy.scrollTo(nextShiftDate, anchor: .top)
                         }
                     }
+                    navigationState.gestureEnabled = false
+                }
+                .onDisappear {
+                    navigationState.gestureEnabled = true
                 }
                 
                 .listStyle(PlainListStyle())

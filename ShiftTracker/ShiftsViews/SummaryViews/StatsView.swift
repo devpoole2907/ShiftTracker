@@ -37,6 +37,8 @@ struct StatsView: View {
     @FetchRequest var longestShifts: FetchedResults<OldShift>
     @FetchRequest var latestShiftsDuctTapeFix: FetchedResults<OldShift>
     
+    @EnvironmentObject var navigationState: NavigationState
+    
     let shiftDateManager = ShiftDateManager()
     
     init(statsMode: StatsMode, jobId: NSManagedObjectID) {
@@ -551,6 +553,10 @@ struct StatsView: View {
                 
             }.scrollContentBackground(.hidden)
             
+                .onAppear {
+                    navigationState.gestureEnabled = false
+                }
+            
                 .fullScreenCover(isPresented: $showingAddShiftSheet) {
                     if let job = job {
                         AddShiftView(job: job).environment(\.managedObjectContext, viewContext)
@@ -560,6 +566,7 @@ struct StatsView: View {
                         Text("error")
                     }
                 }
+            
             
                 .toolbar{
                     ToolbarItem(placement: .navigationBarTrailing) {

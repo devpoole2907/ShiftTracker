@@ -121,6 +121,12 @@ struct ShiftsView: View {
             }
             .navigationBarTitle("Summary")
             
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    navigationState.gestureEnabled = true
+                }
+            }
+            
             .toolbar{
                 ToolbarItem(placement: .navigationBarLeading){
                     Button{
