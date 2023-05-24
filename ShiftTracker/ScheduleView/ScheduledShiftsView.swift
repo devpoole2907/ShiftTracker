@@ -180,57 +180,41 @@ struct CreateShiftForm: View {
     
     
     func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool) {
-        let repeatID = generateUniqueID()
+    let repeatID = generateUniqueID()
 
-        let calendar = Calendar.current
-        let daysToAdd = 1
-        var currentStartDate = startDate
-        var currentEndDate = endDate
+    let calendar = Calendar.current
+    var currentStartDate = startDate
+    var currentEndDate = endDate
 
-        while currentStartDate <= selectedRepeatEnd {
-            if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
-                let shift = ScheduledShift(context: viewContext)
-                shift.startDate = currentStartDate
-                shift.endDate = currentEndDate
-                shift.job = jobs[selectedJobIndex]
-                shift.id = UUID()
-                shift.isRepeating = repeatEveryWeek
-                shift.repeatID = repeatEveryWeek ? repeatID : nil
-                shift.notifyMe = notifyMe
-                shift.reminderTime = selectedReminderTime.timeInterval
-
-                for _ in 1...daysToAdd {
-                    currentStartDate = calendar.date(byAdding: .day, value: 1, to: currentStartDate)!
-                    currentEndDate = calendar.date(byAdding: .day, value: 1, to: currentEndDate)!
-                    
-                    if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
-                        let shift = ScheduledShift(context: viewContext)
-                        shift.startDate = currentStartDate
-                        shift.endDate = currentEndDate
-                        shift.job = jobs[selectedJobIndex]
-                        shift.id = UUID()
-                        shift.isRepeating = repeatEveryWeek
-                        shift.repeatID = repeatEveryWeek ? repeatID : nil
-                        shift.notifyMe = notifyMe
-                        shift.reminderTime = selectedReminderTime.timeInterval
-                    }
-                }
-            } else {
-                currentStartDate = calendar.date(byAdding: .day, value: 1, to: currentStartDate)!
-                currentEndDate = calendar.date(byAdding: .day, value: 1, to: currentEndDate)!
-            }
+    while currentStartDate <= selectedRepeatEnd {
+        if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
+            let shift = ScheduledShift(context: viewContext)
+            shift.startDate = currentStartDate
+            shift.endDate = currentEndDate
+            shift.job = jobs[selectedJobIndex]
+            shift.id = UUID()
+            shift.isRepeating = repeatEveryWeek
+            shift.repeatID = repeatEveryWeek ? repeatID : nil
+            shift.notifyMe = notifyMe
+            shift.reminderTime = selectedReminderTime.timeInterval
         }
-
-        // Save the context after creating all the shifts
-        do {
-            try viewContext.save()
-            notificationManager.scheduleNotifications()
-            onShiftCreated()
-            dismiss()
-        } catch {
-            print("Error saving repeating shift series: \(error)")
-        }
+        
+        // Move to the next day, whether a shift was scheduled or not.
+        currentStartDate = calendar.date(byAdding: .day, value: 1, to: currentStartDate)!
+        currentEndDate = calendar.date(byAdding: .day, value: 1, to: currentEndDate)!
     }
+
+    // Save the context after creating all the shifts
+    do {
+        try viewContext.save()
+        notificationManager.scheduleNotifications()
+        onShiftCreated()
+        dismiss()
+    } catch {
+        print("Error saving repeating shift series: \(error)")
+    }
+}
+
 
     
     @State var startAngle: Double = 0
