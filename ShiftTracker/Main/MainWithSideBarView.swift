@@ -27,6 +27,8 @@ struct MainWithSideBarView: View {
     
     @State var showMenu: Bool = false
     
+    @State var isJobsExpanded: Bool = false
+    
     @Environment(\.managedObjectContext) private var context
     
     init(){
@@ -60,14 +62,14 @@ struct MainWithSideBarView: View {
                 
                 
                 HStack(spacing: 0){
-                    SideMenu(showMenu: $showMenu)
+                    SideMenu(showMenu: $showMenu, isJobsExpanded: $isJobsExpanded)
                         .environmentObject(authModel)
                         .environmentObject(viewModel)
                         .environmentObject(jobSelectionModel)
                     VStack(spacing: 0){
                         
                         TabView(selection: $currentTab) {
-                            ContentView(showMenu: $showMenu)
+                            ContentView(showMenu: $showMenu, isJobsExpanded: $isJobsExpanded)
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(viewModel)
                                 .environmentObject(jobSelectionModel)

@@ -32,7 +32,7 @@ struct SideMenu: View {
     
     
     
-    @State private var isJobsExpanded: Bool = false
+    @Binding var isJobsExpanded: Bool
     
     @State private var selectedJobForEditing: Job?
     @State private var isEditJobPresented: Bool = false

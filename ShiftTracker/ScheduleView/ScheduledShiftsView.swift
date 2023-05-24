@@ -179,23 +179,15 @@ struct CreateShiftForm: View {
     
     
     
-    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool) {
+func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool) {
     let repeatID = generateUniqueID()
 
     let calendar = Calendar.current
     var currentStartDate = startDate
     var currentEndDate = endDate
-    
-    // Create a dictionary to store the days on which a shift has been scheduled
-    var scheduledDays = [String: Bool]()
 
     while currentStartDate <= selectedRepeatEnd {
-        // Format the date to a simple day format
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let currentDateString = dateFormatter.string(from: currentStartDate)
-
-        if selectedDays[getDayOfWeek(date: currentStartDate) - 1] && scheduledDays[currentDateString] == nil {
+        if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
             let shift = ScheduledShift(context: viewContext)
             shift.startDate = currentStartDate
             shift.endDate = currentEndDate
@@ -205,12 +197,9 @@ struct CreateShiftForm: View {
             shift.repeatID = repeatEveryWeek ? repeatID : nil
             shift.notifyMe = notifyMe
             shift.reminderTime = selectedReminderTime.timeInterval
-            
-            // Mark the current day as scheduled
-            scheduledDays[currentDateString] = true
         }
-
-        // Move to the next day
+        
+        // Move to the next day, whether a shift was scheduled or not.
         currentStartDate = calendar.date(byAdding: .day, value: 1, to: currentStartDate)!
         currentEndDate = calendar.date(byAdding: .day, value: 1, to: currentEndDate)!
     }
