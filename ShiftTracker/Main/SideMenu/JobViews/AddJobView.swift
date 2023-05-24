@@ -30,9 +30,9 @@ struct AddJobView: View {
     @State private var payPeriodLength = ""
     @State private var payPeriodStartDay: Int? = nil
     @State private var selectedColor = Color.cyan
-    @State private var clockInReminder = true
+    @State private var clockInReminder = false
     @State private var autoClockIn = false
-    @State private var clockOutReminder = true
+    @State private var clockOutReminder = false
     @State private var autoClockOut = false
     
     @State private var payShakeTimes: CGFloat = 0

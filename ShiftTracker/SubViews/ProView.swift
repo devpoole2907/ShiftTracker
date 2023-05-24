@@ -28,7 +28,7 @@ struct ProView: View {
         NavigationView {
 
             VStack{
-                Spacer(minLength: 50)
+                Spacer(minLength: 10)
                 HStack{
                     Text("ShiftTracker")
                         .font(.title)
