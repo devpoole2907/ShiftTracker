@@ -62,6 +62,7 @@ struct ContentView: View {
     
     
     @Binding var showMenu: Bool
+    @Binding var isJobsExpanded: Bool
     
     
     @available(iOS 16.1, *)
@@ -92,6 +93,7 @@ struct ContentView: View {
                     if viewModel.shift == nil{
                         Button(action: {
                             showMenu.toggle()
+                            isJobsExpanded = true
                         }) {
                             if let job = jobSelectionViewModel.fetchJob(in: context) {
                                 
