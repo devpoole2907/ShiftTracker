@@ -22,6 +22,8 @@ struct MainWithSideBarView: View {
     
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionViewModel()
+    @StateObject var navigationState = NavigationState()
+    
     
     private let notificationManager = ShiftNotificationManager.shared
     
@@ -66,6 +68,7 @@ struct MainWithSideBarView: View {
                         .environmentObject(authModel)
                         .environmentObject(viewModel)
                         .environmentObject(jobSelectionModel)
+                        
                     VStack(spacing: 0){
                         
                         TabView(selection: $currentTab) {
@@ -73,6 +76,7 @@ struct MainWithSideBarView: View {
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(viewModel)
                                 .environmentObject(jobSelectionModel)
+                                .environmentObject(navigationState)
                             
                                 .navigationBarTitleDisplayMode(.inline)
                                 .navigationBarHidden(true)
@@ -80,10 +84,11 @@ struct MainWithSideBarView: View {
                             
                             
                             ShiftsView(showMenu: $showMenu)
-                            
+                            .environmentObject(navigationState)
                                 .tag(Tab.timesheets)
                             
                             ScheduleView(showMenu: $showMenu)
+                            .environmentObject(navigationState)
                                 .navigationBarTitleDisplayMode(.inline)
                                 .navigationBarHidden(true)
                                 .tag(Tab.schedule)
@@ -125,12 +130,13 @@ struct MainWithSideBarView: View {
                 .offset(x: offset > 0 ? offset : 0)
                 
                 .gesture(
-                    currentTab == .home ? DragGesture()
-                        .updating($gestureOffset, body: { value, out, _ in
-                            out = value.translation.width
-                        })
-                        .onEnded(onEnd(value:)) : nil
-                )
+    navigationState.gestureEnabled ? DragGesture()
+        .updating($gestureOffset, body: { value, out, _ in
+            out = value.translation.width
+        })
+        .onEnded(onEnd(value:)) : nil
+)
+
                 
                 
                 .navigationBarTitleDisplayMode(.inline)

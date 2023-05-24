@@ -13,6 +13,7 @@ struct ShiftsView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var navigationState: NavigationState
     
     @Environment(\.managedObjectContext) private var viewContext
     

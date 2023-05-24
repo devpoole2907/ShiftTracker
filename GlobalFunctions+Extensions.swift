@@ -810,3 +810,8 @@ struct RollingDigit: View {
         }
     }
 }
+
+class NavigationState: ObservableObject {
+    @Published var gestureEnabled: Bool = true
+}
+

@@ -16,6 +16,9 @@ struct ScheduleView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var navigationState: NavigationState
+
+    
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)], animation: .default)
     private var scheduledShifts: FetchedResults<ScheduledShift>
     

@@ -27,7 +27,7 @@ struct ContentView: View {
     @FetchRequest(entity: Job.entity(), sortDescriptors: [])
     private var jobs: FetchedResults<Job>
     
-    
+    @EnvironmentObject var navigationState: NavigationState
     
     @Environment(\.presentationMode) private var presentationMode
     
