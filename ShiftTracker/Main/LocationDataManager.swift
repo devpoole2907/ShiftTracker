@@ -176,6 +176,11 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         }
     }
 
+    func stopMonitoringAllRegions() {
+        for region in locationManager.monitoredRegions {
+            locationManager.stopMonitoring(for: region)
+        }
+    }
 
 
     

@@ -25,7 +25,7 @@ struct ProView: View {
         let upgradeButtonTextColor: Color = colorScheme == .dark ? .white : Color.black
         
         
-        NavigationView {
+       // NavigationView {
 
             VStack{
                 Spacer(minLength: 10)
@@ -94,7 +94,7 @@ struct ProView: View {
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)
-                    HStack {
+                  /*  HStack {
                         Image(systemName: "timer")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -119,7 +119,7 @@ struct ProView: View {
                             .bold()
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
+                        .padding(.vertical, 5)*/
                 }.scrollContentBackground(.hidden)
                 
                 VStack(alignment: .leading, spacing: 10) {
@@ -144,10 +144,11 @@ struct ProView: View {
                 .cornerRadius(20)
                 .frame(maxWidth: .infinity)
                 
-                HStack(spacing: 1){
+                HStack(spacing: 10){
                     Button(action: {
-                        isProVersion.toggle()
-                        UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion")
+                       /* isProVersion.toggle()
+                        UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion") */
+                        setUserSubscribed(true)
                         dismiss()
                     }) {
                         VStack{
@@ -160,15 +161,17 @@ struct ProView: View {
                                 .foregroundColor(proButtonColor)
                         }
                         .frame(maxWidth: .infinity)
-                        .frame(height: 80)
+                        .frame(height: 60)
                         .cornerRadius(20)
                         .padding()
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                     Button(action: {
                
-                        isProVersion.toggle()
+                      /*  isProVersion.toggle()
        
-                        UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion")
+                        UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion") */
                         setUserSubscribed(true)
                         print("setting user subscribed to true")
                         dismiss()
@@ -183,17 +186,19 @@ struct ProView: View {
                                 .foregroundColor(proButtonColor)
                         }
                         .frame(maxWidth: .infinity)
-                        .frame(height: 80)
+                        .frame(height: 60)
           
                         .cornerRadius(20)
                         .padding()
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                 }.padding(.horizontal, 30)
                 Spacer(minLength: 50)
             }
             
     
-        }.background(backgroundColor)
+        //}.background(backgroundColor)
     }
 }
 

@@ -63,6 +63,8 @@ struct ShiftTrackerApp: App {
         }
     
     private func startMonitoringAllJobLocations() {
+        locationManager.stopMonitoringAllRegions()
+        
         let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
         do {
             let jobs = try persistenceController.container.viewContext.fetch(fetchRequest)

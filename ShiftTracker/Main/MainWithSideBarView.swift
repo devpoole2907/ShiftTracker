@@ -172,6 +172,13 @@ struct MainWithSideBarView: View {
                 checkIfLocked()
             })
             
+            .onAppear {
+                if !isSubscriptionChecked {
+                checkSubscriptionStatus()
+                isSubscriptionChecked = true
+                }
+            }
+            
             /*     .onAppear{ authModel.checkUserLoginStatus()
              if !isSubscriptionChecked {
              checkSubscriptionStatus()

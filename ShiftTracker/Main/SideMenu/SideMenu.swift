@@ -38,21 +38,35 @@ struct SideMenu: View {
     @State private var isEditJobPresented: Bool = false
     
     @State private var showAddJobView = false
+    @State private var showUpgradeScreen = false
     
     var body: some View {
         
         
         let jobBackground: Color = colorScheme == .dark ? Color(.systemGray5) : .black
         
+        let proColor: Color = colorScheme == .dark ? .orange : .cyan
+        
         
         VStack(alignment: .leading, spacing: 0){
             
             VStack(alignment: .leading, spacing: 14){
-                
-                Text("ShiftTracker")
-                    .font(.largeTitle)
-                    .bold()
-                
+                HStack{
+                    if isSubscriptionActive(){
+                        Text("ShiftTracker")
+                            .font(.title)
+                            .bold()
+                        Text("PRO")
+                            .font(.largeTitle)
+                            .foregroundColor(proColor)
+                            .bold()
+                    } else {
+                        Text("ShiftTracker")
+                            .font(.largeTitle)
+                            .bold()
+                    }
+                    
+                }
                 
             }
             .padding(.horizontal)
@@ -83,7 +97,7 @@ struct SideMenu: View {
                         }
                         VStack{
                             if isJobsExpanded {
-                                VStack(spacing: 10){
+                                VStack(alignment: .leading, spacing: 10){
                                     ForEach(jobs) { job in
                                         
                                         
@@ -117,6 +131,22 @@ struct SideMenu: View {
                                                 selectedJobForEditing = nil
                                             }
                                     }
+                                    
+                                    
+                                    Button(action: {
+                                        if isSubscriptionActive(){
+                                            showAddJobView = true
+                                        } else {
+                                            showUpgradeScreen = true
+                                        }
+                                    }) {
+                                        Image(systemName: "plus")
+                                            .resizable()
+                                            .frame(width: 25, height: 25)
+                                            .padding(.leading, 40)
+                                    }.padding()
+                                        .frame(alignment: .leading)
+                                    
                                 }
                             }
                             else if let selectedJob = findSelectedJob() {
@@ -140,18 +170,13 @@ struct SideMenu: View {
                             
                         } .transition(.move(edge: .top))
                         
-                        Button(action: {
-                            isJobsExpanded = true
-                            showAddJobView = true
-                        }) {
-                            Image(systemName: "plus")
-                                .resizable()
-                                .frame(width: 25, height: 25)
-                                .padding(.leading, 40)
+                        
+                        
+                        if !isSubscriptionActive(){
+                            TabButton(title: "Upgrade", image: "plus.diamond.fill", destination: { AnyView(
+                                ProView().toolbarRole(.editor)
+                            ) })
                         }
-                        
-                        
-                        TabButton(title: "Upgrade", image: "plus.diamond.fill", destination: { AnyView(ProView()) })
                     }
                     .padding()
                     .padding(.leading)
@@ -195,6 +220,23 @@ struct SideMenu: View {
         
         .fullScreenCover(isPresented: $showAddJobView){
             AddJobView()
+        }
+        
+        .fullScreenCover(isPresented: $showUpgradeScreen){
+            NavigationStack{
+            ProView()
+                .toolbar{
+                    ToolbarItem(placement: .navigationBarLeading){
+                        Button(action: {
+                            self.showUpgradeScreen = false
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.gray)
+                                .bold()
+                        }
+                    }
+                }
+        }
         }
         
     }

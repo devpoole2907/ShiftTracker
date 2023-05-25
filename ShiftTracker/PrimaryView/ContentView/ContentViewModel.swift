@@ -17,6 +17,9 @@ import CoreData
 
 class ContentViewModel: ObservableObject {
     
+    
+    @Published var shiftState: ShiftState = .notStarted
+    
     @Published var lastEndedShift: OldShift? = nil // store the latest shift to return when popping the detail view
     @Published  var hourlyPay: Double = 0.0
     @Published  var lastPay: Double = 0.0
@@ -412,6 +415,8 @@ class ContentViewModel: ObservableObject {
         }
         
     func endShift(using viewContext: NSManagedObjectContext, endDate: Date, job: Job) -> OldShift? {
+        
+        shiftState = .notStarted
             //updateActivity(startDate: Date())
         #if os(iOS)
             stopActivity()
@@ -549,6 +554,11 @@ class ContentViewModel: ObservableObject {
                 timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                     self.timeElapsed = Date().timeIntervalSince(adjustedStartDate) - self.totalBreakDuration()
                     
+                    if self.shiftState == .countdown && self.timeElapsed >= 0 {
+                                    self.shiftState = .inProgress
+                                }
+                    
+                    
                     self.checkOvertime()
                 }
                 #if os(iOS)
@@ -558,6 +568,11 @@ class ContentViewModel: ObservableObject {
             else {
                 timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                     self.timeElapsed = Date().timeIntervalSince(startDate)
+                    
+                    if self.shiftState == .countdown && self.timeElapsed >= 0 {
+                                   self.shiftState = .inProgress
+                               }
+                    
                     self.checkOvertime()
                 }
                 #if os(iOS)
@@ -621,7 +636,18 @@ class ContentViewModel: ObservableObject {
                 if(hourlyPay == 0){
                     return
                 }
-                else { // lol this isnt actually using the hourly pay here...
+                else {
+                    
+                    if startDate > Date() {
+                            shiftState = .countdown
+                            // Setup countdown
+                        } else {
+                            shiftState = .inProgress
+                            // Setup timer
+                        }
+                    
+                    
+                    // lol this isnt actually using the hourly pay here...
                     shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
                     sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
                     
@@ -783,3 +809,10 @@ class ContentViewModel: ObservableObject {
         
         
     }
+
+enum ShiftState {
+    case notStarted
+    case countdown
+    case inProgress
+    //case onBreak
+}

@@ -214,7 +214,7 @@ struct DetailView: View {
                             .labelsHidden()
                             .onChange(of: selectedStartDate) { _ in
                                 if selectedStartDate > selectedEndDate {
-                                    selectedEndDate = selectedStartDate
+                                    selectedStartDate = selectedEndDate
                                 }
                                 //shift.shiftStartDate = selectedStartDate
                                 //saveContext() // Save the value of tax percent whenever it changes

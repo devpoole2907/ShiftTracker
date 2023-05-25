@@ -57,9 +57,15 @@ struct ChartView: View {
                         .font(.headline)
                         .bold()
                         .foregroundColor(.gray)
-                    Text("\(String(format: "%.2f", selectedValue))")
-                        .font(.title2)
-                        .bold()
+                            if statsMode == .earnings {
+                                Text("$\(String(format: "%.2f", selectedValue))")
+                                    .font(.title2)
+                                    .bold()
+                            } else {
+                                Text("\(String(format: "%.2f", selectedValue))h")
+                                    .font(.title2)
+                                    .bold()
+                            }
                         }
                 }
                 Spacer()

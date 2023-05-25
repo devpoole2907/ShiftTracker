@@ -32,10 +32,10 @@ struct SettingsView: View {
     
     var body: some View {
         
-        let proButtonColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : Color.orange.opacity(0.8)
+        let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
         
-        
-      
+        let backgroundColor: Color = colorScheme == .dark ? .white : .black
+        let textColor: Color = colorScheme == .dark ? .black : .white
         
         
         
@@ -43,14 +43,14 @@ struct SettingsView: View {
 
                 
                 List{
-                    if !isProVersion{
+                    if !isSubscriptionActive(){
                         Section{
                         Button(action: {
                             showingProView = true // set the state variable to true to show the sheet
                         }) {
                             Group{
                                 ZStack {
-                                    Color.black
+                                    backgroundColor
                                         .cornerRadius(20)
                                         .frame(height: 80)
                                     VStack(spacing: 2) {
@@ -58,29 +58,29 @@ struct SettingsView: View {
                                             Text("ShiftTracker")
                                                 .font(.title2)
                                                 .bold()
-                                                .foregroundColor(Color.white)
+                                                .foregroundColor(textColor)
                                             Text("PRO")
                                                 .font(.title)
                                                 .bold()
-                                                .foregroundColor(Color.orange)
+                                                .foregroundColor(proButtonColor)
                                         }
                                         //.padding(.top, 3)
                                    
                                         Text("Upgrade Now")
                                             .font(.subheadline)
                                             .bold()
-                                            .foregroundColor(.white)
+                                            .foregroundColor(textColor)
                                     }
                                 }
                                 .frame(maxWidth: UIScreen.main.bounds.width - 20)
-                                .shadow(radius: 2, x: 0, y: 1)//maxHeight: 100)
                             }//.padding(.bottom, 75)
                         }
                         }.listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                 }
                     Section{
-                        if isProVersion{
-                            NavigationLink(destination: ProSettingsView(isProVersion: $isProVersion)){
+                        if isSubscriptionActive(){
+                            NavigationLink(destination: ProSettingsView()){
                                 HStack {
                                     Image(systemName: "briefcase")
                                     Spacer().frame(width: 10)
@@ -242,29 +242,24 @@ struct SettingsView: View {
                 }.scrollContentBackground(.hidden)
                 .padding(.horizontal)
                 .listStyle(.plain)
-            
-            
-                
-                
-                
-                
-            
-            //.padding(.vertical, 16)
-           // .navigationBarTitle("Settings", displayMode: .inline)
-               
                 .toolbarRole(.editor)
             
-            .sheet(isPresented: $showingProView) { // present the sheet with ProView
-                if #available(iOS 16.4, *) {
+                .fullScreenCover(isPresented: $showingProView) {
+                    NavigationStack{
                     ProView()
-                        .presentationDetents([.large])
-                        .presentationBackground(.thinMaterial)
-                        .presentationDragIndicator(.visible)
-                        .presentationCornerRadius(50)
+                        .toolbar{
+                            ToolbarItem(placement: .navigationBarLeading){
+                                Button(action: {
+                                    self.showingProView = false
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
+                                        .bold()
+                                }
+                            }
+                        }
                 }
-                else {
-                    ProView()
-                }
+                
             }
         
         
@@ -306,17 +301,15 @@ struct SettingsView_Previews: PreviewProvider {
 
 struct ProSettingsView: View{
     
-    @Binding var isProVersion: Bool
+    @State private var isProVersion: Bool = true
     
     var body: some View{
         NavigationView{
             VStack{
                 Form {
                     Button(action: {
-                        // Update isProVersion boolean value
                         isProVersion.toggle()
-                        // Save updated boolean value to shared user defaults
-                        UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion")
+
                         setUserSubscribed(isProVersion)
                     }) {
                         Text(isProVersion ? "Unsubscribe" : "Upgrade now")

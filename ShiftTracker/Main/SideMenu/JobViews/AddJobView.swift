@@ -488,7 +488,7 @@ struct AddJobView: View {
         print("Selected Address: \(String(describing: selectedAddress))")
         print("New Location Address: \(String(describing: newLocation.address))")
         newLocation.job = newJob
-        newLocation.radius = selectedRadius ?? 75
+        newLocation.radius = selectedRadius
         
         newJob.addToLocations(newLocation)
         

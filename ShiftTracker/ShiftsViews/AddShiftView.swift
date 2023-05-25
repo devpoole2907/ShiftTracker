@@ -212,7 +212,7 @@ struct AddShiftView: View {
                                 .labelsHidden()
                                 .onChange(of: shiftStartDate) { _ in
                                     if shiftStartDate > shiftEndDate {
-                                        shiftStartDate = shiftEndDate
+                                        shiftEndDate = shiftStartDate
                                     }
                                 }
                                 .onAppear {
@@ -237,6 +237,7 @@ struct AddShiftView: View {
                                         shiftEndDate = shiftStartDate
                                     }
                                 }
+                            
                                 .onAppear {
                                     //noteIsFocused = false // Dismiss the text editor when the picker appears
                                 }
@@ -245,11 +246,14 @@ struct AddShiftView: View {
                                 .padding(.vertical, 10)
                                 .background(Color.primary.opacity(0.04),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                
                             
                         }
                     }
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
+                
+                   
                 
                 Section{
                     VStack(alignment: .leading) {
