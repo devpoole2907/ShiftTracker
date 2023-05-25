@@ -43,15 +43,24 @@ struct ChartView: View {
         VStack{
             HStack{
                 VStack(alignment: .leading){
+                if !showSelectionBar {
                     Text("Total")
                         .font(.headline)
                         .bold()
                         .foregroundColor(.gray)
-                        //.padding(.horizontal, -50)
                     Text(chartTitle)
                         .font(.title2)
-                       // .foregroundColor(.gray)
                         .bold()
+                        }
+                        else {
+                        Text("\(selectedDay)")
+                        .font(.headline)
+                        .bold()
+                        .foregroundColor(.gray)
+                    Text("\(String(format: "%.2f", selectedValue))")
+                        .font(.title2)
+                        .bold()
+                        }
                 }
                 Spacer()
                 
@@ -162,7 +171,7 @@ struct ChartView: View {
                     .frame(width: 2, height: geoProxy.size.height * 0.95)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
                     .offset(x: offsetX)
-                Rectangle()
+                /*Rectangle()
                     .foregroundStyle(Color(.systemGray6))
                     .frame(width: 100, height: 50)
                     .cornerRadius(12)
@@ -182,7 +191,7 @@ struct ChartView: View {
                         
                     }.shadow(radius: 3, x: 0, y: 1)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
-                    .offset(x: offsetX - 50, y: offsetY - 50)
+                    .offset(x: offsetX - 50, y: offsetY - 50) */
                 Rectangle().fill(.clear).contentShape(Rectangle()).gesture(DragGesture().onChanged{ value in
                     if !showSelectionBar {
                         showSelectionBar = true
