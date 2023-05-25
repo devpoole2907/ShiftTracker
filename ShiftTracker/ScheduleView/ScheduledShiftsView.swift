@@ -663,6 +663,7 @@ struct ListViewRow: View {
 
     
     var body: some View {
+        Section{
         VStack(alignment: .leading){
             HStack(spacing : 10){
                 Image(systemName: shift.job?.icon ?? "briefcase.circle")
@@ -687,29 +688,34 @@ struct ListViewRow: View {
                 
             }
             
-            Chart{
-                BarMark(
-                    xStart: .value("Start Time", shift.startDate ?? Date()),
-                    xEnd: .value("End Time", shift.endDate ?? Date())
-                    //y: .value("Job", $0.job)
-                ).foregroundStyle(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
-            }.chartXScale(domain: (shift.startDate?.addingTimeInterval(-3600) ?? Date())...(shift.endDate?.addingTimeInterval(3600) ?? Date()))
-                .frame(height: 50)
+            /*   Chart{
+             BarMark(
+             xStart: .value("Start Time", shift.startDate ?? Date()),
+             xEnd: .value("End Time", shift.endDate ?? Date())
+             //y: .value("Job", $0.job)
+             ).foregroundStyle(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
+             }.chartXScale(domain: (shift.startDate?.addingTimeInterval(-3600) ?? Date())...(shift.endDate?.addingTimeInterval(3600) ?? Date()))
+             .frame(height: 50) */
             
             if shift.isRepeating {
-                Button{
+                Button(action:{
                     dismiss()
                     CustomConfirmationAlert(action: {
                         cancelRepeatingShiftSeries(shift: shift)
                     }, title: "End all future repeating shifts for this shift?").present()
-                } label: {
-                    Text("End Repeat").bold()
+                }){
+                    Text("End Repeat")
+                        .bold()
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 5)
+                        .background(Color.primary.opacity(0.04))
+                        .cornerRadius(20)
                 }
             }
             /*  Text("From \(dateFormatter.string(from: shift.startDate ?? Date())) to \(dateFormatter.string(from: shift.endDate ?? Date()))")
              .bold() */
         }
-        
+    }
         
     }
 }
