@@ -225,6 +225,7 @@ struct SettingsView: View {
                             .foregroundColor(.gray.opacity(0.3))
                             .font(.caption)
                     }.listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                     Section{
                         VStack(alignment: .leading){
                             Button(action: {

@@ -70,7 +70,7 @@ struct ChartView: View {
                 }
                 Spacer()
                 
-            }
+            }.offset(x: offsetX)
             
             Chart{
                 if let graphedShifts = graphedShifts {
