@@ -65,6 +65,7 @@ struct MainWithSideBarView: View {
                 
                 HStack(spacing: 0){
                     SideMenu(showMenu: $showMenu, isJobsExpanded: $isJobsExpanded)
+                    .disabled(!showMenu)
                         .environmentObject(authModel)
                         .environmentObject(viewModel)
                         .environmentObject(jobSelectionModel)
@@ -203,45 +204,23 @@ struct MainWithSideBarView: View {
         offset = (gestureOffset != 0 ) ? (gestureOffset + lastStoredOffset < sideBarWidth ? gestureOffset + lastStoredOffset : offset) : offset
     }
     
-    func onEnd(value: DragGesture.Value){
-        let sideBarWidth = getRect().width - 90
-        
-        let translation = value.translation.width
-        
-        withAnimation{
-            if translation > 0{
-                if translation > (sideBarWidth / 2){
-                    offset = sideBarWidth
-                    showMenu = true
-                }
-                else {
-                    
-                    if offset == sideBarWidth{
-                        return
-                    }
-                    
-                    offset = 0
-                    showMenu = false
-                }
-            } else {
-                if -translation > (sideBarWidth / 2){
-                    offset = 0
-                    showMenu = false
-                }
-                else {
-                    
-                    if offset == 0 || !showMenu{
-                        return
-                    }
-                    
-                    offset = sideBarWidth
-                    showMenu = true
-                }
-            }
+func onEnd(value: DragGesture.Value) {
+    let sideBarWidth = getRect().width - 90
+    let translation = value.translation.width
+    let velocity = value.predictedEndLocation.x - value.location.x
+
+    withAnimation {
+        if (translation + velocity / 2 > sideBarWidth / 2) {
+            offset = sideBarWidth
+            showMenu = true
+        } else {
+            offset = 0
+            showMenu = false
         }
-        
-        lastStoredOffset = offset
     }
+
+    lastStoredOffset = offset
+}
     
     @ViewBuilder
     func TabButton(tab: Tab, useSystemImage: Bool = false) -> some View {
