@@ -70,7 +70,8 @@ struct ChartView: View {
                 }
                 Spacer()
                 
-            }.offset(x: offsetX)
+            }.background(showSelectionBar ? Color.primary.opacity(0.04) : Color.clear)
+            .offset(x: offsetX)
             
             Chart{
                 if let graphedShifts = graphedShifts {
@@ -174,7 +175,7 @@ struct ChartView: View {
         .chartOverlay { pr in
             GeometryReader { geoProxy in
                 Rectangle().foregroundStyle(lineColor)
-                    .frame(width: 2, height: geoProxy.size.height * 0.95)
+                    .frame(width: 2, height: geoProxy.size.height * 0.65)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
                     .offset(x: offsetX)
                 /*Rectangle()
@@ -241,6 +242,7 @@ struct ChartView: View {
                 }
                 .onEnded({ _ in
                     showSelectionBar = false
+                    offsetX = 0.0
                 }))
             }
             
