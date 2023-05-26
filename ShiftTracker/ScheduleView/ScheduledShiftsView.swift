@@ -696,7 +696,7 @@ struct ListViewRow: View {
                         .padding(.vertical, 5)
                         .background(Color.primary.opacity(0.04))
                         .cornerRadius(20)
-                }
+                }.padding()
                 Spacer()
                 }
             }

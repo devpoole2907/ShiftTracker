@@ -46,7 +46,6 @@ struct MainWithSideBarView: View {
     
     @State private var isSubscriptionChecked: Bool = false
     
-    let edgeWidth: CGFloat = 50
     
     private func checkIfLocked() {
             if authEnabled {
@@ -135,9 +134,9 @@ struct MainWithSideBarView: View {
                 .gesture(
     navigationState.gestureEnabled ? DragGesture()
         .updating($gestureOffset, body: { value, out, _ in
-            if value.startLocation.x <= edgeWidth { 
+            
             out = value.translation.width
-            }
+            
         })
         .onEnded(onEnd(value:)) : nil
 )
