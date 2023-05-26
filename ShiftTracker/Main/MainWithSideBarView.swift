@@ -133,7 +133,9 @@ struct MainWithSideBarView: View {
                 .gesture(
     navigationState.gestureEnabled ? DragGesture()
         .updating($gestureOffset, body: { value, out, _ in
+            if value.startLocation.x <= edgeWidth { 
             out = value.translation.width
+            }
         })
         .onEnded(onEnd(value:)) : nil
 )
