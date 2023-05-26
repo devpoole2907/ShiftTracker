@@ -46,6 +46,8 @@ struct MainWithSideBarView: View {
     
     @State private var isSubscriptionChecked: Bool = false
     
+    let edgeWidth: CGFloat = 50
+    
     private func checkIfLocked() {
             if authEnabled {
                 showingLockedView = true

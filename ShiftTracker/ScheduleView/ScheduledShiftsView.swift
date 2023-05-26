@@ -681,7 +681,25 @@ struct ListViewRow: View {
                     
                     
                 }
-                
+                            if shift.isRepeating {
+            VStack(alignment: .trailing){
+                Button(action:{
+                    dismiss()
+                    CustomConfirmationAlert(action: {
+                        cancelRepeatingShiftSeries(shift: shift)
+                    }, title: "End all future repeating shifts for this shift?").present()
+                }){
+                    Text("End Repeat")
+                    .font(.caption)
+                        .bold()
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 5)
+                        .background(Color.primary.opacity(0.04))
+                        .cornerRadius(20)
+                }
+                Spacer()
+                }
+            }
             }
             
             /*   Chart{
@@ -693,21 +711,7 @@ struct ListViewRow: View {
              }.chartXScale(domain: (shift.startDate?.addingTimeInterval(-3600) ?? Date())...(shift.endDate?.addingTimeInterval(3600) ?? Date()))
              .frame(height: 50) */
             
-            if shift.isRepeating {
-                Button(action:{
-                    dismiss()
-                    CustomConfirmationAlert(action: {
-                        cancelRepeatingShiftSeries(shift: shift)
-                    }, title: "End all future repeating shifts for this shift?").present()
-                }){
-                    Text("End Repeat")
-                        .bold()
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 5)
-                        .background(Color.primary.opacity(0.04))
-                        .cornerRadius(20)
-                }
-            }
+
             /*  Text("From \(dateFormatter.string(from: shift.startDate ?? Date())) to \(dateFormatter.string(from: shift.endDate ?? Date()))")
              .bold() */
         }
