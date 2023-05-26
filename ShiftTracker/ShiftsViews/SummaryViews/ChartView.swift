@@ -53,6 +53,7 @@ struct ChartView: View {
                         .bold()
                         }
                         else {
+                        VStack(alignment: .leading){
                         Text("\(selectedDay)")
                         .font(.headline)
                         .bold()
@@ -66,11 +67,14 @@ struct ChartView: View {
                                     .font(.title2)
                                     .bold()
                             }
+                            }.padding(.horizontal)
+                            .background(showSelectionBar ? Color.primary.opacity(0.04) : Color.clear)
+            .cornerRadius(20)
                         }
                 }
                 Spacer()
                 
-            }.background(showSelectionBar ? Color.primary.opacity(0.04) : Color.clear)
+            }
             .offset(x: offsetX)
             
             Chart{
@@ -175,7 +179,7 @@ struct ChartView: View {
         .chartOverlay { pr in
             GeometryReader { geoProxy in
                 Rectangle().foregroundStyle(lineColor)
-                    .frame(width: 2, height: geoProxy.size.height * 0.65)
+                    .frame(width: 2, height: geoProxy.size.height * 0.95)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
                     .offset(x: offsetX)
                 /*Rectangle()
