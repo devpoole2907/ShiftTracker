@@ -399,6 +399,9 @@ struct ContentView: View {
                     sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
                 }
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    navigationState.gestureEnabled = true
+                }
         }
         .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { notification in
             

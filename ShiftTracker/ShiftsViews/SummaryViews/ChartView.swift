@@ -67,9 +67,9 @@ struct ChartView: View {
                                     .font(.title2)
                                     .bold()
                             }
-                            }.padding(.horizontal)
+                            }.padding()
                             .background(showSelectionBar ? Color.primary.opacity(0.04) : Color.clear)
-            .cornerRadius(20)
+            .cornerRadius(12)
                         }
                 }
                 Spacer()

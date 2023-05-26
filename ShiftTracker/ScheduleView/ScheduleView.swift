@@ -47,11 +47,16 @@ struct ScheduleView: View {
                         Section{
                             CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents, someScheduledShifts: scheduledShifts)
                                 .id(scheduledShifts.count)
+                                .onAppear{
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    navigationState.gestureEnabled = true
+                }
+                }
                             
                         }
                         
                         .listRowBackground(Color.clear)
-                        
+                        ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu).listRowBackground(Color.clear)
                         
                     }.opacity(showAllScheduledShiftsView ? 0 : 1)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
@@ -64,12 +69,12 @@ struct ScheduleView: View {
                 }
             }
             
-            .sheet(isPresented: $displayEvents) {
+            /*.sheet(isPresented: $displayEvents) {
                 ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu)
                     .presentationDetents([.medium, .large])
                     .presentationCornerRadius(50)
                     .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-            }
+            }*/
             
             .navigationBarTitle("Schedule", displayMode: .inline)
             .toolbar{
