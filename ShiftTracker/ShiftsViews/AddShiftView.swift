@@ -7,10 +7,14 @@
 
 import SwiftUI
 
+
 struct AddShiftView: View {
+    
+    let breaksManager = BreaksManager()
+    
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
-    
+    @Environment(\.colorScheme) var colorScheme
 
     
     @State private var shiftStartDate = Date()
@@ -23,6 +27,9 @@ struct AddShiftView: View {
     @State private var duration: Double = 0.0
     @State private var taxPercentage: Double
     @State private var autoCalcPay: Bool = true
+    @State private var isAddingBreak = false
+    
+    var job: Job
     
     @FocusState private var payIsFocused: Bool
     @FocusState private var tipIsFocused: Bool
@@ -30,6 +37,8 @@ struct AddShiftView: View {
     
     @AppStorage("TipsEnabled") private var tipsEnabled: Bool = true
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
+    
+    @State private var tempBreaks: [TempBreak] = []
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -43,36 +52,38 @@ struct AddShiftView: View {
     }
     
     var totalPay: Double {
-        let hoursWorked = shiftDuration / 3600
-        return hoursWorked * (Double(hourlyPay) ?? 0.0)
+        let totalHoursWorked = shiftDuration / 3600 - totalBreakDuration(for: tempBreaks) / 3600
+        return totalHoursWorked * (Double(hourlyPay) ?? 0.0)
     }
     
     var taxedPay: Double {
         return totalPay - (totalPay * taxPercentage / 100.0)
     }
     
-    private func saveShift() {
+    private func saveShift(job: Job) {
         let newShift = OldShift(context: viewContext)
         newShift.shiftStartDate = shiftStartDate
         newShift.shiftEndDate = shiftEndDate
-        newShift.breakStartDate = breakStartDate
-        newShift.breakEndDate = breakEndDate
         newShift.hourlyPay = Double(hourlyPay) ?? 0.0
         newShift.tax = taxPercentage
         newShift.totalTips = Double(totalTips) ?? 0.0
+
+
+            newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
         
-        if autoCalcPay {
-            // review this, might not work correctly if no date is entered for breaks
-            let newBreakElapsed = newShift.breakEndDate?.timeIntervalSince(newShift.breakStartDate ?? Date())
-            newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0) - ( newBreakElapsed ?? 0.0)
-            newShift.totalPay = (newShift.duration / 3600.0) * newShift.hourlyPay
+        let unpaidBreaks = (tempBreaks).filter { $0.isUnpaid == true }
+        let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate) }
+        let paidDuration = newShift.duration - totalBreakDuration
+        newShift.totalPay = (paidDuration / 3600.0) * newShift.hourlyPay
             newShift.taxedPay = newShift.totalPay - (newShift.totalPay * newShift.tax / 100.0)
-        }
-        else {
-            newShift.taxedPay = taxedPay
-            newShift.totalPay = totalPay
-        }
         
+        newShift.job = job
+            
+            for tempBreak in tempBreaks {
+                if let breakEndDate = tempBreak.endDate {
+                    breaksManager.createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
+                }
+            }
         
         do {
             try viewContext.save()
@@ -96,13 +107,24 @@ struct AddShiftView: View {
     init(job: Job){
         _hourlyPay = State(initialValue: "\(job.hourlyPay)")
         _taxPercentage = State(initialValue: job.tax)
+        self.job = job
     }
     
+    func totalBreakDuration(for tempBreaks: [TempBreak]) -> TimeInterval {
+        let unpaidBreaks = tempBreaks.filter { $0.isUnpaid == true }
+        let totalDuration = unpaidBreaks.reduce(0) { (sum, breakItem) -> TimeInterval in
+            let breakDuration = breakItem.endDate?.timeIntervalSince(breakItem.startDate)
+            return sum + (breakDuration ?? 0)
+        }
+        return totalDuration
+    }
+
     
     
     var body: some View {
         
         var timeDigits = digitsFromTimeString(timeString: shiftDuration.stringFromTimeInterval())
+        var breakDigits = digitsFromTimeString(timeString: totalBreakDuration(for: tempBreaks).stringFromTimeInterval())
         
         NavigationStack {
             ZStack{
@@ -170,7 +192,40 @@ struct AddShiftView: View {
                             // }
                             
                             Divider().frame(maxWidth: 200)
+                            if totalBreakDuration(for: tempBreaks) > 0{
+                            HStack(spacing: 0) {
+                                ForEach(0..<timeDigits.count, id: \.self) { index in
+                                    FuckingRollingDigitAgain(digit: timeDigits[index])
+                                        .frame(width: 20, height: 30)
+                                        .mask(AnotherFuckingFadeMaskBecauseXcodeIsGood())
+                                    if index == 1 || index == 3 {
+                                        Text(":")
+                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                    }
+                                }
+                            }
+                            .foregroundColor(.orange)
+                            //.frame(width: 250, height: 70)
+                            .frame(maxWidth: .infinity)
+                    
                             
+                            HStack(spacing: 0) {
+                                ForEach(0..<breakDigits.count, id: \.self) { index in
+                                    RollingDigit(digit: breakDigits[index])
+                                        .frame(width: 9, height: 14)
+                                        .mask(FadeMask())
+                                    if index == 1 || index == 3 {
+                                        Text(":")
+                                            .font(.system(size: 12, weight: .bold).monospacedDigit())
+                                    }
+                                }
+                            }
+                            .foregroundColor(.indigo)
+                            //.frame(width: 250, height: 70)
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom)
+                            
+                        } else {
                             HStack(spacing: 0) {
                                 ForEach(0..<timeDigits.count, id: \.self) { index in
                                     FuckingRollingDigitAgain(digit: timeDigits[index])
@@ -186,8 +241,7 @@ struct AddShiftView: View {
                             //.frame(width: 250, height: 70)
                             .frame(maxWidth: .infinity)
                             .padding(.bottom)
-                            
-                            
+                        }
                             
                             
                             
@@ -353,6 +407,40 @@ struct AddShiftView: View {
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                 
+                HStack{
+                    Text("Breaks:")
+                        .bold()
+                    
+                        .padding(.vertical, 5)
+                    Spacer()
+                    Button(action: {
+                        isAddingBreak = true
+                    }) {
+                        Image(systemName: "plus")
+                            .bold()
+                    }
+                }.font(.title2)
+                    .padding(.horizontal, 5)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .sheet(isPresented: $isAddingBreak){
+                        // view goes here
+                        
+                       // EmptyView()
+                        AddTempBreakView(tempBreaks: $tempBreaks, isAddingBreak: $isAddingBreak, startDate: shiftStartDate, endDate: shiftEndDate)
+                            .presentationDetents([ .fraction(0.4)])
+                           .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                            .presentationCornerRadius(50)
+                            .presentationDragIndicator(.visible)
+                    }
+                TempBreaksListView(breaks: $tempBreaks)
+             /*   if let breaks = shift.breaks as? Set<Break> {
+                    let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
+                    BreaksListView(breaks: sortedBreaks, isEditing: $isEditing, shift: shift)
+                }*/
+                
+                Spacer()
+                    .listRowBackground(Color.clear)
                 
                 /*   Section(header: Text("Break Details")) {
                  DatePicker("Break Start", selection: $breakStartDate, displayedComponents: [.date, .hourAndMinute])
@@ -397,7 +485,8 @@ struct AddShiftView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: saveShift) {
+                    Button(action: {saveShift(job: job)
+                    }) {
                     Image(systemName: "folder.badge.plus")
                     .bold()
                     .padding()
@@ -484,3 +573,169 @@ struct AddShiftView_Previews: PreviewProvider {
     }
 }
 */
+
+struct AddTempBreakView: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    @Environment(\.managedObjectContext) private var context
+    
+    @Binding var tempBreaks: [TempBreak]
+    
+    @State private var newBreakStartDate = Date()
+    @State private var newBreakEndDate = Date().addingTimeInterval(10 * 60)
+    @State private var isUnpaid = false
+    @Binding var isAddingBreak: Bool
+    
+    let startDate: Date
+    let endDate: Date
+    
+    var body: some View{
+        
+        NavigationStack{
+            ScrollView {
+                
+                VStack(alignment: .leading, spacing: 15){
+
+                    VStack(alignment: .leading){
+                        HStack{
+                            Text("Start:")
+                                .bold()
+                                .frame(width: 50, alignment: .leading)
+                            //.padding(.horizontal, 15)
+                                .padding(.vertical, 5)
+                            DatePicker("Start:", selection: $newBreakStartDate, in: startDate...endDate, displayedComponents: [.date, .hourAndMinute])
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .onChange(of: newBreakStartDate) { newValue in
+                                    if newBreakEndDate < newValue || newBreakEndDate > endDate {
+                                        newBreakEndDate = newValue.addingTimeInterval(10 * 60)
+                                    }
+                                }
+
+                       
+
+                        }
+                        HStack{
+                            Text("End:")
+                                .bold()
+                                .frame(width: 50, alignment: .leading)
+                            //.padding(.horizontal, 15)
+                            DatePicker("End:", selection: $newBreakEndDate, in: ...endDate, displayedComponents: [.date, .hourAndMinute])
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .onChange(of: newBreakEndDate) { newValue in
+                                    if newValue < newBreakStartDate || newValue > endDate {
+                                        newBreakEndDate = newBreakStartDate.addingTimeInterval(10 * 60)
+                                    }
+                                }
+
+                        }
+                        Picker(selection: $isUnpaid, label: Text("Break Type")) {
+                            Text("Paid").tag(false)
+                            Text("Unpaid").tag(true)
+                        }.pickerStyle(SegmentedPickerStyle())
+                        
+                    }.padding()
+                        .background(Color.primary.opacity(0.04),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    
+                    Button(action: {
+                        let currentBreak = TempBreak(startDate: newBreakStartDate, endDate: newBreakEndDate, isUnpaid: isUnpaid)
+                        tempBreaks.append(currentBreak)
+                        isAddingBreak = false
+                    }) {
+                        Text("Add Break")
+                        
+                            .bold()
+                        
+                    }.listRowSeparator(.hidden)
+                    
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(colorScheme == .dark ? .white : .black)
+                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                        .cornerRadius(20)
+                    
+                }.listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .padding(20)
+                
+                
+            }.scrollContentBackground(.hidden)
+                .navigationBarTitle("Add Break", displayMode: .inline)
+        }
+    }
+}
+
+struct TempBreaksListView: View {
+    @Binding var breaks: [TempBreak]
+    
+    let breakManager = BreaksManager()
+    
+    @State private var newBreakStartDate = Date()
+    @State private var newBreakEndDate = Date()
+    @State private var isUnpaid = false
+    
+    private func delete(at offsets: IndexSet) {
+        breaks.remove(atOffsets: offsets)
+    }
+    
+    func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy   h:mm a"
+        return formatter.string(from: date)
+    }
+
+    
+    var body: some View {
+        ForEach(breaks, id: \.self) { breakItem in
+            Section{
+                VStack(alignment: .leading){
+                    VStack(alignment: .leading, spacing: 8){
+                        if breakItem.isUnpaid{
+                            Text("Unpaid")
+                                .font(.subheadline)
+                                .foregroundColor(.indigo)
+                                .bold()
+                        }
+                        else {
+                            Text("Paid")
+                                .font(.subheadline)
+                                .foregroundColor(.indigo)
+                                .bold()
+                        }
+                        Text("\(breakManager.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")
+                            .listRowSeparator(.hidden)
+                            .font(.subheadline)
+                            .bold()
+                    }
+                    Divider()
+                    HStack{
+                        Text("Start:")
+                            .bold()
+                        //.padding(.horizontal, 15)
+                            .frame(width: 50, alignment: .leading)
+                            .padding(.vertical, 5)
+                        
+                        Text(formatDate(breakItem.startDate))
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                    HStack{
+                        Text("End:")
+                            .bold()
+                            .frame(width: 50, alignment: .leading)
+                        //.padding(.horizontal, 15)
+                            .padding(.vertical, 5)
+                        Text(formatDate(breakItem.endDate ?? Date()))
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
+                }.padding()
+                    .background(Color.primary.opacity(0.04),in:
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                
+            }.listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+        }.onDelete(perform: delete)
+    }
+}

@@ -43,7 +43,6 @@ struct ChartView: View {
         VStack{
             HStack{
                 VStack(alignment: .leading){
-                if !showSelectionBar {
                     Text("Total")
                         .font(.headline)
                         .bold()
@@ -51,31 +50,13 @@ struct ChartView: View {
                     Text(chartTitle)
                         .font(.title2)
                         .bold()
-                        }
-                        else {
-                        VStack(alignment: .leading){
-                        Text("\(selectedDay)")
-                        .font(.headline)
-                        .bold()
-                        .foregroundColor(.gray)
-                            if statsMode == .earnings {
-                                Text("$\(String(format: "%.2f", selectedValue))")
-                                    .font(.title2)
-                                    .bold()
-                            } else {
-                                Text("\(String(format: "%.2f", selectedValue))h")
-                                    .font(.title2)
-                                    .bold()
-                            }
-                            }.padding()
-                            .background(showSelectionBar ? Color.primary.opacity(0.04) : Color.clear)
-            .cornerRadius(12)
-                        }
+                        
                 }
                 Spacer()
                 
             }
-            .offset(x: offsetX)
+            .opacity(showSelectionBar ? 0.0 : 1.0)
+           // .offset(x: offsetX)
             
             Chart{
                 if let graphedShifts = graphedShifts {
@@ -178,34 +159,41 @@ struct ChartView: View {
         }
         .chartOverlay { pr in
             GeometryReader { geoProxy in
-                Rectangle().foregroundStyle(lineColor)
+                Rectangle().foregroundColor(.primary.opacity(0.04))
                     .frame(width: 2, height: geoProxy.size.height * 0.95)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
                     .offset(x: offsetX)
-                /*Rectangle()
-                    .foregroundStyle(Color(.systemGray6))
-                    .frame(width: 100, height: 50)
+                Rectangle()
+                    .foregroundStyle(Color.primary.opacity(0.04))
+                    .frame(width: 130, height: 55)
                     .cornerRadius(12)
                     .overlay {
-                        VStack(spacing: 5) {
-                                    Text("\(selectedDay)")
-                               
-                                .bold()
-                                .font(.caption)
-                            Divider()
-                            Text("\(String(format: "%.2f", selectedValue))")
-                                       
-                                        .bold()
-                                        .font(.caption)
-                        }.padding()
+                        VStack(alignment: .leading){
+                        Text("\(selectedDay)")
+                        .font(.headline)
+                        .bold()
+                        .foregroundColor(.gray)
+                            if statsMode == .earnings {
+                                Text("$\(String(format: "%.2f", selectedValue))")
+                                    .font(.title2)
+                                    .bold()
+                            } else {
+                                Text("\(String(format: "%.2f", selectedValue))h")
+                                    .font(.title2)
+                                    .bold()
+                            }
+                            }.padding()
+                            
                         
-                        
+                        Spacer()
                     }.shadow(radius: 3, x: 0, y: 1)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
-                    .offset(x: offsetX - 50, y: offsetY - 50) */
+                    .offset(x: offsetX - 50)//, y: offsetY - 50)
                 Rectangle().fill(.clear).contentShape(Rectangle()).gesture(DragGesture().onChanged{ value in
                     if !showSelectionBar {
-                        showSelectionBar = true
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showSelectionBar = true
+                        }
                     }
                     let origin = geoProxy[pr.plotAreaFrame].origin
                     let location = CGPoint(
@@ -245,8 +233,12 @@ struct ChartView: View {
                     
                 }
                 .onEnded({ _ in
-                    showSelectionBar = false
-                    offsetX = 0.0
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showSelectionBar = false
+                            offsetX = 0.0
+                        }
+                    }
                 }))
             }
             

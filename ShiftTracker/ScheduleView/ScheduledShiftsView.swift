@@ -46,14 +46,16 @@ struct ScheduledShiftsView: View {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
     }
     
-
-
+    
+    
     
     var body: some View {
+        NavigationStack{
             Group {
                 if let _ = dateSelected {
                     let shifts = shiftsForSelectedDate()
                     if !shifts.isEmpty {
+                        List{
                             ForEach(shifts, id: \.objectID) { shift in
                                 ListViewRow(shift: shift)
                                     .swipeActions {
@@ -67,6 +69,7 @@ struct ScheduledShiftsView: View {
                                     }
                                     .listRowBackground(Color.primary.opacity(0.05))
                             }
+                        }.scrollContentBackground(.hidden)
                     } else {
                         Text("You have no shifts scheduled on this date.")
                             .bold()
@@ -74,14 +77,14 @@ struct ScheduledShiftsView: View {
                     }
                 }
             }
-            /*.navigationBarTitle(dateSelected?.date?.formatted(date: .long, time: .omitted) ?? "", displayMode: .inline) */
-            /*.toolbar {
+            .navigationBarTitle(dateSelected?.date?.formatted(date: .long, time: .omitted) ?? "", displayMode: .inline)
+            .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button(action: {
                         if jobs.isEmpty {
                             presentationMode.wrappedValue.dismiss()
                             OkButtonPopupWithAction(title: "Create a job before scheduling a shift.", action: {showMenu.toggle()}).present()
-                                
+                            
                         } else {
                             showCreateShiftSheet = true
                         }
@@ -90,9 +93,9 @@ struct ScheduledShiftsView: View {
                             .bold()
                     }.padding()
                 }
-            }*/
+            }
         }
-        /*.sheet(isPresented: $showCreateShiftSheet) {
+        .sheet(isPresented: $showCreateShiftSheet) {
             CreateShiftForm(jobs: jobs, dateSelected: dateSelected?.date, onShiftCreated: {
                 showCreateShiftSheet = false
             })
@@ -101,8 +104,8 @@ struct ScheduledShiftsView: View {
             .presentationCornerRadius(50)
             .presentationBackground(colorScheme == .dark ? .black : .white)
             .presentationDragIndicator(.visible)
-        }*/
-    
+        }
+}
 }
 
 struct CreateShiftForm: View {
@@ -696,8 +699,7 @@ struct ListViewRow: View {
                         .padding(.vertical, 5)
                         .background(Color.primary.opacity(0.04))
                         .cornerRadius(20)
-                }.padding()
-                Spacer()
+                }//.padding()
                 }
             }
             }

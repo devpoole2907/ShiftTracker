@@ -9,12 +9,16 @@ import SwiftUI
 import Firebase
 import AuthenticationServices
 import PopupView
+import CoreLocation
 
 struct IntroMainView: View {
     
     @State private var activeIntro: PageIntro = pageIntros[0]
     
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.colorScheme) private var colorScheme
     
     @State private var keyboardHeight: CGFloat = 0
     
@@ -25,6 +29,8 @@ struct IntroMainView: View {
     
     @Binding var isFirstLaunch: Bool
     
+    @State private var showAddJobView = false
+    
     @EnvironmentObject var authModel: FirebaseAuthModel
     
     var body: some View {
@@ -33,121 +39,39 @@ struct IntroMainView: View {
             
             IntroView(intro: $activeIntro, size: size){
                 VStack(spacing: 10){
-                 /*   CustomTextField(text: $emailID, hint: "Email Address", leadingIcon: Image(systemName: "at.circle.fill"))
-                    
-                    CustomTextField(text: $password, hint: "Password", leadingIcon: Image(systemName: "lock.fill"), isPassword: true)
-                    
-                    Spacer(minLength: 10)
-                    
-                    HStack{
-                        Text("Don't have an account?")
-                        Button{
-                           // register()
-                            
-                            createAccount.toggle()
-                            
-                        } label: {
-                            Text("Sign up")
-                                .bold()
-                        }
-                    }.padding() */
-                    
                     Button{
-                        //login()
                         
-                        isFirstLaunch = false
+                        
+                        showAddJobView = true
+                        
+                       // withAnimation(.easeOut(duration: 0.8)){
+                            
+                            
+                            
+                            //isFirstLaunch = false
+                        //}
                     } label: {
                         Text("Continue")
                             .fontWeight(.semibold)
-                            .foregroundColor(.white)
+                            .foregroundColor(colorScheme == .dark ? .black : .white)
                             .padding(.vertical, 15)
                             .frame(maxWidth: .infinity)
-                            .background{
-                                Capsule()
-                                    .fill(.black)
-                            }
+                            .background(colorScheme == .dark ? .white : .black)
+                            .cornerRadius(20)
                     }
-                   /* Divider()
-                    Text("OR")
-                    Divider()
-                    
-                    HStack{
-                        Image(systemName: "applelogo")
-                            .foregroundColor(.white)
-                        Text("Sign in with Apple")
-                    }
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .padding(.vertical, 15)
-                    .frame(maxWidth: .infinity)
-                    .background{
-                        Capsule()
-                            .fill(.black)
-                    }
-                    .overlay(
-                        SignInWithAppleButton { request in
-                            authModel.handleSignInWithAppleRequest(request)
-                        } onCompletion: { result in
-                            authModel.handleSignInWithAppleCompletion(result)
-                        }
-                        .signInWithAppleButtonStyle(.white)
-                        .blendMode(.overlay)
-                    )
-                    
-                    HStack{
-                        Button{
-                            SkipLogInPopup(action: authModel.signInAnonymously).present()
-                        } label: {
-                            Text("Skip sign in")
-                                .bold()
-                        }
-                    }.padding() */
-                    
-                    
-                    
-                   /* Button{
-                        register()
-                    } label: {
-                        HStack{
-                            Image(systemName: "applelogo")
-                                .foregroundColor(.white)
-                            Text("Sign in with Apple")
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 15)
-                        }
-                            .frame(maxWidth: .infinity)
-                            .background{
-                                Capsule()
-                                    .fill(.black)
-                            }
-                    } */
                     
                 }.padding(.top, 25)
-                  /*  .onAppear{
-                        Auth.auth().addStateDidChangeListener{ auth, user in
-                            if user != nil{
-                                userIsLoggedIn.toggle()
-                            }
-                        }
-                    } */
             }
-            
-            /*.fullScreenCover(isPresented: $createAccount){
-                RegisterView()
-                    .environmentObject(authModel)
-                    .padding(15)
-                
-                    //.presentationBackground(.thinMaterial)
-                    .interactiveDismissDisabled(false)
-            } */
-            
+            .fullScreenCover(isPresented: $showAddJobView){
+                AddJobView()
+                    .onDisappear{
+                        isFirstLaunch = false
+                    }
+            }
             
             
         }
         .padding(15)
-       // .ignoresSafeArea(.keyboard)
-        // when adding login view, implement keyboard push view from kavsoft app intro animations video
     }
     
     func login(){
@@ -166,11 +90,15 @@ struct IntroMainView: View {
 
 struct IntroMainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainWithSideBarView()
+        MainWithSideBarView(currentTab: .constant(.home))
     }
 }
 
 struct IntroView<ActionView: View>: View {
+    
+    @State private var locationManager = CLLocationManager()
+    
+    @Environment(\.colorScheme) private var colorScheme
     
     @Binding var intro: PageIntro
     
@@ -225,17 +153,29 @@ struct IntroView<ActionView: View>: View {
                         Spacer(minLength: 10)
                         
                         Button{
+                            
+                            if filteredPages.firstIndex(of: intro) == 4 {
+                                locationManager.requestAlwaysAuthorization()
+                            } else if filteredPages.firstIndex(of: intro) == 5 {
+                                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                                    if success {
+                                        print("All set!")
+                                    } else if let error = error {
+                                        print(error.localizedDescription)
+                                    }
+                                }
+                            }
                             changeIntro()
+                                
+                                
                         } label: {
                             Text("Next")
                             .fontWeight(.semibold)
-                            .foregroundColor(.white)
+                            .foregroundColor(colorScheme == .dark ? .black : .white)
                             .frame(width: size.width * 0.4)
                             .padding(.vertical, 15)
-                            .background{
-                                Capsule()
-                                    .fill(.black)
-                            }
+                            .background(colorScheme == .dark ? .white : .black)
+                            .cornerRadius(20)
                         }.frame(maxWidth: .infinity)
                         
                 
@@ -271,7 +211,7 @@ struct IntroView<ActionView: View>: View {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.black)
+                        .foregroundColor(.accentColor)
                         .contentShape(Rectangle())
                 }
                 .padding(10)

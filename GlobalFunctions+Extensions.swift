@@ -15,6 +15,9 @@ import CoreData
 import Haptics
 import UserNotifications
 
+
+
+
 func isSubscriptionActive() -> Bool {
     
     let subscriptionStatus = UserDefaults.standard.bool(forKey: "subscriptionStatus")
@@ -22,6 +25,7 @@ func isSubscriptionActive() -> Bool {
 }
 
 func setUserSubscribed(_ subscribed: Bool) {
+    
     let userDefaults = UserDefaults.standard
     userDefaults.set(subscribed, forKey: "subscriptionStatus")
     if subscribed{
@@ -447,7 +451,7 @@ class ShiftNotificationManager {
                let startDate = shift.startDate, let jobName = shift.job?.name {
                 content.title = "\(jobName) Shift Reminder"
                 content.body = "Your scheduled shift starts at \(startDate)"
-                
+                content.interruptionLevel = .timeSensitive
                 let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: reminderDate)
                 let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
                 
@@ -480,79 +484,54 @@ class ShiftNotificationManager {
            }
        }
     
-}
+    // used for roster reminding notifications
+    
+    func updateRosterNotifications(viewContext: NSManagedObjectContext) {
+        let center = UNUserNotificationCenter.current()
 
-class BreaksManager {
-    static let shared = BreaksManager()
-    
-    let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter
-    }()
-    
-     func formattedDate(_ date: Date) -> String {
-            dateFormatter.string(from: date)
-        }
-    
-    func deleteBreak(context: NSManagedObjectContext, breakToDelete: Break) {
-        // Remove the relationship between the break and its shift
-        if let oldShift = breakToDelete.oldShift {
-            oldShift.removeFromBreaks(breakToDelete)
-        }
+        // Cancel all existing notifications
+        center.removePendingNotificationRequests(withIdentifiers: ["roster"])
 
-        // Delete the break from the context
-        context.delete(breakToDelete)
-
-        // Save the changes
-        do {
-            try context.save()
-        } catch {
-            print("Error deleting break: \(error)")
-        }
-    }
-    
-    func addBreak(oldShift: OldShift, startDate: Date, endDate: Date, isUnpaid: Bool, context: NSManagedObjectContext) {
-        let newBreak = Break(context: context)
-        newBreak.startDate = startDate
-        newBreak.endDate = endDate
-        newBreak.isUnpaid = isUnpaid
-        oldShift.addToBreaks(newBreak)
+        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "rosterReminder == true")
 
         do {
-            try context.save()
-        } catch {
-            print("Error adding break: \(error)")
-        }
-    }
-    
-     func saveChanges(in context: NSManagedObjectContext) {
-            do {
-                try context.save()
-            } catch {
-                print("Error saving changes: \(error)")
+            let jobs = try viewContext.fetch(fetchRequest)
+
+            // Loop through the jobs and reschedule
+            for job in jobs {
+                if let time = job.rosterTime,
+                   let nextDate = nextDate(dayOfWeek: Int(job.rosterDayOfWeek), time: time) {
+                    
+                    // Schedule the notification
+                    
+                    let content = UNMutableNotificationContent()
+                    content.title = "Time to check your roster"
+                    content.body = "Open the app to schedule your shifts for \(job.name ?? "")"
+
+                    content.userInfo = ["url": "shifttrackerapp://schedule"]
+                    content.categoryIdentifier = "rosterCategory"
+                    
+                    
+                    let triggerDate = Calendar.current.dateComponents([.weekday, .hour, .minute], from: nextDate)
+                    let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
+
+                    let request = UNNotificationRequest(identifier: "roster", content: content, trigger: trigger)
+                    center.add(request, withCompletionHandler: { (error) in
+                        if let error = error {
+                            // handle the error
+                            print("Notification error: ", error)
+                        }
+                    })
+                }
             }
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
         }
-    
-    
-    
-    func breakLengthInMinutes(startDate: Date?, endDate: Date?) -> String {
-        guard let start = startDate, let end = endDate else { return "N/A" }
-        let duration = end.timeIntervalSince(start)
-        let minutes = Int(duration) / 60
-        return "\(minutes) minutes"
-    }
-    
-    func previousBreakEndDate(for breakItem: Break, breaks: [Break]) -> Date? {
-        let sortedBreaks = breaks.sorted { $0.startDate! < $1.startDate! }
-        if let index = sortedBreaks.firstIndex(of: breakItem), index > 0 {
-            return sortedBreaks[index - 1].endDate
-        }
-        return nil
     }
     
 }
+
 
 extension NSNotification.Name {
     static let didEnterRegion = NSNotification.Name("didEnterRegionNotification")
@@ -687,46 +666,6 @@ func nextDate(dayOfWeek: Int, time: Date) -> Date? {
     let nextDate = calendar.nextDate(after: now, matching: dateComponents, matchingPolicy: .nextTime)
 
     return nextDate
-}
-
-func updateRosterNotifications(viewContext: NSManagedObjectContext) {
-    let center = UNUserNotificationCenter.current()
-
-    // Cancel all existing notifications
-    center.removePendingNotificationRequests(withIdentifiers: ["roster"])
-
-    let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-    fetchRequest.predicate = NSPredicate(format: "rosterReminder == true")
-
-    do {
-        let jobs = try viewContext.fetch(fetchRequest)
-
-        // Loop through the jobs and reschedule
-        for job in jobs {
-            if let time = job.rosterTime,
-               let nextDate = nextDate(dayOfWeek: Int(job.rosterDayOfWeek), time: time) {
-                
-                // Schedule the notification
-                
-                let content = UNMutableNotificationContent()
-                content.title = "Time to check your roster"
-                content.body = "Open the app to schedule your shifts for \(job.name ?? "")"
-
-                let triggerDate = Calendar.current.dateComponents([.weekday, .hour, .minute], from: nextDate)
-                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
-
-                let request = UNNotificationRequest(identifier: "roster", content: content, trigger: trigger)
-                center.add(request, withCompletionHandler: { (error) in
-                    if let error = error {
-                        // handle the error
-                        print("Notification error: ", error)
-                    }
-                })
-            }
-        }
-    } catch let error as NSError {
-        print("Could not fetch. \(error), \(error.userInfo)")
-    }
 }
 
 public func wipeCoreData(in viewContext: NSManagedObjectContext) {

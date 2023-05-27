@@ -9,14 +9,17 @@ import SwiftUI
 
 struct CustomIndicatorView: View {
     
+    @Environment(\.colorScheme) private var colorScheme
     
     var totalPages: Int
     var currentPage: Int
-    var activeTint: Color = Color.black
     var inActiveTint: Color = Color.gray.opacity(0.5)
     
     
     var body: some View {
+        
+        let activeTint: Color = colorScheme == .dark ? Color.white : Color.black
+        
         HStack(spacing: 8){
             ForEach(0..<totalPages, id: \.self){
                 Circle()

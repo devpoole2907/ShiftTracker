@@ -34,6 +34,11 @@
 		1A22F00529C67AD400A23F33 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00429C67AD400A23F33 /* TimerView.swift */; };
 		1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		1A30F3C42A223AA400A7BD92 /* AddBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C32A223AA400A7BD92 /* AddBreakView.swift */; };
+		1A30F3C52A22405000A7BD92 /* GlobalFunctions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */; };
+		1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
+		1A30F3C82A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
+		1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3424982A04D406007AB271 /* JobSummaryView.swift */; };
 		1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
@@ -96,7 +101,6 @@
 		1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B529D7F07100B279CB /* AddShiftView.swift */; };
-		1ACA60B729D7F07100B279CB /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B529D7F07100B279CB /* AddShiftView.swift */; };
 		1ACA60BD29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */; };
 		1ACA60BE29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */; };
 		1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
@@ -187,6 +191,8 @@
 		1A22F00429C67AD400A23F33 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		1A22F00729C686A200A23F33 /* ShiftDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ShiftDataModel.xcdatamodel; sourceTree = "<group>"; };
 		1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		1A30F3C32A223AA400A7BD92 /* AddBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBreakView.swift; sourceTree = "<group>"; };
+		1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreaksManager.swift; sourceTree = "<group>"; };
 		1A3424982A04D406007AB271 /* JobSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSummaryView.swift; sourceTree = "<group>"; };
 		1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyPayCalculator.swift; sourceTree = "<group>"; };
 		1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFinderView.swift; sourceTree = "<group>"; };
@@ -389,6 +395,7 @@
 			children = (
 				1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */,
 				1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */,
+				1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */,
 				1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */,
 				1AC9DDF729F7B28700C15008 /* JobData.swift */,
 				1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */,
@@ -497,6 +504,7 @@
 				1AECCC5E29E0BD2E00D879FE /* SummaryViews */,
 				1ACA60B529D7F07100B279CB /* AddShiftView.swift */,
 				1A88007029E3D98D009458BE /* BreaksListView.swift */,
+				1A30F3C32A223AA400A7BD92 /* AddBreakView.swift */,
 			);
 			path = ShiftsViews;
 			sourceTree = "<group>";
@@ -747,12 +755,12 @@
 				1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1AC048C129E0D50E00355767 /* Shift.swift in Sources */,
 				1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */,
-				1ACA60B729D7F07100B279CB /* AddShiftView.swift in Sources */,
 				1AECCC5D29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1AA6A7B629EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AECCC5729DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */,
+				1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */,
 				1A52AFAD29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift in Sources */,
 				1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */,
@@ -774,6 +782,7 @@
 				1AB7D6B129FCC9E000326AAA /* FirebaseAuthModel.swift in Sources */,
 				1AECCC4D29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
+				1A30F3C42A223AA400A7BD92 /* AddBreakView.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
 				1A22F00529C67AD400A23F33 /* TimerView.swift in Sources */,
 				1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */,
@@ -801,6 +810,7 @@
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
 				1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */,
 				1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */,
+				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
@@ -851,11 +861,13 @@
 				1AB7C88429FA57580008B3B3 /* Shift.swift in Sources */,
 				1AB7C88529FA575B0008B3B3 /* TempBreak.swift in Sources */,
 				1AB7C88329FA572E0008B3B3 /* ShiftKeys.swift in Sources */,
+				1A30F3C52A22405000A7BD92 /* GlobalFunctions+Extensions.swift in Sources */,
 				1AB7EAB029FA635E00AC9565 /* WatchTimerView.swift in Sources */,
 				1ACB8A6429FA81A500B152EB /* WatchBreakTimerView.swift in Sources */,
 				1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */,
 				1AC9DDF529F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1AD72AB329F7809900534342 /* ShiftTracker_Watch_EditionApp.swift in Sources */,
+				1A30F3C82A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1064,6 +1076,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Authenticate yourself to unlock ShiftTracker";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1102,6 +1115,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Authenticate yourself to unlock ShiftTracker";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "To send reminders or automatically start and end shifts when arriving/departing your workplace.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

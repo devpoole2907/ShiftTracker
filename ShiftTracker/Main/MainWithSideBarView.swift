@@ -18,6 +18,8 @@ struct MainWithSideBarView: View {
     
     @AppStorage("isFirstLaunch", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isFirstLaunch = true
     
+    @State private var showAddJobView = false
+    
     @StateObject private var authModel = FirebaseAuthModel()
     
     @StateObject var viewModel = ContentViewModel()
@@ -33,11 +35,12 @@ struct MainWithSideBarView: View {
     
     @Environment(\.managedObjectContext) private var context
     
-    init(){
-        UITabBar.appearance().isHidden = true
-    }
+    init(currentTab: Binding<Tab>) {
+         self._currentTab = currentTab
+         UITabBar.appearance().isHidden = true
+     }
     
-    @State var currentTab: Tab = .home
+    @Binding var currentTab: Tab
     
     @State var offset: CGFloat = 0
     @State var lastStoredOffset: CGFloat = 0
@@ -173,6 +176,9 @@ struct MainWithSideBarView: View {
             
             .onAppear(perform: {
                 notificationManager.scheduleNotifications() // cancels and reschedules the next 20 scheduled shifts with notify == true
+                
+                notificationManager.updateRosterNotifications(viewContext: context)
+                
                 checkIfLocked()
             })
             
@@ -194,8 +200,8 @@ struct MainWithSideBarView: View {
         } else {
             IntroMainView(isFirstLaunch: $isFirstLaunch)
                 .environmentObject(authModel)
-            //.onAppear{ authModel.checkUserLoginStatus() }
             
+            //.onAppear{ authModel.checkUserLoginStatus() }
         }
         
         
@@ -267,7 +273,7 @@ func onEnd(value: DragGesture.Value) {
 
 struct MainWithSideBarView_Previews: PreviewProvider {
     static var previews: some View {
-        MainWithSideBarView()
+        MainWithSideBarView(currentTab: .constant(.home))
     }
 }
 

@@ -40,213 +40,222 @@ struct SettingsView: View {
         
         
         
-
-                
-                List{
-                    if !isSubscriptionActive(){
-                        Section{
-                        Button(action: {
-                            showingProView = true // set the state variable to true to show the sheet
-                        }) {
-                            Group{
-                                ZStack {
-                                    backgroundColor
-                                        .cornerRadius(20)
-                                        .frame(height: 80)
-                                    VStack(spacing: 2) {
-                                        HStack{
-                                            Text("ShiftTracker")
-                                                .font(.title2)
-                                                .bold()
-                                                .foregroundColor(textColor)
-                                            Text("PRO")
-                                                .font(.title)
-                                                .bold()
-                                                .foregroundColor(proButtonColor)
-                                        }
-                                        //.padding(.top, 3)
-                                   
-                                        Text("Upgrade Now")
-                                            .font(.subheadline)
+        
+       // NavigationView{
+        List{
+            if !isProVersion{
+                Section{
+                    Button(action: {
+                        showingProView = true
+                    }) {
+                        Group{
+                            ZStack {
+                                Color.primary.opacity(0.04)
+                                    .cornerRadius(20)
+                                    .frame(height: 80)
+                                VStack(spacing: 2) {
+                                    HStack{
+                                        Text("ShiftTracker")
+                                            .font(.title2)
                                             .bold()
-                                            .foregroundColor(textColor)
+                                            //.foregroundColor(textColor)
+                                        Text("PRO")
+                                            .font(.title)
+                                            .bold()
+                                            .foregroundColor(proButtonColor)
                                     }
+                                    //.padding(.top, 3)
+                                    
+                                    Text("Upgrade Now")
+                                        .font(.subheadline)
+                                        .bold()
+                                      //  .foregroundColor(textColor)
                                 }
-                                .frame(maxWidth: UIScreen.main.bounds.width - 20)
-                            }//.padding(.bottom, 75)
+                            }
+                            .frame(maxWidth: UIScreen.main.bounds.width - 20)
+                        }//.padding(.bottom, 75)
+                    }
+                }.listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            }
+            Section{
+             /*   if isSubscriptionActive(){
+                    NavigationLink(destination: ProSettingsView()){
+                        HStack {
+                            Image(systemName: "briefcase")
+                            Spacer().frame(width: 10)
+                            Text("ShiftTracker Pro")
                         }
-                        }.listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
+                    }
+                }*/
+                NavigationLink(destination: LocationView()){
+                    HStack {
+                        Image(systemName: "location")
+                        Spacer().frame(width: 10)
+                        Text("Location")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                    }
                 }
-                    Section{
-                        if isSubscriptionActive(){
-                            NavigationLink(destination: ProSettingsView()){
-                                HStack {
-                                    Image(systemName: "briefcase")
-                                    Spacer().frame(width: 10)
-                                    Text("ShiftTracker Pro")
-                                }
-                            }
-                        }
-                        NavigationLink(destination: LocationView()){
-                             HStack {
-                                 Image(systemName: "bell.fill")
-                                 Spacer().frame(width: 10)
-                                 Text("Location")
-                             }
-                         }
-                       NavigationLink(destination: NotificationView()){
-                            HStack {
-                                Image(systemName: "bell.fill")
-                                Spacer().frame(width: 10)
-                                Text("Notifications")
-                            }
-                        }
-                        NavigationLink(destination: AppearanceView(userColorScheme: $userColorScheme)) {
-                            HStack {
-                                Image("AppearanceIconSymbol")
-                                    .padding(.leading, -1)
-                                Spacer().frame(width: 10)
-                                Text("Appearance")
-                                    .font(.title2)
-                                    .bold()
-                                    .padding()
-                                Spacer()
-                                Text("\(userColorScheme)".capitalized)
-                                    .foregroundColor(.gray)
-                                    .bold()
-                                    .padding()
-                            }
-                                        }
-                    /*NavigationLink(destination: TagsView().navigationTitle("Tags")){
-                            HStack {
-                                Image(systemName: "tag")
-                                Spacer().frame(width: 10)
-                                Text("Tags")
-                            }
-                        } */
-                        Toggle(isOn: $authEnabled){
-                            HStack {
-                                Image(systemName: "faceid")
-                                    .padding(.leading, 2)
-                                Spacer().frame(width: 10)
-                                Text("App Lock")
-                                    .font(.title2)
-                                    .bold()
-                                    .padding()
-                            }
-                        }.toggleStyle(OrangeToggleStyle())
-                            .onChange(of: authEnabled) { newValue in
-                                if newValue {
-                                    authenticateUser { success in
-                                        if success {
-                                            isAuthenticated = true
-                                        } else {
-                                            authEnabled = false
-                                        }
-                                    }
+                NavigationLink(destination: NotificationView()){
+                    HStack {
+                        Image(systemName: "bell")
+                            .padding(.leading, 2)
+                        Spacer().frame(width: 10)
+                        Text("Notifications")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                    }
+                }
+                NavigationLink(destination: AppearanceView(userColorScheme: $userColorScheme)) {
+                    HStack {
+                        Image("AppearanceIconSymbol")
+                            .padding(.leading, -1)
+                        Spacer().frame(width: 10)
+                        Text("Appearance")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                        Spacer()
+                        Text("\(userColorScheme)".capitalized)
+                            .foregroundColor(.gray)
+                            .bold()
+                            .padding()
+                    }
+                }
+                /*NavigationLink(destination: TagsView().navigationTitle("Tags")){
+                 HStack {
+                 Image(systemName: "tag")
+                 Spacer().frame(width: 10)
+                 Text("Tags")
+                 }
+                 } */
+                Toggle(isOn: $authEnabled){
+                    HStack {
+                        Image(systemName: "faceid")
+                            .padding(.leading, 2)
+                        Spacer().frame(width: 10)
+                        Text("App Lock")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                    }
+                }.toggleStyle(OrangeToggleStyle())
+                    .onChange(of: authEnabled) { newValue in
+                        if newValue {
+                            authenticateUser { success in
+                                if success {
+                                    isAuthenticated = true
                                 } else {
-                                    isAuthenticated = false
+                                    authEnabled = false
                                 }
                             }
-                        Toggle(isOn: $iCloudSyncOn) {
-                            HStack {
-                                Image("iCloudIconSymbol")
-                                    .padding(.leading, -2)
-                                Spacer().frame(width: 10)
-                                Text("iCloud Sync")
-                                    .font(.title2)
-                                    .bold()
-                                    .padding()
-                            }
-                        }.toggleStyle(OrangeToggleStyle())
-                            .onChange(of: iCloudSyncOn) { value in
-                                PersistenceController.shared.updateCloudKitSyncStatus()
-                            }
-                        Toggle(isOn: $tipsEnabled) {
-                            HStack {
-                                Image("TipsIconSymbol")
-                                    .padding(.leading, -2)
-                                Spacer().frame(width: 10)
-                                Text("Tips")
-                                    .font(.title2)
-                                    .bold()
-                                    .padding()
-                            }
-                        }.toggleStyle(OrangeToggleStyle())
-                            //.padding()
-                            
-                        Toggle(isOn: $taxEnabled) {
-                            HStack {
-                                Image("TaxIconSymbol")
-                                    .padding(.leading, -1)
-                                Spacer().frame(width: 10)
-                                Text("Estimated Tax")
-                                    .font(.title2)
-                                    .bold()
-                                    .padding()
-                            }
-                        }.toggleStyle(OrangeToggleStyle())
-                            .onChange(of: taxEnabled){ value in
-                                sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
-                            }
+                        } else {
+                            isAuthenticated = false
+                        }
                     }
-                    .listRowSeparator(.hidden)
-                    //.listRowBackground(Color.clear)
-                    
-                        
-                    Section{
-                        NavigationLink(destination: TipView()){
-                            HStack {
-                                Image(systemName: "hammer.circle.fill")
-                                Spacer().frame(width: 10)
-                                Text("Support the Developer")
-                                    .font(.title2)
-                                    .bold()
-                                    .padding()
-                            }
-                        }
-                        
+                Toggle(isOn: $iCloudSyncOn) {
+                    HStack {
+                        Image("iCloudIconSymbol")
+                           // .padding(.leading)
+                        Spacer().frame(width: 10)
+                        Text("iCloud Sync")
+                            .font(.title2)
+                            .bold()
+                            .padding()
                     }
-                    .listRowSeparator(.hidden)
-                    //.listRowBackground(Color.clear)
-                    
-                    
-                    Section{
-                        if isProVersion{
-                            Text("Thank you for purchasing ShiftTracker Pro!")
-                                .foregroundColor(.gray.opacity(0.3))
-                                .font(.caption)
-                        }
-                        Text("Made by James Poole")
-                            .foregroundColor(.gray.opacity(0.3))
-                            .font(.caption)
-                        Text("Icons by Louie Kolodzinksi")
-                            .foregroundColor(.gray.opacity(0.3))
-                            .font(.caption)
-                    }.listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    Section{
-                        VStack(alignment: .leading){
-                            Button(action: {
-                                
-                                CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, title: "Are you sure you want to delete all your data?").present()
-                            } ){
-                                Text("Delete Data")
-                                .bold()
-                                
-                            }.buttonStyle(.bordered)
-                                .tint(.red)
-                        }
-                    }.listRowSeparator(.hidden)
-                    
-                }.scrollContentBackground(.hidden)
-                .padding(.horizontal)
-                .listStyle(.plain)
-                .toolbarRole(.editor)
+                }.toggleStyle(OrangeToggleStyle())
+                    .onChange(of: iCloudSyncOn) { value in
+                        PersistenceController.shared.updateCloudKitSyncStatus()
+                    }
+                Toggle(isOn: $tipsEnabled) {
+                    HStack {
+                        Image("TipsIconSymbol")
+                            .padding(.leading, -2)
+                        Spacer().frame(width: 10)
+                        Text("Tips")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                    }
+                }.toggleStyle(OrangeToggleStyle())
+                //.padding()
+                
+                Toggle(isOn: $taxEnabled) {
+                    HStack {
+                        Image("TaxIconSymbol")
+                            .padding(.leading, -1)
+                        Spacer().frame(width: 10)
+                        Text("Estimated Tax")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                    }
+                }.toggleStyle(OrangeToggleStyle())
+                    .onChange(of: taxEnabled){ value in
+                        sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
+                    }
+            }
+            .listRowSeparator(.hidden)
+            //.listRowBackground(Color.clear)
             
-                .fullScreenCover(isPresented: $showingProView) {
-                    NavigationStack{
+            
+            Section{
+                NavigationLink(destination: TipView()){
+                    HStack {
+                        Image(systemName: "hammer.circle.fill")
+                        Spacer().frame(width: 10)
+                        Text("Support the Developer")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                    }
+                }
+                
+            }
+            .listRowSeparator(.hidden)
+            //.listRowBackground(Color.clear)
+            
+            
+            Section{
+                if isSubscriptionActive(){
+                    Text("Thank you for purchasing ShiftTracker Pro!")
+                        .foregroundColor(.gray.opacity(0.3))
+                        .font(.caption)
+                }
+                Text("Made by James Poole")
+                    .foregroundColor(.gray.opacity(0.3))
+                    .font(.caption)
+                Text("Icons by Louie Kolodzinksi")
+                    .foregroundColor(.gray.opacity(0.3))
+                    .font(.caption)
+            }.listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+            Section{
+                VStack(alignment: .leading){
+                    Button(action: {
+                        
+                        CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, title: "Are you sure you want to delete all your data?").present()
+                    } ){
+                        Text("Delete Data")
+                            .bold()
+                        
+                    }.buttonStyle(.bordered)
+                        .tint(.red)
+                }
+            }.listRowSeparator(.hidden)
+            
+        }.scrollContentBackground(.hidden)
+            .padding(.horizontal)
+            .listStyle(.plain)
+            .navigationTitle("Settings")
+            .toolbarRole(.editor)
+            .scrollIndicators(.hidden)
+        
+            .fullScreenCover(isPresented: $showingProView) {
+                NavigationStack{
                     ProView()
                         .toolbar{
                             ToolbarItem(placement: .navigationBarLeading){
@@ -263,7 +272,7 @@ struct SettingsView: View {
                 
             }
         
-        
+    //}
     }
     
     private func authenticateUser(completion: @escaping (Bool) -> Void) {
@@ -330,9 +339,7 @@ struct ProSettingsView: View{
 
 struct NotificationView: View{
     var body: some View{
-        NavigationView{
-            VStack{
-                List{
+                ScrollView{
                     
                     Button("Request notification access"){
                         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
@@ -343,8 +350,11 @@ struct NotificationView: View{
                             }
                         }
                         
-                    }.listRowBackground(Color.clear)
-                    .foregroundColor(.orange)
+                    }
+                    .bold()
+                    .padding()
+                        .buttonStyle(.bordered)
+                        .padding()
                     Button("Test notification"){
                         let content = UNMutableNotificationContent()
                         content.title = "ShiftTracker"
@@ -359,54 +369,66 @@ struct NotificationView: View{
                         
                         // add our notification request
                         UNUserNotificationCenter.current().add(request)
-                    }.foregroundColor(.orange)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                    }.bold()
+                        .padding()
+                            .buttonStyle(.bordered)
+                            .padding()
                 }
                 
                 .scrollContentBackground(.hidden)
-            }
             
-        }.navigationTitle("Notifications")
-        
+            .navigationTitle("Notifications")
+            .toolbarRole(.editor)
     }
     
 }
 
 struct LocationView: View{
     
-    @State private var locationManager = CLLocationManager()
-    
-    @State private var autoClockIn = false
-    @State private var autoClockOut = false
-    
-    init(){
-        locationManager.requestAlwaysAuthorization()
-        
-        
-    }
+    @StateObject private var locationManager = LocationDataManager()
     
     var body: some View{
-        NavigationView{
-            VStack{
-                List{
+                ScrollView{
                     
-                    Button("Request location access"){
-                        locationManager.requestAlwaysAuthorization()
+                    if locationManager.authorizationStatus != .authorizedAlways {
+                        VStack(alignment: .leading, spacing: 10){
+                            Text("Location settings are not set to always.")
+                                .bold()
+                                .font(.title3)
+                                .padding()
+                            Text("Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker.")
+                                .font(.callout)
+                                .padding()
+                        }.padding()
+                            .background(Color.primary.opacity(0.04))
+                            .cornerRadius(12)
+                            .padding()
+                        
+                        Button("Request location access"){
+                            locationManager.requestAlways()
+                        }.bold()
+                        .padding()
+                            .buttonStyle(.bordered)
+                            .padding()
+                        
+                        
+                    } else {
+                        VStack(alignment: .leading, spacing: 10){
+                            Text("Location settings are set to always.")
+                                .bold()
+                                .font(.title3)
+                        }.padding()
+                            .background(Color.primary.opacity(0.04))
+                            .cornerRadius(12)
+                            .padding()
                     }
-                    Section(header: Text("Location settings must be set to 'Always'")){
-                        Toggle(isOn: $autoClockIn) {
-                            Text("Automatically clock in")
-                        }
-                        Toggle(isOn: $autoClockOut) {
-                            Text("Automatically clock out")
-                        }
-                    }
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                    
+                  
                 }.scrollContentBackground(.hidden)
-            }
-        }.navigationTitle("Location")
+            
+            .navigationTitle("Location")
+        .toolbarRole(.editor)
+        
     }
 }
 
@@ -432,13 +454,16 @@ struct AppearanceView: View {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.orange)
                         }
-                    }
+                    }.font(.title2)
+                        .bold()
+                        .padding()
                     
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
             }
         }.scrollContentBackground(.hidden)
-        .navigationBarTitle("Appearance")
+    
+            .navigationTitle("Appearance")
         .toolbarRole(.editor)
     }
 }

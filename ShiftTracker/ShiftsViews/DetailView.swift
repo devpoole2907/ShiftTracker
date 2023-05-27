@@ -119,6 +119,7 @@ struct DetailView: View {
     var body: some View {
         
         var timeDigits = digitsFromTimeString(timeString: shift.duration.stringFromTimeInterval())
+        var breakDigits = digitsFromTimeString(timeString: totalBreakDuration(for: (shift.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval())
         
         List{
             
@@ -173,25 +174,57 @@ struct DetailView: View {
                             // }
                             
                             Divider().frame(maxWidth: 200)
-                            
-                            HStack(spacing: 0) {
-                                ForEach(0..<timeDigits.count, id: \.self) { index in
-                                    RollingDigit(digit: timeDigits[index])
-                                        .frame(width: 20, height: 30)
-                                        .mask(FadeMask())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                            if let shiftsBreaks = shift.breaks, totalBreakDuration(for: shift.breaks as! Set<Break>) > 0 {
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<timeDigits.count, id: \.self) { index in
+                                            RollingDigit(digit: timeDigits[index])
+                                                .frame(width: 20, height: 30)
+                                                .mask(FadeMask())
+                                            if index == 1 || index == 3 {
+                                                Text(":")
+                                                    .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                            }
+                                        }
                                     }
+                                    .foregroundColor(.orange)
+                                    //.frame(width: 250, height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<breakDigits.count, id: \.self) { index in
+                                            RollingDigit(digit: breakDigits[index])
+                                                .frame(width: 9, height: 14)
+                                                .mask(FadeMask())
+                                            if index == 1 || index == 3 {
+                                                Text(":")
+                                                    .font(.system(size: 12, weight: .bold).monospacedDigit())
+                                            }
+                                        }
+                                    }
+                                    .foregroundColor(.indigo)
+                                    //.frame(width: 250, height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom)
+                                
+                                    
+                                } else {
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<timeDigits.count, id: \.self) { index in
+                                            RollingDigit(digit: timeDigits[index])
+                                                .frame(width: 20, height: 30)
+                                                .mask(FadeMask())
+                                            if index == 1 || index == 3 {
+                                                Text(":")
+                                                    .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                            }
+                                        }
+                                    }
+                                    .foregroundColor(.orange)
+                                    //.frame(width: 250, height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom)
                                 }
-                            }
-                            .foregroundColor(.orange)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom)
-                            
-                            
-                            
+                                
                             
                             
                             
@@ -410,11 +443,13 @@ struct DetailView: View {
                 }
             // }
             
-        }.onAppear(perform: loadData)
+        }
             .scrollContentBackground(.hidden)
             .listStyle(.inset)
         
-
+            .onAppear {
+                navigationState.gestureEnabled = false
+            }
         //.padding(.horizontal, 30)
         
             .toolbar {
@@ -430,10 +465,15 @@ struct DetailView: View {
                         //shift.tag = selectedTag
                         shift.totalTips = Double(selectedTotalTips) ?? 0.0
                         // this is old code....
-                        let newBreakElapsed = selectedBreakEndDate.timeIntervalSince(selectedBreakStartDate)
-                        shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate) - newBreakElapsed
+
                         
-                        shift.totalPay = (shift.duration / 3600.0) * shift.hourlyPay
+                        
+                        let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
+                        let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
+                        let paidDuration = shift.duration - totalBreakDuration
+                        shift.totalPay = (paidDuration / 3600.0) * shift.hourlyPay
+
+
                         shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
                         saveContext()
                         breakManager.saveChanges(in: context)
@@ -504,11 +544,6 @@ struct DetailView: View {
         }
     }
     
-    func loadData() {
-        if let decodedData = try? JSONDecoder().decode([Tag].self, from: tagsList) {
-            tags = decodedData
-        }
-    }
     
 }
 
@@ -538,73 +573,6 @@ private extension TimeInterval {
         let minutes = (time / 60) % 60
         let seconds = time % 60
         return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
-    }
-}
-
-
-struct ShiftTipsView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    let shift: OldShift
-    
-    @FetchRequest(entity: Tip.entity(), sortDescriptors: [])
-    private var allTips: FetchedResults<Tip>
-    
-    private var shiftTips: [Tip] {
-        allTips.filter { $0.oldShift == shift }
-    }
-    
-    var body: some View {
-        NavigationView {
-            List {
-                Section(header: Text("Tips")) {
-                    ForEach(shiftTips, id: \.objectID) { tip in
-                        Text("$\(tip.value, specifier: "%.2f")")
-                    }
-                    .onDelete(perform: deleteTip)
-                }
-            }
-            
-        }.toolbar{
-            ToolbarItem(){
-                Button(action: {
-                    addTip()
-                }) {
-                    Image(systemName: "plus")
-                }
-                
-            }
-        }
-        .navigationTitle("Tips")
-    }
-    
-    private func addTip() {
-        withAnimation {
-            let newTip = Tip(context: viewContext)
-            newTip.value = Double.random(in: 1...100)
-            newTip.oldShift = shift
-            
-            saveContext()
-        }
-    }
-    
-    private func deleteTip(at offsets: IndexSet) {
-        withAnimation {
-            offsets.forEach { index in
-                let tip = shiftTips[index]
-                viewContext.delete(tip)
-            }
-            saveContext()
-        }
-    }
-    
-    private func saveContext() {
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
     }
 }
 

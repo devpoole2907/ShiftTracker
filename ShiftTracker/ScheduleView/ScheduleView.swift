@@ -43,6 +43,7 @@ struct ScheduleView: View {
         NavigationStack {
             ZStack{
                 if !showAllScheduledShiftsView{
+                    
                     Form {
                         Section{
                             CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents, someScheduledShifts: scheduledShifts)
@@ -56,7 +57,6 @@ struct ScheduleView: View {
                         }
                         
                         .listRowBackground(Color.clear)
-                        ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu).listRowBackground(Color.clear)
                         
                     }.opacity(showAllScheduledShiftsView ? 0 : 1)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
@@ -69,12 +69,12 @@ struct ScheduleView: View {
                 }
             }
             
-            /*.sheet(isPresented: $displayEvents) {
+            .sheet(isPresented: $displayEvents) {
                 ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu)
                     .presentationDetents([.medium, .large])
                     .presentationCornerRadius(50)
                     .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-            }*/
+            }
             
             .navigationBarTitle("Schedule", displayMode: .inline)
             .toolbar{

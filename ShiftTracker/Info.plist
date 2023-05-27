@@ -12,6 +12,16 @@
 				<string>com.googleusercontent.apps.913652649214-j471nosc1q64o7qhq8b9bjslqrnoojon</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>me.poole.james.ShiftTracker</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>shifttrackerapp</string>
+			</array>
+		</dict>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict>

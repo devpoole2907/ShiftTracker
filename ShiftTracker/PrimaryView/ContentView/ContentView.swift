@@ -128,6 +128,12 @@ struct ContentView: View {
                                         withAnimation(.linear(duration: 0.4)) {
                                             jobShakeTimes += 2
                                         }
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7){
+                                            showMenu = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6){
+                                                isJobsExpanded = true
+                                            }
+                                        }
                                     }
                                 }
                                 
@@ -421,7 +427,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        MainWithSideBarView()
+        MainWithSideBarView(currentTab: .constant(.home))
     }
 }
 

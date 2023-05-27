@@ -14,6 +14,8 @@ import PopupView
 @main
 struct ShiftTrackerApp: App {
     
+    @State private var selectedTab: Tab = .home
+    
     private let locationManager = LocationDataManager()
         private let defaults = UserDefaults.standard
     
@@ -37,14 +39,25 @@ struct ShiftTrackerApp: App {
     let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
-            MainWithSideBarView()
+            MainWithSideBarView(currentTab: $selectedTab)
                 .implementPopupView()
                 .preferredColorScheme(getPreferredColorScheme())
                 //.preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            // deep link tests
+                .onOpenURL { url in
+                    print("got a URL boss man")
+                    print(url.path)
+                    if url.scheme == "shifttrackerapp" && url.path == "/schedule" {
+                        selectedTab = .schedule
+                    }
+                }
                 .onAppear {
                     startMonitoringAllJobLocations()
                 }
+                
+
+
                 
 
         }

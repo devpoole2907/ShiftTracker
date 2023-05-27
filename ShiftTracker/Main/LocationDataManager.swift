@@ -40,8 +40,16 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         locationManager.requestWhenInUseAuthorization()
     }
     
+    func requestAlways() {
+        locationManager.requestAlwaysAuthorization()
+    }
+    
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
+        case .authorizedAlways:
+            authorizationStatus = .authorizedAlways
+            break
+            
         case .authorizedWhenInUse:  // Location services are available.
             // Insert code here of what should happen when Location services are authorized
             authorizationStatus = .authorizedWhenInUse

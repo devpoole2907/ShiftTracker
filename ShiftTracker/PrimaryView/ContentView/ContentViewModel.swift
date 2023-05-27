@@ -20,6 +20,8 @@ class ContentViewModel: ObservableObject {
     
     @Published var shiftState: ShiftState = .notStarted
     
+    let breaksManager = BreaksManager()
+    
     @Published var lastEndedShift: OldShift? = nil // store the latest shift to return when popping the detail view
     @Published  var hourlyPay: Double = 0.0
     @Published  var lastPay: Double = 0.0
@@ -416,72 +418,80 @@ class ContentViewModel: ObservableObject {
         
     func endShift(using viewContext: NSManagedObjectContext, endDate: Date, job: Job) -> OldShift? {
         
-        shiftState = .notStarted
-            //updateActivity(startDate: Date())
-        #if os(iOS)
-            stopActivity()
         
-            print("stopped 4 activities")
-        #endif
-            stopTimer(timer: &timer, timeElapsed: &timeElapsed)
-            breakTaken = false
-            isOvertime = false
-            
-            shiftEnded = true
-            sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
-            sharedUserDefaults.removeObject(forKey: shiftKeys.breakStartedDateKey)
-            sharedUserDefaults.removeObject(forKey: shiftKeys.breakEndedDateKey)
-            sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey) // destroys the time elapsed before break
-            sharedUserDefaults.set(breakTaken, forKey: shiftKeys.breakTakenKey)
-            sharedUserDefaults.set(true, forKey: shiftKeys.shiftEndedKey)
-            
+        
+        
+        
+        //updateActivity(startDate: Date())
+#if os(iOS)
+        stopActivity()
+        
+        print("stopped 4 activities")
+#endif
+        stopTimer(timer: &timer, timeElapsed: &timeElapsed)
+        breakTaken = false
+        isOvertime = false
+        
+        shiftEnded = true
+        sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.breakStartedDateKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.breakEndedDateKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey) // destroys the time elapsed before break
+        sharedUserDefaults.set(breakTaken, forKey: shiftKeys.breakTakenKey)
+        sharedUserDefaults.set(true, forKey: shiftKeys.shiftEndedKey)
+        
+        
         var latestShift: OldShift? = nil
-        
-            if let shift = shift {
-                self.lastPay = totalPay
-                self.lastTaxedPay = taxedPay
-                saveLastPay() // Save the value of lastPay to UserDefaults
-                saveLastTaxedPay()
-                self.lastBreakElapsed = breakElapsed
-                saveLastBreak()
-                
-                let newTotalPay = computeTotalPay(for: endDate)
-                        let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
-                
-                latestShift = OldShift(context: viewContext)
-                latestShift!.hourlyPay = shift.hourlyPay
-                latestShift!.shiftStartDate = shift.startDate
-                latestShift!.shiftEndDate = endDate
-                latestShift!.totalPay = newTotalPay
-                latestShift!.taxedPay = newTaxedPay
-                latestShift!.tax = Double(taxPercentage)
-                latestShift!.breakElapsed = breakElapsed
-                latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
-                latestShift!.overtimeDuration = overtimeDuration
-                latestShift!.overtimeRate = overtimeRate
-                
-                latestShift!.job = job
-                
-                
-                for tempBreak in tempBreaks {
-                    if let breakEndDate = tempBreak.endDate {
-                        createBreak(oldShift: latestShift!, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid)
-                    }
+        if shiftState != .countdown {
+            
+        if let shift = shift {
+            self.lastPay = totalPay
+            self.lastTaxedPay = taxedPay
+            saveLastPay() // Save the value of lastPay to UserDefaults
+            saveLastTaxedPay()
+            self.lastBreakElapsed = breakElapsed
+            saveLastBreak()
+            
+            let newTotalPay = computeTotalPay(for: endDate)
+            let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
+            
+            latestShift = OldShift(context: viewContext)
+            latestShift!.hourlyPay = shift.hourlyPay
+            latestShift!.shiftStartDate = shift.startDate
+            latestShift!.shiftEndDate = endDate
+            latestShift!.totalPay = newTotalPay
+            latestShift!.taxedPay = newTaxedPay
+            latestShift!.tax = Double(taxPercentage)
+            latestShift!.breakElapsed = breakElapsed
+            latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
+            latestShift!.overtimeDuration = overtimeDuration
+            latestShift!.overtimeRate = overtimeRate
+            
+            latestShift!.job = job
+            
+            
+            for tempBreak in tempBreaks {
+                if let breakEndDate = tempBreak.endDate {
+                    breaksManager.createBreak(oldShift: latestShift!, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
                 }
-                
-                //PersistenceController.shared.save()
-                if latestShift!.duration > 0 {
-                    do {
-                        try viewContext.save()
-                        
-                    } catch {
-                        print("Error saving new shift: \(error)")
-                    }
-                }
-                
-                
             }
             
+            //PersistenceController.shared.save()
+            if latestShift!.duration > 0 {
+                do {
+                    try viewContext.save()
+                    
+                } catch {
+                    print("Error saving new shift: \(error)")
+                }
+            }
+            
+            
+        }
+    }
+            
+        shiftState = .notStarted
+        
             sharedUserDefaults.removeObject(forKey: shiftKeys.lastBreakElapsedKey)
             shift = nil
             shiftEnded = true
@@ -788,22 +798,6 @@ class ContentViewModel: ObservableObject {
             let jsonData = try? JSONSerialization.data(withJSONObject: dictionaries, options: [])
             let tempBreaks = try? decoder.decode([TempBreak].self, from: jsonData!)
             return tempBreaks ?? []
-        }
-        
-    func createBreak(oldShift: OldShift, startDate: Date, endDate: Date, isUnpaid: Bool) {
-            let newBreak = Break(context: PersistenceController.shared.container.viewContext)
-            newBreak.startDate = startDate
-            newBreak.endDate = endDate
-        newBreak.isUnpaid = isUnpaid
-            newBreak.oldShift = oldShift
-            
-            oldShift.addToBreaks(newBreak)
-            
-            do {
-                try PersistenceController.shared.container.viewContext.save()
-            } catch {
-                print("Error saving break: \(error)")
-            }
         }
         
         

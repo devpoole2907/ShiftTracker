@@ -13,7 +13,7 @@ class ShiftDateManager {
     
     // This function filters shifts that start after a given date
     func filterShifts(startingAfter date: Date, from shifts: FetchedResults<OldShift>) -> [OldShift] {
-        return shifts.filter { $0.shiftStartDate! >= date }
+        return shifts.filter { $0.shiftStartDate ?? Date() >= date }
     }
 
     // This function transforms shifts into details

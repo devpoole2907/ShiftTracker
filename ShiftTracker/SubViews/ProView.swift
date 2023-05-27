@@ -146,8 +146,7 @@ struct ProView: View {
                 
                 HStack(spacing: 10){
                     Button(action: {
-                       /* isProVersion.toggle()
-                        UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion") */
+                        isProVersion = true
                         setUserSubscribed(true)
                         dismiss()
                     }) {
@@ -168,10 +167,7 @@ struct ProView: View {
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                     Button(action: {
-               
-                      /*  isProVersion.toggle()
-       
-                        UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")?.setValue(isProVersion, forKey: "isProVersion") */
+                        isProVersion = true
                         setUserSubscribed(true)
                         print("setting user subscribed to true")
                         dismiss()
@@ -194,6 +190,14 @@ struct ProView: View {
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                 }.padding(.horizontal, 30)
+                
+                Button(action: {
+                    
+                }) {
+                    Text("Restore")
+                        .bold()
+                }.padding()
+                
                 Spacer(minLength: 50)
             }
             

@@ -22,6 +22,7 @@ struct AddJobView: View {
     @ObservedObject private var locationManager = LocationDataManager()
     
     private let addressManager = AddressManager()
+    private let notificationManager = ShiftNotificationManager.shared
     
     @State private var name = ""
     @State private var title = ""
@@ -48,7 +49,9 @@ struct AddJobView: View {
     
     @State private var showFullCover = false
     
-    
+    @State private var rosterReminder = false
+    @State private var selectedDay: Int = 1
+        @State private var selectedTime = Date()
     
     @State private var showOvertimeTimeView = false
     
@@ -185,7 +188,6 @@ struct AddJobView: View {
                                 .padding()
                         }
                         
-                        Divider()
                         
                         
                         
@@ -234,7 +236,7 @@ struct AddJobView: View {
                                         
                                         VStack(alignment: .leading){
                                             
-                                            Map(coordinateRegion: $miniMapRegion, showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
+                                            Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
                                                 MapAnnotation(coordinate: annotation.coordinate) {
                                                     VStack {
                                                         Image(systemName: selectedIcon)
@@ -271,7 +273,6 @@ struct AddJobView: View {
                         }.background(Color.primary.opacity(0.04))
                             .cornerRadius(20)
                         
-                        Divider()
                         
                         VStack(alignment: .leading, spacing: 10){
                             Text("Estimated Tax")
@@ -290,9 +291,37 @@ struct AddJobView: View {
                         }
                             .padding(.horizontal, 10)
                         
-                        Divider()
-                        
-                     
+                        VStack(alignment: .leading, spacing: 10){
+                            Toggle(isOn: $rosterReminder){
+                                
+                                Text("Roster reminders")
+                                
+                            }.toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                .padding(.top, 10)
+                            HStack{
+                                Text("Time")
+                                Spacer()
+                                DatePicker("Time", selection: $selectedTime, displayedComponents: .hourAndMinute).labelsHidden()
+                                Picker(selection: $selectedDay, label: Text("Day of the week")) {
+                                    Text("Sunday").tag(1)
+                                    Text("Monday").tag(2)
+                                    Text("Tuesday").tag(3)
+                                    Text("Wednesday").tag(4)
+                                    Text("Thursday").tag(5)
+                                    Text("Friday").tag(6)
+                                    Text("Saturday").tag(7)
+                                }.buttonStyle(.bordered)
+                                
+                            }.padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .disabled(!rosterReminder)
+                            
+                            
+                            
+                            
+                        }.background(Color.primary.opacity(0.04))
+                            .cornerRadius(20)
                         
                         /* VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $overtimeEnabled) {
@@ -481,6 +510,9 @@ struct AddJobView: View {
         newJob.overtimeRate = overtimeRate
         newJob.icon = selectedIcon
         newJob.uuid = UUID()
+        newJob.rosterReminder = rosterReminder
+        newJob.rosterTime = selectedTime
+        newJob.rosterDayOfWeek = Int16(selectedDay)
         
         let newLocation = JobLocation(context: viewContext)
         
@@ -519,6 +551,8 @@ struct AddJobView: View {
             
 
                 locationManager.startMonitoring(job: newJob) // might need to check clock out works with this, ive forgotten my implementation
+            
+            notificationManager.updateRosterNotifications(viewContext: viewContext)
             
             
             presentationMode.wrappedValue.dismiss()

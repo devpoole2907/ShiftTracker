@@ -20,6 +20,7 @@ struct EditJobView: View {
     
     @EnvironmentObject var viewModel: ContentViewModel
     private let addressManager = AddressManager()
+    private let notificationManager = ShiftNotificationManager.shared
     
     @State private var miniMapAnnotation: IdentifiablePointAnnotation?
     @State private var name: String
@@ -43,6 +44,10 @@ struct EditJobView: View {
     @State private var overtimeEnabled = false
     
     @State private var selectedIcon: String
+    
+    @State private var rosterReminder: Bool
+    @State private var selectedDay: Int
+    @State private var selectedTime: Date
     
     @State private var selectedRadius: Double = 75
     
@@ -95,6 +100,9 @@ struct EditJobView: View {
         _overtimeEnabled = State(initialValue: job.overtimeEnabled)
         _overtimeRate = State(initialValue: job.overtimeRate)
         _overtimeAppliedAfter = State(initialValue: job.overtimeAppliedAfter)
+        _rosterReminder = State(initialValue: job.rosterReminder)
+        _selectedDay = State(initialValue: Int(job.rosterDayOfWeek))
+        _selectedTime = State(initialValue: job.rosterTime ?? Date())
     }
     
     private let daysOfWeek = [
@@ -200,7 +208,7 @@ struct EditJobView: View {
                                 .padding()
                         }
                         
-                        Divider()
+        
                         
                         VStack(alignment: .leading, spacing: 10){
                             
@@ -239,12 +247,11 @@ struct EditJobView: View {
                                     
                                 NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, iconColor: selectedColor)
                                     .onDisappear {
-                                        // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
                                         self.miniMapRegion = self.mapRegion
                                     }) {
                                         VStack(alignment: .leading){
                                             
-                                            Map(coordinateRegion: $miniMapRegion, showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
+                                            Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
                                                 MapAnnotation(coordinate: annotation.coordinate) {
                                                     VStack {
                                                         Image(systemName: selectedIcon)
@@ -281,7 +288,7 @@ struct EditJobView: View {
                             .cornerRadius(20)
                         
                         
-                        Divider()
+         
                         
                         VStack(alignment: .leading, spacing: 10){
                             Text("Estimated Tax")
@@ -300,7 +307,37 @@ struct EditJobView: View {
                         }
                             .padding(.horizontal, 5)
                         
-                        Divider()
+                        VStack(alignment: .leading, spacing: 10){
+                            Toggle(isOn: $rosterReminder){
+                                
+                                Text("Roster reminders")
+                                
+                            }.toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                .padding(.top, 10)
+                            HStack{
+                                Text("Time")
+                                Spacer()
+                                DatePicker("Time", selection: $selectedTime, displayedComponents: .hourAndMinute).labelsHidden()
+                                Picker(selection: $selectedDay, label: Text("Day of the week")) {
+                                    Text("Sunday").tag(1)
+                                    Text("Monday").tag(2)
+                                    Text("Tuesday").tag(3)
+                                    Text("Wednesday").tag(4)
+                                    Text("Thursday").tag(5)
+                                    Text("Friday").tag(6)
+                                    Text("Saturday").tag(7)
+                                }.buttonStyle(.bordered)
+                                
+                            }.padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .disabled(!rosterReminder)
+                            
+                  
+                            
+                        }.background(Color.primary.opacity(0.04))
+                            .cornerRadius(20)
+                        
                         /*
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $overtimeEnabled) {
@@ -501,6 +538,9 @@ struct EditJobView: View {
         job.overtimeEnabled = overtimeEnabled
         job.overtimeAppliedAfter = overtimeAppliedAfter
         job.overtimeRate = overtimeRate
+        job.rosterReminder = rosterReminder
+        job.rosterTime = selectedTime
+        job.rosterDayOfWeek = Int16(selectedDay)
         
         // replace this code with adding locations later when multiple address system update releases
         if let locationSet = job.locations, let location = locationSet.allObjects.first as? JobLocation {
@@ -538,7 +578,7 @@ struct EditJobView: View {
             
         
                 locationManager.startMonitoring(job: job) // might need to check clock out works with this, ive forgotten my implementation
-            
+            notificationManager.updateRosterNotifications(viewContext: viewContext)
             
             presentationMode.wrappedValue.dismiss()
         } catch {

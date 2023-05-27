@@ -134,7 +134,7 @@ struct SideMenu: View {
                                     
                                     
                                     Button(action: {
-                                        if isSubscriptionActive(){
+                                        if isSubscriptionActive() || jobs.isEmpty {
                                             showAddJobView = true
                                         } else {
                                             showUpgradeScreen = true
@@ -279,7 +279,7 @@ struct SideMenu: View {
 
 struct SideMenu_Previews: PreviewProvider {
     static var previews: some View {
-        MainWithSideBarView()
+        MainWithSideBarView(currentTab: .constant(.home))
     }
 }
 
