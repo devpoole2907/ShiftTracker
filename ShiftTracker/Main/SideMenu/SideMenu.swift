@@ -12,6 +12,8 @@ import Haptics
 
 struct SideMenu: View {
     
+    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
+    
     @Environment(\.colorScheme) var colorScheme
     
     @Binding var showMenu: Bool
@@ -52,7 +54,7 @@ struct SideMenu: View {
             
             VStack(alignment: .leading, spacing: 14){
                 HStack{
-                    if isSubscriptionActive(){
+                    if isProVersion{
                         Text("ShiftTracker")
                             .font(.title)
                             .bold()

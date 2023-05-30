@@ -219,13 +219,13 @@ struct ContentView: View {
                                             if breakItem.isUnpaid{
                                                 Text("Unpaid")
                                                     .font(.subheadline)
-                                                    .foregroundColor(.indigo)
+                                                    .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? .white : .indigo)
                                                     .bold()
                                             }
                                             else {
                                                 Text("Paid")
                                                     .font(.subheadline)
-                                                    .foregroundColor(.indigo)
+                                                    .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? .white : .indigo)
                                                     .bold()
                                             }
                                             if viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" {
@@ -336,6 +336,7 @@ struct ContentView: View {
                 if let thisShift = viewModel.lastEndedShift {
                     NavigationStack{
                         DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $activeSheet).navigationBarTitle("Shift Ended")
+                            .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
                             .environment(\.managedObjectContext, context)
                     }.presentationDetents([ .large])
                         .presentationDragIndicator(.visible)
@@ -377,7 +378,7 @@ struct ContentView: View {
             
         }
         .onAppear{
-            
+            print("Breaks in the breaks array: \(viewModel.tempBreaks.count)") //debugging
             if let hourlyPayValue = UserDefaults.standard.object(forKey: shiftKeys.hourlyPayKey) as? Double {
                 viewModel.hourlyPay = hourlyPayValue
             }
@@ -390,8 +391,6 @@ struct ContentView: View {
             if let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date {
                 if viewModel.hourlyPay != 0 {
                     
-                    
-                    // CODE HERE IS BROKEN - THERE IS NO JOB SELECTED WHEN KILLING THE APP!
                     
                     if let jobSelected = jobSelectionViewModel.fetchJob(in: context) {
                         viewModel.startShift(using: context, startDate: shiftStartDate, job: jobSelectionViewModel.fetchJob(in: context)!)

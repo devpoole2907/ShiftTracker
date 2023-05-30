@@ -11,6 +11,11 @@ import MapKit
 import CoreData
 
 struct EditJobView: View {
+    
+    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
+    
+    @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
+    
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.colorScheme) var colorScheme
@@ -61,7 +66,7 @@ struct EditJobView: View {
     @State private var miniMapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
     enum ActiveSheet: Identifiable {
-        case overtimeSheet, symbolSheet
+        case overtimeSheet, symbolSheet, proSheet
         
         var id: Int {
             hashValue
@@ -150,14 +155,14 @@ struct EditJobView: View {
                                 .background(Color.primary.opacity(0.04),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .shake(times: nameShakeTimes)
-                             
+                            
                             
                             TextField("Job Title", text: $title)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color.primary.opacity(0.04),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        
+                            
                             
                             CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
                                 .padding(.horizontal)
@@ -165,7 +170,7 @@ struct EditJobView: View {
                                 .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .keyboardType(.decimalPad)
                                 .shake(times: payShakeTimes)
-                         
+                            
                         }.focused($textIsFocused)
                             .haptics(onChangeOf: payShakeTimes, type: .error)
                             .haptics(onChangeOf: nameShakeTimes, type: .error)
@@ -208,43 +213,78 @@ struct EditJobView: View {
                                 .padding()
                         }
                         
-        
+                        
                         
                         VStack(alignment: .leading, spacing: 10){
                             
                             
                             
                             VStack{
-                                Toggle(isOn: $clockInReminder){
-                                    
+                                Toggle(isOn: $clockInReminder) {
                                     Text("Remind me to clock in")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                    .padding(.top, 10)
-                                    
+                                }
+                                .disabled(autoClockIn)
+                                .onChange(of: clockInReminder) { value in
+                                    if value {
+                                        autoClockIn = false
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                .padding(.top, 10)
                                 
-                                Toggle(isOn: $clockOutReminder){
-                                    
+                                Toggle(isOn: $clockOutReminder) {
                                     Text("Remind me to clock out")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                   
-                                Toggle(isOn: $autoClockIn){
+                                }
+                                .disabled(autoClockOut)
+                                .onChange(of: clockOutReminder) { value in
+                                    if value {
+                                        autoClockOut = false
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                
+                                Toggle(isOn: $autoClockIn) {
                                     Text("Auto clock in")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                    
-                                Toggle(isOn: $autoClockOut){
-                                    
+                                }
+                                .disabled(clockInReminder)
+                                .onChange(of: autoClockIn) { value in
+                                    if value {
+                                        if !isProVersion {
+                                            
+                                            activeSheet = .proSheet
+                                            autoClockIn = false
+                                            
+                                        } else {
+                                            clockInReminder = false
+                                        }
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                
+                                Toggle(isOn: $autoClockOut) {
                                     Text("Auto clock out")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                    .padding(.bottom, 10)
-                                    
+                                }
+                                .disabled(clockOutReminder)
+                                .onChange(of: autoClockOut) { value in
+                                    if value {
+                                        if !isProVersion {
+                                            
+                                            activeSheet = .proSheet
+                                            autoClockOut = false
+                                            
+                                        } else {
+                                            clockOutReminder = false
+                                        }
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                .padding(.bottom, 10)
+                                
+                                
                                 NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, iconColor: selectedColor)
                                     .onDisappear {
                                         self.miniMapRegion = self.mapRegion
@@ -283,13 +323,13 @@ struct EditJobView: View {
                                     .cornerRadius(20)
                                 
                             }
-                                
+                            
                         }.background(Color.primary.opacity(0.04))
                             .cornerRadius(20)
                         
                         
-         
                         
+                        if taxEnabled || taxPercentage > 0 {
                         VStack(alignment: .leading, spacing: 10){
                             Text("Estimated Tax")
                                 .bold()
@@ -305,7 +345,9 @@ struct EditJobView: View {
                             }.pickerStyle(.wheel)
                                 .frame(maxHeight: 100)
                         }
-                            .padding(.horizontal, 5)
+                        .padding(.horizontal, 5)
+                        
+                    }
                         
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $rosterReminder){
@@ -449,6 +491,15 @@ struct EditJobView: View {
                             JobIconPicker(selectedIcon: $selectedIcon, iconColor: selectedColor)
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .medium])
+                                .presentationDragIndicator(.visible)
+                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                                .presentationCornerRadius(50)
+                        case .proSheet:
+                            NavigationStack{
+                                ProView()
+                            }
+                                .environment(\.managedObjectContext, viewContext)
+                                .presentationDetents([ .large])
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)

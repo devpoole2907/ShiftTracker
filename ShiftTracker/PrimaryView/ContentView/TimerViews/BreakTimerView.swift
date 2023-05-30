@@ -26,15 +26,9 @@ struct BreakTimerView: View {
     
     var body: some View {
    
-        VStack(alignment: .center, spacing: 10) {
             Text("\(timeElapsed.stringFromTimeInterval())")
-                .foregroundColor(.white)
+                .foregroundColor(.indigo)
                 .font(.system(size: 15, weight: .bold).monospacedDigit())
-                .frame(width: 100, height: 30)
-                .background(.indigo)
-                .cornerRadius(12)
-        }
-            .ignoresSafeArea()
     }
 }
 

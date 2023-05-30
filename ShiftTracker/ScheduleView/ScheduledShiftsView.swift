@@ -407,6 +407,7 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
                     }
                 }
                 .navigationBarTitle("Schedule", displayMode: .inline)
+                .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
         }
     }
     

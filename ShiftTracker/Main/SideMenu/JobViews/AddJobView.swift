@@ -13,6 +13,11 @@ import MapKit
 import Haptics
 
 struct AddJobView: View {
+    
+    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
+    
+    @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
+    
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.colorScheme) var colorScheme
@@ -66,7 +71,7 @@ struct AddJobView: View {
     @State private var miniMapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
     enum ActiveSheet: Identifiable {
-        case overtimeSheet, symbolSheet
+        case overtimeSheet, symbolSheet, proSheet
         
         var id: Int {
             hashValue
@@ -133,7 +138,7 @@ struct AddJobView: View {
                    
 
                     VStack(spacing: 15){
-      
+                        
                         
                         Group{
                             TextField("Company Name", text: $name)
@@ -197,36 +202,71 @@ struct AddJobView: View {
                             
                             
                             VStack{
-                                Toggle(isOn: $clockInReminder){
-                                    
+                                Toggle(isOn: $clockInReminder) {
                                     Text("Remind me to clock in")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                    .padding(.top, 10)
-                                    
+                                }
+                                .disabled(autoClockIn)
+                                .onChange(of: clockInReminder) { value in
+                                    if value {
+                                        autoClockIn = false
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                .padding(.top, 10)
                                 
-                                Toggle(isOn: $clockOutReminder){
-                                    
+                                Toggle(isOn: $clockOutReminder) {
                                     Text("Remind me to clock out")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                   
-                                Toggle(isOn: $autoClockIn){
+                                }
+                                .disabled(autoClockOut)
+                                .onChange(of: clockOutReminder) { value in
+                                    if value {
+                                        autoClockOut = false
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                
+                                Toggle(isOn: $autoClockIn) {
                                     Text("Auto clock in")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                    
-                                Toggle(isOn: $autoClockOut){
-                                    
+                                }
+                                .disabled(clockInReminder)
+                                .onChange(of: autoClockIn) { value in
+                                    if value {
+                                        if !isProVersion {
+                                            
+                                            activeSheet = .proSheet
+                                            autoClockIn = false
+                                            
+                                        } else {
+                                            clockInReminder = false
+                                        }
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                
+                                Toggle(isOn: $autoClockOut) {
                                     Text("Auto clock out")
-                                    
-                                }.toggleStyle(OrangeToggleStyle())
-                                    .padding(.horizontal)
-                                    .padding(.bottom, 10)
-                                    
+                                }
+                                .disabled(clockOutReminder)
+                                .onChange(of: autoClockOut) { value in
+                                    if value {
+                                        if !isProVersion {
+                                            
+                                            activeSheet = .proSheet
+                                            autoClockOut = false
+                                            
+                                        } else {
+                                            clockOutReminder = false
+                                        }
+                                    }
+                                }
+                                .toggleStyle(OrangeToggleStyle())
+                                .padding(.horizontal)
+                                .padding(.bottom, 10)
+                                
+                                
                                 NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, iconColor: selectedColor)
                                     .onDisappear {
                                         // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
@@ -265,15 +305,15 @@ struct AddJobView: View {
                                     }.frame(minHeight: 120)
                                     .background(Color.clear,in:
                                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
-                         
+                                
                                 
                             }
-                               
+                            
                             
                         }.background(Color.primary.opacity(0.04))
                             .cornerRadius(20)
                         
-                        
+                        if taxEnabled {
                         VStack(alignment: .leading, spacing: 10){
                             Text("Estimated Tax")
                                 .bold()
@@ -289,7 +329,8 @@ struct AddJobView: View {
                             }.pickerStyle(.wheel)
                                 .frame(maxHeight: 100)
                         }
-                            .padding(.horizontal, 10)
+                        .padding(.horizontal, 10)
+                    }
                         
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $rosterReminder){
@@ -404,6 +445,18 @@ struct AddJobView: View {
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
+                            
+                            
+                        case .proSheet:
+                            NavigationStack{
+                                ProView()
+                            }
+                                .environment(\.managedObjectContext, viewContext)
+                                .presentationDetents([ .large])
+                                .presentationDragIndicator(.visible)
+                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                                .presentationCornerRadius(50)
+                            
                         }
                         
                     }

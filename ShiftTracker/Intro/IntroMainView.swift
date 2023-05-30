@@ -157,13 +157,7 @@ struct IntroView<ActionView: View>: View {
                             if filteredPages.firstIndex(of: intro) == 4 {
                                 locationManager.requestAlwaysAuthorization()
                             } else if filteredPages.firstIndex(of: intro) == 5 {
-                                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                                    if success {
-                                        print("All set!")
-                                    } else if let error = error {
-                                        print(error.localizedDescription)
-                                    }
-                                }
+                                requestNotificationPerms()
                             }
                             changeIntro()
                                 
@@ -181,6 +175,8 @@ struct IntroView<ActionView: View>: View {
                 
                             Button{
                                 changeIntro(isSkip: true)
+                                locationManager.requestAlwaysAuthorization()
+                                requestNotificationPerms()
                             } label: {
                                 Text("Skip")
                                     .bold()
@@ -256,6 +252,16 @@ struct IntroView<ActionView: View>: View {
         }
         
         
+    }
+    
+    func requestNotificationPerms() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+            if success {
+                print("All set!")
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
+        }
     }
 
     

@@ -288,9 +288,6 @@ class ContentViewModel: ObservableObject {
 
         
         
-        
-        
-        
         func saveHourlyPay() {
             sharedUserDefaults.set(hourlyPay, forKey: shiftKeys.hourlyPayKey)
         }
@@ -386,27 +383,12 @@ class ContentViewModel: ObservableObject {
         }
             startBreakTimer(startDate: currentBreak.startDate)
             
-            
-            //  sharedUserDefaults.set(timeElapsedBeforeBreak, forKey: shiftKeys.timeElapsedBeforeBreakKey)
-            
-            
-            //  breakTaken = true
-            //    sharedUserDefaults.set(breakTaken, forKey: shiftKeys.breakTakenKey)
-            //  sharedUserDefaults.set(breakStartDate, forKey: shiftKeys.breakStartedDateKey)
-            
-            // stopActivity()
-            // startBreakTimer(startDate: breakStartDate)
-            
-            // DISABLED UNTIL FIGURED OUT MULTIPLE BREAKS
-        
-            
         }
         
         func stopTimer(timer: inout Timer?, timeElapsed: inout TimeInterval) {
             timer?.invalidate()
             timer = nil
             timeElapsed = 0
-            // stopActivity() // we cant stop the activity here, it needs to be seperate
         }
         
         func startBreakTimer(startDate: Date) {
@@ -417,16 +399,8 @@ class ContentViewModel: ObservableObject {
         }
         
     func endShift(using viewContext: NSManagedObjectContext, endDate: Date, job: Job) -> OldShift? {
-        
-        
-        
-        
-        
-        //updateActivity(startDate: Date())
 #if os(iOS)
         stopActivity()
-        
-        print("stopped 4 activities")
 #endif
         stopTimer(timer: &timer, timeElapsed: &timeElapsed)
         breakTaken = false

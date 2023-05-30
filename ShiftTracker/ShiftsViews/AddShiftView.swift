@@ -67,6 +67,7 @@ struct AddShiftView: View {
         newShift.hourlyPay = Double(hourlyPay) ?? 0.0
         newShift.tax = taxPercentage
         newShift.totalTips = Double(totalTips) ?? 0.0
+        newShift.shiftNote = notes
 
 
             newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
@@ -461,6 +462,7 @@ struct AddShiftView: View {
                  }
                  }.listRowSeparator(.hidden) */
             }.scrollContentBackground(.hidden)
+                    .listStyle(.inset)
         }
             .toolbar{
                 ToolbarItemGroup(placement: .keyboard){
