@@ -379,7 +379,7 @@ struct DetailView: View {
                         .cornerRadius(20)
                     
                     TextEditor(text: $notes)
-                    
+                    .disabled(!isEditing)
                     //.textFieldStyle(PlainTextFieldStyle())
                         .focused($noteIsFocused)
                     //.padding()
@@ -407,7 +407,7 @@ struct DetailView: View {
                 }) {
                     Image(systemName: "plus")
                         .bold()
-                }
+                }.disabled(!isEditing)
             }.font(.title2)
                 .padding(.horizontal, 5)
                 .listRowSeparator(.hidden)

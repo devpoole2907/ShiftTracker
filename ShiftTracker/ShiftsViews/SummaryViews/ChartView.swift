@@ -186,7 +186,7 @@ struct ChartView: View {
                             
                         
                         Spacer()
-                    }.shadow(radius: 3, x: 0, y: 1)
+                    }//.shadow(radius: 3, x: 0, y: 1)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
                     .offset(x: offsetX - 50)//, y: offsetY - 50)
                 Rectangle().fill(.clear).contentShape(Rectangle()).gesture(DragGesture().onChanged{ value in
