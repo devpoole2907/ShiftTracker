@@ -95,12 +95,8 @@ struct ShiftsView: View {
                                 RoundedSquareView(text: "Total", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllPay())", color: Color.primary.opacity(0.04), imageColor: .pink, systemImageName: "chart.line.downtrend.xyaxis.circle.fill")
                                 
                                     .frame(maxWidth: .infinity)
-                                
-                                
                             }
                         }.padding(.horizontal, -15)
-                        
-                        
                     }.dynamicTypeSize(.small)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
@@ -117,14 +113,13 @@ struct ShiftsView: View {
                     
                 }
                 .scrollContentBackground(.hidden)
-                
             }
             .navigationBarTitle("Summary")
             
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+              //  DispatchQueue.main.asyncAfter(deadline: .now() + 10.0) {
                     navigationState.gestureEnabled = true
-                }
+               // }
             }
             
             .toolbar{

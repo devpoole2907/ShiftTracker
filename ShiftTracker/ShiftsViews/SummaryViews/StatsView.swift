@@ -652,7 +652,10 @@ struct StatsView: View {
                 .onAppear{
                     viewContext.reset()
                     self.refreshingID = UUID()
+                    navigationState.gestureEnabled = false
                 }
+            
+
             
             
                 .navigationBarTitle(job?.name ?? "Job Name")
