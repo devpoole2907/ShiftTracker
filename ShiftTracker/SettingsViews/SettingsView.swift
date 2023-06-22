@@ -95,9 +95,10 @@ struct SettingsView: View {
                         Text("Location")
                             .font(.title2)
                             .bold()
-                            .padding()
                     }
-                }
+                }.padding()
+                .background(Color.primary.opacity(0.04))
+                    .cornerRadius(12)
                 NavigationLink(destination: NotificationView()){
                     HStack {
                         Image(systemName: "bell")
@@ -106,9 +107,10 @@ struct SettingsView: View {
                         Text("Notifications")
                             .font(.title2)
                             .bold()
-                            .padding()
                     }
-                }
+                }.padding()
+                    .background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
                 NavigationLink(destination: AppearanceView(userColorScheme: $userColorScheme)) {
                     HStack {
                         Image("AppearanceIconSymbol")
@@ -117,21 +119,14 @@ struct SettingsView: View {
                         Text("Appearance")
                             .font(.title2)
                             .bold()
-                            .padding()
                         Spacer()
                         Text("\(userColorScheme)".capitalized)
                             .foregroundColor(.gray)
                             .bold()
-                            .padding()
                     }
-                }
-                /*NavigationLink(destination: TagsView().navigationTitle("Tags")){
-                 HStack {
-                 Image(systemName: "tag")
-                 Spacer().frame(width: 10)
-                 Text("Tags")
-                 }
-                 } */
+                }.padding()
+                    .background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
                 Toggle(isOn: $authEnabled){
                     HStack {
                         Image(systemName: "faceid")
@@ -140,7 +135,6 @@ struct SettingsView: View {
                         Text("App Lock")
                             .font(.title2)
                             .bold()
-                            .padding()
                     }
                 }.toggleStyle(OrangeToggleStyle())
                     .onChange(of: authEnabled) { newValue in
@@ -156,20 +150,27 @@ struct SettingsView: View {
                             isAuthenticated = false
                         }
                     }
+                    .padding()
+                    .background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
                 Toggle(isOn: $iCloudSyncOn) {
                     HStack {
                         Image("iCloudIconSymbol")
-                           // .padding(.leading)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: 20)
                         Spacer().frame(width: 10)
                         Text("iCloud Sync")
                             .font(.title2)
                             .bold()
-                            .padding()
                     }
                 }.toggleStyle(OrangeToggleStyle())
                     .onChange(of: iCloudSyncOn) { value in
                         PersistenceController.shared.updateCloudKitSyncStatus()
                     }
+                    .padding()
+                    .background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
                 Toggle(isOn: $tipsEnabled) {
                     HStack {
                         Image("TipsIconSymbol")
@@ -178,10 +179,11 @@ struct SettingsView: View {
                         Text("Tips")
                             .font(.title2)
                             .bold()
-                            .padding()
                     }
                 }.toggleStyle(OrangeToggleStyle())
-                //.padding()
+                    .padding()
+                    .background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
                 
                 Toggle(isOn: $taxEnabled) {
                     HStack {
@@ -191,15 +193,16 @@ struct SettingsView: View {
                         Text("Estimated Tax")
                             .font(.title2)
                             .bold()
-                            .padding()
                     }
                 }.toggleStyle(OrangeToggleStyle())
                     .onChange(of: taxEnabled){ value in
                         sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
                     }
+                    .padding()
+                    .background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
             }
             .listRowSeparator(.hidden)
-            //.listRowBackground(Color.clear)
             
             
             Section{
@@ -210,13 +213,13 @@ struct SettingsView: View {
                         Text("Support the Developer")
                             .font(.title2)
                             .bold()
-                            .padding()
                     }
-                }
+                }.padding()
+                    .background(Color.primary.opacity(0.04))
+                        .cornerRadius(12)
                 
             }
             .listRowSeparator(.hidden)
-            //.listRowBackground(Color.clear)
             
             
             Section{

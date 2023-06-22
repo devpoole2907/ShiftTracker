@@ -15,7 +15,7 @@ struct AddShiftView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
-
+    
     
     @State private var shiftStartDate = Date()
     @State private var shiftEndDate = Date()
@@ -68,23 +68,23 @@ struct AddShiftView: View {
         newShift.tax = taxPercentage
         newShift.totalTips = Double(totalTips) ?? 0.0
         newShift.shiftNote = notes
-
-
-            newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
+        
+        
+        newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
         
         let unpaidBreaks = (tempBreaks).filter { $0.isUnpaid == true }
         let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate) }
         let paidDuration = newShift.duration - totalBreakDuration
         newShift.totalPay = (paidDuration / 3600.0) * newShift.hourlyPay
-            newShift.taxedPay = newShift.totalPay - (newShift.totalPay * newShift.tax / 100.0)
+        newShift.taxedPay = newShift.totalPay - (newShift.totalPay * newShift.tax / 100.0)
         
         newShift.job = job
-            
-            for tempBreak in tempBreaks {
-                if let breakEndDate = tempBreak.endDate {
-                    breaksManager.createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
-                }
+        
+        for tempBreak in tempBreaks {
+            if let breakEndDate = tempBreak.endDate {
+                breaksManager.createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
             }
+        }
         
         do {
             try viewContext.save()
@@ -119,7 +119,7 @@ struct AddShiftView: View {
         }
         return totalDuration
     }
-
+    
     
     
     var body: some View {
@@ -130,232 +130,190 @@ struct AddShiftView: View {
         NavigationStack {
             ZStack{
                 Color(.systemBackground).edgesIgnoringSafeArea(.all)
-            Form {
-                
-                Section{
-                    //  HStack{
+                Form {
                     
-                    ZStack{
-                        RoundedRectangle(cornerRadius: 12)
-                            .foregroundColor(.primary.opacity(0.04))
-                            .frame(width: UIScreen.main.bounds.width - 40)
-                            .shadow(radius: 5, x: 0, y: 4)
-                        VStack(alignment: .center, spacing: 5) {
-                            VStack {
-                                Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
-                                //.foregroundColor(.white)
-                                    .padding(.horizontal, 20)
-                                    .font(.system(size: 60).monospacedDigit())
-                                    .fontWeight(.bold)
-                                
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top)
-                            
-                            
-                            HStack(spacing: 10){
-                                if taxPercentage > 0 {
-                                    HStack(spacing: 2){
-                                        Image(systemName: "chart.line.downtrend.xyaxis")
-                                            .font(.system(size: 15).monospacedDigit())
-                                            .fontWeight(.light)
-                                            .foregroundColor(.pink)
-                                        Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
-                                            .font(.system(size: 20).monospacedDigit())
-                                            .bold()
-                                            .foregroundColor(.pink)
-                                    }
+                    Section{
+                        //  HStack{
+                        
+                        ZStack{
+                            RoundedRectangle(cornerRadius: 12)
+                                .foregroundColor(.primary.opacity(0.04))
+                                .frame(width: UIScreen.main.bounds.width - 40)
+                                .shadow(radius: 5, x: 0, y: 4)
+                            VStack(alignment: .center, spacing: 5) {
+                                VStack {
+                                    Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
+                                    //.foregroundColor(.white)
+                                        .padding(.horizontal, 20)
+                                        .font(.system(size: 60).monospacedDigit())
+                                        .fontWeight(.bold)
+                                    
                                 }
-                                if Double(totalTips) ?? 0 > 0 {
-                                    HStack(spacing: 2){
-                                        Image(systemName: "chart.line.uptrend.xyaxis")
-                                            .font(.system(size: 15).monospacedDigit())
-                                            .fontWeight(.light)
-                                            .foregroundColor(.teal)
-                                        Text("\(currencyFormatter.string(from: NSNumber(value: Double(totalTips) ?? 0)) ?? "")")
-                                            .font(.system(size: 20).monospacedDigit())
-                                            .bold()
-                                            .foregroundColor(.teal)
+                                .frame(maxWidth: .infinity)
+                                .padding(.top)
+                                
+                                
+                                HStack(spacing: 10){
+                                    if taxPercentage > 0 {
+                                        HStack(spacing: 2){
+                                            Image(systemName: "chart.line.downtrend.xyaxis")
+                                                .font(.system(size: 15).monospacedDigit())
+                                                .fontWeight(.light)
+                                                .foregroundColor(.pink)
+                                            Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
+                                                .font(.system(size: 20).monospacedDigit())
+                                                .bold()
+                                                .foregroundColor(.pink)
+                                        }
                                     }
+                                    if Double(totalTips) ?? 0 > 0 {
+                                        HStack(spacing: 2){
+                                            Image(systemName: "chart.line.uptrend.xyaxis")
+                                                .font(.system(size: 15).monospacedDigit())
+                                                .fontWeight(.light)
+                                                .foregroundColor(.teal)
+                                            Text("\(currencyFormatter.string(from: NSNumber(value: Double(totalTips) ?? 0)) ?? "")")
+                                                .font(.system(size: 20).monospacedDigit())
+                                                .bold()
+                                                .foregroundColor(.teal)
+                                        }
+                                        
+                                    }
+                                    
+                                    
                                     
                                 }
                                 
+                                .padding(.horizontal, 20)
                                 
                                 
-                            }
-                            
-                            .padding(.horizontal, 20)
-                            
-                            
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom, 5)
-                            
-                            // }
-                            
-                            Divider().frame(maxWidth: 200)
-                            if totalBreakDuration(for: tempBreaks) > 0{
-                            HStack(spacing: 0) {
-                                ForEach(0..<timeDigits.count, id: \.self) { index in
-                                    FuckingRollingDigitAgain(digit: timeDigits[index])
-                                        .frame(width: 20, height: 30)
-                                        .mask(AnotherFuckingFadeMaskBecauseXcodeIsGood())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
-                                    }
-                                }
-                            }
-                            .foregroundColor(.orange)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
-                    
-                            
-                            HStack(spacing: 0) {
-                                ForEach(0..<breakDigits.count, id: \.self) { index in
-                                    RollingDigit(digit: breakDigits[index])
-                                        .frame(width: 9, height: 14)
-                                        .mask(FadeMask())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 12, weight: .bold).monospacedDigit())
-                                    }
-                                }
-                            }
-                            .foregroundColor(.indigo)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom)
-                            
-                        } else {
-                            HStack(spacing: 0) {
-                                ForEach(0..<timeDigits.count, id: \.self) { index in
-                                    FuckingRollingDigitAgain(digit: timeDigits[index])
-                                        .frame(width: 20, height: 30)
-                                        .mask(AnotherFuckingFadeMaskBecauseXcodeIsGood())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
-                                    }
-                                }
-                            }
-                            .foregroundColor(.orange)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom)
-                        }
-                            
-                            
-                            
-                            
-                            
-                        }
-                    }
-                }.listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                
-                
-                
-                Section{
-                    VStack{
-                        VStack(alignment: .leading){
-                            Text("Start:")
-                                .bold()
-                            //.padding(.horizontal, 15)
-                                .padding(.vertical, 5)
-                            
-                            DatePicker("Start: ", selection: $shiftStartDate)
-                                .labelsHidden()
-                                .onChange(of: shiftStartDate) { _ in
-                                    if shiftStartDate > shiftEndDate {
-                                        shiftEndDate = shiftStartDate
-                                    }
-                                }
-                                .onAppear {
-                                    //  noteIsFocused = false // Dismiss the text editor when the picker appears
-                                }
                                 .frame(maxWidth: .infinity)
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        }
-                        VStack(alignment: .leading){
-                            Text("End:")
-                                .bold()
-                            //.padding(.horizontal, 15)
-                                .padding(.vertical, 5)
-                            
-                            DatePicker("", selection: $shiftEndDate)
-                                .labelsHidden()
-                                .onChange(of: shiftEndDate) { _ in
-                                    if shiftEndDate < shiftStartDate {
-                                        shiftEndDate = shiftStartDate
-                                    }
-                                }
-                            
-                                .onAppear {
-                                    //noteIsFocused = false // Dismiss the text editor when the picker appears
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .padding(.bottom, 5)
                                 
-                            
-                        }
-                    }
-                }.listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                
-                   
-                
-                Section{
-                    VStack(alignment: .leading) {
-                        
-                        Text("Hourly pay:")
-                            .bold()
-                        
-                            .padding(.vertical, 5)
-                        
-                            .cornerRadius(20)
-                        
-                        
-                        AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Hourly Pay", text: $hourlyPay)
-                            .keyboardType(.decimalPad)
-                            .focused($payIsFocused)
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .background(Color.primary.opacity(0.04),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        
-                        
-                        
-                        
-                        
-                        
-                    }
-                    if taxEnabled {
-                        
-                        VStack(alignment: .leading){
-                            Text("Estimated Tax")
-                                .bold()
-                                .padding(.vertical, 5)
-                                .padding(.leading, -2)
-                            Picker("Estimated tax:", selection: $taxPercentage) {
-                                ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
-                                    Text(index / 100, format: .percent)
+                                // }
+                                
+                                Divider().frame(maxWidth: 200)
+                                if totalBreakDuration(for: tempBreaks) > 0{
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<timeDigits.count, id: \.self) { index in
+                                            FuckingRollingDigitAgain(digit: timeDigits[index])
+                                                .frame(width: 20, height: 30)
+                                                .mask(AnotherFuckingFadeMaskBecauseXcodeIsGood())
+                                            if index == 1 || index == 3 {
+                                                Text(":")
+                                                    .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                            }
+                                        }
+                                    }
+                                    .foregroundColor(.orange)
+                                    //.frame(width: 250, height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    
+                                    
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<breakDigits.count, id: \.self) { index in
+                                            RollingDigit(digit: breakDigits[index])
+                                                .frame(width: 9, height: 14)
+                                                .mask(FadeMask())
+                                            if index == 1 || index == 3 {
+                                                Text(":")
+                                                    .font(.system(size: 12, weight: .bold).monospacedDigit())
+                                            }
+                                        }
+                                    }
+                                    .foregroundColor(.indigo)
+                                    //.frame(width: 250, height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom)
+                                    
+                                } else {
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<timeDigits.count, id: \.self) { index in
+                                            FuckingRollingDigitAgain(digit: timeDigits[index])
+                                                .frame(width: 20, height: 30)
+                                                .mask(AnotherFuckingFadeMaskBecauseXcodeIsGood())
+                                            if index == 1 || index == 3 {
+                                                Text(":")
+                                                    .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                            }
+                                        }
+                                    }
+                                    .foregroundColor(.orange)
+                                    //.frame(width: 250, height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom)
                                 }
-                            }.pickerStyle(.wheel)
-                                .frame(maxHeight: 100)
+                                
+                                
+                                
+                                
+                                
+                            }
                         }
-                        .padding(.horizontal, 5)
-                    }
+                    }.listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     
-                    if tipsEnabled {
+                    
+                    
+                    Section{
+                        VStack{
+                            VStack(alignment: .leading){
+                                Text("Start:")
+                                    .bold()
+                                //.padding(.horizontal, 15)
+                                    .padding(.vertical, 5)
+                                
+                                DatePicker("Start: ", selection: $shiftStartDate)
+                                    .labelsHidden()
+                                    .onChange(of: shiftStartDate) { _ in
+                                        if shiftStartDate > shiftEndDate {
+                                            shiftEndDate = shiftStartDate
+                                        }
+                                    }
+                                    .onAppear {
+                                        //  noteIsFocused = false // Dismiss the text editor when the picker appears
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 10)
+                                    .background(Color.primary.opacity(0.04),in:
+                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            }
+                            VStack(alignment: .leading){
+                                Text("End:")
+                                    .bold()
+                                //.padding(.horizontal, 15)
+                                    .padding(.vertical, 5)
+                                
+                                DatePicker("", selection: $shiftEndDate)
+                                    .labelsHidden()
+                                    .onChange(of: shiftEndDate) { _ in
+                                        if shiftEndDate < shiftStartDate {
+                                            shiftEndDate = shiftStartDate
+                                        }
+                                    }
+                                
+                                    .onAppear {
+                                        //noteIsFocused = false // Dismiss the text editor when the picker appears
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 10)
+                                    .background(Color.primary.opacity(0.04),in:
+                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                
+                                
+                            }
+                        }
+                    }.listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                    
+                    
+                    
+                    Section{
                         VStack(alignment: .leading) {
                             
-                            Text("Total tips:")
+                            Text("Hourly pay:")
                                 .bold()
                             
                                 .padding(.vertical, 5)
@@ -363,7 +321,7 @@ struct AddShiftView: View {
                                 .cornerRadius(20)
                             
                             
-                            AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Total tips", text: $totalTips)
+                            AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Hourly Pay", text: $hourlyPay)
                                 .keyboardType(.decimalPad)
                                 .focused($payIsFocused)
                                 .padding(.horizontal)
@@ -373,97 +331,139 @@ struct AddShiftView: View {
                             
                             
                             
+                            
+                            
+                            
                         }
-                        /*  Toggle(isOn: $addTipsToTotal) {
-                         HStack {
-                         Image(systemName: "chart.line.downtrend.xyaxis")
-                         Spacer().frame(width: 10)
-                         Text("Add tips to total pay")
-                         }
-                         }.toggleStyle(OrangeToggleStyle()) */
+                        if taxEnabled {
+                            
+                            VStack(alignment: .leading){
+                                Text("Estimated Tax")
+                                    .bold()
+                                    .padding(.vertical, 5)
+                                    .padding(.leading, -2)
+                                Picker("Estimated tax:", selection: $taxPercentage) {
+                                    ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
+                                        Text(index / 100, format: .percent)
+                                    }
+                                }.pickerStyle(.wheel)
+                                    .frame(maxHeight: 100)
+                            }
+                            .padding(.horizontal, 5)
+                        }
                         
-                    }
-                    VStack(alignment: .leading){
-                        Text("Notes:")
-                            .bold()
-                        //.padding(.horizontal, 15)
-                            .padding(.vertical, 5)
-                        //.background(Color.primary.opacity(0.04))
-                            .cornerRadius(20)
-                        
-                        TextEditor(text: $notes)
-                        
-                        //.textFieldStyle(PlainTextFieldStyle())
-                            .focused($noteIsFocused)
-                        //.padding()
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .background(Color.primary.opacity(0.04),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        
-                        
-                        
-                            .frame(minHeight: 200, maxHeight: .infinity)
-                    }
-                }.listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                
-                HStack{
-                    Text("Breaks:")
-                        .bold()
+                        if tipsEnabled {
+                            VStack(alignment: .leading) {
+                                
+                                Text("Total tips:")
+                                    .bold()
+                                
+                                    .padding(.vertical, 5)
+                                
+                                    .cornerRadius(20)
+                                
+                                
+                                AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Total tips", text: $totalTips)
+                                    .keyboardType(.decimalPad)
+                                    .focused($payIsFocused)
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 10)
+                                    .background(Color.primary.opacity(0.04),in:
+                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                
+                                
+                                
+                            }
+                            /*  Toggle(isOn: $addTipsToTotal) {
+                             HStack {
+                             Image(systemName: "chart.line.downtrend.xyaxis")
+                             Spacer().frame(width: 10)
+                             Text("Add tips to total pay")
+                             }
+                             }.toggleStyle(OrangeToggleStyle()) */
+                            
+                        }
+                        VStack(alignment: .leading){
+                            Text("Notes:")
+                                .bold()
+                            //.padding(.horizontal, 15)
+                                .padding(.vertical, 5)
+                            //.background(Color.primary.opacity(0.04))
+                                .cornerRadius(20)
+                            
+                            TextEditor(text: $notes)
+                            
+                            //.textFieldStyle(PlainTextFieldStyle())
+                                .focused($noteIsFocused)
+                            //.padding()
+                                .padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .background(Color.primary.opacity(0.04),in:
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            
+                            
+                            
+                                .frame(minHeight: 200, maxHeight: .infinity)
+                        }
+                    }.listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     
-                        .padding(.vertical, 5)
-                    Spacer()
-                    Button(action: {
-                        isAddingBreak = true
-                    }) {
-                        Image(systemName: "plus")
+                    HStack{
+                        Text("Breaks:")
                             .bold()
-                    }
-                }.font(.title2)
-                    .padding(.horizontal, 5)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                    .sheet(isPresented: $isAddingBreak){
-                        // view goes here
                         
-                       // EmptyView()
-                        AddTempBreakView(tempBreaks: $tempBreaks, isAddingBreak: $isAddingBreak, startDate: shiftStartDate, endDate: shiftEndDate)
-                            .presentationDetents([ .fraction(0.4)])
-                           .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                            .presentationCornerRadius(50)
-                            .presentationDragIndicator(.visible)
-                    }
-                TempBreaksListView(breaks: $tempBreaks)
-             /*   if let breaks = shift.breaks as? Set<Break> {
-                    let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
-                    BreaksListView(breaks: sortedBreaks, isEditing: $isEditing, shift: shift)
-                }*/
-                
-                Spacer()
-                    .listRowBackground(Color.clear)
-                
-                /*   Section(header: Text("Break Details")) {
-                 DatePicker("Break Start", selection: $breakStartDate, displayedComponents: [.date, .hourAndMinute])
-                 .onChange(of: breakStartDate) { newValue in
-                 if newValue < shiftStartDate {
-                 breakStartDate = shiftStartDate
-                 } else if newValue > shiftEndDate {
-                 breakStartDate = shiftEndDate
-                 }
-                 }
-                 DatePicker("Break End", selection: $breakEndDate, displayedComponents: [.date, .hourAndMinute])
-                 .onChange(of: breakEndDate) { newValue in
-                 if newValue < breakStartDate {
-                 breakEndDate = breakStartDate
-                 } else if newValue > shiftEndDate {
-                 breakEndDate = shiftEndDate
-                 }
-                 }
-                 }.listRowSeparator(.hidden) */
-            }.scrollContentBackground(.hidden)
+                            .padding(.vertical, 5)
+                        Spacer()
+                        Button(action: {
+                            isAddingBreak = true
+                        }) {
+                            Image(systemName: "plus")
+                                .bold()
+                        }
+                    }.font(.title2)
+                        .padding(.horizontal, 5)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .sheet(isPresented: $isAddingBreak){
+                            // view goes here
+                            
+                            // EmptyView()
+                            AddTempBreakView(tempBreaks: $tempBreaks, isAddingBreak: $isAddingBreak, startDate: shiftStartDate, endDate: shiftEndDate)
+                                .presentationDetents([ .fraction(0.4)])
+                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                                .presentationCornerRadius(50)
+                                .presentationDragIndicator(.visible)
+                        }
+                    TempBreaksListView(breaks: $tempBreaks)
+                    /*   if let breaks = shift.breaks as? Set<Break> {
+                     let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
+                     BreaksListView(breaks: sortedBreaks, isEditing: $isEditing, shift: shift)
+                     }*/
+                    
+                    Spacer()
+                        .listRowBackground(Color.clear)
+                    
+                    /*   Section(header: Text("Break Details")) {
+                     DatePicker("Break Start", selection: $breakStartDate, displayedComponents: [.date, .hourAndMinute])
+                     .onChange(of: breakStartDate) { newValue in
+                     if newValue < shiftStartDate {
+                     breakStartDate = shiftStartDate
+                     } else if newValue > shiftEndDate {
+                     breakStartDate = shiftEndDate
+                     }
+                     }
+                     DatePicker("Break End", selection: $breakEndDate, displayedComponents: [.date, .hourAndMinute])
+                     .onChange(of: breakEndDate) { newValue in
+                     if newValue < breakStartDate {
+                     breakEndDate = breakStartDate
+                     } else if newValue > shiftEndDate {
+                     breakEndDate = shiftEndDate
+                     }
+                     }
+                     }.listRowSeparator(.hidden) */
+                }.scrollContentBackground(.hidden)
                     .listStyle(.inset)
-        }
+            }
             .toolbar{
                 ToolbarItemGroup(placement: .keyboard){
                     Spacer()
@@ -489,17 +489,17 @@ struct AddShiftView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {saveShift(job: job)
                     }) {
-                    Image(systemName: "folder.badge.plus")
-                    .bold()
-                    .padding()
+                        Image(systemName: "folder.badge.plus")
+                            .bold()
+                            .padding()
                     }
                     .disabled(totalPay <= 0)
                 }
             }
             
-                
-                   
-                
+            
+            
+            
             
         }
     }
@@ -536,7 +536,7 @@ struct AnotherFuckingFadeMaskBecauseXcodeIsGood: View {
 struct FuckingRollingDigitAgain: View {
     let digit: Int
     @State private var shouldAnimate = false
-
+    
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
@@ -569,12 +569,12 @@ private extension TimeInterval {
     }
 }
 /*
-struct AddShiftView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddShiftView()
-    }
-}
-*/
+ struct AddShiftView_Previews: PreviewProvider {
+ static var previews: some View {
+ AddShiftView()
+ }
+ }
+ */
 
 struct AddTempBreakView: View {
     
@@ -598,7 +598,7 @@ struct AddTempBreakView: View {
             ScrollView {
                 
                 VStack(alignment: .leading, spacing: 15){
-
+                    
                     VStack(alignment: .leading){
                         HStack{
                             Text("Start:")
@@ -614,9 +614,9 @@ struct AddTempBreakView: View {
                                         newBreakEndDate = newValue.addingTimeInterval(10 * 60)
                                     }
                                 }
-
-                       
-
+                            
+                            
+                            
                         }
                         HStack{
                             Text("End:")
@@ -631,7 +631,7 @@ struct AddTempBreakView: View {
                                         newBreakEndDate = newBreakStartDate.addingTimeInterval(10 * 60)
                                     }
                                 }
-
+                            
                         }
                         Picker(selection: $isUnpaid, label: Text("Break Type")) {
                             Text("Paid").tag(false)
@@ -688,7 +688,7 @@ struct TempBreaksListView: View {
         formatter.dateFormat = "dd/MM/yyyy   h:mm a"
         return formatter.string(from: date)
     }
-
+    
     
     var body: some View {
         ForEach(breaks, id: \.self) { breakItem in

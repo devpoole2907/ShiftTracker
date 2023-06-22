@@ -114,6 +114,7 @@ struct SideMenu: View {
                                                 jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
                                                 withAnimation(.easeInOut) {
                                                     isJobsExpanded = false
+                                                    showMenu = false
                                                 }
                                                 
                                             }

@@ -19,21 +19,6 @@ struct ShiftsView: View {
     
     @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
     
-    @FetchRequest(
-        entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
-    var latestShifts: FetchedResults<OldShift>
-    
-    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.taxedPay, ascending: false)])
-    var highPayShifts: FetchedResults<OldShift>
-    
-    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(key: "duration", ascending: false)])
-    var longestShifts: FetchedResults<OldShift>
-    
-    
-    // shitty workaround test
-    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
-    var latestShiftsDuctTapeFix: FetchedResults<OldShift>
-    
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: []) var oldShifts: FetchedResults<OldShift>
     
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.title, ascending: true)]) private var jobs: FetchedResults<Job>
@@ -313,18 +298,6 @@ struct ShiftsView_Previews: PreviewProvider {
     }
 }
 
-
-// old search bar view:
-
-/*  SearchBarView(text: $searchText)
- 
- .disabled(isEditing || sortOption == 0)
- //.padding(.horizontal, 50)
- //.padding(.top, 10)
- .frame(maxWidth: .infinity)
- .frame(height: (isEditing || sortOption == 0) ? 0 : nil)
- .clipped() // <-- Clip the content when the frame height is reduced
- .animation(.easeInOut(duration: 0.3)) */
 struct ShiftRow: View {
     var oldShift: OldShift
     

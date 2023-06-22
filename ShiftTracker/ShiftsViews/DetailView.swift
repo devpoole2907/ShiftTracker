@@ -549,6 +549,7 @@ struct DetailView: View {
 
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
+        @StateObject var navigationState = NavigationState()
         let shift = OldShift(context: PersistenceController.preview.container.viewContext)
         shift.shiftNote = "Some notes"
         shift.taxedPay = 120.0
@@ -561,6 +562,7 @@ struct DetailView_Previews: PreviewProvider {
         
         return NavigationStack {
             DetailView(shift: shift, presentedAsSheet: false)
+                .environmentObject(navigationState)
         }
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
@@ -582,125 +584,3 @@ struct ShiftProfitCategory: Identifiable {
     let profit: Double
     let payCategory: String
 }
-
-
-
-/*
-
-VStack(alignment: .center){
-    Chart {
-        ForEach(shiftData) { data in
-            BarMark(
-                y: .value("Profit", data.profit)
-            )
-            .foregroundStyle(by: .value("Pay Category", data.payCategory))
-            
-        }
-    }//.chartYScale(domain: 0...shift.totalPay)
-    
-    //.fixedSize()
-    .frame(width: 80)
-    .padding()
-    
-    .chartLegend(.hidden)
-    .chartForegroundStyleScale(["After Tax": LinearGradient(gradient: Gradient(colors: [taxedBackgroundColor]), startPoint: .top, endPoint: .bottom), "Tax": LinearGradient(gradient: Gradient(colors: [totalBackgroundColor]), startPoint: .top, endPoint: .bottom), "Tips": LinearGradient(gradient: Gradient(colors: [tipsBackgroundColor]), startPoint: .top, endPoint: .bottom)])
-    
-    
-    
-}
-VStack(alignment: .trailing, spacing: 10) {
-    
-    
-    
-    
-    //Spacer()
-    if shift.overtimeDuration > 0 {
-        Text("OVERTIME")
-            .foregroundColor(.white)
-            .font(.system(size: 25, weight: .bold).monospacedDigit())
-            .frame(width: 200, height: 40)
-            .background(.red)
-            .cornerRadius(12)
-            .fixedSize()
-    }
-    VStack(alignment: .trailing, spacing: 8){
-        Text("Taxed Pay ")
-            .font(.title)
-            .bold()
-        Text("\(currencyFormatter.currencySymbol ?? "")\(shift.taxedPay, specifier: "%.2f")")
-        
-            .font(.system(size: 40))
-            .fontWeight(.black)
-            .foregroundColor(taxedBackgroundColor)
-        
-        //.fixedSize()
-            .cornerRadius(20)
-            .padding(.bottom, 10)
-    }
-    if shift.tax > 0 {
-        VStack(alignment: .trailing, spacing: 8){
-            Divider()
-            Text("Before Tax ")
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalPay, specifier: "%.2f")")
-            
-                .font(.title3)
-                .fontWeight(.heavy)
-                .foregroundColor(totalBackgroundColor)
-            
-                .cornerRadius(20)
-                .padding(.bottom, 10)
-        }
-    }
-    if shift.totalTips > 0 {
-        VStack(alignment: .trailing, spacing: 8){
-            Divider()
-            Text("Tips ")
-                .font(.title2)
-                .fontWeight(.bold)
-            Text("\(currencyFormatter.currencySymbol ?? "")\(shift.totalTips, specifier: "%.2f")")
-            //.padding(.horizontal, 20)
-                .font(.system(size: 30))
-                .fontWeight(.heavy)
-                .foregroundColor(tipsBackgroundColor)
-            
-        }
-    }
-    VStack(alignment: .trailing, spacing: 8){
-        Divider()
-        Text("Duration ")
-            .font(.body)
-            .bold()
-        Text(shiftLengthString(shiftLength: shift.duration))
-            .foregroundColor(.orange)
-            .font(.largeTitle)
-            .bold()
-        
-    }
-    VStack(alignment: .trailing, spacing: 8){
-        if let breaks = shift.breaks as? Set<Break> {
-            let duration = totalBreakDuration(for: breaks)
-            if duration > 0 {
-                Divider()
-                Text("Unpaid Breaks ")
-                    .font(.subheadline)
-                    .bold()
-                Text("\(durationFormatter.string(from: duration) ?? "")")
-                    .foregroundColor(.indigo)
-                    .font(.headline)
-                    .bold()
-                
-            }
-        }
-    }
-    
-    
-}.listRowSeparator(.hidden)
-    .listRowBackground(Color.clear)
-    .frame(maxWidth: .infinity) */
-/*  }.padding(.horizontal)
-.padding(.vertical, 10)
-.background(Color.primary.opacity(0.04),in:
-                RoundedRectangle(cornerRadius: 12, style: .continuous)) */

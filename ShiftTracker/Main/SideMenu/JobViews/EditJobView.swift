@@ -417,42 +417,7 @@ struct EditJobView: View {
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding()
                     .navigationBarTitle("Edit Job", displayMode: .inline)
-                    /*
-                     Toggle(isOn: $clockInReminder){
-                     HStack {
-                     Image(systemName: "bell.badge.circle")
-                     Spacer().frame(width: 10)
-                     Text("Remind me to clock in")
-                     }
-                     }.toggleStyle(OrangeToggleStyle())
-                     
-                     Toggle(isOn: $clockOutReminder){
-                     HStack {
-                     Image(systemName: "bell.badge.circle")
-                     Spacer().frame(width: 10)
-                     Text("Remind me to clock out")
-                     }
-                     }.toggleStyle(OrangeToggleStyle())
-                     
-                     Toggle(isOn: $autoClockIn){
-                     HStack {
-                     Image(systemName: "bell.badge.circle")
-                     Spacer().frame(width: 10)
-                     Text("Remind me to clock in")
-                     }
-                     }.toggleStyle(OrangeToggleStyle())
-                     .disabled(true)
-                     
-                     Toggle(isOn: $autoClockOut){
-                     HStack {
-                     Image(systemName: "bell.badge.circle")
-                     Spacer().frame(width: 10)
-                     Text("Remind me to clock out")
-                     }
-                     }.toggleStyle(OrangeToggleStyle())
-                     .disabled(true)
-                     }
-                     
+/*
                      
                      
                      

@@ -472,11 +472,6 @@ struct AddJobView: View {
                         
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(action: {
-                                // if isSubscriptionActive() {
-                                //    saveJobToFirebase()
-                                //    print("saving job to firebase!")
-                                //} else {
-                                
                                 if name.isEmpty {
                                     withAnimation(.linear(duration: 0.4)) {
                                         nameShakeTimes += 2
@@ -491,7 +486,7 @@ struct AddJobView: View {
                                     saveJobToCoreData()
                                     print("saving job to core data!")
                                 }
-                                //}
+                         
                             }) {
                                 Image(systemName: "folder.badge.plus")
                                     .bold()
@@ -516,37 +511,6 @@ struct AddJobView: View {
             }
         }
     }
-    
-    private func saveJobToFirebase() {
-        let uiColor = UIColor($selectedColor.wrappedValue)
-        let colorComponents = uiColor.cgColor.components?.map { Float($0) } ?? [0, 0, 0, 0]
-        
-        
-        model.addData(
-            name: name,
-            title: title,
-            hourlyPay: Double(hourlyPay) ?? 0,
-            address: selectedAddress ?? "",
-            clockInReminder: clockInReminder,
-            clockOutReminder: clockOutReminder,
-            autoClockIn: autoClockIn,
-            autoClockOut: autoClockOut,
-            overtimeEnabled: overtimeEnabled,
-            overtimeAppliedAfter: Int16(overtimeAppliedAfter),
-            overtimeRate: overtimeRate,
-            icon: selectedIcon,
-            colorRed: colorComponents[0],
-            colorGreen: colorComponents[1],
-            colorBlue: colorComponents[2],
-            payPeriodLength: Int16(payPeriodLength) ?? 0,
-            payPeriodStartDay: Int16(payPeriodStartDay ?? 0)
-        )
-        presentationMode.wrappedValue.dismiss()
-    }
-    
-    
-    
-    
     
     private func saveJobToCoreData() {
         let newJob = Job(context: viewContext)
