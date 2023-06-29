@@ -595,7 +595,7 @@ struct StatsView: View {
                                        CustomConfirmationAlert(action: {
                                            deleteSelectedShifts()
                                            isEditing = false
-                                       }, title: "Are you sure you want to delete these shifts?").present()
+                                       }, title: "Are you sure you want to delete these shifts?").showAndStack()
                                    }
                                    
                                    .disabled(selectedShifts.isEmpty)
@@ -633,7 +633,7 @@ struct StatsView: View {
                        
                    }.haptics(onChangeOf: isEditing, type: .light)
             
-                .searchable(text: query, placement: .navigationBarDrawer(displayMode: .always))
+             /*   .searchable(text: query, placement: .navigationBarDrawer(displayMode: .always))
                 .searchSuggestions {
                     ForEach(searchMonths, id: \.self) { month in
                         if searchText.isEmpty || month.lowercased().starts(with: searchText.lowercased()) {
@@ -648,7 +648,7 @@ struct StatsView: View {
                         sortOption = 3
                         ductTapeDisableLatest.toggle()
                     }
-                }
+                }*/
                 .onAppear{
                     viewContext.reset()
                     self.refreshingID = UUID()
@@ -658,7 +658,7 @@ struct StatsView: View {
 
             
             
-                .navigationBarTitle(job?.name ?? "Job Name")
+                .navigationBarTitle(job?.name ?? "Job Name", displayMode: .inline)
         }
         
     }

@@ -28,7 +28,6 @@ struct ProView: View {
        // NavigationView {
 
             VStack{
-                Spacer(minLength: 10)
                 HStack{
                     Text("ShiftTracker")
                         .font(.title)
@@ -39,7 +38,7 @@ struct ProView: View {
                         .foregroundColor(proButtonColor)
                 }
                
-                List {
+                VStack(alignment: .leading){
                     HStack {
                         Image(systemName: "clipboard")
                             .resizable()
@@ -120,7 +119,7 @@ struct ProView: View {
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)*/
-                }.scrollContentBackground(.hidden)
+                }.padding(.horizontal, 30)
                 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack{
@@ -152,9 +151,11 @@ struct ProView: View {
                     }) {
                         VStack{
                             Text("MONTHLY")
-                                .font(.title)
+                                .font(.title2)
                                 .fontWeight(.heavy)
                                 .foregroundColor(upgradeButtonTextColor)
+                                .lineLimit(1)
+                                .allowsTightening(true)
                                 
                             Text("$2.49")
                                 .foregroundColor(proButtonColor)
@@ -174,9 +175,11 @@ struct ProView: View {
                     }) {
                         VStack{
                             Text("YEARLY")
-                                .font(.title)
+                                .font(.title2)
                                 .fontWeight(.heavy)
                                 .foregroundColor(upgradeButtonTextColor)
+                                .lineLimit(1)
+                                .allowsTightening(true)
                                 
                             Text("$21.49")
                                 .foregroundColor(proButtonColor)
@@ -198,7 +201,7 @@ struct ProView: View {
                         .bold()
                 }.padding()
                 
-                Spacer(minLength: 50)
+               // Spacer(minLength: 50)
             }
             
     

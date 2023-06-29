@@ -16,7 +16,7 @@ struct DetailView: View {
     
     @Environment(\.managedObjectContext) private var context
     
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     let breakManager = BreaksManager()
     
@@ -97,14 +97,6 @@ struct DetailView: View {
         return formatter
     }()
     
-    var shiftData: [ShiftProfitCategory] {
-        [
-            ShiftProfitCategory(profit: shift.taxedPay, payCategory: "After Tax"),
-            ShiftProfitCategory(profit: shift.totalPay - shift.taxedPay, payCategory: "Tax"),
-            ShiftProfitCategory(profit: shift.totalTips, payCategory: "Tips")
-        ]
-    }
-    
 
     
     @State private var offsetX = 0.0
@@ -124,7 +116,6 @@ struct DetailView: View {
         List{
             
             Section{
-              //  HStack{
                     
                     ZStack{
                         RoundedRectangle(cornerRadius: 12)
@@ -134,10 +125,11 @@ struct DetailView: View {
                         VStack(alignment: .center, spacing: 5) {
                             VStack {
                                 Text("\(currencyFormatter.string(from: NSNumber(value: shift.taxedPay)) ?? "")")
-                                //.foregroundColor(.white)
                                     .padding(.horizontal, 20)
                                     .font(.system(size: 60).monospacedDigit())
                                     .fontWeight(.bold)
+                                    .lineLimit(1)
+                                    .allowsTightening(true)
                                 
                             }
                             .frame(maxWidth: .infinity)
@@ -151,6 +143,8 @@ struct DetailView: View {
                                         Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalPay)) ?? "")")
                                             .font(.system(size: 20).monospacedDigit())
                                             .bold()
+                                            .lineLimit(1)
+                                            .allowsTightening(true)
                                     }.foregroundColor(.pink)
                                 }
                                 if shift.totalTips > 0 {
@@ -161,6 +155,7 @@ struct DetailView: View {
                                         Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalTips)) ?? "")")
                                             .font(.system(size: 20).monospacedDigit())
                                             .bold()
+                                            .lineLimit(1)
                                     }.foregroundColor(.teal)
                                 }
                             }
@@ -373,16 +368,16 @@ struct DetailView: View {
                 VStack(alignment: .leading){
                     Text("Notes:")
                         .bold()
-                    //.padding(.horizontal, 15)
+              
                         .padding(.vertical, 5)
-                    //.background(Color.primary.opacity(0.04))
+            
                         .cornerRadius(20)
                     
                     TextEditor(text: $notes)
                     .disabled(!isEditing)
-                    //.textFieldStyle(PlainTextFieldStyle())
+         
                         .focused($noteIsFocused)
-                    //.padding()
+
                         .padding(.horizontal)
                         .padding(.vertical, 10)
                         .background(Color.primary.opacity(0.04),in:
@@ -413,12 +408,11 @@ struct DetailView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
                 .sheet(isPresented: $isAddingBreak){
-                    // view goes here
+         
                     AddBreakView(shift: shift, isAddingBreak: $isAddingBreak)
-                        .presentationDetents([ .fraction(0.4)])
+                        .presentationDetents([ .fraction(0.45)])
                         .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                        .presentationCornerRadius(50)
-                        .presentationDragIndicator(.visible)
+                        .presentationCornerRadius(35)
                 }
             if let breaks = shift.breaks as? Set<Break> {
                 let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
@@ -465,7 +459,8 @@ struct DetailView: View {
                         //shift.tag = selectedTag
                         shift.totalTips = Double(selectedTotalTips) ?? 0.0
                         // this is old code....
-
+                        
+                        shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
                         
                         
                         let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
@@ -483,16 +478,16 @@ struct DetailView: View {
                     Button(action: {
                         showingDeleteAlert = true
                         if presentedAsSheet{
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                             
-                            CustomConfirmAlertWithCancelAction(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").present()
+                            CustomConfirmAlertWithCancelAction(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").showAndStack()
                             
                         }
                         else {
                             CustomConfirmationAlert(action: {
                                 deleteShift()
-                                presentationMode.wrappedValue.dismiss()
-                            }, title: "Are you sure you want to delete this shift?").present()
+                                dismiss()
+                            }, title: "Are you sure you want to delete this shift?").showAndStack()
                         }
                     }) {
                         Image(systemName: "trash")
@@ -500,6 +495,13 @@ struct DetailView: View {
                     .foregroundColor(.red)
                     .padding([.vertical, .trailing])
                     
+                }
+                if presentedAsSheet{
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        CloseButton {
+                            dismiss()
+                        }
+                    }
                 }
             }
         
@@ -576,11 +578,4 @@ private extension TimeInterval {
         let seconds = time % 60
         return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
     }
-}
-
-
-struct ShiftProfitCategory: Identifiable {
-    let id = UUID()
-    let profit: Double
-    let payCategory: String
 }

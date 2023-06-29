@@ -18,8 +18,6 @@ struct SideMenu: View {
     
     @Binding var showMenu: Bool
     
-    @EnvironmentObject var authModel: FirebaseAuthModel
-    
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [])
     private var jobs: FetchedResults<Job>
@@ -31,10 +29,6 @@ struct SideMenu: View {
     
     
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
-    
-    
-    
-    @Binding var isJobsExpanded: Bool
     
     @State private var selectedJobForEditing: Job?
     @State private var isEditJobPresented: Bool = false
@@ -71,17 +65,17 @@ struct SideMenu: View {
                 }
                 
             }
-            .padding(.horizontal)
+           // .padding(.horizontal)
             .padding(.leading)
             
             ScrollView(.vertical, showsIndicators: false){
                 VStack{
+               /*     if viewModel.shift != nil{
+                        TimerView(timeElapsed: $viewModel.timeElapsed)
+                            .scaleEffect(0.8)
+                    } */
                     VStack(alignment: .leading, spacing: 30) {
-                        Button(action: {
-                            withAnimation(.easeInOut) {
-                                isJobsExpanded.toggle()
-                            }
-                        }) {
+                        
                             HStack(spacing: 25) {
                                 Image(systemName: "briefcase.fill")
                                     .resizable()
@@ -92,13 +86,22 @@ struct SideMenu: View {
                                     .font(.largeTitle)
                                     .bold()
                                 Spacer()
-                                Image(systemName: isJobsExpanded ? "chevron.up" : "chevron.down")
+                                Button(action: {
+                                    if isSubscriptionActive() || jobs.isEmpty {
+                                        showAddJobView = true
+                                    } else {
+                                        showUpgradeScreen = true
+                                    }
+                                }) {
+                                    Image(systemName: "plus")
+                                        .bold()
+                                }
                             }
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+                        
                         VStack{
-                            if isJobsExpanded {
+                          //  if isJobsExpanded {
                                 VStack(alignment: .leading, spacing: 10){
                                     ForEach(jobs) { job in
                                         
@@ -113,7 +116,6 @@ struct SideMenu: View {
                                             .onTapGesture {
                                                 jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
                                                 withAnimation(.easeInOut) {
-                                                    isJobsExpanded = false
                                                     showMenu = false
                                                 }
                                                 
@@ -122,11 +124,11 @@ struct SideMenu: View {
                                         }.padding()
                                             .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
                                             .cornerRadius(50)
-                                            .offset(y: isJobsExpanded ? 0 : jobSelectionViewModel.selectedJobOffset)
-                                            .animation(.spring(), value: isJobsExpanded)
+                                           // .offset(y: isJobsExpanded ? 0 : jobSelectionViewModel.selectedJobOffset)
+                                          //  .animation(.spring(), value: isJobsExpanded)
                                         
                                     }
-                                    .padding(.leading, 40)
+                                   // .padding(.leading, 40)
                                     
                                     .fullScreenCover(item: $selectedJobForEditing) { job in
                                         EditJobView(job: job)
@@ -136,7 +138,7 @@ struct SideMenu: View {
                                     }
                                     
                                     
-                                    Button(action: {
+                                /*    Button(action: {
                                         if isSubscriptionActive() || jobs.isEmpty {
                                             showAddJobView = true
                                         } else {
@@ -148,11 +150,11 @@ struct SideMenu: View {
                                             .frame(width: 25, height: 25)
                                             .padding(.leading, 40)
                                     }.padding()
-                                        .frame(alignment: .leading)
+                                        .frame(alignment: .leading)*/
                                     
                                 }
-                            }
-                            else if let selectedJob = findSelectedJob() {
+                                //  }
+                          /*  else if let selectedJob = findSelectedJob() {
                                 VStack(spacing: 0) {
                                     JobRow(job: selectedJob, isSelected: jobSelectionViewModel.selectedJobUUID == selectedJob.uuid, editAction: {
                                         selectedJobForEditing = selectedJob
@@ -168,7 +170,7 @@ struct SideMenu: View {
                                 // Handle the case when the selected job is not found
                                 Text("No job selected")
                                     .bold()
-                            }
+                            }*/
                             
                             
                         } .transition(.move(edge: .top))
@@ -187,7 +189,7 @@ struct SideMenu: View {
                     
                     
                     
-                }.haptics(onChangeOf: isJobsExpanded, type: .light)
+                }//.haptics(onChangeOf: isJobsExpanded, type: .light)
             }
             VStack{
                 Divider()
@@ -230,12 +232,8 @@ struct SideMenu: View {
             ProView()
                 .toolbar{
                     ToolbarItem(placement: .navigationBarLeading){
-                        Button(action: {
+                        CloseButton{
                             self.showUpgradeScreen = false
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.gray)
-                                .bold()
                         }
                     }
                 }
@@ -378,6 +376,8 @@ struct JobRow: View {
             Text(job.name ?? "")
                 .bold()
                 .foregroundColor(isSelected ? .white : textColor)
+                .lineLimit(1)
+                .allowsTightening(true)
             Spacer()
             if showEdit{
                 Button(action: {
@@ -385,7 +385,7 @@ struct JobRow: View {
                         editAction()
                     }
                     else {
-                        OkButtonPopup(title: "End your current shift before editing.").present()
+                        OkButtonPopup(title: "End your current shift before editing.").showAndStack()
                     }}) {
                         Image(systemName: "pencil")
                             .foregroundColor(isSelected ? .white : textColor)

@@ -31,8 +31,6 @@ struct IntroMainView: View {
     
     @State private var showAddJobView = false
     
-    @EnvironmentObject var authModel: FirebaseAuthModel
-    
     var body: some View {
         GeometryReader{
             let size = $0.size
@@ -72,16 +70,6 @@ struct IntroMainView: View {
             
         }
         .padding(15)
-    }
-    
-    func login(){
-        Auth.auth().signIn(withEmail: emailID, password: password) { result, error in
-            if error != nil{
-                print(error!.localizedDescription)
-                LoginFailedPopup().present()
-            }
-          
-        }
     }
     
 
@@ -134,13 +122,17 @@ struct IntroView<ActionView: View>: View {
                 Spacer(minLength: 0)
                 
                 Text(intro.title)
-                    .font(.system(size: 40))
+                    .font(.largeTitle)
                     .fontWeight(.black)
+                    .lineLimit(2, reservesSpace: true)
+                    .allowsTightening(true)
                 
                 Text(intro.subTitle)
                     .font(.headline)
                     .foregroundColor(.gray)
                     .padding(.top, 15)
+                    .lineLimit(3, reservesSpace: true)
+                    .allowsTightening(true)
                 
                 if !intro.displaysAction{
                     Group{
@@ -413,8 +405,6 @@ struct RegisterView: View {
     @State private var profilePicture: Data?
     
     @Environment(\.presentationMode) private var presentationMode
-    
-    @EnvironmentObject var authModel: FirebaseAuthModel
     
     var body: some View{
         

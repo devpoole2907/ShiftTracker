@@ -30,6 +30,8 @@ struct SettingsView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @StateObject private var locationManager = LocationDataManager()
+    
     var body: some View {
         
         let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
@@ -42,43 +44,8 @@ struct SettingsView: View {
         
         
        // NavigationView{
-        List{
-            if !isProVersion{
-                Section{
-                    Button(action: {
-                        showingProView = true
-                    }) {
-                        Group{
-                            ZStack {
-                                Color.primary.opacity(0.04)
-                                    .cornerRadius(20)
-                                    .frame(height: 80)
-                                VStack(spacing: 2) {
-                                    HStack{
-                                        Text("ShiftTracker")
-                                            .font(.title2)
-                                            .bold()
-                                            //.foregroundColor(textColor)
-                                        Text("PRO")
-                                            .font(.title)
-                                            .bold()
-                                            .foregroundColor(proButtonColor)
-                                    }
-                                    //.padding(.top, 3)
-                                    
-                                    Text("Upgrade Now")
-                                        .font(.subheadline)
-                                        .bold()
-                                      //  .foregroundColor(textColor)
-                                }
-                            }
-                            .frame(maxWidth: UIScreen.main.bounds.width - 20)
-                        }//.padding(.bottom, 75)
-                    }
-                }.listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-            }
-            Section{
+        ScrollView{
+            VStack(spacing: 20){
              /*   if isSubscriptionActive(){
                     NavigationLink(destination: ProSettingsView()){
                         HStack {
@@ -88,6 +55,42 @@ struct SettingsView: View {
                         }
                     }
                 }*/
+                
+                if !isProVersion{
+                    Group{
+                        Button(action: {
+                            showingProView = true
+                        }) {
+                            Group{
+                                ZStack {
+                                    backgroundColor
+                                        .cornerRadius(20)
+                                        .frame(height: 80)
+                                    VStack(spacing: 2) {
+                                        HStack{
+                                            Text("ShiftTracker")
+                                                .font(.title2)
+                                                .bold()
+                                                .foregroundColor(textColor)
+                                            Text("PRO")
+                                                .font(.title)
+                                                .bold()
+                                                .foregroundColor(proButtonColor)
+                                        }
+                                        //.padding(.top, 3)
+                                        
+                                        Text("Upgrade Now")
+                                            .font(.subheadline)
+                                            .bold()
+                                            .foregroundColor(textColor)
+                                    }
+                                }
+                                .frame(maxWidth: UIScreen.main.bounds.width - 20)
+                            }//.padding(.bottom, 75)
+                        }
+                    }
+                }
+                
                 NavigationLink(destination: LocationView()){
                     HStack {
                         Image(systemName: "location")
@@ -95,6 +98,15 @@ struct SettingsView: View {
                         Text("Location")
                             .font(.title2)
                             .bold()
+                        Spacer()
+                        if locationManager.authorizationStatus != .authorizedAlways {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.gray)
+                        } else {
+                            Text("Always")
+                                .foregroundStyle(.gray)
+                                .bold()
+                        }
                     }
                 }.padding()
                 .background(Color.primary.opacity(0.04))
@@ -107,11 +119,13 @@ struct SettingsView: View {
                         Text("Notifications")
                             .font(.title2)
                             .bold()
+                        Spacer()
                     }
                 }.padding()
+                   // .frame(maxWidth: .infinity)
                     .background(Color.primary.opacity(0.04))
                         .cornerRadius(12)
-                NavigationLink(destination: AppearanceView(userColorScheme: $userColorScheme)) {
+                NavigationLink(destination: AppearanceView()) {
                     HStack {
                         Image("AppearanceIconSymbol")
                             .padding(.leading, -1)
@@ -121,7 +135,7 @@ struct SettingsView: View {
                             .bold()
                         Spacer()
                         Text("\(userColorScheme)".capitalized)
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                             .bold()
                     }
                 }.padding()
@@ -201,11 +215,7 @@ struct SettingsView: View {
                     .padding()
                     .background(Color.primary.opacity(0.04))
                         .cornerRadius(12)
-            }
-            .listRowSeparator(.hidden)
-            
-            
-            Section{
+                
                 NavigationLink(destination: TipView()){
                     HStack {
                         Image(systemName: "hammer.circle.fill")
@@ -213,16 +223,18 @@ struct SettingsView: View {
                         Text("Support the Developer")
                             .font(.title2)
                             .bold()
+                        Spacer()
                     }
                 }.padding()
                     .background(Color.primary.opacity(0.04))
                         .cornerRadius(12)
                 
             }
-            .listRowSeparator(.hidden)
+          
+           
             
             
-            Section{
+            VStack(spacing: 10){
                 if isSubscriptionActive(){
                     Text("Thank you for purchasing ShiftTracker Pro!")
                         .foregroundColor(.gray.opacity(0.3))
@@ -234,13 +246,11 @@ struct SettingsView: View {
                 Text("Icons by Louie Kolodzinksi")
                     .foregroundColor(.gray.opacity(0.3))
                     .font(.caption)
-            }.listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-            Section{
+            }.padding(.vertical)
                 VStack(alignment: .leading){
                     Button(action: {
                         
-                        CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, title: "Are you sure you want to delete all your data?").present()
+                        CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, title: "Are you sure you want to delete all your data?").showAndStack()
                     } ){
                         Text("Delete Data")
                             .bold()
@@ -248,26 +258,22 @@ struct SettingsView: View {
                     }.buttonStyle(.bordered)
                         .tint(.red)
                 }
-            }.listRowSeparator(.hidden)
+            Spacer()
+            
             
         }.scrollContentBackground(.hidden)
             .padding(.horizontal)
-            .listStyle(.plain)
             .navigationTitle("Settings")
             .toolbarRole(.editor)
-            .scrollIndicators(.hidden)
+            //.scrollIndicators(.hidden)
         
             .fullScreenCover(isPresented: $showingProView) {
                 NavigationStack{
                     ProView()
                         .toolbar{
                             ToolbarItem(placement: .navigationBarLeading){
-                                Button(action: {
+                                CloseButton{
                                     self.showingProView = false
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray)
-                                        .bold()
                                 }
                             }
                         }
@@ -436,7 +442,7 @@ struct LocationView: View{
 }
 
 struct AppearanceView: View {
-    @Binding var userColorScheme: String
+    @AppStorage("colorScheme") var userColorScheme: String = "system"
     
     var colorSchemes: [(String, String)] = [
         ("Light", "light"),
@@ -445,7 +451,8 @@ struct AppearanceView: View {
     ]
     
     var body: some View {
-        List {
+        ScrollView {
+            VStack(spacing: 20){
             ForEach(colorSchemes, id: \.1) { (name, value) in
                 Button(action: {
                     userColorScheme = value
@@ -459,13 +466,15 @@ struct AppearanceView: View {
                         }
                     }.font(.title2)
                         .bold()
-                        .padding()
+              
                     
-                }.listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
+                }.padding()
+                    .background(Color.primary.opacity(0.04))
+                    .cornerRadius(12)
             }
+        }
         }.scrollContentBackground(.hidden)
-    
+            .padding(.horizontal)
             .navigationTitle("Appearance")
         .toolbarRole(.editor)
     }

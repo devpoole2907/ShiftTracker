@@ -31,8 +31,6 @@ struct ScheduledShiftsView: View {
         animation: .default)
     private var jobs: FetchedResults<Job>
     
-    @State private var showCreateShiftSheet = false
-    
     private func shiftsForSelectedDate() -> [ScheduledShift] {
         guard let dateSelected = dateSelected?.date?.startOfDay else { return [] }
         
@@ -50,12 +48,12 @@ struct ScheduledShiftsView: View {
     
     
     var body: some View {
-        NavigationStack{
+       // NavigationStack{
             Group {
                 if let _ = dateSelected {
                     let shifts = shiftsForSelectedDate()
                     if !shifts.isEmpty {
-                        List{
+                     //   List{
                             ForEach(shifts, id: \.objectID) { shift in
                                 ListViewRow(shift: shift)
                                     .swipeActions {
@@ -69,7 +67,7 @@ struct ScheduledShiftsView: View {
                                     }
                                     .listRowBackground(Color.primary.opacity(0.05))
                             }
-                        }.scrollContentBackground(.hidden)
+                       // }.scrollContentBackground(.hidden)
                     } else {
                         Text("You have no shifts scheduled on this date.")
                             .bold()
@@ -77,34 +75,12 @@ struct ScheduledShiftsView: View {
                     }
                 }
             }
-            .navigationBarTitle(dateSelected?.date?.formatted(date: .long, time: .omitted) ?? "", displayMode: .inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button(action: {
-                        if jobs.isEmpty {
-                            presentationMode.wrappedValue.dismiss()
-                            OkButtonPopupWithAction(title: "Create a job before scheduling a shift.", action: {showMenu.toggle()}).present()
-                            
-                        } else {
-                            showCreateShiftSheet = true
-                        }
-                    }) {
-                        Image(systemName: "plus")
-                            .bold()
-                    }.padding()
-                }
-            }
-        }
-        .sheet(isPresented: $showCreateShiftSheet) {
-            CreateShiftForm(jobs: jobs, dateSelected: dateSelected?.date, onShiftCreated: {
-                showCreateShiftSheet = false
-            })
-            .environment(\.managedObjectContext, viewContext)
-            .presentationDetents([.large])
-            .presentationCornerRadius(50)
-            .presentationBackground(colorScheme == .dark ? .black : .white)
-            .presentationDragIndicator(.visible)
-        }
+         //   .navigationBarTitle(dateSelected?.date?.formatted(date: .long, time: .omitted) ?? "", displayMode: .inline)
+          //  .toolbar {
+            /*     */
+          //  }
+       // }
+
 }
 }
 
@@ -405,6 +381,11 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
                                 
                         }.padding()
                     }
+                    ToolbarItem(placement: .navigationBarLeading){
+                        CloseButton{
+                            dismiss()
+                        }
+                    }
                 }
                 .navigationBarTitle("Schedule", displayMode: .inline)
                 .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
@@ -664,47 +645,80 @@ struct ListViewRow: View {
     
     var body: some View {
         Section{
-        VStack(alignment: .leading){
-            HStack(spacing : 10){
-                Image(systemName: shift.job?.icon ?? "briefcase.circle")
-                    .foregroundColor(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
-                    .font(.system(size: 30))
-                    .frame(width: UIScreen.main.bounds.width / 7)
-                VStack(alignment: .leading, spacing: 5){
-                    Text(shift.job?.name ?? "")
-                        .font(.title2)
-                        .bold()
-                    Text(shift.job?.title ?? "")
+            ZStack{
+            VStack(alignment: .leading){
+                HStack(spacing : 10){
+                    Image(systemName: shift.job?.icon ?? "briefcase.circle")
                         .foregroundColor(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
-                        .font(.subheadline)
-                        .bold()
-                    Text(formattedDuration())
-                        .bold()
-                        .foregroundColor(.gray)
-                    
-                    
-                    
-                }
-                            if shift.isRepeating {
-            VStack(alignment: .trailing){
-                Button(action:{
-                    dismiss()
-                    CustomConfirmationAlert(action: {
-                        cancelRepeatingShiftSeries(shift: shift)
-                    }, title: "End all future repeating shifts for this shift?").present()
-                }){
-                    Text("End Repeat")
-                    .font(.caption)
-                        .bold()
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 5)
-                        .background(Color.primary.opacity(0.04))
-                        .cornerRadius(20)
+                        .font(.system(size: 30))
+                        .frame(width: UIScreen.main.bounds.width / 7)
+                    VStack(alignment: .leading, spacing: 5){
+                        Text(shift.job?.name ?? "")
+                            .font(.title2)
+                            .bold()
+                        Text(shift.job?.title ?? "")
+                            .foregroundColor(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
+                            .font(.subheadline)
+                            .bold()
+                        Text(formattedDuration())
+                            .bold()
+                            .foregroundColor(.gray)
+                        
+                        
+                        
+                    }
+                    Spacer()
+                    // move into menu within ellipsis button
+                /*    if shift.isRepeating {
+                        VStack(alignment: .trailing){
+                            Button(action:{
+                                dismiss()
+                                CustomConfirmationAlert(action: {
+                                    cancelRepeatingShiftSeries(shift: shift)
+                                }, title: "End all future repeating shifts for this shift?").showAndStack()
+                            }){
+                                Text("End Repeat")
+                                    .font(.caption)
+                                    .bold()
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 5)
+                                    .background(Color.primary.opacity(0.04))
+                                    .cornerRadius(20)
+                            }//.padding()
+                        }
+                    } */
                 }//.padding()
+                
+            }
+                VStack(alignment: .trailing){
+                    HStack{
+                        Spacer()
+                        Menu{
+                            Button(action:{
+                                //dismiss()
+                                CustomConfirmationAlert(action: {
+                                    cancelRepeatingShiftSeries(shift: shift)
+                                }, title: "End all future repeating shifts for this shift?").showAndStack()
+                            }){
+                                Text("End Repeat")
+                                   /* .font(.caption)
+                                    .bold()
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 5)
+                                    .background(Color.primary.opacity(0.04))
+                                    .cornerRadius(20) */
+                            }.disabled(!shift.isRepeating)
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .bold()
+                        }
+                        
+                    }.padding(.vertical)
+                    Spacer()
                 }
-            }
-            }
             
+                
+                
             /*   Chart{
              BarMark(
              xStart: .value("Start Time", shift.startDate ?? Date()),

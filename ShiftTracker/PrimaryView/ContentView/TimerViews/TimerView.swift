@@ -17,8 +17,6 @@ struct TimerView: View {
     let sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
-
-    
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -65,10 +63,6 @@ struct TimerView: View {
     
     var body: some View {
         
-        let taxedBackgroundColor: Color = colorScheme == .dark ? Color.green.opacity(0.5) : Color.green.opacity(0.8)
-        let totalBackgroundColor: Color = colorScheme == .dark ? Color.pink.opacity(0.5) : Color.pink.opacity(0.8)
-        let timerBackgroundColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : Color.orange.opacity(0.8)
-        
         var timeDigits = digitsFromTimeString(timeString: timeElapsed.stringFromTimeInterval())
         
         
@@ -97,29 +91,16 @@ struct TimerView: View {
                     .fixedSize()
             } */
             ZStack {
-               /* RoundedRectangle(cornerRadius: 20)
-                    .frame(width: 350, height: 100)
-                
-                    .foregroundColor(taxedBackgroundColor)
-                    .shadow(radius: 5, x: 0, y: 4) */
-                
                 Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
-                    //.foregroundColor(.white)
                     .padding(.horizontal, 20)
                     .font(.system(size: 60).monospacedDigit())
                     .fontWeight(.bold)
+                    .lineLimit(1)
+                    .allowsTightening(true)
                 
             }
             .frame(maxWidth: .infinity)
             .padding(.top)
-            //.padding(.bottom, 10)
-            
-            //if taxEnabled{
-             
-                /*    RoundedRectangle(cornerRadius: 20)
-                        .frame(width: 175, height: 50)
-                        .foregroundColor(totalBackgroundColor)
-                        .shadow(radius: 5, x: 0, y: 4) */
             
             if sharedUserDefaults.double(forKey: shiftKeys.taxPercentageKey) > 0 {
                 HStack(spacing: 2){
@@ -129,6 +110,8 @@ struct TimerView: View {
                     Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
                         .font(.system(size: 20).monospacedDigit())
                         .bold()
+                        .lineLimit(1)
+                        .allowsTightening(true)
                 }.foregroundColor(.pink)
                 
                     .padding(.horizontal, 20)
@@ -137,7 +120,6 @@ struct TimerView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 5)
             }
-           // }
             
             Divider().frame(maxWidth: 200)
             
@@ -153,7 +135,6 @@ struct TimerView: View {
                 }
             }
             .foregroundColor(.orange)
-            //.frame(width: 250, height: 70)
             .frame(maxWidth: .infinity)
             .padding(.bottom)
             
@@ -164,9 +145,8 @@ struct TimerView: View {
             
             
         }
-       // .ignoresSafeArea()
         
-        } //.padding(.vertical, 50)
+        }
     }
 }
 

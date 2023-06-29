@@ -19,7 +19,7 @@ struct AddJobView: View {
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var colorScheme
     
     @ObservedObject var model = JobsViewModel()
@@ -287,7 +287,6 @@ struct AddJobView: View {
                                                 }
                                             }
                                             .onAppear{
-                                                //locationManager.requestAuthorization()
                                                 addressManager.loadSavedAddress(selectedAddressString: selectedAddress) { region, annotation in
                                                     self.miniMapRegion = region ?? self.miniMapRegion
                                                     self.miniMapAnnotation = annotation
@@ -441,7 +440,7 @@ struct AddJobView: View {
                         case .symbolSheet:
                             JobIconPicker(selectedIcon: $selectedIcon, iconColor: selectedColor)
                                 .environment(\.managedObjectContext, viewContext)
-                                .presentationDetents([ .medium])
+                                .presentationDetents([ .medium, .large])
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
@@ -494,13 +493,10 @@ struct AddJobView: View {
                         }
                         
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button(action: {
-                                presentationMode.wrappedValue.dismiss()
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray)
-                                    .bold()
+                            CloseButton{
+                                dismiss()
                             }
+                       
                         }
                         
                     }
@@ -572,7 +568,7 @@ struct AddJobView: View {
             notificationManager.updateRosterNotifications(viewContext: viewContext)
             
             
-            presentationMode.wrappedValue.dismiss()
+           dismiss()
         } catch {
             print("Failed to save job: \(error.localizedDescription)")
         }
@@ -603,7 +599,7 @@ struct JobIconPicker: View {
     var iconColor: Color
     @Environment(\.managedObjectContext) private var viewContext
     
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack {
@@ -612,13 +608,11 @@ struct JobIconPicker: View {
                     ForEach(jobIcons, id: \.self) { icon in
                         Button(action: {
                             selectedIcon = icon
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                         }) {
                             VStack {
                                 Image(systemName: icon)
                                     .font(.title2)
-                                // .resizable()
-                                //.scaledToFit()
                                     .frame(height: 20)
                                     .foregroundColor(iconColor)
                             }

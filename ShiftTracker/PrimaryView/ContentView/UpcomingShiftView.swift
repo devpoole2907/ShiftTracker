@@ -43,7 +43,7 @@ struct UpcomingShiftView: View {
                     CustomConfirmationAlert(action: {
                         jobSelectionViewModel.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
                         
-                    }, title: "Switch to this job?").present()
+                    }, title: "Switch to this job?").showAndStack()
                     
                 }
             }
@@ -65,6 +65,7 @@ struct UpcomingShiftView: View {
                             .foregroundColor(.gray)
                             .bold()
                             .font(.footnote)
+                            .padding(.leading, 1.4)
                     }
                 }.padding(.vertical, 3)
                 

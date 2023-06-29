@@ -32,27 +32,6 @@ struct ActionView: View {
         
         NavigationStack {
             VStack {
-                HStack{
-                    Toggle(isOn: $isRounded){
-                        Text("Auto Round")
-                            .bold()
-                    }.toggleStyle(OrangeToggleStyle())
-                        
-                        .onChange(of: isRounded) { value in
-                            
-                            if isRounded == true {
-                                actionDate = roundDate(actionDate)
-                            } else {
-                                actionDate = Date()
-                            }
-                        }
-                }.padding(.horizontal)
-                    .frame(maxWidth: UIScreen.main.bounds.width - 200)
-                    .padding(.vertical, 10)
-                    .background(Color.primary.opacity(0.04),in:
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
-                
-                
                 if actionType == .startBreak {
                     if let limitStartDate = pickerStartDate {
                         DatePicker("", selection: $actionDate, in: limitStartDate...Date(), displayedComponents: [.date, .hourAndMinute])
@@ -61,6 +40,64 @@ struct ActionView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .disabled(isRounded)
                     }
+                } else {
+                    
+                    switch actionType {
+                    case .startShift:
+                        
+                        
+                        
+                        DatePicker("", selection: $actionDate, displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .disabled(isRounded)
+                    case .endShift:
+                        if let limitStartDate = pickerStartDate {
+                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
+                                .datePickerStyle(.wheel)
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .disabled(isRounded)
+                        }
+                    case .endBreak:
+                        
+                        if let limitStartDate = pickerStartDate {
+                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
+                                .datePickerStyle(.wheel)
+                                .labelsHidden()
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .disabled(isRounded)
+                        }
+                    default:
+                        fatalError("Unsupported action type")
+                    }
+                    
+                }
+                
+                
+                Toggle(isOn: $isRounded){
+                    Text("Auto Round")
+                        .bold()
+                }.toggleStyle(OrangeToggleStyle())
+                    
+                    .onChange(of: isRounded) { value in
+                        
+                        if isRounded == true {
+                            actionDate = roundDate(actionDate)
+                        } else {
+                            actionDate = Date()
+                        }
+                    }
+            .padding(.horizontal)
+                .frame(maxWidth: UIScreen.main.bounds.width - 100)
+                .padding(.vertical, 10)
+                .background(Color.primary.opacity(0.04),in:
+                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .padding(.bottom, 10)
+                
+                
+                if actionType == .startBreak {
                     HStack {
                         ActionButtonView(title: "Unpaid Break", backgroundColor: Color.indigo, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: true)
@@ -75,26 +112,11 @@ struct ActionView: View {
                     
                     switch actionType {
                     case .startShift:
-                        
-                        
-                        
-                        DatePicker("", selection: $actionDate, displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .disabled(isRounded)
                         ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 80) {
                             viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                             dismiss()
                         }
                     case .endShift:
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .disabled(isRounded)
-                        }
                         ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 80) {
                             
                             self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
@@ -106,14 +128,6 @@ struct ActionView: View {
                             
                         }
                     case .endBreak:
-                        
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .disabled(isRounded)
-                        }
                         ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 80) {
                             viewModel.endBreak(endDate: actionDate)
                             dismiss()
@@ -126,6 +140,13 @@ struct ActionView: View {
                 
             }
             .navigationBarTitle(navTitle, displayMode: .inline)
+            .toolbar{
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    CloseButton {
+                        dismiss()
+                    }
+                }
+            }
         }
         
     }

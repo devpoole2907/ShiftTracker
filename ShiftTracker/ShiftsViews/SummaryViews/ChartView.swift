@@ -159,12 +159,12 @@ struct ChartView: View {
         }
         .chartOverlay { pr in
             GeometryReader { geoProxy in
-                Rectangle().foregroundColor(.primary.opacity(0.04))
+                Rectangle().foregroundStyle(.primary.opacity(0.04))
                     .frame(width: 2, height: geoProxy.size.height * 0.95)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
                     .offset(x: offsetX)
                 Rectangle()
-                    .foregroundStyle(Color.primary.opacity(0.04))
+                    .foregroundStyle(colorScheme == .dark ? Color(.systemGray6) : Color(red: 180, green: 180, blue: 180))
                     .frame(width: 130, height: 55)
                     .cornerRadius(12)
                     .overlay {

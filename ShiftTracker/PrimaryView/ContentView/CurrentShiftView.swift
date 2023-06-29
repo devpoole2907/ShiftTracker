@@ -55,6 +55,7 @@ struct CurrentShiftView: View {
                             .foregroundColor(.gray)
                             .bold()
                             .font(.footnote)
+                            .padding(.leading, 1.4)
                     }
                 }.padding(.vertical, 2)
             } else {

@@ -13,15 +13,25 @@ struct AddBreakView: View {
     let breakManager = BreaksManager()
     
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     
     @Environment(\.managedObjectContext) private var context
     
     let shift: OldShift
     
-    @State private var newBreakStartDate = Date()
-    @State private var newBreakEndDate = Date()
-    @State private var isUnpaid = false
+    @State private var newBreakStartDate: Date
+    @State private var newBreakEndDate: Date
+    @State private var isUnpaid: Bool
     @Binding var isAddingBreak: Bool
+    
+    
+    init(shift: OldShift, isAddingBreak: Binding<Bool>){
+        _newBreakStartDate = State(initialValue: shift.shiftStartDate ?? Date())
+        _newBreakEndDate = State(initialValue: shift.shiftEndDate ?? Date())
+        _isUnpaid = State(initialValue: false)
+        _isAddingBreak = isAddingBreak
+        self.shift = shift
+    }
     
     var body: some View{
         
@@ -54,9 +64,8 @@ struct AddBreakView: View {
                             Text("Start:")
                                 .bold()
                                 .frame(width: 50, alignment: .leading)
-                            //.padding(.horizontal, 15)
                                 .padding(.vertical, 5)
-                            DatePicker("Start:", selection: $newBreakStartDate, displayedComponents: [.date, .hourAndMinute])
+                            DatePicker("Start:", selection: $newBreakStartDate, in: (shift.shiftStartDate ?? .distantPast)...(shift.shiftEndDate ?? .distantFuture), displayedComponents: [.date, .hourAndMinute])
                                 .labelsHidden()
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
@@ -64,8 +73,7 @@ struct AddBreakView: View {
                             Text("End:")
                                 .bold()
                                 .frame(width: 50, alignment: .leading)
-                            //.padding(.horizontal, 15)
-                            DatePicker("End:", selection: $newBreakEndDate, displayedComponents: [.date, .hourAndMinute])
+                            DatePicker("End:", selection: $newBreakEndDate, in: (shift.shiftStartDate ?? .distantPast)...(shift.shiftEndDate ?? .distantFuture), displayedComponents: [.date, .hourAndMinute])
                                 .labelsHidden()
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
@@ -101,6 +109,15 @@ struct AddBreakView: View {
                 
             }.scrollContentBackground(.hidden)
                 .navigationBarTitle("Add Break", displayMode: .inline)
+            
+                .toolbar{
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        CloseButton {
+                            dismiss()
+                        }
+                    }
+                }
+            
         }
     }
 }

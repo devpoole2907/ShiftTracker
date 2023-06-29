@@ -29,6 +29,8 @@ struct ScheduleView: View {
     
     @Binding var showMenu: Bool
     
+    @State private var showCreateShiftSheet = false
+    
     @State private var dateSelected: DateComponents?
     @State private var displayEvents = false
     
@@ -44,19 +46,24 @@ struct ScheduleView: View {
             ZStack{
                 if !showAllScheduledShiftsView{
                     
-                    Form {
-                        Section{
+                    List {
+                       // Section{
                             CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents, someScheduledShifts: scheduledShifts)
                                 .id(scheduledShifts.count)
                                 .onAppear{
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    navigationState.gestureEnabled = true
-                }
-                }
-                            
-                        }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        navigationState.gestureEnabled = false
+                                    }
+                                }
+                     //   }
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                    //    Section{
+                            ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu)
+                  //      }
                         
-                        .listRowBackground(Color.clear)
+                        
+                        
                         
                     }.opacity(showAllScheduledShiftsView ? 0 : 1)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
@@ -69,12 +76,15 @@ struct ScheduleView: View {
                 }
             }
             
-            .sheet(isPresented: $displayEvents) {
+            
+            
+          /*  .sheet(isPresented: $displayEvents) {
                 ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu)
                     .presentationDetents([.medium, .large])
-                    .presentationCornerRadius(50)
+                    .presentationDragIndicator(.hidden)
+                    .presentationCornerRadius(35)
                     .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-            }
+            }*/
             
             .navigationBarTitle("Schedule", displayMode: .inline)
             .toolbar{
@@ -93,6 +103,19 @@ struct ScheduleView: View {
                             )
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing){
+                        Button(action: {
+                            if jobs.isEmpty {
+                                OkButtonPopupWithAction(title: "Create a job before scheduling a shift.", action: {showMenu.toggle()}).showAndStack()
+                                
+                            } else {
+                                showCreateShiftSheet = true
+                            }
+                        }) {
+                            Image(systemName: "plus")
+                                .bold()
+                        }.padding()
+                    }
                 ToolbarItem(placement: .navigationBarLeading){
                     Button{
                         withAnimation{
@@ -105,6 +128,18 @@ struct ScheduleView: View {
                     }
                 }
             }.haptics(onChangeOf: showAllScheduledShiftsView, type: .light)
+            
+            
+                .sheet(isPresented: $showCreateShiftSheet) {
+                    CreateShiftForm(jobs: jobs, dateSelected: dateSelected?.date, onShiftCreated: {
+                        showCreateShiftSheet = false
+                    })
+                    .environment(\.managedObjectContext, viewContext)
+                    .presentationDetents([.large])
+                    .presentationCornerRadius(35)
+                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                }
+            
         }
         
     }

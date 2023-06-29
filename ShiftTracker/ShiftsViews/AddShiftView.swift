@@ -13,7 +13,7 @@ struct AddShiftView: View {
     let breaksManager = BreaksManager()
     
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     
     
@@ -88,7 +88,7 @@ struct AddShiftView: View {
         
         do {
             try viewContext.save()
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } catch {
             print("Error saving new shift: \(error)")
         }
@@ -147,6 +147,8 @@ struct AddShiftView: View {
                                         .padding(.horizontal, 20)
                                         .font(.system(size: 60).monospacedDigit())
                                         .fontWeight(.bold)
+                                        .lineLimit(1)
+                                        .allowsTightening(true)
                                     
                                 }
                                 .frame(maxWidth: .infinity)
@@ -164,6 +166,8 @@ struct AddShiftView: View {
                                                 .font(.system(size: 20).monospacedDigit())
                                                 .bold()
                                                 .foregroundColor(.pink)
+                                                .lineLimit(1)
+                                                .allowsTightening(true)
                                         }
                                     }
                                     if Double(totalTips) ?? 0 > 0 {
@@ -176,6 +180,8 @@ struct AddShiftView: View {
                                                 .font(.system(size: 20).monospacedDigit())
                                                 .bold()
                                                 .foregroundColor(.teal)
+                                                .lineLimit(1)
+                                                .allowsTightening(true)
                                         }
                                         
                                     }
@@ -477,13 +483,8 @@ struct AddShiftView: View {
             .navigationBarTitle("Add Shift", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading){
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.gray)
-                            .bold()
-                            .padding()
+                    CloseButton {
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {

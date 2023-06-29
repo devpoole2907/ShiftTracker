@@ -196,41 +196,34 @@ struct CustomConfirmationAlert: CentrePopup {
     let title: String
     
     func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(28)
+        popup.horizontalPadding(10)
+            .backgroundColour(Color.clear)
+           // .cornerRadius(20)
+        
     }
     func createContent() -> some View {
         
-
-        
         VStack(spacing: 5) {
             
-            createTitle()
+            Text(title)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical)
-            createButtons()
+            HStack(spacing: 4) {
+                createCancelButton()
+                createUnlockButton()
+            }
         }
 
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
-        .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
+        .background(colorScheme == .dark ? Color(.systemGray6) : .white)
+        .cornerRadius(20)
+        .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
     }
-}
-
-private extension CustomConfirmationAlert {
     
-    func createTitle() -> some View {
-        Text(title)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-    
-    func createButtons() -> some View {
-        HStack(spacing: 4) {
-            createCancelButton()
-            createUnlockButton()
-        }
-    }
 }
 
 private extension CustomConfirmationAlert {
@@ -270,6 +263,7 @@ struct CustomConfirmAlertWithCancelAction: CentrePopup {
     
     func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
         popup.horizontalPadding(28)
+            .cornerRadius(12)
     }
     func createContent() -> some View {
         
@@ -277,9 +271,14 @@ struct CustomConfirmAlertWithCancelAction: CentrePopup {
         
         VStack(spacing: 5) {
             
-            createTitle()
+            Text(title)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical)
-            createButtons()
+            HStack(spacing: 4) {
+                createCancelButton()
+                createUnlockButton()
+            }
         }
 
         .padding(.top, 12)
@@ -287,22 +286,6 @@ struct CustomConfirmAlertWithCancelAction: CentrePopup {
         .padding(.horizontal, 24)
         .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
         .triggersHapticFeedbackWhenAppear()
-    }
-}
-
-private extension CustomConfirmAlertWithCancelAction {
-    
-    func createTitle() -> some View {
-        Text(title)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-    
-    func createButtons() -> some View {
-        HStack(spacing: 4) {
-            createCancelButton()
-            createUnlockButton()
-        }
     }
 }
 
@@ -376,7 +359,7 @@ class JobSelectionViewModel: ObservableObject {
                 storedSelectedJobUUID = jobUUID.uuidString
             }
         } else {
-            OkButtonPopup(title: "End your current shift to select another job.").present()
+            OkButtonPopup(title: "End your current shift to select another job.").showAndStack()
         }
     }
     
@@ -754,3 +737,48 @@ class NavigationState: ObservableObject {
     @Published var gestureEnabled: Bool = true
 }
 
+
+
+// wrapped UIKit exit button
+
+struct CloseButton: UIViewRepresentable {
+    private let action: () -> Void
+    
+    init(action: @escaping () -> Void) { self.action = action }
+    
+    func makeUIView(context: Context) -> UIButton {
+        UIButton(type: .close, primaryAction: UIAction { _ in action() })
+    }
+    
+    func updateUIView(_ uiView: UIButton, context: Context) {}
+}
+
+// test modifier to capture view height from Matthew's dev blog daringsnowball.net
+
+struct HeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat?
+
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        guard let nextValue = nextValue() else { return }
+        value = nextValue
+    }
+}
+
+private struct ReadHeightModifier: ViewModifier {
+    private var sizeView: some View {
+        GeometryReader { geometry in
+            Color.clear.preference(key: HeightPreferenceKey.self, value: geometry.size.height)
+        }
+    }
+
+    func body(content: Content) -> some View {
+        content.background(sizeView)
+    }
+}
+
+extension View {
+    func readHeight() -> some View {
+        self
+            .modifier(ReadHeightModifier())
+    }
+}

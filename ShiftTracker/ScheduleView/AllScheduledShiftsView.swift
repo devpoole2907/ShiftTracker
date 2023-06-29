@@ -54,6 +54,7 @@ struct AllScheduledShiftsView: View {
                             }
                         }.id(date.startOfTheDay())
                             .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                             .foregroundColor(date < Date() ? .gray : textColor)
                     }.id(UUID())
                 }

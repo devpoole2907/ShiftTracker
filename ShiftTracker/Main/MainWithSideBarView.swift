@@ -20,8 +20,6 @@ struct MainWithSideBarView: View {
     
     @State private var showAddJobView = false
     
-    @StateObject private var authModel = FirebaseAuthModel()
-    
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionViewModel()
     @StateObject var navigationState = NavigationState()
@@ -30,8 +28,6 @@ struct MainWithSideBarView: View {
     private let notificationManager = ShiftNotificationManager.shared
     
     @State var showMenu: Bool = false
-    
-    @State var isJobsExpanded: Bool = false
     
     @Environment(\.managedObjectContext) private var context
     
@@ -62,22 +58,21 @@ struct MainWithSideBarView: View {
         
         
         
-        // if authModel.userIsLoggedIn{
+
         if !isFirstLaunch{
             NavigationView {
                 
                 
                 HStack(spacing: 0){
-                    SideMenu(showMenu: $showMenu, isJobsExpanded: $isJobsExpanded)
+                    SideMenu(showMenu: $showMenu)
                     .disabled(!showMenu)
-                        .environmentObject(authModel)
                         .environmentObject(viewModel)
                         .environmentObject(jobSelectionModel)
                         
                     VStack(spacing: 0){
                         
                         TabView(selection: $currentTab) {
-                            ContentView(showMenu: $showMenu, isJobsExpanded: $isJobsExpanded)
+                            ContentView(showMenu: $showMenu)
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(viewModel)
                                 .environmentObject(jobSelectionModel)
@@ -108,7 +103,8 @@ struct MainWithSideBarView: View {
                                 TabButton(tab: .timesheets, useSystemImage: true) // Use system image for this tab only
                                 TabButton(tab: .schedule, useSystemImage: true)
                             }
-                            .padding([.top], 15)
+                            .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
+                            .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
                         }
                         
                         
@@ -199,7 +195,6 @@ struct MainWithSideBarView: View {
             
         } else {
             IntroMainView(isFirstLaunch: $isFirstLaunch)
-                .environmentObject(authModel)
             
             //.onAppear{ authModel.checkUserLoginStatus() }
         }

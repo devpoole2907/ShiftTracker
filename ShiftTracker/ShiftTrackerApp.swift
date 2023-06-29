@@ -42,7 +42,6 @@ struct ShiftTrackerApp: App {
             MainWithSideBarView(currentTab: $selectedTab)
                 .implementPopupView()
                 .preferredColorScheme(getPreferredColorScheme())
-                //.preferredColorScheme(.light)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
             // deep link tests
                 .onOpenURL { url in

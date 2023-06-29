@@ -17,7 +17,7 @@ struct EditJobView: View {
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     
     @ObservedObject var job: Job
@@ -455,7 +455,7 @@ struct EditJobView: View {
                         case .symbolSheet:
                             JobIconPicker(selectedIcon: $selectedIcon, iconColor: selectedColor)
                                 .environment(\.managedObjectContext, viewContext)
-                                .presentationDetents([ .medium])
+                                .presentationDetents([ .medium, .large])
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
@@ -511,9 +511,9 @@ struct EditJobView: View {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(action: {
                                 
-                                presentationMode.wrappedValue.dismiss()
+                                dismiss()
                                 
-                                CustomConfirmationAlert(action: deleteJob, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").present()
+                                CustomConfirmationAlert(action: deleteJob, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").showAndStack()
                                 
                                 
                             }
@@ -525,12 +525,8 @@ struct EditJobView: View {
                         }
                         
                         ToolbarItem(placement: .navigationBarLeading) {
-                            Button(action: {
-                                presentationMode.wrappedValue.dismiss()
-                            }) {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray)
-                                    .bold()
+                            CloseButton {
+                                dismiss()
                             }
                         }
                         
@@ -596,7 +592,7 @@ struct EditJobView: View {
                 locationManager.startMonitoring(job: job) // might need to check clock out works with this, ive forgotten my implementation
             notificationManager.updateRosterNotifications(viewContext: viewContext)
             
-            presentationMode.wrappedValue.dismiss()
+            dismiss()
         } catch {
             print("Failed to save job: \(error.localizedDescription)")
         }
