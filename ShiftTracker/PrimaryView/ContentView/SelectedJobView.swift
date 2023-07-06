@@ -9,17 +9,8 @@ import SwiftUI
 
 struct SelectedJobView: View {
     
-    let jobName: String?
-    let jobTitle: String?
-    let jobIcon: String?
-    let jobColor: Color?
-    
-    init(jobName: String? = nil, jobTitle: String? = nil, jobIcon: String? = nil, jobColor: Color? = nil) {
-            self.jobName = jobName
-            self.jobTitle = jobTitle
-            self.jobIcon = jobIcon
-            self.jobColor = jobColor
-        }
+    @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -29,23 +20,23 @@ struct SelectedJobView: View {
                 .bold()
                 .padding(.bottom, -1)
             Divider().frame(maxWidth: 300)
-            
-            if let jobName = jobName, let jobTitle = jobTitle, let jobIcon = jobIcon, let jobColor = jobColor {
+            if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
                 HStack{
-                    Image(systemName: jobIcon)
+                    Image(systemName: job.icon ?? "briefcase.circle")
                         .font(.callout)
-                        .foregroundColor(jobColor)
+                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
                     VStack(alignment: .leading, spacing: 3){
-                        Text(jobName)
+                        Text(job.name ?? "")
                             .font(.callout)
                             .bold()
-                        Text(jobTitle)
+                        Text(job.title ?? "")
                             .foregroundColor(.gray)
                             .bold()
                             .font(.caption)
                     }
                 }.padding(.vertical, 3)
-            }  else {
+            
+        }else {
                 HStack{
                     Image(systemName: "briefcase.circle")
                     Text("None")

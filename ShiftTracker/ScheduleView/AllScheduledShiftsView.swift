@@ -64,10 +64,10 @@ struct AllScheduledShiftsView: View {
                             scrollProxy.scrollTo(nextShiftDate, anchor: .top)
                         }
                     }
-                    navigationState.gestureEnabled = false
+                   // navigationState.gestureEnabled = false
                 }
                 .onDisappear {
-                    navigationState.gestureEnabled = true
+                 //   navigationState.gestureEnabled = true
                 }
                 
                 .listStyle(PlainListStyle())
@@ -76,6 +76,7 @@ struct AllScheduledShiftsView: View {
         } else {
             Text("You don't have any shifts scheduled.")
                 .bold()
+                .padding()
         }
     }
 }

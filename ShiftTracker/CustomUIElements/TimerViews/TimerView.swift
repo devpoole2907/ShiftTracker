@@ -68,9 +68,10 @@ struct TimerView: View {
         
         ZStack{
             RoundedRectangle(cornerRadius: 12)
-                .foregroundColor(.primary.opacity(0.04))
-                .frame(width: UIScreen.main.bounds.width - 40)
-                .shadow(radius: 5, x: 0, y: 4)
+                .foregroundColor(Color("SquaresColor"))
+                .frame(width: UIScreen.main.bounds.width - 60)
+                .shadow(radius: 5, x: 2, y: 4)
+               
         VStack(alignment: .center, spacing: 5) {
            /* if isOvertime{
                 Text("OVERTIME")
@@ -147,6 +148,7 @@ struct TimerView: View {
         }
         
         }
+        
     }
 }
 

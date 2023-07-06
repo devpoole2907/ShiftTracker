@@ -12,10 +12,10 @@ struct AddShiftView: View {
     
     let breaksManager = BreaksManager()
     
+    @EnvironmentObject var shiftManager: ShiftDataManager
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    
     
     @State private var shiftStartDate = Date()
     @State private var shiftEndDate = Date()
@@ -38,7 +38,11 @@ struct AddShiftView: View {
     @AppStorage("TipsEnabled") private var tipsEnabled: Bool = true
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
+    // breaks stuff
     @State private var tempBreaks: [TempBreak] = []
+    @State private var newBreakStartDate = Date()
+    @State private var newBreakEndDate = Date().addingTimeInterval(10 * 60)
+    @State private var isUnpaid = false
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -137,7 +141,7 @@ struct AddShiftView: View {
                         
                         ZStack{
                             RoundedRectangle(cornerRadius: 12)
-                                .foregroundColor(.primary.opacity(0.04))
+                                .foregroundColor(Color("SquaresColor"))
                                 .frame(width: UIScreen.main.bounds.width - 40)
                                 .shadow(radius: 5, x: 0, y: 4)
                             VStack(alignment: .center, spacing: 5) {
@@ -282,7 +286,7 @@ struct AddShiftView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding(.horizontal)
                                     .padding(.vertical, 10)
-                                    .background(Color.primary.opacity(0.04),in:
+                                    .background(Color("SquaresColor"),in:
                                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
                             }
                             VStack(alignment: .leading){
@@ -305,7 +309,7 @@ struct AddShiftView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding(.horizontal)
                                     .padding(.vertical, 10)
-                                    .background(Color.primary.opacity(0.04),in:
+                                    .background(Color("SquaresColor"),in:
                                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 
                                 
@@ -332,7 +336,7 @@ struct AddShiftView: View {
                                 .focused($payIsFocused)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04),in:
+                                .background(Color("SquaresColor"),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
                             
                             
@@ -374,7 +378,7 @@ struct AddShiftView: View {
                                     .focused($payIsFocused)
                                     .padding(.horizontal)
                                     .padding(.vertical, 10)
-                                    .background(Color.primary.opacity(0.04),in:
+                                    .background(Color("SquaresColor"),in:
                                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 
                                 
@@ -404,7 +408,7 @@ struct AddShiftView: View {
                             //.padding()
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04),in:
+                                .background(Color("SquaresColor"),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
                             
                             
@@ -431,14 +435,15 @@ struct AddShiftView: View {
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .sheet(isPresented: $isAddingBreak){
-                            // view goes here
                             
-                            // EmptyView()
-                            AddTempBreakView(tempBreaks: $tempBreaks, isAddingBreak: $isAddingBreak, startDate: shiftStartDate, endDate: shiftEndDate)
+                            BreakInputView(newBreakStartDate: $newBreakStartDate, newBreakEndDate: $newBreakEndDate, isUnpaid: $isUnpaid, startDate: shiftStartDate, endDate: shiftEndDate, buttonAction: {
+                                let currentBreak = TempBreak(startDate: newBreakStartDate, endDate: newBreakEndDate, isUnpaid: isUnpaid)
+                                tempBreaks.append(currentBreak)
+                                isAddingBreak = false
+                            })
                                 .presentationDetents([ .fraction(0.4)])
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                                .presentationCornerRadius(50)
-                                .presentationDragIndicator(.visible)
+                                .presentationCornerRadius(35)
                         }
                     TempBreaksListView(breaks: $tempBreaks)
                     /*   if let breaks = shift.breaks as? Set<Break> {
@@ -488,7 +493,10 @@ struct AddShiftView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {saveShift(job: job)
+                    Button(action: {
+                        saveShift(job: job)
+                        shiftManager.shiftAdded.toggle()
+                        dismiss()
                     }) {
                         Image(systemName: "folder.badge.plus")
                             .bold()
@@ -577,99 +585,6 @@ private extension TimeInterval {
  }
  */
 
-struct AddTempBreakView: View {
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    @Environment(\.managedObjectContext) private var context
-    
-    @Binding var tempBreaks: [TempBreak]
-    
-    @State private var newBreakStartDate = Date()
-    @State private var newBreakEndDate = Date().addingTimeInterval(10 * 60)
-    @State private var isUnpaid = false
-    @Binding var isAddingBreak: Bool
-    
-    let startDate: Date
-    let endDate: Date
-    
-    var body: some View{
-        
-        NavigationStack{
-            ScrollView {
-                
-                VStack(alignment: .leading, spacing: 15){
-                    
-                    VStack(alignment: .leading){
-                        HStack{
-                            Text("Start:")
-                                .bold()
-                                .frame(width: 50, alignment: .leading)
-                            //.padding(.horizontal, 15)
-                                .padding(.vertical, 5)
-                            DatePicker("Start:", selection: $newBreakStartDate, in: startDate...endDate, displayedComponents: [.date, .hourAndMinute])
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                                .onChange(of: newBreakStartDate) { newValue in
-                                    if newBreakEndDate < newValue || newBreakEndDate > endDate {
-                                        newBreakEndDate = newValue.addingTimeInterval(10 * 60)
-                                    }
-                                }
-                            
-                            
-                            
-                        }
-                        HStack{
-                            Text("End:")
-                                .bold()
-                                .frame(width: 50, alignment: .leading)
-                            //.padding(.horizontal, 15)
-                            DatePicker("End:", selection: $newBreakEndDate, in: ...endDate, displayedComponents: [.date, .hourAndMinute])
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                                .onChange(of: newBreakEndDate) { newValue in
-                                    if newValue < newBreakStartDate || newValue > endDate {
-                                        newBreakEndDate = newBreakStartDate.addingTimeInterval(10 * 60)
-                                    }
-                                }
-                            
-                        }
-                        Picker(selection: $isUnpaid, label: Text("Break Type")) {
-                            Text("Paid").tag(false)
-                            Text("Unpaid").tag(true)
-                        }.pickerStyle(SegmentedPickerStyle())
-                        
-                    }.padding()
-                        .background(Color.primary.opacity(0.04),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    
-                    Button(action: {
-                        let currentBreak = TempBreak(startDate: newBreakStartDate, endDate: newBreakEndDate, isUnpaid: isUnpaid)
-                        tempBreaks.append(currentBreak)
-                        isAddingBreak = false
-                    }) {
-                        Text("Add Break")
-                        
-                            .bold()
-                        
-                    }.listRowSeparator(.hidden)
-                    
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(colorScheme == .dark ? .white : .black)
-                        .foregroundColor(colorScheme == .dark ? .black : .white)
-                        .cornerRadius(20)
-                    
-                }.listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                    .padding(20)
-                
-                
-            }.scrollContentBackground(.hidden)
-                .navigationBarTitle("Add Break", displayMode: .inline)
-        }
-    }
-}
 
 struct TempBreaksListView: View {
     @Binding var breaks: [TempBreak]
@@ -734,7 +649,7 @@ struct TempBreaksListView: View {
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                 }.padding()
-                    .background(Color.primary.opacity(0.04),in:
+                    .background(Color("SquaresColor"),in:
                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
                 
             }.listRowBackground(Color.clear)

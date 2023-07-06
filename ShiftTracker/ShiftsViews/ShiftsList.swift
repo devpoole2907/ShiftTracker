@@ -1,0 +1,236 @@
+//
+//  ShiftsList.swift
+//  ShiftTracker
+//
+//  Created by James Poole on 30/06/23.
+//
+
+import SwiftUI
+import CoreData
+import Foundation
+
+struct ShiftsList: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    @EnvironmentObject var navigationState: NavigationState
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var shiftManager: ShiftDataManager
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    @State private var isShareSheetShowing = false
+    
+    @State private var searchTerm = ""
+    
+    @State private var isEditing: Bool = false
+    
+    @State private var showingAddShiftSheet: Bool = false
+    
+    var searchQuery: Binding<String> {
+      Binding {
+        searchTerm
+      } set: { newValue in
+        searchTerm = newValue
+        
+        guard !newValue.isEmpty else {
+          shifts.nsPredicate = nil
+          return
+        }
+        shifts.nsPredicate = NSPredicate(
+          format: "shiftNote contains[cd] %@",
+          newValue)
+      }
+    }
+
+    
+    @FetchRequest(
+        sortDescriptors: ShiftSort.default.descriptors,
+        predicate: nil,
+      animation: .default)
+    private var shifts: FetchedResults<OldShift>
+
+    @State private var selectedSort = ShiftSort.default
+    
+    @State private var selection = Set<NSManagedObjectID>()
+    
+    private func deleteShift(_ shift: OldShift) {
+        viewContext.delete(shift)
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error deleting shift: \(error)")
+        }
+    }
+    
+    var body: some View {
+        List(selection: $selection){
+            
+            ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
+            NavigationLink(destination: DetailView(shift: shift, presentedAsSheet: false).navigationBarTitle(Text("Shift Details")), label: {
+                ShiftDetailRow(shift: shift)
+            })
+            .listRowBackground(Color("SquaresColor"))
+            
+            .swipeActions {
+                if !isEditing {
+                    Button(role: .destructive) {
+                        deleteShift(shift)
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                }
+            }
+            
+            
+        }
+        
+        
+        
+        }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes & Tags")
+            .tint(Color.gray)
+            .scrollContentBackground(.hidden)
+
+            .onAppear {
+                navigationState.gestureEnabled = false
+            
+        }
+        
+            .navigationBarTitle(selectedSort.name)
+        
+        .toolbar{
+            
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Menu {
+                    Picker("Sort By", selection: $selectedSort) {
+                        ForEach(ShiftSort.sorts, id: \.self) { sort in
+                            Text("\(sort.name)")
+                        }
+                    }
+                } label: {
+                    Label(
+                        "Sort",
+                        systemImage: "line.horizontal.3.decrease.circle")
+                }
+                .pickerStyle(.inline)
+                .disabled(!selection.isEmpty)
+                .onChange(of: selectedSort) { _ in
+                    let request = shifts
+                    request.sortDescriptors = selectedSort.descriptors
+                }
+                
+                Button(action: {
+                    CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                }) {
+                    Image(systemName: "trash")
+                }.disabled(selection.isEmpty)
+                
+                
+                EditButton()
+            }
+            
+        }
+        
+    }
+    
+    private func deleteItems() {
+        withAnimation {
+            selection.forEach { objectID in
+                let itemToDelete = viewContext.object(with: objectID)
+                viewContext.delete(itemToDelete)
+            }
+            
+            do {
+                try viewContext.save()
+                selection.removeAll()
+            } catch {
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+    
+    func shareButton() {
+        let fileName = "export.csv"
+        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
+        var csvText = "Start Date,End Date,Break Start,Break End,Before Tax,After Tax\n"
+        
+        for shift in shifts {
+            csvText += "\(shift.shiftStartDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.breakStartDate ?? Date())\(shift.breakEndDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.totalPay ),\(shift.taxedPay )\n"
+        }
+        
+        do {
+            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
+        } catch {
+            print("Failed to create file")
+            print("\(error)")
+        }
+        print(path ?? "not found")
+        
+        var filesToShare = [Any]()
+        filesToShare.append(path!)
+        
+        let av = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
+        
+        UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
+        
+        isShareSheetShowing.toggle()
+    }
+
+    
+}
+
+struct ShiftSort: Hashable, Identifiable {
+  let id: Int
+  let name: String
+  let descriptors: [SortDescriptor<OldShift>]
+    
+    
+    static let sorts: [ShiftSort] = [
+      ShiftSort(
+        id: 0,
+        name: "Latest",
+        descriptors: [
+          SortDescriptor(\OldShift.shiftStartDate, order: .reverse)
+        ]),
+      ShiftSort(
+        id: 1,
+        name: "Oldest",
+        descriptors: [
+          SortDescriptor(\OldShift.shiftStartDate, order: .forward)
+        ]),
+      ShiftSort(
+        id: 2,
+        name: "Pay | Ascending",
+        descriptors: [
+            SortDescriptor(\OldShift.taxedPay, order: .reverse)
+        ]),
+      ShiftSort(
+        id: 3,
+        name: "Pay | Descending",
+        descriptors: [
+            SortDescriptor(\OldShift.taxedPay, order: .forward)
+        ]),
+      ShiftSort(
+        id: 4,
+        name: "Longest",
+        descriptors: [
+          SortDescriptor(\OldShift.duration, order: .reverse)
+        ]),
+      ShiftSort(
+        id: 5,
+        name: "Shortest",
+        descriptors: [
+          SortDescriptor(\OldShift.duration, order: .forward)
+        ])
+    ]
+
+    // 4
+    static var `default`: ShiftSort { sorts[0] }
+    
+    
+}
+
+
+
+

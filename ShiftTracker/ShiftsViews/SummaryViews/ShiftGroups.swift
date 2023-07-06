@@ -14,6 +14,8 @@ public struct singleShift: Identifiable {
     let totalPay: Double
     let breakDuration: Double
     let date: String
+    let shiftStartDate: Date
+    var animate: Bool = false
     
     init(shift: OldShift) {
         let start = shift.shiftStartDate!
@@ -24,7 +26,7 @@ public struct singleShift: Identifiable {
         self.dayOfWeek = formatter.string(from: start)
         self.totalPay = shift.totalPay
         
-        formatter.dateFormat = "d/M"
+        formatter.dateFormat = "dd/MM/YYYY"
                 self.date = formatter.string(from: start)
         
         var totalShiftBreakDuration = 0.0
@@ -38,8 +40,105 @@ public struct singleShift: Identifiable {
                     }
                 }
                 self.breakDuration = totalShiftBreakDuration / 3600.0
+        
+        self.shiftStartDate = shift.shiftStartDate!
+        
+    }
+    
+    init(date: Date) {
+            self.hoursCount = 0
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEE" // set format to display abbreviated day of the week (e.g. "Mon")
+            self.dayOfWeek = formatter.string(from: date)
+            self.totalPay = 0
+            formatter.dateFormat = "dd/MM/YYYY"
+            self.date = formatter.string(from: date)
+            self.breakDuration = 0
+        self.shiftStartDate = date
+        }
+    
+    init(shifts: [singleShift]) {
+            self.hoursCount = shifts.reduce(0, { $0 + $1.hoursCount })
+            self.totalPay = shifts.reduce(0, { $0 + $1.totalPay })
+            self.breakDuration = shifts.reduce(0, { $0 + $1.breakDuration })
+            self.dayOfWeek = shifts[0].dayOfWeek
+            self.date = shifts[0].date
+            self.shiftStartDate = shifts[0].shiftStartDate
+        }
+    
+}
+
+public struct ShiftWeek: Identifiable {
+    public let id = UUID()
+    let hoursCount: Double
+    let totalPay: Double
+    let breakDuration: Double
+    let date: String
+    let weekStartDate: Date
+    var animate: Bool = false
+    
+    init(shifts: [singleShift]) {
+        self.hoursCount = shifts.reduce(0, { $0 + $1.hoursCount })
+        self.totalPay = shifts.reduce(0, { $0 + $1.totalPay })
+        self.breakDuration = shifts.reduce(0, { $0 + $1.breakDuration })
+        
+        let firstShiftDate = shifts.first?.date
+        self.date = firstShiftDate ?? ""
+        self.weekStartDate = shifts.first!.shiftStartDate
+    }
+    
+    init(date: Date){
+        self.hoursCount = 0
+        self.totalPay = 0
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d/M"
+        self.date = formatter.string(from: date)
+        self.breakDuration = 0
+        self.weekStartDate = date
     }
 }
+
+public struct ShiftMonth: Identifiable {
+    public let id = UUID()
+    let hoursCount: Double
+    let totalPay: Double
+    let breakDuration: Double
+    let monthOfYear: String
+    let date: Date
+    var animate: Bool = false
+    
+    init(shifts: [singleShift]) {
+        self.hoursCount = shifts.reduce(0, { $0 + $1.hoursCount })
+        self.totalPay = shifts.reduce(0, { $0 + $1.totalPay })
+        self.breakDuration = shifts.reduce(0, { $0 + $1.breakDuration })
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM yyyy" // set format to display abbreviated month and year (e.g. "Jan 2023")
+        self.monthOfYear = formatter.string(from: shifts.first?.shiftStartDate ?? Date())
+        self.date = shifts.first!.shiftStartDate
+    }
+    
+    init(date: Date) {
+        self.hoursCount = 0
+        self.totalPay = 0
+        self.breakDuration = 0
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM yyyy" // set format to display abbreviated month and year (e.g. "Jan 2023")
+        self.monthOfYear = formatter.string(from: date)
+        self.date = date
+    }
+}
+
+protocol Payable {
+    var totalPay: Double { get }
+    var hoursCount: Double { get }
+}
+
+extension singleShift: Payable {}
+extension ShiftWeek: Payable {}
+extension ShiftMonth: Payable {}
+
 
 public struct fullWeekShifts: Identifiable {
     public let id = UUID()

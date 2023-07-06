@@ -79,12 +79,12 @@ struct ActionView: View {
                 Toggle(isOn: $isRounded){
                     Text("Auto Round")
                         .bold()
-                }.toggleStyle(OrangeToggleStyle())
+                }.toggleStyle(CustomToggleStyle())
                     
                     .onChange(of: isRounded) { value in
                         
                         if isRounded == true {
-                            actionDate = roundDate(actionDate)
+                            actionDate = viewModel.roundDate(actionDate)
                         } else {
                             actionDate = Date()
                         }
@@ -92,7 +92,7 @@ struct ActionView: View {
             .padding(.horizontal)
                 .frame(maxWidth: UIScreen.main.bounds.width - 100)
                 .padding(.vertical, 10)
-                .background(Color.primary.opacity(0.04),in:
+                .background(Color("SquaresColor"),in:
                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .padding(.bottom, 10)
                 

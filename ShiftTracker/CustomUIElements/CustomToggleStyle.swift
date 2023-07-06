@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct OrangeToggleStyle: ToggleStyle {
+struct CustomToggleStyle: ToggleStyle {
     
     @Environment(\.isEnabled) var isEnabled
     

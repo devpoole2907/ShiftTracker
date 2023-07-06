@@ -284,7 +284,7 @@ struct SkipLogInPopup: CentrePopup {
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
-        .background(.primary.opacity(0.05))
+        .background(Color("SquaresColor"))
     }
 }
 
@@ -358,7 +358,7 @@ struct LoginFailedPopup: CentrePopup {
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
-        .background(.primary.opacity(0.05))
+        .background(Color("SquaresColor"))
     }
 }
 

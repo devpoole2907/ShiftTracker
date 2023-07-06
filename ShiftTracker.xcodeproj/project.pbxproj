@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A0D86EC2A51783B00EA4438 /* ChartSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0D86EB2A51783A00EA4438 /* ChartSquare.swift */; };
 		1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */; };
-		1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1629F11C03003C83F0 /* StatsView.swift */; };
 		1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */; };
 		1A12240A29C900150036D04C /* RoundedSquareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A12240929C900150036D04C /* RoundedSquareView.swift */; };
 		1A12241029C92D2E0036D04C /* TabBar in Frameworks */ = {isa = PBXBuildFile; productRef = 1A12240F29C92D2E0036D04C /* TabBar */; };
@@ -30,23 +30,19 @@
 		1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9629F101040002D9E4 /* ChartView.swift */; };
 		1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */; };
 		1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22EFFE29C6559100A23F33 /* SettingsView.swift */; };
-		1A22F00129C65E4D00A23F33 /* ShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00029C65E4D00A23F33 /* ShiftsView.swift */; };
-		1A22F00529C67AD400A23F33 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00429C67AD400A23F33 /* TimerView.swift */; };
 		1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
-		1A30F3C42A223AA400A7BD92 /* AddBreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C32A223AA400A7BD92 /* AddBreakView.swift */; };
+		1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C32A223AA400A7BD92 /* BreakInputView.swift */; };
 		1A30F3C52A22405000A7BD92 /* GlobalFunctions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */; };
 		1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A30F3C82A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3424982A04D406007AB271 /* JobSummaryView.swift */; };
-		1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
 		1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4AB18629FCFE6D00AA62BC /* PopupView */; };
 		1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */; };
 		1A4AB18B29FE1DB300AA62BC /* FirebaseJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */; };
 		1A4AB18D29FE1DFA00AA62BC /* JobsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */; };
-		1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610529C6D63A008AC8ED /* LaunchView.swift */; };
 		1A4E610B29C8081B008AC8ED /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E610A29C8081B008AC8ED /* SwiftUICharts */; };
 		1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610C29C82DF9008AC8ED /* DetailView.swift */; };
 		1A4E611029C843ED008AC8ED /* SlideOverCard in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E610F29C843ED008AC8ED /* SlideOverCard */; };
@@ -59,9 +55,21 @@
 		1A52AFB129C5616A00415870 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A52AFB029C5616A00415870 /* Assets.xcassets */; };
 		1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1A57D1F929CA751500305001 /* Haptics in Frameworks */ = {isa = PBXBuildFile; productRef = 1A57D1F829CA751500305001 /* Haptics */; };
+		1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0B9D2A53A3F00021572B /* JobView.swift */; };
+		1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0BA02A55001E0021572B /* CustomPopups.swift */; };
+		1A5B0BA32A5500BF0021572B /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0BA22A5500BF0021572B /* CurrencyTextField.swift */; };
+		1A5B0BA92A55030A0021572B /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9329F100950002D9E4 /* Enums.swift */; };
+		1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0BAA2A5503510021572B /* ShakeModifier.swift */; };
 		1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A69DA2429C98C88008FA77F /* LocationDataManager.swift */; };
 		1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */; };
+		1A83C61A2A5794F90054E3B1 /* BreakTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A83C6182A5794F90054E3B1 /* BreakTimerView.swift */; };
+		1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A83C6192A5794F90054E3B1 /* TimerView.swift */; };
 		1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A88007029E3D98D009458BE /* BreaksListView.swift */; };
+		1A8D4AD62A4EDE0D00EEB334 /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8D4AD52A4EDE0D00EEB334 /* AnimatedButton.swift */; };
+		1A8D4AD82A4EDE4300EEB334 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8D4AD72A4EDE4300EEB334 /* CloseButton.swift */; };
+		1A8D4ADA2A4EE16400EEB334 /* JobOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8D4AD92A4EE16400EEB334 /* JobOverview.swift */; };
+		1A8D4ADC2A4EFAC100EEB334 /* ShiftsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8D4ADB2A4EFAC100EEB334 /* ShiftsList.swift */; };
+		1A8D4ADE2A4EFC6000EEB334 /* ShiftDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8D4ADD2A4EFC6000EEB334 /* ShiftDetailRow.swift */; };
 		1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9855D329C55F8A003F512C /* ShiftTrackerApp.swift */; };
 		1A9855D629C55F8A003F512C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9855D529C55F8A003F512C /* ContentView.swift */; };
 		1A9855D829C55F8C003F512C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A9855D729C55F8C003F512C /* Assets.xcassets */; };
@@ -98,8 +106,8 @@
 		1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B529D7F07100B279CB /* AddShiftView.swift */; };
-		1ACA60BD29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */; };
-		1ACA60BE29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */; };
+		1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */; };
+		1ACA60BE29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */; };
 		1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
@@ -119,19 +127,16 @@
 		1AD72AB529F7809900534342 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD72AB429F7809900534342 /* ContentView.swift */; };
 		1AD72AB729F7809A00534342 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72AB629F7809A00534342 /* Assets.xcassets */; };
 		1AD72ABA29F7809A00534342 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72AB929F7809A00534342 /* Preview Assets.xcassets */; };
-		1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845429D40D380002378F /* MoreOptionsView.swift */; };
 		1AE3845729D444060002378F /* TabItemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845629D444060002378F /* TabItemData.swift */; };
 		1AE3845929D444340002378F /* TabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845829D444340002378F /* TabItemView.swift */; };
 		1AE3845B29D444800002378F /* TabBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845A29D444800002378F /* TabBottomView.swift */; };
 		1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845C29D447DE0002378F /* CustomTabView.swift */; };
+		1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEBFE002A5132B900884DBF /* StatsSquare.swift */; };
+		1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = 1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */; };
 		1AECCC4D29DBFCFD00D879FE /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC4C29DBFCFD00D879FE /* TagsView.swift */; };
 		1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC4C29DBFCFD00D879FE /* TagsView.swift */; };
 		1AECCC5329DC218E00D879FE /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5229DC218E00D879FE /* Tag.swift */; };
 		1AECCC5429DC218E00D879FE /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5229DC218E00D879FE /* Tag.swift */; };
-		1AECCC5629DD71EB00D879FE /* BreakTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5529DD71EB00D879FE /* BreakTimerView.swift */; };
-		1AECCC5729DD71EB00D879FE /* BreakTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5529DD71EB00D879FE /* BreakTimerView.swift */; };
-		1AECCC5C29DFA75A00D879FE /* TaxPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5B29DFA75A00D879FE /* TaxPickerView.swift */; };
-		1AECCC5D29DFA75A00D879FE /* TaxPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5B29DFA75A00D879FE /* TaxPickerView.swift */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 /* End PBXBuildFile section */
@@ -161,8 +166,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1A0D86EB2A51783A00EA4438 /* ChartSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSquare.swift; sourceTree = "<group>"; };
 		1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightView.swift; sourceTree = "<group>"; };
-		1A0F5F1629F11C03003C83F0 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonView.swift; sourceTree = "<group>"; };
 		1A12240929C900150036D04C /* RoundedSquareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedSquareView.swift; sourceTree = "<group>"; };
 		1A12240D29C928EB0036D04C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -184,19 +189,15 @@
 		1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftGroups.swift; sourceTree = "<group>"; };
 		1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = ShiftTrackerStoreKitConfig.storekit; sourceTree = "<group>"; };
 		1A22EFFE29C6559100A23F33 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		1A22F00029C65E4D00A23F33 /* ShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftsView.swift; sourceTree = "<group>"; };
-		1A22F00429C67AD400A23F33 /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		1A22F00729C686A200A23F33 /* ShiftDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ShiftDataModel.xcdatamodel; sourceTree = "<group>"; };
 		1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
-		1A30F3C32A223AA400A7BD92 /* AddBreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBreakView.swift; sourceTree = "<group>"; };
+		1A30F3C32A223AA400A7BD92 /* BreakInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakInputView.swift; sourceTree = "<group>"; };
 		1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreaksManager.swift; sourceTree = "<group>"; };
 		1A3424982A04D406007AB271 /* JobSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSummaryView.swift; sourceTree = "<group>"; };
-		1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyPayCalculator.swift; sourceTree = "<group>"; };
 		1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFinderView.swift; sourceTree = "<group>"; };
 		1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlobalFunctions+Extensions.swift"; sourceTree = "<group>"; };
 		1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseJob.swift; sourceTree = "<group>"; };
 		1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
-		1A4E610529C6D63A008AC8ED /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		1A4E610C29C82DF9008AC8ED /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		1A4E611129C84DF2008AC8ED /* TipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipView.swift; sourceTree = "<group>"; };
 		1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -207,8 +208,19 @@
 		1A52AFAE29C5616800415870 /* ShiftTrackerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidget.swift; sourceTree = "<group>"; };
 		1A52AFB029C5616A00415870 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A52AFB229C5616A00415870 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A5B0B9D2A53A3F00021572B /* JobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobView.swift; sourceTree = "<group>"; };
+		1A5B0BA02A55001E0021572B /* CustomPopups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPopups.swift; sourceTree = "<group>"; };
+		1A5B0BA22A5500BF0021572B /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
+		1A5B0BAA2A5503510021572B /* ShakeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShakeModifier.swift; sourceTree = "<group>"; };
 		1A69DA2429C98C88008FA77F /* LocationDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDataManager.swift; sourceTree = "<group>"; };
+		1A83C6182A5794F90054E3B1 /* BreakTimerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakTimerView.swift; sourceTree = "<group>"; };
+		1A83C6192A5794F90054E3B1 /* TimerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerView.swift; sourceTree = "<group>"; };
 		1A88007029E3D98D009458BE /* BreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreaksListView.swift; sourceTree = "<group>"; };
+		1A8D4AD52A4EDE0D00EEB334 /* AnimatedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedButton.swift; sourceTree = "<group>"; };
+		1A8D4AD72A4EDE4300EEB334 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
+		1A8D4AD92A4EE16400EEB334 /* JobOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobOverview.swift; sourceTree = "<group>"; };
+		1A8D4ADB2A4EFAC100EEB334 /* ShiftsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftsList.swift; sourceTree = "<group>"; };
+		1A8D4ADD2A4EFC6000EEB334 /* ShiftDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftDetailRow.swift; sourceTree = "<group>"; };
 		1A9855D029C55F8A003F512C /* ShiftTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShiftTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A9855D329C55F8A003F512C /* ShiftTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerApp.swift; sourceTree = "<group>"; };
 		1A9855D529C55F8A003F512C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -233,7 +245,7 @@
 		1AC9DDF729F7B28700C15008 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		1ACA60AC29D7913700B279CB /* ShiftKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftKeys.swift; sourceTree = "<group>"; };
 		1ACA60B529D7F07100B279CB /* AddShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftView.swift; sourceTree = "<group>"; };
-		1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrangeToggleStyle.swift; sourceTree = "<group>"; };
+		1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggleStyle.swift; sourceTree = "<group>"; };
 		1ACAA96829F92BAD002D86B5 /* ShiftTracker Watch Edition Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShiftTracker Watch Edition Watch App.entitlements"; sourceTree = "<group>"; };
 		1ACAA96929F92BBC002D86B5 /* ShiftTracker-Watch-Edition-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ShiftTracker-Watch-Edition-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1ACB8A6329FA81A500B152EB /* WatchBreakTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchBreakTimerView.swift; sourceTree = "<group>"; };
@@ -244,15 +256,13 @@
 		1AD72AB429F7809900534342 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1AD72AB629F7809A00534342 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1AD72AB929F7809A00534342 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		1AE3845429D40D380002378F /* MoreOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreOptionsView.swift; sourceTree = "<group>"; };
 		1AE3845629D444060002378F /* TabItemData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemData.swift; sourceTree = "<group>"; };
 		1AE3845829D444340002378F /* TabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabItemView.swift; sourceTree = "<group>"; };
 		1AE3845A29D444800002378F /* TabBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBottomView.swift; sourceTree = "<group>"; };
 		1AE3845C29D447DE0002378F /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
+		1AEBFE002A5132B900884DBF /* StatsSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsSquare.swift; sourceTree = "<group>"; };
 		1AECCC4C29DBFCFD00D879FE /* TagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
 		1AECCC5229DC218E00D879FE /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Tag.swift; path = ShiftTracker/Tag.swift; sourceTree = SOURCE_ROOT; };
-		1AECCC5529DD71EB00D879FE /* BreakTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakTimerView.swift; sourceTree = "<group>"; };
-		1AECCC5B29DFA75A00D879FE /* TaxPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxPickerView.swift; sourceTree = "<group>"; };
 		1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreak.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -275,6 +285,7 @@
 				1AD72AAB29F5268200534342 /* FirebaseMessaging in Frameworks */,
 				1AB7D69F29FBBDF700326AAA /* GoogleSignInSwift in Frameworks */,
 				1A4E611029C843ED008AC8ED /* SlideOverCard in Frameworks */,
+				1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */,
 				1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */,
 				1AD72A9B29F5268200534342 /* FirebaseAnalytics in Frameworks */,
 				1AB7D69D29FBBDF700326AAA /* GoogleSignIn in Frameworks */,
@@ -313,9 +324,9 @@
 		1A19141F2A16C257000D0F8B /* JobViews */ = {
 			isa = PBXGroup;
 			children = (
-				1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */,
-				1AAC400129F26B5B00E204C8 /* EditJobView.swift */,
+				1A5B0B9F2A53B1C90021572B /* New Group */,
 				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
+				1A5B0B9D2A53A3F00021572B /* JobView.swift */,
 			);
 			path = JobViews;
 			sourceTree = "<group>";
@@ -325,15 +336,6 @@
 			children = (
 			);
 			path = DataStore;
-			sourceTree = "<group>";
-		};
-		1A1DEC9129F0FF680002D9E4 /* TimerViews */ = {
-			isa = PBXGroup;
-			children = (
-				1A22F00429C67AD400A23F33 /* TimerView.swift */,
-				1AECCC5529DD71EB00D879FE /* BreakTimerView.swift */,
-			);
-			path = TimerViews;
 			sourceTree = "<group>";
 		};
 		1A1DEC9229F0FFB00002D9E4 /* Main */ = {
@@ -382,11 +384,30 @@
 			path = ShiftTrackerWidget;
 			sourceTree = "<group>";
 		};
+		1A5B0B9F2A53B1C90021572B /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */,
+				1AAC400129F26B5B00E204C8 /* EditJobView.swift */,
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
+		1A83C6172A5794E50054E3B1 /* TimerViews */ = {
+			isa = PBXGroup;
+			children = (
+				1A83C6182A5794F90054E3B1 /* BreakTimerView.swift */,
+				1A83C6192A5794F90054E3B1 /* TimerView.swift */,
+			);
+			path = TimerViews;
+			sourceTree = "<group>";
+		};
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
 				1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */,
 				1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */,
+				1A1DEC9329F100950002D9E4 /* Enums.swift */,
 				1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */,
 				1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */,
 				1AC9DDF729F7B28700C15008 /* JobData.swift */,
@@ -418,7 +439,7 @@
 				1AB7D6A729FC03F400326AAA /* Intro */,
 				1AD72A9729F5237100534342 /* GoogleService-Info.plist */,
 				1AECCC4B29DBFCD700D879FE /* SettingsViews */,
-				1ACA60BB29D8EC1200B279CB /* Custom Toggle */,
+				1ACA60BB29D8EC1200B279CB /* CustomUIElements */,
 				1ACA60B429D79A9200B279CB /* PrimaryView */,
 				1ACA60B229D79A6400B279CB /* CustomTabBar */,
 				1ACA60B129D79A2800B279CB /* ShiftsViews */,
@@ -461,12 +482,10 @@
 		1AC048BB29E0D02000355767 /* ContentView */ = {
 			isa = PBXGroup;
 			children = (
-				1A1DEC9129F0FF680002D9E4 /* TimerViews */,
 				1A9855D529C55F8A003F512C /* ContentView.swift */,
 				1AC048BC29E0D07700355767 /* ContentViewModel.swift */,
 				1AC048BF29E0D50E00355767 /* Shift.swift */,
 				1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */,
-				1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */,
 				1AB7D69029FB4C3300326AAA /* JobSelectionView.swift */,
 				1A1914182A15D43B000D0F8B /* UpcomingShiftView.swift */,
 				1A19141A2A15DC02000D0F8B /* CurrentShiftView.swift */,
@@ -481,8 +500,9 @@
 			children = (
 				1A13F19429D02914009BE6B0 /* ProView.swift */,
 				1A4E611129C84DF2008AC8ED /* TipView.swift */,
-				1A4E610529C6D63A008AC8ED /* LaunchView.swift */,
 				1A12240929C900150036D04C /* RoundedSquareView.swift */,
+				1AEBFE002A5132B900884DBF /* StatsSquare.swift */,
+				1A0D86EB2A51783A00EA4438 /* ChartSquare.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -490,12 +510,14 @@
 		1ACA60B129D79A2800B279CB /* ShiftsViews */ = {
 			isa = PBXGroup;
 			children = (
-				1A22F00029C65E4D00A23F33 /* ShiftsView.swift */,
+				1A8D4AD92A4EE16400EEB334 /* JobOverview.swift */,
 				1A4E610C29C82DF9008AC8ED /* DetailView.swift */,
 				1AECCC5E29E0BD2E00D879FE /* SummaryViews */,
 				1ACA60B529D7F07100B279CB /* AddShiftView.swift */,
 				1A88007029E3D98D009458BE /* BreaksListView.swift */,
-				1A30F3C32A223AA400A7BD92 /* AddBreakView.swift */,
+				1A30F3C32A223AA400A7BD92 /* BreakInputView.swift */,
+				1A8D4ADB2A4EFAC100EEB334 /* ShiftsList.swift */,
+				1A8D4ADD2A4EFC6000EEB334 /* ShiftDetailRow.swift */,
 			);
 			path = ShiftsViews;
 			sourceTree = "<group>";
@@ -515,19 +537,23 @@
 			isa = PBXGroup;
 			children = (
 				1AC048BB29E0D02000355767 /* ContentView */,
-				1AE3845429D40D380002378F /* MoreOptionsView.swift */,
-				1A34588129D176B600CADDD8 /* HourlyPayCalculator.swift */,
-				1AECCC5B29DFA75A00D879FE /* TaxPickerView.swift */,
 			);
 			path = PrimaryView;
 			sourceTree = "<group>";
 		};
-		1ACA60BB29D8EC1200B279CB /* Custom Toggle */ = {
+		1ACA60BB29D8EC1200B279CB /* CustomUIElements */ = {
 			isa = PBXGroup;
 			children = (
-				1ACA60BC29D8EDEC00B279CB /* OrangeToggleStyle.swift */,
+				1A83C6172A5794E50054E3B1 /* TimerViews */,
+				1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */,
+				1A8D4AD52A4EDE0D00EEB334 /* AnimatedButton.swift */,
+				1A8D4AD72A4EDE4300EEB334 /* CloseButton.swift */,
+				1A5B0BA02A55001E0021572B /* CustomPopups.swift */,
+				1A5B0BA22A5500BF0021572B /* CurrencyTextField.swift */,
+				1A5B0BAA2A5503510021572B /* ShakeModifier.swift */,
+				1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */,
 			);
-			path = "Custom Toggle";
+			path = CustomUIElements;
 			sourceTree = "<group>";
 		};
 		1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */ = {
@@ -567,11 +593,9 @@
 			isa = PBXGroup;
 			children = (
 				1A3424982A04D406007AB271 /* JobSummaryView.swift */,
-				1A1DEC9329F100950002D9E4 /* Enums.swift */,
 				1A1DEC9629F101040002D9E4 /* ChartView.swift */,
 				1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */,
 				1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */,
-				1A0F5F1629F11C03003C83F0 /* StatsView.swift */,
 			);
 			path = SummaryViews;
 			sourceTree = "<group>";
@@ -629,6 +653,7 @@
 				1AB7D69C29FBBDF700326AAA /* GoogleSignIn */,
 				1AB7D69E29FBBDF700326AAA /* GoogleSignInSwift */,
 				1A4AB18629FCFE6D00AA62BC /* PopupView */,
+				1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */,
 			);
 			productName = ShiftTracker;
 			productReference = 1A9855D029C55F8A003F512C /* ShiftTracker.app */;
@@ -695,6 +720,7 @@
 				1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */,
 				1AB7D69B29FBBDF700326AAA /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				1A4AB18529FCFE6D00AA62BC /* XCRemoteSwiftPackageReference "PopupView" */,
+				1AEBFE022A51669800884DBF /* XCRemoteSwiftPackageReference "ScalingHeaderScrollView" */,
 			);
 			productRefGroup = 1A9855D129C55F8A003F512C /* Products */;
 			projectDirPath = "";
@@ -746,16 +772,15 @@
 				1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1AC048C129E0D50E00355767 /* Shift.swift in Sources */,
 				1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */,
-				1AECCC5D29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
 				1AA6A7B629EEAF7A00B13057 /* CalendarView.swift in Sources */,
+				1A5B0BA92A55030A0021572B /* Enums.swift in Sources */,
 				1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */,
-				1AECCC5729DD71EB00D879FE /* BreakTimerView.swift in Sources */,
 				1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */,
 				1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */,
 				1A52AFAD29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift in Sources */,
 				1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */,
-				1ACA60BE29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */,
+				1ACA60BE29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
 				1AECCC5429DC218E00D879FE /* Tag.swift in Sources */,
 				1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */,
 				1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */,
@@ -767,17 +792,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A8D4ADC2A4EFAC100EEB334 /* ShiftsList.swift in Sources */,
 				1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */,
 				1AECCC5329DC218E00D879FE /* Tag.swift in Sources */,
 				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				1AECCC4D29DBFCFD00D879FE /* TagsView.swift in Sources */,
+				1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
-				1A30F3C42A223AA400A7BD92 /* AddBreakView.swift in Sources */,
+				1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
-				1A22F00529C67AD400A23F33 /* TimerView.swift in Sources */,
-				1A34588229D176B600CADDD8 /* HourlyPayCalculator.swift in Sources */,
+				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
+				1A8D4AD62A4EDE0D00EEB334 /* AnimatedButton.swift in Sources */,
 				1A9855D629C55F8A003F512C /* ContentView.swift in Sources */,
-				1A22F00129C65E4D00A23F33 /* ShiftsView.swift in Sources */,
+				1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */,
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
@@ -789,22 +816,23 @@
 				1A1914192A15D43B000D0F8B /* UpcomingShiftView.swift in Sources */,
 				1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */,
 				1AB7D6AB29FC059500326AAA /* IntroMainView.swift in Sources */,
+				1A5B0BA32A5500BF0021572B /* CurrencyTextField.swift in Sources */,
 				1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */,
 				1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */,
+				1A8D4ADA2A4EE16400EEB334 /* JobOverview.swift in Sources */,
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
-				1A0F5F1729F11C03003C83F0 /* StatsView.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
 				1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */,
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
 				1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */,
-				1AE3845529D40D380002378F /* MoreOptionsView.swift in Sources */,
+				1A8D4ADE2A4EFC6000EEB334 /* ShiftDetailRow.swift in Sources */,
 				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
-				1ACA60BD29D8EDEC00B279CB /* OrangeToggleStyle.swift in Sources */,
+				1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
 				1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
@@ -813,7 +841,9 @@
 				1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1A4E611229C84DF2008AC8ED /* TipView.swift in Sources */,
 				1AE3845929D444340002378F /* TabItemView.swift in Sources */,
+				1A83C61A2A5794F90054E3B1 /* BreakTimerView.swift in Sources */,
 				1A1914212A185281000D0F8B /* ShiftManager.swift in Sources */,
+				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,
 				1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */,
 				1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */,
 				1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */,
@@ -824,11 +854,11 @@
 				1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */,
 				1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */,
 				1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
+				1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */,
 				1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
-				1AECCC5629DD71EB00D879FE /* BreakTimerView.swift in Sources */,
-				1AECCC5C29DFA75A00D879FE /* TaxPickerView.swift in Sources */,
-				1A4E610629C6D63A008AC8ED /* LaunchView.swift in Sources */,
+				1A8D4AD82A4EDE4300EEB334 /* CloseButton.swift in Sources */,
+				1A0D86EC2A51783B00EA4438 /* ChartSquare.swift in Sources */,
 				1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */,
 				1AB7D69329FB6CE100326AAA /* MainWithSideBarView.swift in Sources */,
 				1AB7D6AF29FCAA1B00326AAA /* CustomTextField.swift in Sources */,
@@ -1314,6 +1344,14 @@
 				minimumVersion = 10.0.0;
 			};
 		};
+		1AEBFE022A51669800884DBF /* XCRemoteSwiftPackageReference "ScalingHeaderScrollView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/exyte/ScalingHeaderScrollView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1406,6 +1444,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1AD72A9929F5268200534342 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseMessaging;
+		};
+		1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1AEBFE022A51669800884DBF /* XCRemoteSwiftPackageReference "ScalingHeaderScrollView" */;
+			productName = ScalingHeaderScrollView;
 		};
 /* End XCSwiftPackageProductDependency section */
 

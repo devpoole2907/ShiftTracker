@@ -774,13 +774,47 @@ class ContentViewModel: ObservableObject {
             return tempBreaks ?? []
         }
         
+    
+    // used for auto rounding a job start date:
+
+    func roundDate(_ date: Date) -> Date {
+        let calendar = Calendar.current
+        
+        // Get components for year, month, day, hour, and minute.
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        
+        guard let hour = components.hour, let minute = components.minute else {
+            fatalError("Invalid date components")
+        }
+
+        var roundedHour = hour
+        var roundedMinute: Int
+
+        switch minute {
+        case 0...7:
+            roundedMinute = 0
+        case 8...22:
+            roundedMinute = 15
+        case 23...37:
+            roundedMinute = 30
+        case 38...52:
+            roundedMinute = 45
+        case 53...59:
+            roundedMinute = 0
+            roundedHour += 1
+        default:
+            fatalError("Invalid minute component")
+        }
+
+        var newComponents = DateComponents()
+        newComponents.year = components.year
+        newComponents.month = components.month
+        newComponents.day = components.day
+        newComponents.hour = roundedHour
+        newComponents.minute = roundedMinute
+        return calendar.date(from: newComponents) ?? date
+    }
         
         
     }
 
-enum ShiftState {
-    case notStarted
-    case countdown
-    case inProgress
-    //case onBreak
-}

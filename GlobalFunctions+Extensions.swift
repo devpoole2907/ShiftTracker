@@ -53,117 +53,6 @@ extension CLPlacemark {
     }
 }
 
-struct OkButtonPopup: CentrePopup {
-    @Environment(\.colorScheme) var colorScheme
-    let title: String
-    
-    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(28)
-    }
-    func createContent() -> some View {
-        VStack(spacing: 5) {
-            
-            createTitle()
-                .padding(.vertical)
-            //Spacer(minLength: 32)
-            //  Spacer.height(32)
-            createButtons()
-            // .padding()
-        }
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .padding(.horizontal, 24)
-        .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
-        .triggersHapticFeedbackWhenAppear()
-    }
-}
-
-extension OkButtonPopup {
-    
-    func createTitle() -> some View {
-        Text(title)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-    
-    func createButtons() -> some View {
-        HStack(spacing: 4) {
-            createConfirmButton()
-        }
-    }
-}
-
-extension OkButtonPopup {
-    func createConfirmButton() -> some View {
-        Button(action: dismiss) {
-            Text("OK")
-                .bold()
-                .foregroundColor(.white)
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(8)
-        }
-    }
-}
-
-struct OkButtonPopupWithAction: CentrePopup {
-    @Environment(\.colorScheme) var colorScheme
-    let title: String
-    let action: () -> Void
-    
-    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(28)
-    }
-    func createContent() -> some View {
-        VStack(spacing: 5) {
-            
-            createTitle()
-                .padding(.vertical)
-            //Spacer(minLength: 32)
-            //  Spacer.height(32)
-            createButtons()
-            // .padding()
-        }
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .padding(.horizontal, 24)
-        .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
-        .triggersHapticFeedbackWhenAppear()
-    }
-}
-
-extension OkButtonPopupWithAction {
-    
-    func createTitle() -> some View {
-        Text(title)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-    
-    func createButtons() -> some View {
-        HStack(spacing: 4) {
-            createConfirmButton()
-        }
-    }
-}
-
-extension OkButtonPopupWithAction {
-    func createConfirmButton() -> some View {
-        Button(action: { dismiss()
-            action()
-        }) {
-            Text("OK")
-                .bold()
-                .foregroundColor(.white)
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(8)
-        }
-    }
-}
-
 class AddressManager: ObservableObject {
     private let geocoder = CLGeocoder()
     private let defaults = UserDefaults.standard
@@ -188,141 +77,28 @@ class AddressManager: ObservableObject {
     }
 }
 
-struct CustomConfirmationAlert: CentrePopup {
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    let action: () -> Void
-    let title: String
-    
-    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(10)
-            .backgroundColour(Color.clear)
-           // .cornerRadius(20)
-        
-    }
-    func createContent() -> some View {
-        
-        VStack(spacing: 5) {
-            
-            Text(title)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.vertical)
-            HStack(spacing: 4) {
-                createCancelButton()
-                createUnlockButton()
-            }
-        }
 
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .padding(.horizontal, 24)
-        .background(colorScheme == .dark ? Color(.systemGray6) : .white)
-        .cornerRadius(20)
-        .shadow(radius: 10)
-        .triggersHapticFeedbackWhenAppear()
-    }
-    
-}
-
-private extension CustomConfirmationAlert {
-    func createCancelButton() -> some View {
-        Button(action: dismiss) {
-            Text("Cancel")
-            
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.primary.opacity(0.1))
-                .cornerRadius(8)
-        }
-    }
-    func createUnlockButton() -> some View {
-        Button(action: {
-            action()
-            dismiss()
-        }) {
-            Text("Confirm")
-                .bold()
-                .foregroundColor(.white)
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(8)
-        }
-    }
-}
-
-struct CustomConfirmAlertWithCancelAction: CentrePopup {
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    let action: () -> Void
-    let cancelAction: () -> Void
-    let title: String
-    
-    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(28)
-            .cornerRadius(12)
-    }
-    func createContent() -> some View {
-        
-
-        
-        VStack(spacing: 5) {
-            
-            Text(title)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.vertical)
-            HStack(spacing: 4) {
-                createCancelButton()
-                createUnlockButton()
-            }
-        }
-
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .padding(.horizontal, 24)
-        .background(colorScheme == .dark ? Color(.systemGray6) : .primary.opacity(0.04))
-        .triggersHapticFeedbackWhenAppear()
-    }
-}
-
-private extension CustomConfirmAlertWithCancelAction {
-    func createCancelButton() -> some View {
-        Button(action: {
-            cancelAction()
-            dismiss()
-        }) {
-            Text("Cancel")
-            
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.primary.opacity(0.1))
-                .cornerRadius(8)
-        }
-    }
-    func createUnlockButton() -> some View {
-        Button(action: {
-            action()
-            dismiss()
-        }) {
-            Text("Confirm")
-                .bold()
-                .foregroundColor(.white)
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(8)
-        }
-    }
-}
 
 class JobSelectionViewModel: ObservableObject {
     @Published var selectedJobUUID: UUID?
     @Published var selectedJobOffset: CGFloat = 0.0
+    @Published var latestShifts: [OldShift] = []
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String = ""
+
+    private func fetchLatestShifts(in context: NSManagedObjectContext) {
+        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "job == %@", fetchJob(in: context)!)
+        fetchRequest.fetchLimit = 10 // we'll only fetch 10 latest shifts
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "shiftStartDate", ascending: false)] // Assuming you have an endDate property
+
+        do {
+            let shifts = try context.fetch(fetchRequest)
+            self.latestShifts = shifts
+        } catch {
+            print("Failed to fetch old shifts: \(error)")
+        }
+    }
+
     
     
     func fetchJob(with uuid: UUID? = nil, in context: NSManagedObjectContext) -> Job? {
@@ -359,18 +135,19 @@ class JobSelectionViewModel: ObservableObject {
                 storedSelectedJobUUID = jobUUID.uuidString
             }
         } else {
-            OkButtonPopup(title: "End your current shift to select another job.").showAndStack()
+            OkButtonPopup(title: "End your current shift to select another job.", action: nil).showAndStack()
         }
+    }
+    
+    func deselectJob(){
+        selectedJobUUID = nil
+        storedSelectedJobUUID = ""
     }
     
     
     
     
-}
-
-
-enum ActionType {
-    case startBreak, endShift, endBreak, startShift
+    
 }
 
 // this is stupid and needs to be removed but itll do for now
@@ -521,66 +298,6 @@ extension NSNotification.Name {
     static let didExitRegion = NSNotification.Name("didExitRegionNotification")
 }
 
-struct AnimatedButton: View {
-    @Binding var isTapped: Bool
-    @Binding var activeSheet: ActiveSheet?
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    var activeSheetCase: ActiveSheet
-    var title: String
-    var backgroundColor: Color
-    var isDisabled: Bool
-
-    var body: some View {
-        
-        let foregroundColor: Color = colorScheme == .dark ? .black : .white
-        
-        Button(action: {
-            self.activeSheet = activeSheetCase
-            withAnimation {
-                self.isTapped = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    self.isTapped = false
-                }
-            }
-        }) {
-            Text(title)
-                .frame(minWidth: UIScreen.main.bounds.width / 3)
-                .bold()
-                .padding()
-                .background(backgroundColor)
-                .foregroundColor(foregroundColor)
-                .cornerRadius(18)
-        }
-        .buttonStyle(.borderless)
-        .disabled(isDisabled)
-        .frame(maxWidth: .infinity)
-        .scaleEffect(isTapped ? 1.1 : 1)
-        .animation(.easeInOut(duration: 0.3))
-    }
-}
-
-struct Shake: AnimatableModifier {
-    var times: CGFloat = 0
-    var amplitude: CGFloat = 5
-    
-    var animatableData: CGFloat {
-        get { times }
-        set { times = newValue }
-    }
-    
-    func body(content: Content) -> some View {
-        content.offset(x: sin(times * .pi * 2) * amplitude)
-    }
-}
-
-extension View {
-    func shake(times: CGFloat) -> some View {
-        self.modifier(Shake(times: times))
-    }
-}
-
 func getDayOfWeek(date: Date) -> Int {
     let calendar = Calendar.current
     let components = calendar.dateComponents([.weekday], from: date)
@@ -592,46 +309,6 @@ func getDayShortName(day: Int) -> String {
     let symbols = formatter.shortWeekdaySymbols
     let symbol = symbols?[day % 7] ?? ""
     return String(symbol.prefix(2))
-}
-
-// used for auto rounding a job start date:
-
-func roundDate(_ date: Date) -> Date {
-    let calendar = Calendar.current
-    
-    // Get components for year, month, day, hour, and minute.
-    let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
-    
-    guard let hour = components.hour, let minute = components.minute else {
-        fatalError("Invalid date components")
-    }
-
-    var roundedHour = hour
-    var roundedMinute: Int
-
-    switch minute {
-    case 0...7:
-        roundedMinute = 0
-    case 8...22:
-        roundedMinute = 15
-    case 23...37:
-        roundedMinute = 30
-    case 38...52:
-        roundedMinute = 45
-    case 53...59:
-        roundedMinute = 0
-        roundedHour += 1
-    default:
-        fatalError("Invalid minute component")
-    }
-
-    var newComponents = DateComponents()
-    newComponents.year = components.year
-    newComponents.month = components.month
-    newComponents.day = components.day
-    newComponents.hour = roundedHour
-    newComponents.minute = roundedMinute
-    return calendar.date(from: newComponents) ?? date
 }
 
 // for calculating a week ahead
@@ -682,20 +359,6 @@ public func digitsFromTimeString(timeString: String) -> [Int] {
     }
 }
 
-
-struct CurrencyTextField: View {
-    var placeholder: String
-    @Binding var text: String
-    
-    var body: some View {
-        HStack {
-            Text(Locale.current.currencySymbol ?? "")
-                .foregroundColor(.gray)
-            TextField(placeholder, text: $text)
-        }
-    }
-}
-
 struct FadeMask: View {
     var body: some View {
         LinearGradient(gradient: Gradient(stops: [
@@ -735,23 +398,9 @@ struct RollingDigit: View {
 
 class NavigationState: ObservableObject {
     @Published var gestureEnabled: Bool = true
+    @Published var showMenu: Bool = false
 }
 
-
-
-// wrapped UIKit exit button
-
-struct CloseButton: UIViewRepresentable {
-    private let action: () -> Void
-    
-    init(action: @escaping () -> Void) { self.action = action }
-    
-    func makeUIView(context: Context) -> UIButton {
-        UIButton(type: .close, primaryAction: UIAction { _ in action() })
-    }
-    
-    func updateUIView(_ uiView: UIButton, context: Context) {}
-}
 
 // test modifier to capture view height from Matthew's dev blog daringsnowball.net
 
@@ -780,5 +429,25 @@ extension View {
     func readHeight() -> some View {
         self
             .modifier(ReadHeightModifier())
+    }
+}
+
+extension UIImage {
+    func resized(to newSize: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size: newSize).image { _ in
+            let hScale = newSize.height / size.height
+            let vScale = newSize.width / size.width
+            let scale = max(hScale, vScale) // scaleToFill
+            let resizeSize = CGSize(width: size.width*scale, height: size.height*scale)
+            var middle = CGPoint.zero
+            if resizeSize.width > newSize.width {
+                middle.x -= (resizeSize.width-newSize.width)/2.0
+            }
+            if resizeSize.height > newSize.height {
+                middle.y -= (resizeSize.height-newSize.height)/2.0
+            }
+            
+            draw(in: CGRect(origin: middle, size: resizeSize))
+        }
     }
 }

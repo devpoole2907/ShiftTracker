@@ -9,7 +9,61 @@ import Foundation
 import CoreData
 import SwiftUI
 
-class ShiftDateManager {
+class ShiftDataManager: ObservableObject {
+    
+    @Published var statsMode: StatsMode = .earnings
+    let statsModes = ["Earnings", "Hours", "Breaks"]
+    
+    @Published var dateRange: DateRange = .week
+    
+    @Published var shiftAdded: Bool = false
+    
+     var currencyFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        return formatter
+    }
+    
+     func formatTime(timeInHours: Double) -> String {
+        let hours = Int(timeInHours)
+        let minutes = Int((timeInHours - Double(hours)) * 60)
+        return "\(hours)h \(minutes)m"
+    }
+    
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+                formatter.dateFormat = "EEE"
+        return formatter
+    }
+    
+    
+    // this function determines whether a shift should be included in the current selection of job
+     func shouldIncludeShift(_ shift: OldShift, jobModel: JobSelectionViewModel) -> Bool {
+        if let selectedJobUUID = jobModel.selectedJobUUID {
+            return shift.job?.uuid == selectedJobUUID
+        }
+        return true
+    }
+    
+    // these functions calculate totals for the three key variables in shifts
+    
+    func addAllTaxedPay(shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Double {
+        let total = shifts.filter({ shouldIncludeShift($0, jobModel: jobModel) }).reduce(0) { $0 + $1.taxedPay }
+        return Double(round(100*total)/100)
+    }
+
+    
+     func addAllPay(shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Double {
+         let total = shifts.filter({ shouldIncludeShift($0, jobModel: jobModel) }).reduce(0) { $0 + $1.totalPay }
+         return Double(round(100*total)/100)
+    }
+    
+    func addAllHours(shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Double {
+        let total = shifts.filter({ shouldIncludeShift($0, jobModel: jobModel) }).reduce(0) { $0 + $1.duration }
+        return total / 3600
+    }
+    
     
     // This function filters shifts that start after a given date
     func filterShifts(startingAfter date: Date, from shifts: FetchedResults<OldShift>) -> [OldShift] {
@@ -20,23 +74,7 @@ class ShiftDateManager {
     func mapShiftsToSingleShift(_ shifts: [OldShift]) -> [singleShift] {
         return shifts.map { singleShift(shift: $0) }.reversed()
     }
-    
-    func getPreviousMonday() -> Date {
-        let today = Date()
-        let calendar = Calendar.current
-        let currentWeekday = calendar.component(.weekday, from: today)
-        
-        // Calculate the number of days to subtract to get to the previous Monday
-        let daysToSubtract = currentWeekday == 1 ? 6 : (currentWeekday == 2 ? 0 : currentWeekday - 2)
-        
-        // Calculate the date for the previous Monday
-        // Calculate the date for the previous Monday without time components
-        let previousMondayWithTime = calendar.date(byAdding: .day, value: -daysToSubtract, to: today)!
-        let previousMondayComponents = calendar.dateComponents([.year, .month, .day], from: previousMondayWithTime)
-        let previousMonday = calendar.date(from: previousMondayComponents)!
-        
-        return previousMonday
-    }
+
 
     func subtractDays(from date: Date, days: Int) -> Date {
         return Calendar.current.date(byAdding: .day, value: -days, to: date)!
@@ -45,6 +83,219 @@ class ShiftDateManager {
     func removeTime(from date: Date) -> Date {
         let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
         return Calendar.current.date(from: components)!
+    }
+    
+   
+
+    func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel, dateRange: DateRange) -> [singleShift] {
+        var shiftsByDay: [String: [OldShift]] = [:]
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d/M/yyyy"
+
+        for shift in shifts {
+            if shouldIncludeShift(shift, jobModel: jobModel) {
+                let dateKey = formatter.string(from: shift.shiftStartDate!)
+                if shiftsByDay[dateKey] != nil {
+                    shiftsByDay[dateKey]!.append(shift)
+                } else {
+                    shiftsByDay[dateKey] = [shift]
+                }
+            }
+        }
+
+        let calendar = Calendar.current
+        let today = Date()
+        let range = getRange(for: dateRange, using: calendar, and: today)
+        var periodShifts: [singleShift] = []
+        
+        if dateRange == .halfYear {
+            
+            var shiftsByWeek: [Int: [singleShift]] = [:]
+            let weeks = 26
+            for i in range {
+                let date = calendar.date(byAdding: .day, value: -i, to: today)!
+                let dateKey = formatter.string(from: date)
+                let shiftsForTheDay = shiftsByDay[dateKey]
+                
+                if let shifts = shiftsForTheDay {
+                    for shift in shifts {
+                        let dateComponents = calendar.dateComponents([.weekOfYear], from: shift.shiftStartDate!, to: today)
+                        let weekOfYear = dateComponents.weekOfYear!
+                        if weekOfYear < weeks {
+                            if shiftsByWeek[weekOfYear] != nil {
+                                shiftsByWeek[weekOfYear]!.append(singleShift(shift: shift))
+                            } else {
+                                shiftsByWeek[weekOfYear] = [singleShift(shift: shift)]
+                            }
+                        }
+                    }
+                }
+            }
+            
+            for week in 0..<weeks {
+                if let shiftsForWeek = shiftsByWeek[week] {
+          
+                    periodShifts.append(singleShift(shifts: shiftsForWeek))
+                }
+            }
+
+        } else if dateRange == .year {
+            var shiftsByMonth: [Int: [singleShift]] = [:]
+                    let months = 12
+                    for i in range {
+                        let date = calendar.date(byAdding: .day, value: -i, to: today)!
+                        let dateKey = formatter.string(from: date)
+                        let shiftsForTheDay = shiftsByDay[dateKey]
+                        
+                        if let shifts = shiftsForTheDay {
+                            for shift in shifts {
+                                let dateComponents = calendar.dateComponents([.month], from: shift.shiftStartDate!, to: today)
+                                let monthOfYear = dateComponents.month!
+                                if monthOfYear < months {
+                                    if shiftsByMonth[monthOfYear] != nil {
+                                        shiftsByMonth[monthOfYear]!.append(singleShift(shift: shift))
+                                    } else {
+                                        shiftsByMonth[monthOfYear] = [singleShift(shift: shift)]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    for month in 0..<months {
+                        if let shiftsForMonth = shiftsByMonth[month] {
+                            periodShifts.append(singleShift(shifts: shiftsForMonth))
+                        }
+                    }
+            
+        }
+            
+            else {
+            for i in range {
+                let date = calendar.date(byAdding: .day, value: -i, to: today)!
+                let dateKey = formatter.string(from: date)
+                let shiftsForTheDay = shiftsByDay[dateKey]
+                
+                if let shifts = shiftsForTheDay {
+                    for shift in shifts {
+                        periodShifts.append(singleShift(shift: shift))
+                    }
+                }
+            }
+        }
+
+        return periodShifts.reversed()
+    }
+
+    
+    func getLastShiftWeeks(from allShifts: [singleShift], jobModel: JobSelectionViewModel, dateRange: DateRange) -> [ShiftWeek] {
+
+        let calendar = Calendar.current
+        let today = Date()
+        let weeks = 26
+
+ 
+        var shiftsByWeek: [Int: [singleShift]] = [:]
+        for shift in allShifts {
+            let dateComponents = calendar.dateComponents([.weekOfYear], from: shift.shiftStartDate, to: today)
+            let weekOfYear = dateComponents.weekOfYear!
+            if weekOfYear < weeks {
+                if shiftsByWeek[weekOfYear] != nil {
+                    shiftsByWeek[weekOfYear]!.append(shift)
+                } else {
+                    shiftsByWeek[weekOfYear] = [shift]
+                }
+            }
+        }
+        
+        var shiftWeeks: [ShiftWeek] = []
+        for week in 0..<weeks {
+            if let shiftsForWeek = shiftsByWeek[week] {
+                shiftWeeks.append(ShiftWeek(shifts: shiftsForWeek))
+            }
+        }
+
+        return shiftWeeks.reversed()
+    }
+    
+    func getLastShiftMonths(from allShifts: [singleShift], jobModel: JobSelectionViewModel, dateRange: DateRange) -> [ShiftMonth] {
+
+        let calendar = Calendar.current
+        let months = 12
+
+   
+        var shiftsByMonth: [Int: [singleShift]] = [:]
+        for shift in allShifts {
+            let dateComponents = calendar.dateComponents([.month], from: shift.shiftStartDate, to: Date())
+            let monthOfYear = dateComponents.month!
+            if shiftsByMonth[monthOfYear] != nil {
+                shiftsByMonth[monthOfYear]!.append(shift)
+            } else {
+                shiftsByMonth[monthOfYear] = [shift]
+            }
+        }
+
+        
+        var shiftMonths: [ShiftMonth] = []
+        for month in 0..<months {
+            if let shiftsForMonth = shiftsByMonth[month] {
+                shiftMonths.append(ShiftMonth(shifts: shiftsForMonth))
+            }
+        }
+
+        return shiftMonths.reversed()
+    }
+
+
+    func getDateRange() -> ClosedRange<Date> {
+        var now = Date()
+        var components = DateComponents()
+        var extraComponent = DateComponents()
+
+        switch dateRange {
+        case .week:
+            components.day = -7
+        case .month:
+            components.month = -1
+        case .halfYear:
+           // extraComponent.month = 1
+          //  now = Calendar.current.date(byAdding: extraComponent, to: now) ?? Date()
+            components.weekOfYear = -26
+        case .year:
+            extraComponent.month = 1
+            now = Calendar.current.date(byAdding: extraComponent, to: now) ?? Date()
+            components.month = -13
+        }
+
+        let startDate = Calendar.current.date(byAdding: components, to: now)!
+        return startDate...now
+    }
+
+
+
+    
+
+    func getRange(for dateRange: DateRange, using calendar: Calendar, and date: Date) -> Range<Int> {
+        switch dateRange {
+        case .week:
+            return 0..<7
+        case .month:
+            let range = calendar.range(of: .day, in: .month, for: date)!
+            return 0..<range.count
+        case .halfYear:
+            return 0..<(30 * 6 * 4)
+        case .year:
+            return 0..<52
+        }
+    }
+
+
+    func getTotalPay<T: Payable>(from shifts: [T]) -> Double {
+        return shifts.reduce(0, { $0 + $1.totalPay })
+    }
+    
+    func getTotalHours<T: Payable>(from shifts: [T]) -> Double {
+        return shifts.reduce(0, { $0 + $1.hoursCount })
     }
     
     

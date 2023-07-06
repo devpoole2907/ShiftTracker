@@ -91,6 +91,22 @@ struct SettingsView: View {
                     }
                 }
                 
+                NavigationLink(destination: EmptyView()){
+                    HStack {
+                        Image(systemName: "paintpalette")
+                        Spacer().frame(width: 10)
+                        Text("Theme")
+                            .font(.title2)
+                            .bold()
+                        Spacer()
+                        Text("Default")
+                            .foregroundStyle(.gray)
+                            .bold()
+                    }
+                }.padding()
+                    .background(Color("SquaresColor"))
+                    .cornerRadius(12)
+                
                 NavigationLink(destination: LocationView()){
                     HStack {
                         Image(systemName: "location")
@@ -109,7 +125,7 @@ struct SettingsView: View {
                         }
                     }
                 }.padding()
-                .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                     .cornerRadius(12)
                 NavigationLink(destination: NotificationView()){
                     HStack {
@@ -123,7 +139,7 @@ struct SettingsView: View {
                     }
                 }.padding()
                    // .frame(maxWidth: .infinity)
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                         .cornerRadius(12)
                 NavigationLink(destination: AppearanceView()) {
                     HStack {
@@ -139,7 +155,7 @@ struct SettingsView: View {
                             .bold()
                     }
                 }.padding()
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                         .cornerRadius(12)
                 Toggle(isOn: $authEnabled){
                     HStack {
@@ -150,7 +166,7 @@ struct SettingsView: View {
                             .font(.title2)
                             .bold()
                     }
-                }.toggleStyle(OrangeToggleStyle())
+                }.toggleStyle(CustomToggleStyle())
                     .onChange(of: authEnabled) { newValue in
                         if newValue {
                             authenticateUser { success in
@@ -165,7 +181,7 @@ struct SettingsView: View {
                         }
                     }
                     .padding()
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                         .cornerRadius(12)
                 Toggle(isOn: $iCloudSyncOn) {
                     HStack {
@@ -178,12 +194,12 @@ struct SettingsView: View {
                             .font(.title2)
                             .bold()
                     }
-                }.toggleStyle(OrangeToggleStyle())
+                }.toggleStyle(CustomToggleStyle())
                     .onChange(of: iCloudSyncOn) { value in
                         PersistenceController.shared.updateCloudKitSyncStatus()
                     }
                     .padding()
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                         .cornerRadius(12)
                 Toggle(isOn: $tipsEnabled) {
                     HStack {
@@ -194,9 +210,9 @@ struct SettingsView: View {
                             .font(.title2)
                             .bold()
                     }
-                }.toggleStyle(OrangeToggleStyle())
+                }.toggleStyle(CustomToggleStyle())
                     .padding()
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                         .cornerRadius(12)
                 
                 Toggle(isOn: $taxEnabled) {
@@ -208,12 +224,12 @@ struct SettingsView: View {
                             .font(.title2)
                             .bold()
                     }
-                }.toggleStyle(OrangeToggleStyle())
+                }.toggleStyle(CustomToggleStyle())
                     .onChange(of: taxEnabled){ value in
                         sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
                     }
                     .padding()
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                         .cornerRadius(12)
                 
                 NavigationLink(destination: TipView()){
@@ -226,7 +242,7 @@ struct SettingsView: View {
                         Spacer()
                     }
                 }.padding()
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                         .cornerRadius(12)
                 
             }
@@ -250,7 +266,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading){
                     Button(action: {
                         
-                        CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, title: "Are you sure you want to delete all your data?").showAndStack()
+                        CustomConfirmationAlert(action: {wipeCoreData(in: viewContext)}, cancelAction: nil, title: "Are you sure you want to delete all your data?").showAndStack()
                     } ){
                         Text("Delete Data")
                             .bold()
@@ -409,7 +425,7 @@ struct LocationView: View{
                                 .font(.callout)
                                 .padding()
                         }.padding()
-                            .background(Color.primary.opacity(0.04))
+                            .background(Color("SquaresColor"))
                             .cornerRadius(12)
                             .padding()
                         
@@ -427,7 +443,7 @@ struct LocationView: View{
                                 .bold()
                                 .font(.title3)
                         }.padding()
-                            .background(Color.primary.opacity(0.04))
+                            .background(Color("SquaresColor"))
                             .cornerRadius(12)
                             .padding()
                     }
@@ -469,7 +485,7 @@ struct AppearanceView: View {
               
                     
                 }.padding()
-                    .background(Color.primary.opacity(0.04))
+                    .background(Color("SquaresColor"))
                     .cornerRadius(12)
             }
         }

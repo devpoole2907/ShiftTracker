@@ -16,8 +16,6 @@ struct SideMenu: View {
     
     @Environment(\.colorScheme) var colorScheme
     
-    @Binding var showMenu: Bool
-    
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [])
     private var jobs: FetchedResults<Job>
@@ -25,8 +23,7 @@ struct SideMenu: View {
     @State private var showJobs: Bool = false
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
-    
-    
+    @EnvironmentObject var navigationState: NavigationState
     
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
     
@@ -65,7 +62,7 @@ struct SideMenu: View {
                 }
                 
             }
-           // .padding(.horizontal)
+  
             .padding(.leading)
             
             ScrollView(.vertical, showsIndicators: false){
@@ -95,7 +92,7 @@ struct SideMenu: View {
                                 }) {
                                     Image(systemName: "plus")
                                         .bold()
-                                }
+                                }.padding(.trailing)
                             }
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -112,11 +109,20 @@ struct SideMenu: View {
                                                 selectedJobForEditing = job
                                                 isEditJobPresented = true
                                             }, showEdit: true)
-                                            .contentShape(Rectangle()) // Make the whole row tappable
+                                            .contentShape(Rectangle())
                                             .onTapGesture {
-                                                jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
+                                                
+                                                if !(jobSelectionViewModel.selectedJobUUID == job.uuid) {
+                                                    jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
+                                                    
+                                                } else {
+                                                    jobSelectionViewModel.deselectJob()
+                                                }
+                                                
                                                 withAnimation(.easeInOut) {
-                                                    showMenu = false
+                                                    
+                                                    navigationState.showMenu = false
+                                                    
                                                 }
                                                 
                                             }
@@ -124,14 +130,11 @@ struct SideMenu: View {
                                         }.padding()
                                             .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
                                             .cornerRadius(50)
-                                           // .offset(y: isJobsExpanded ? 0 : jobSelectionViewModel.selectedJobOffset)
-                                          //  .animation(.spring(), value: isJobsExpanded)
                                         
                                     }
-                                   // .padding(.leading, 40)
                                     
                                     .fullScreenCover(item: $selectedJobForEditing) { job in
-                                        EditJobView(job: job)
+                                        JobView(job: job)
                                             .onDisappear {
                                                 selectedJobForEditing = nil
                                             }
@@ -174,7 +177,7 @@ struct SideMenu: View {
                             
                             
                         } .transition(.move(edge: .top))
-                        
+                            .haptics(onChangeOf: jobSelectionViewModel.selectedJobUUID, type: .light)
                         
                         
                         if !isSubscriptionActive(){
@@ -189,7 +192,7 @@ struct SideMenu: View {
                     
                     
                     
-                }//.haptics(onChangeOf: isJobsExpanded, type: .light)
+                }
             }
             VStack{
                 Divider()
@@ -224,7 +227,7 @@ struct SideMenu: View {
         
         
         .fullScreenCover(isPresented: $showAddJobView){
-            AddJobView()
+            JobView()
         }
         
         .fullScreenCover(isPresented: $showUpgradeScreen){
@@ -290,71 +293,6 @@ extension View {
     }
 }
 
-struct LogOutPopUp: CentrePopup {
-    let logoutAction: () -> Void
-    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
-        popup.horizontalPadding(28)
-    }
-    func createContent() -> some View {
-        VStack(spacing: 5) {
-            
-            createTitle()
-                .padding(.vertical)
-            //Spacer(minLength: 32)
-            //  Spacer.height(32)
-            createButtons()
-            // .padding()
-        }
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .padding(.horizontal, 24)
-        .background(.primary.opacity(0.05))
-    }
-}
-
-private extension LogOutPopUp {
-    
-    func createTitle() -> some View {
-        Text("Are you sure you want to log out?")
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-    
-    func createButtons() -> some View {
-        HStack(spacing: 4) {
-            createCancelButton()
-            createUnlockButton()
-        }
-    }
-}
-
-private extension LogOutPopUp {
-    func createCancelButton() -> some View {
-        Button(action: dismiss) {
-            Text("Cancel")
-            
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.primary.opacity(0.1))
-                .cornerRadius(8)
-        }
-    }
-    func createUnlockButton() -> some View {
-        Button(action: {
-            logoutAction()
-            dismiss()
-        }) {
-            Text("Logout")
-                .bold()
-                .foregroundColor(.white)
-                .frame(height: 46)
-                .frame(maxWidth: .infinity)
-                .background(.black)
-                .cornerRadius(8)
-        }
-    }
-}
-
 struct JobRow: View {
     let job: Job
     let isSelected: Bool
@@ -385,7 +323,7 @@ struct JobRow: View {
                         editAction()
                     }
                     else {
-                        OkButtonPopup(title: "End your current shift before editing.").showAndStack()
+                        OkButtonPopup(title: "End your current shift before editing.", action: nil).showAndStack()
                     }}) {
                         Image(systemName: "pencil")
                             .foregroundColor(isSelected ? .white : textColor)
@@ -396,23 +334,3 @@ struct JobRow: View {
         }
     }
 }
-
-
-/*
- Button(action: {
- //
- 
- LogOutPopUp(logoutAction: authModel.signOut).present()
- 
- }) {
- Text("Logout")
- .bold()
- .padding()
- .padding(.leading)
- 
- }
- .frame(maxWidth: .infinity, alignment: .leading)
- 
- */
-
-//  TabButton(title: "Profile", image: "person.fill", destination: { AnyView(SettingsView()) })

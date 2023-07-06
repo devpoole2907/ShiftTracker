@@ -12,6 +12,7 @@ import CoreData
 
 struct MainWithSideBarView: View {
     
+    @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.title, ascending: true)]) private var jobs: FetchedResults<Job>
     
     @AppStorage("AuthEnabled") private var authEnabled: Bool = false
         @State private var showingLockedView = false
@@ -20,14 +21,14 @@ struct MainWithSideBarView: View {
     
     @State private var showAddJobView = false
     
+    @State private var jobId: NSManagedObjectID? = nil
+    
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionViewModel()
     @StateObject var navigationState = NavigationState()
     
     
     private let notificationManager = ShiftNotificationManager.shared
-    
-    @State var showMenu: Bool = false
     
     @Environment(\.managedObjectContext) private var context
     
@@ -61,84 +62,107 @@ struct MainWithSideBarView: View {
 
         if !isFirstLaunch{
             NavigationView {
-                
-                
-                HStack(spacing: 0){
-                    SideMenu(showMenu: $showMenu)
-                    .disabled(!showMenu)
-                        .environmentObject(viewModel)
-                        .environmentObject(jobSelectionModel)
-                        
-                    VStack(spacing: 0){
-                        
-                        TabView(selection: $currentTab) {
-                            ContentView(showMenu: $showMenu)
-                                .environment(\.managedObjectContext, context)
-                                .environmentObject(viewModel)
-                                .environmentObject(jobSelectionModel)
-                                .environmentObject(navigationState)
-                            
-                                .navigationBarTitleDisplayMode(.inline)
-                                .navigationBarHidden(true)
-                                .tag(Tab.home)
-                            
-                            
-                            ShiftsView(showMenu: $showMenu)
+                ZStack{
+                    
+                    HStack(spacing: 0){
+                        SideMenu()
+                            .disabled(!navigationState.showMenu)
                             .environmentObject(navigationState)
-                                .tag(Tab.timesheets)
-                            
-                            ScheduleView(showMenu: $showMenu)
-                            .environmentObject(navigationState)
-                                .navigationBarTitleDisplayMode(.inline)
-                                .navigationBarHidden(true)
-                                .tag(Tab.schedule)
-                            
-                        }
-                        
+                            .environmentObject(viewModel)
+                            .environmentObject(jobSelectionModel)
                         
                         VStack(spacing: 0){
-                            Divider()
-                            HStack(spacing: 0) {
-                                TabButton(tab: .home, useSystemImage: true)
-                                TabButton(tab: .timesheets, useSystemImage: true) // Use system image for this tab only
-                                TabButton(tab: .schedule, useSystemImage: true)
+                            
+                            TabView(selection: $currentTab) {
+                                ContentView()
+                                    .environment(\.managedObjectContext, context)
+                                    .environmentObject(viewModel)
+                                    .environmentObject(jobSelectionModel)
+                                    .environmentObject(navigationState)
+                                
+                                    .navigationBarTitleDisplayMode(.inline)
+                                    .navigationBarHidden(true)
+                                    .tag(Tab.home)
+
+
+                                        JobOverview()
+                                            .environment(\.managedObjectContext, context)
+                                            .environmentObject(jobSelectionModel)
+                                            .environmentObject(navigationState)
+                                            .tag(Tab.timesheets)
+                                   
+                                
+                                ScheduleView()
+                                    .environment(\.managedObjectContext, context)
+                                    .environmentObject(navigationState)
+                                    .environmentObject(jobSelectionModel)
+                                    .navigationBarTitleDisplayMode(.inline)
+                         
+                                    .tag(Tab.schedule)
+                                
                             }
-                            .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
-                            .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
+                            
+                            
+                            VStack(spacing: 0){
+                                Divider()
+                                HStack(spacing: 0) {
+                                    TabButton(tab: .home, useSystemImage: true)
+                                    TabButton(tab: .timesheets, useSystemImage: true) // Use system image for this tab only
+                                    TabButton(tab: .schedule, useSystemImage: true)
+                                }
+                                .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
+                                .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
+                            }
+                            
+                            
+                        }
+                        .frame(width: getRect().width)
+                        .ignoresSafeArea(.keyboard)
+                        
+                        .overlay(
+                            
+                            Rectangle()
+                                .fill(
+                                    Color.primary.opacity(Double((offset / sideBarWidth) / 5))
+                                )
+                                .ignoresSafeArea(.container, edges: .vertical)
+                        )
+                    }
+                    .frame(width: getRect().width + sideBarWidth)
+                    .offset(x: -sideBarWidth / 2)
+                    .offset(x: offset > 0 ? offset : 0)
+                    HStack {
+                        if navigationState.showMenu {
+                            Spacer()
+                        }
+                    VStack {
+                        Spacer()
+                    }
+                    .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 150 : 200)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation{
+                            if navigationState.showMenu {
+                                navigationState.showMenu = false
+                            }
+                        }
+                    }
+                    .gesture(
+                        navigationState.gestureEnabled ? DragGesture()
+                            .updating($gestureOffset, body: { value, out, _ in
+                                
+                                out = value.translation.width
+                                
+                            })
+                            .onEnded(onEnd(value:)) : nil
+                    )
+                        if !navigationState.showMenu{
+                            Spacer()
                         }
                         
-                        
-                    }
-                    .frame(width: getRect().width)
-                    .ignoresSafeArea(.keyboard)
-                    
-                    .overlay(
-                        
-                        Rectangle()
-                            .fill(
-                                Color.primary.opacity(Double((offset / sideBarWidth) / 5))
-                            )
-                            .ignoresSafeArea(.container, edges: .vertical)
-                            .onTapGesture {
-                                withAnimation{
-                                    showMenu.toggle()
-                                }
-                            }
-                    )
+                            
                 }
-                .frame(width: getRect().width + sideBarWidth)
-                .offset(x: -sideBarWidth / 2)
-                .offset(x: offset > 0 ? offset : 0)
-                
-                .gesture(
-    navigationState.gestureEnabled ? DragGesture()
-        .updating($gestureOffset, body: { value, out, _ in
-            
-            out = value.translation.width
-            
-        })
-        .onEnded(onEnd(value:)) : nil
-)
+            }
 
                 
                 
@@ -147,12 +171,12 @@ struct MainWithSideBarView: View {
                 
             }
             .animation(.easeOut, value: offset == 0)
-            .onChange(of: showMenu) { newValue in
-                if showMenu && offset == 0{
+            .onChange(of: navigationState.showMenu) { newValue in
+                if navigationState.showMenu && offset == 0{
                     offset = sideBarWidth
                     lastStoredOffset = offset
                 }
-                if !showMenu && offset == sideBarWidth{
+                if !navigationState.showMenu && offset == sideBarWidth{
                     offset = 0
                     lastStoredOffset = 0
                 }
@@ -160,6 +184,10 @@ struct MainWithSideBarView: View {
             .onChange(of: gestureOffset) { newValue in
                 onChange()
             }
+            
+            .onChange(of: jobSelectionModel.selectedJobUUID) { newUUID in
+                    jobId = jobs.first(where: { $0.uuid == newUUID })?.objectID
+                }
             
             
                 .fullScreenCover(isPresented: $showingLockedView) {
@@ -216,10 +244,10 @@ func onEnd(value: DragGesture.Value) {
     withAnimation {
         if (translation + velocity / 2 > sideBarWidth / 2) {
             offset = sideBarWidth
-            showMenu = true
+            navigationState.showMenu = true
         } else {
             offset = 0
-            showMenu = false
+            navigationState.showMenu = false
         }
     }
 

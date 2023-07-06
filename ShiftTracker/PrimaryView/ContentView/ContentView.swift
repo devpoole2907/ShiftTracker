@@ -61,54 +61,47 @@ struct ContentView: View {
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
     
-    @Binding var showMenu: Bool
-    
-    
     @available(iOS 16.1, *)
     var body: some View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
         let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
-        let disabledButtonColor: Color = colorScheme == .dark ? Color.primary.opacity(0.04) : Color.primary.opacity(0.04)
+        let disabledButtonColor: Color = Color("SquaresColor")
         let foregroundColor: Color = colorScheme == .dark ? .black : .white
         
         NavigationStack{
-            ScrollView{
-                VStack(spacing: 25){
+            List{
+                VStack(spacing: 20){
                     Group{
                         if viewModel.shift == nil{
                             UpcomingShiftView()
-                                .padding()
+                                .padding(.horizontal)
                             
                         }
                         else {
                             CurrentShiftView(startDate: viewModel.shift!.startDate)
-                                .padding()
+                                .padding(.horizontal)
                         }
                     }.frame(maxWidth: UIScreen.main.bounds.width - 40, alignment: .leading)
                     
                     
                     TimerView(timeElapsed: $viewModel.timeElapsed)
                     
+                    
                     Group{
                         if viewModel.shift == nil{
                             Button(action: {
-                                showMenu.toggle()
+                                navigationState.showMenu.toggle()
                             }) {
-                                if let job = jobSelectionViewModel.fetchJob(in: context) {
-                                    
-                                    SelectedJobView(jobName: job.name, jobTitle: job.title, jobIcon: job.icon, jobColor: Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-                                        .padding()
-                                } else {
                                     SelectedJobView()
-                                        .padding()
-                                }
                                 
+                                        .padding(.horizontal)
+                                        .contentShape(Rectangle())
                             }
+                            .buttonStyle(.plain)
                             .disabled(viewModel.shift != nil)
                             .frame(maxWidth: UIScreen.main.bounds.width - 40, alignment: .leading)
                             .shake(times: jobShakeTimes)
-                            .haptics(onChangeOf: jobSelectionViewModel.selectedJobUUID, type: .light)
                             
                         }
                         
@@ -131,7 +124,7 @@ struct ContentView: View {
                                                 jobShakeTimes += 2
                                             }
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7){
-                                                showMenu = true
+                                                navigationState.showMenu = true
                                             }
                                         }
                                     }
@@ -140,7 +133,7 @@ struct ContentView: View {
                                     Button(action: {
                                         CustomConfirmationAlert(action: {
                                             viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
-                                        }, title: "Cancel your upcoming shift?").showAndStack()
+                                        }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
                                         withAnimation {
                                             viewModel.isEndShiftTapped = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -159,7 +152,7 @@ struct ContentView: View {
                                     .buttonStyle(.borderless)
                                     .frame(maxWidth: .infinity)
                                     .scaleEffect(viewModel.isEndShiftTapped ? 1.1 : 1)
-                                    .animation(.easeInOut(duration: 0.3))
+                                    .animation(.easeInOut(duration: 0.3), value: viewModel.isEndShiftTapped)
                                     
                                     
                                 } else if viewModel.shiftState == .inProgress {
@@ -200,7 +193,8 @@ struct ContentView: View {
                             
                             
                         }.padding(.horizontal, 50)
-                        
+                    }
+                }.listRowBackground(Color.clear)
                         if viewModel.shift != nil && !viewModel.tempBreaks.isEmpty {
                             Group{
                                 HStack{
@@ -208,10 +202,11 @@ struct ContentView: View {
                                         .textCase(nil)
                                         .foregroundColor(textColor)
                                     Spacer()
-                                }
+                                }.listRowSeparator(.hidden)
+                                    .listRowBackground(Color.clear)
+                                
                                 ForEach(viewModel.tempBreaks.reversed(), id: \.self) { breakItem in
                                     Section{
-                                        ZStack{
                                         VStack(alignment: .leading){
                                             HStack{
                                                 VStack(alignment: .leading, spacing: 8){
@@ -279,48 +274,33 @@ struct ContentView: View {
                                                     .disabled(viewModel.isOnBreak)
                                                 }
                                             }
-                                        }.padding()
-                                                .padding(.top)
-                                            .background(Color.primary.opacity(0.04),in:
-                                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                            .contextMenu { // Adding context menu for deleting break item
-                                                Button(action: {
-                                                    viewModel.deleteSpecificBreak(breakItem: breakItem)
-                                                }) {
-                                                    Label("Delete", systemImage: "trash")
-                                                }
-                                            }
-                                        
-                                        VStack(alignment: .trailing){
-                                            HStack{
-                                                Spacer()
-                                                Menu{
-                                                    Button(action: {
-                                                        viewModel.deleteSpecificBreak(breakItem: breakItem)
-                                                    }) {
-                                                        Label("Delete", systemImage: "trash")
-                                                    }
-                                                } label: {
-                                                    Image(systemName: "ellipsis")
-                                                        .bold()
-                                                }
-                                                
-                                            }.padding()
-                                            Spacer()
                                         }
+
+                                            
+                    
                                         
-                                    }.padding(.top)
-                                    }.listRowSeparator(.hidden)
+                                 
+                                    }
+                                    .swipeActions {
+                                        Button(role: .destructive) {
+                                            viewModel.deleteSpecificBreak(breakItem: breakItem)
+                                        } label: {
+                                            Image(systemName: "trash")
+                                        }
+                                    }
+                                    
+                                    .listRowBackground(Color("SquaresColor"))
+                                    .listRowSeparator(.hidden)
                                 }
-                            }.padding(.horizontal, 40)
+                            }
                         }
                         
                         
-                    }
-                }
+                    
+                
                 
             }.scrollContentBackground(.hidden)
-                .padding(.horizontal, 40)
+              //  .padding(.horizontal, 40)
                // .frame(maxWidth: .infinity)
                 .toolbar{
                     ToolbarItemGroup(placement: .keyboard){
@@ -336,7 +316,7 @@ struct ContentView: View {
                     ToolbarItem(placement: .navigationBarLeading){
                         Button{
                             withAnimation{
-                                showMenu.toggle()
+                                navigationState.showMenu.toggle()
                             }
                         } label: {
                             Image(systemName: "line.3.horizontal")

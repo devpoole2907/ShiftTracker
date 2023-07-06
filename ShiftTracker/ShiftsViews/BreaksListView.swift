@@ -106,7 +106,7 @@ struct BreaksListView: View {
                         .disabled(!isEditing)
                     }
                 }.padding()
-                    .background(Color.primary.opacity(0.04),in:
+                    .background(Color("SquaresColor"),in:
                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
                 
             }.listRowBackground(Color.clear)

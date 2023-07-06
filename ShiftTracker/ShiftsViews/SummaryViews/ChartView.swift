@@ -40,7 +40,7 @@ struct ChartView: View {
         let lineColor: Color = colorScheme == .dark ? Color(.systemGray6) : .black.opacity(0.1)
         
         
-        VStack{
+      /*  VStack{
             HStack{
                 VStack(alignment: .leading){
                     Text("Total")
@@ -58,7 +58,7 @@ struct ChartView: View {
             .opacity(showSelectionBar ? 0.0 : 1.0)
            // .offset(x: offsetX)
             
-            Chart{
+           Chart{
                 if let graphedShifts = graphedShifts {
                     ForEach(graphedShifts) { weekShift in
                         
@@ -76,7 +76,7 @@ struct ChartView: View {
                         let xValue: String = {
                             switch chartDateType {
                             case .day:
-                                return weekShift.dayOfWeek
+                                return weekShift.xLabel
                             case .date:
                                 return weekShift.date
                             }
@@ -159,12 +159,12 @@ struct ChartView: View {
         }
         .chartOverlay { pr in
             GeometryReader { geoProxy in
-                Rectangle().foregroundStyle(.primary.opacity(0.04))
+                Rectangle().foregroundStyle(Color("SquaresColor"))
                     .frame(width: 2, height: geoProxy.size.height * 0.95)
                     .opacity(showSelectionBar ? 1.0 : 0.0)
                     .offset(x: offsetX)
                 Rectangle()
-                    .foregroundStyle(colorScheme == .dark ? Color(.systemGray6) : Color(red: 180, green: 180, blue: 180))
+                    .foregroundStyle(Color("SquaresColor"))
                     .frame(width: 130, height: 55)
                     .cornerRadius(12)
                     .overlay {
@@ -209,7 +209,7 @@ struct ChartView: View {
                     if let weekShift = graphedShifts?.first(where: { ws in
                             switch chartDateType {
                             case .day:
-                                return ws.dayOfWeek.lowercased() == day.lowercased()
+                                return ws.xLabel.lowercased() == day.lowercased()
                             case .date:
                                 return ws.date.lowercased() == day.lowercased()
                             }
@@ -244,7 +244,7 @@ struct ChartView: View {
             
                             
                         }.haptics(onChangeOf: selectedValue, type: .light)
-        
+        */
         
       //  .padding(.horizontal, 10)
        // .padding(.top, 5)

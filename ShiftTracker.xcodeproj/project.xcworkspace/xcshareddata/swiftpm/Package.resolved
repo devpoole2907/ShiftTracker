@@ -136,6 +136,15 @@
       }
     },
     {
+      "identity" : "scalingheaderscrollview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/exyte/ScalingHeaderScrollView",
+      "state" : {
+        "revision" : "5b90bb4e58489d77f3ed787e0535aed57edbcfdf",
+        "version" : "0.1.5"
+      }
+    },
+    {
       "identity" : "slideovercard",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/joogps/SlideOverCard.git",

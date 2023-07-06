@@ -1,40 +1,37 @@
 //
-//  AddJobView.swift
+//  JobView.swift
 //  ShiftTracker
 //
-//  Created by James Poole on 21/04/23.
+//  Created by James Poole on 4/07/23.
 //
 
 import SwiftUI
 import UIKit
-import CoreData
-import Firebase
 import MapKit
-import Haptics
+import CoreData
 
-struct AddJobView: View {
+struct JobView: View {
     
     @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
     
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     
-    @ObservedObject var model = JobsViewModel()
-    
+    var job: Job?
     @ObservedObject private var locationManager = LocationDataManager()
     
+    @EnvironmentObject var viewModel: ContentViewModel
     private let addressManager = AddressManager()
     private let notificationManager = ShiftNotificationManager.shared
     
+    @State private var miniMapAnnotation: IdentifiablePointAnnotation?
     @State private var name = ""
     @State private var title = ""
     @State private var hourlyPay: String = ""
     @State private var taxPercentage: Double = 0
-    @State private var payPeriodLength = ""
-    @State private var payPeriodStartDay: Int? = nil
     @State private var selectedColor = Color.cyan
     @State private var clockInReminder = false
     @State private var autoClockIn = false
@@ -44,30 +41,26 @@ struct AddJobView: View {
     @State private var payShakeTimes: CGFloat = 0
     @State private var nameShakeTimes: CGFloat = 0
     
+    @State private var showOvertimeTimeView = false
     @State private var overtimeRate = 1.25
     @State private var overtimeAppliedAfter: TimeInterval = 8.0
-    @State private var overtimeEnabled: Bool = false
+    @State private var overtimeEnabled = false
     
-    @State private var selectedAddress: String?
-    @State private var selectedRadius: Double = 75
-    @State private var miniMapAnnotation: IdentifiablePointAnnotation?
+    @State private var selectedIcon: String
     
-    @State private var showFullCover = false
-    
-    @State private var rosterReminder = false
+    @State private var rosterReminder: Bool
     @State private var selectedDay: Int = 1
-        @State private var selectedTime = Date()
+    @State private var selectedTime: Date
     
-    @State private var showOvertimeTimeView = false
-    
-    @FocusState private var textIsFocused: Bool
-    
-    @State private var selectedIcon = "briefcase.circle"
+    @State private var selectedRadius: Double = 75
     
     @State private var activeSheet: ActiveSheet?
     
-    @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+    @FocusState private var textIsFocused: Bool
     
+    @State private var selectedAddress: String?
+    
+    @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     @State private var miniMapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
     enum ActiveSheet: Identifiable {
@@ -78,17 +71,46 @@ struct AddJobView: View {
         }
     }
     
-    private func centerMapOnCurrentLocation() {
-        guard let currentLocation = locationManager.location else { return }
+    
+    // Initialize state properties with job values
+    init(job: Job? = nil) {
+        self.job = job
+        _name = State(initialValue: job?.name ?? "")
+        _title = State(initialValue: job?.title ?? "")
+        _hourlyPay = State(initialValue: "\(job?.hourlyPay ?? 0)")
+        _taxPercentage = State(initialValue: job?.tax ?? 0)
+        _selectedIcon = State(initialValue: job?.icon ?? "briefcase.circle")
         
-        miniMapRegion = MKCoordinateRegion(
-            center: currentLocation.coordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        )
+        if let jobColorRed = job?.colorRed, let jobColorBlue = job?.colorBlue, let jobColorGreen = job?.colorGreen {
+            _selectedColor = State(initialValue: Color(red: Double(jobColorRed), green: Double(jobColorGreen), blue: Double(jobColorBlue)))
+        }
+        
+       
+        
+        // gets the first saved address, with the new address data model system for future multiple location implementation
+        
+        if let locationSet = job?.locations, let location = locationSet.allObjects.first as? JobLocation {
+            _selectedAddress = State(initialValue: location.address)
+            _selectedRadius = State(initialValue: location.radius)
+            print("job has an address: \(location.address)")
+        } else {
+            print("job has no address")
+            
+        }
+
+        
+        
+        _clockInReminder = State(initialValue: job?.clockInReminder ?? false)
+        _clockOutReminder = State(initialValue: job?.clockOutReminder ?? false)
+        _autoClockIn = State(initialValue: job?.autoClockIn ?? false)
+        _autoClockOut = State(initialValue: job?.autoClockOut ?? false)
+        _overtimeEnabled = State(initialValue: job?.overtimeEnabled ?? false)
+        _overtimeRate = State(initialValue: job?.overtimeRate ?? 1.25)
+        _overtimeAppliedAfter = State(initialValue: job?.overtimeAppliedAfter ?? 8.0)
+        _rosterReminder = State(initialValue: job?.rosterReminder ?? false)
+        _selectedDay = State(initialValue: Int(job?.rosterDayOfWeek ?? 1))
+        _selectedTime = State(initialValue: job?.rosterTime ?? Date())
     }
-    
-    
-    
     
     private let daysOfWeek = [
         "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
@@ -101,25 +123,13 @@ struct AddJobView: View {
     }
     
     
-    func fetchAllJobs() -> [Job] {
-        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-        do {
-            let jobs = try viewContext.fetch(fetchRequest)
-            return jobs
-        } catch {
-            print("Failed to fetch jobs: \(error.localizedDescription)")
-            return []
-        }
-    }
-    
-    
     var body: some View {
-        
         
         NavigationStack{
             ZStack{
                 Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 ScrollView{
+                    
                     GeometryReader { geometry in
                                     let offset = geometry.frame(in: .global).minY
                         VStack{
@@ -135,35 +145,47 @@ struct AddJobView: View {
                                 .frame(maxWidth: .infinity)
                         }
                     }.frame(height: 80)
-                   
-
+                    
+                    
+                    
                     VStack(spacing: 15){
-                        
                         
                         Group{
                             TextField("Company Name", text: $name)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04),in:
+                                .background(Color("SquaresColor"),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .shake(times: nameShakeTimes)
+                            
                             
                             TextField("Job Title", text: $title)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04),in:
+                                .background(Color("SquaresColor"),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            
                             
                             CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .background(Color("SquaresColor"), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .keyboardType(.decimalPad)
                                 .shake(times: payShakeTimes)
                             
                         }.focused($textIsFocused)
                             .haptics(onChangeOf: payShakeTimes, type: .error)
                             .haptics(onChangeOf: nameShakeTimes, type: .error)
+                        
+                            .toolbar {
+                                ToolbarItemGroup(placement: .keyboard){
+                                    Spacer()
+                                    
+                                    Button("Done"){
+                                        textIsFocused = false
+                                    }
+                                }
+                            }
                         
                         HStack(spacing: 0){
                             ForEach(1...6, id: \.self) { index in
@@ -195,8 +217,6 @@ struct AddJobView: View {
                         
                         
                         
-                        
-                        
                         VStack(alignment: .leading, spacing: 10){
                             
                             
@@ -211,7 +231,7 @@ struct AddJobView: View {
                                         autoClockIn = false
                                     }
                                 }
-                                .toggleStyle(OrangeToggleStyle())
+                                .toggleStyle(CustomToggleStyle())
                                 .padding(.horizontal)
                                 .padding(.top, 10)
                                 
@@ -224,7 +244,7 @@ struct AddJobView: View {
                                         autoClockOut = false
                                     }
                                 }
-                                .toggleStyle(OrangeToggleStyle())
+                                .toggleStyle(CustomToggleStyle())
                                 .padding(.horizontal)
                                 
                                 Toggle(isOn: $autoClockIn) {
@@ -243,7 +263,7 @@ struct AddJobView: View {
                                         }
                                     }
                                 }
-                                .toggleStyle(OrangeToggleStyle())
+                                .toggleStyle(CustomToggleStyle())
                                 .padding(.horizontal)
                                 
                                 Toggle(isOn: $autoClockOut) {
@@ -262,18 +282,15 @@ struct AddJobView: View {
                                         }
                                     }
                                 }
-                                .toggleStyle(OrangeToggleStyle())
+                                .toggleStyle(CustomToggleStyle())
                                 .padding(.horizontal)
                                 .padding(.bottom, 10)
                                 
                                 
                                 NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, iconColor: selectedColor)
                                     .onDisappear {
-                                        // When the AddressFinderView disappears, update miniMapRegion to match mapRegion
                                         self.miniMapRegion = self.mapRegion
                                     }) {
-                                        
-                                        
                                         VStack(alignment: .leading){
                                             
                                             Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
@@ -287,6 +304,7 @@ struct AddJobView: View {
                                                 }
                                             }
                                             .onAppear{
+                                                //locationManager.requestAuthorization()
                                                 addressManager.loadSavedAddress(selectedAddressString: selectedAddress) { region, annotation in
                                                     self.miniMapRegion = region ?? self.miniMapRegion
                                                     self.miniMapAnnotation = annotation
@@ -304,21 +322,22 @@ struct AddJobView: View {
                                     }.frame(minHeight: 120)
                                     .background(Color.clear,in:
                                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                
+                                    .cornerRadius(20)
                                 
                             }
                             
-                            
-                        }.background(Color.primary.opacity(0.04))
+                        }.background(Color("SquaresColor"))
                             .cornerRadius(20)
                         
-                        if taxEnabled {
+                        
+                        
+                        if taxEnabled || taxPercentage > 0 {
                         VStack(alignment: .leading, spacing: 10){
                             Text("Estimated Tax")
                                 .bold()
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
-                                .background(Color.primary.opacity(0.04))
+                                .background(Color("SquaresColor"))
                                 .cornerRadius(20)
                             Picker("Estimated tax:", selection: $taxPercentage) {
                                 ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
@@ -328,7 +347,8 @@ struct AddJobView: View {
                             }.pickerStyle(.wheel)
                                 .frame(maxHeight: 100)
                         }
-                        .padding(.horizontal, 10)
+                        .padding(.horizontal, 5)
+                        
                     }
                         
                         VStack(alignment: .leading, spacing: 10){
@@ -336,7 +356,7 @@ struct AddJobView: View {
                                 
                                 Text("Roster reminders")
                                 
-                            }.toggleStyle(OrangeToggleStyle())
+                            }.toggleStyle(CustomToggleStyle())
                                 .padding(.horizontal)
                                 .padding(.top, 10)
                             HStack{
@@ -357,73 +377,15 @@ struct AddJobView: View {
                                 .padding(.vertical, 10)
                                 .disabled(!rosterReminder)
                             
+                  
                             
-                            
-                            
-                        }.background(Color.primary.opacity(0.04))
+                        }.background(Color("SquaresColor"))
                             .cornerRadius(20)
-                        
-                        /* VStack(alignment: .leading, spacing: 10){
-                            Toggle(isOn: $overtimeEnabled) {
-                                HStack {
-                                    Text("Enable Overtime")
-                                }
-                            }
-                            .toggleStyle(OrangeToggleStyle())
-                            
-                            Stepper(value: $overtimeRate, in: 1.25...3, step: 0.25) {
-                                HStack{
-                                    Image(systemName: "speedometer")
-                                    Spacer().frame(width: 10)
-                                    Text("Rate: \(overtimeRate, specifier: "%.2f")x")
-                                }
-                            }.disabled(!overtimeEnabled)
-                            
-                            HStack {
-                                Image(systemName: "calendar.badge.clock")
-                                Text("Overtime applied after:")
-                                Spacer()
-                                Text("\(formattedTimeInterval(overtimeAppliedAfter))")
-                                    .foregroundColor(.gray)
-                            }
-                            .onTapGesture {
-                                activeSheet = .overtimeSheet
-                            }.disabled(!overtimeEnabled)
-                        }.padding(.horizontal, 5) */
-                        
-                        
-                        
                     }
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding()
-                    .navigationBarTitle("Add Job", displayMode: .inline)
-                    
-        
-                     
-                     
+                    .navigationBarTitle(job != nil ? "Edit Job" : "Add Job", displayMode: .inline)
 
-                     
-                     
-                     /*
-                     
-                     
-                     Section{
-                     TextField("Length in Days (Optional)", text: $payPeriodLength)
-                     .keyboardType(.numberPad)
-                     
-                     Picker("Start Day (Optional)", selection: $payPeriodStartDay) {
-                     ForEach(0 ..< daysOfWeek.count) { index in
-                     Text(self.daysOfWeek[index]).tag(index)
-                     }
-                     }
-                     }
-                     
-                     
-                     }
-                     .padding(.horizontal, 30)
-                     //.padding(.vertical)
-                     } */
-                    
                     
                     .sheet(item: $activeSheet){ item in
                         
@@ -432,8 +394,8 @@ struct AddJobView: View {
                             OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .fraction(0.4)])
+                            .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationDragIndicator(.visible)
-                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
                             
                             
@@ -444,8 +406,6 @@ struct AddJobView: View {
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
-                            
-                            
                         case .proSheet:
                             NavigationStack{
                                 ProView()
@@ -455,7 +415,6 @@ struct AddJobView: View {
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(50)
-                            
                         }
                         
                     }
@@ -471,6 +430,7 @@ struct AddJobView: View {
                         
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(action: {
+                                
                                 if name.isEmpty {
                                     withAnimation(.linear(duration: 0.4)) {
                                         nameShakeTimes += 2
@@ -482,34 +442,58 @@ struct AddJobView: View {
                                     }
                                 }
                                 else {
-                                    saveJobToCoreData()
-                                    print("saving job to core data!")
+                                    saveJob()
                                 }
-                         
+                                
+                                
+                                
                             }) {
                                 Image(systemName: "folder.badge.plus")
                                     .bold()
                             }
                         }
-                        
+                        if let job = job {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                Button(action: {
+                                    
+                                    dismiss()
+                                    
+                                    CustomConfirmationAlert(action: deleteJob, cancelAction: nil, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").showAndStack()
+                                    
+                                    
+                                }
+                                ) {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.red)
+                                        .bold()
+                                }
+                            }
+                        }
                         ToolbarItem(placement: .navigationBarLeading) {
-                            CloseButton{
+                            CloseButton {
                                 dismiss()
                             }
-                       
                         }
                         
                     }
-                    
-                    
                     
                 }
             }
         }
     }
     
-    private func saveJobToCoreData() {
-        let newJob = Job(context: viewContext)
+    private func saveJob() {
+        
+        var newJob: Job
+
+        if let job = job {
+            newJob = job
+        } else {
+            newJob = Job(context: viewContext)
+            newJob.uuid = UUID()
+        }
+
+        
         newJob.name = name
         newJob.title = title
         newJob.hourlyPay = Double(hourlyPay) ?? 0.0
@@ -522,20 +506,22 @@ struct AddJobView: View {
         newJob.overtimeAppliedAfter = overtimeAppliedAfter
         newJob.overtimeRate = overtimeRate
         newJob.icon = selectedIcon
-        newJob.uuid = UUID()
         newJob.rosterReminder = rosterReminder
         newJob.rosterTime = selectedTime
         newJob.rosterDayOfWeek = Int16(selectedDay)
         
-        let newLocation = JobLocation(context: viewContext)
+        // replace this code with adding locations later when multiple address system update releases
+        if let locationSet = job?.locations, let location = locationSet.allObjects.first as? JobLocation {
+            location.address = selectedAddress
+        } else { // for multi jobs we need this to add more
+            let location = JobLocation(context: viewContext)
+            location.address = selectedAddress
+            job?.addToLocations(location)
+        }
+
         
-        newLocation.address = selectedAddress
-        print("Selected Address: \(String(describing: selectedAddress))")
-        print("New Location Address: \(String(describing: newLocation.address))")
-        newLocation.job = newJob
-        newLocation.radius = selectedRadius
+
         
-        newJob.addToLocations(newLocation)
         
         let uiColor = UIColor(selectedColor)
         let (r, g, b) = uiColor.rgbComponents
@@ -543,48 +529,47 @@ struct AddJobView: View {
         newJob.colorGreen = g
         newJob.colorBlue = b
         
-        if let length = Int16(payPeriodLength) {
-            newJob.payPeriodLength = length
-        } else {
-            newJob.payPeriodLength = -1
-        }
-        
-        if let startDay = payPeriodStartDay {
-            newJob.payPeriodStartDay = Int16(startDay)
-        } else {
-            newJob.payPeriodStartDay = -1
-        }
-        
         do {
             try viewContext.save()
             
-            let allJobs = fetchAllJobs()
-            //let jobDataArray = allJobs.map { jobData(from: $0) }
-            WatchConnectivityManager.shared.sendJobData(allJobs)
-            
-
+        
                 locationManager.startMonitoring(job: newJob) // might need to check clock out works with this, ive forgotten my implementation
-            
             notificationManager.updateRosterNotifications(viewContext: viewContext)
             
-            
-           dismiss()
+            dismiss()
         } catch {
             print("Failed to save job: \(error.localizedDescription)")
         }
+        
+        if newJob.uuid == viewModel.selectedJobUUID {
+            viewModel.hourlyPay = newJob.hourlyPay
+            viewModel.saveHourlyPay()
+            viewModel.taxPercentage = newJob.tax
+            viewModel.saveTaxPercentage()
+        }
+        
+        
     }
     
-    
-    
+    private func deleteJob() {
+        viewContext.delete(job!)
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
     
 }
 
-struct AddJobView_Previews: PreviewProvider {
+struct JobView_Previews: PreviewProvider {
     static var previews: some View {
-        AddJobView()
+        JobView()
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
+
 
 let jobIcons = [
     "briefcase.circle", "display", "tshirt.fill", "takeoutbag.and.cup.and.straw.fill", "trash.fill",

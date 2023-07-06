@@ -164,7 +164,7 @@ struct ProView: View {
                         .frame(height: 60)
                         .cornerRadius(20)
                         .padding()
-                        .background(Color.primary.opacity(0.04),in:
+                        .background(Color("SquaresColor"),in:
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                     Button(action: {
@@ -189,7 +189,7 @@ struct ProView: View {
           
                         .cornerRadius(20)
                         .padding()
-                        .background(Color.primary.opacity(0.04),in:
+                        .background(Color("SquaresColor"),in:
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                 }.padding(.horizontal, 30)

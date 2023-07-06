@@ -15,13 +15,10 @@ import UserNotifications
 struct ScheduledShiftsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    @Environment(\.presentationMode) var presentationMode
-    
     @Environment(\.colorScheme) var colorScheme
     
     
     @Binding var dateSelected: DateComponents?
-    @Binding var showMenu: Bool
     
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)], animation: .default)
     private var scheduledShifts: FetchedResults<ScheduledShift>
@@ -65,13 +62,15 @@ struct ScheduledShiftsView: View {
                                             Image(systemName: "trash")
                                         }
                                     }
-                                    .listRowBackground(Color.primary.opacity(0.05))
+                                    .listRowBackground(Color("SquaresColor"))
                             }
                        // }.scrollContentBackground(.hidden)
                     } else {
-                        Text("You have no shifts scheduled on this date.")
-                            .bold()
-                        
+                        Section{
+                            Text("You have no shifts scheduled on this date.")
+                                .bold()
+                                .padding()
+                        }.listRowBackground(Color("SquaresColor"))
                     }
                 }
             }
@@ -279,7 +278,7 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
                                                     .foregroundColor(selectedJobIndex == index ? .white : .gray)
                                             }
                                             .padding()
-                                            .background(selectedJobIndex == index ? jobBackground : Color.primary.opacity(0.04))
+                                            .background(selectedJobIndex == index ? jobBackground : Color("SquaresColor"))
                                             .cornerRadius(50)
                                         }
                                     }
@@ -289,7 +288,7 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
                                 HStack(spacing: 0) {
                                     LinearGradient(gradient:
                                        Gradient(
-                                        colors: [Color.primary.opacity(0.04), Color.black]),
+                                        colors: [Color("SquaresColor"), Color.black]),
                                            startPoint: .leading, endPoint: .trailing
                                        )
                                        .frame(width: 7)
@@ -298,7 +297,7 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
 
                                     LinearGradient(gradient:
                                        Gradient(
-                                        colors: [Color.black, Color.primary.opacity(0.04)]),
+                                        colors: [Color.black, Color("SquaresColor")]),
                                            startPoint: .leading, endPoint: .trailing
                                        )
                                        .frame(width: 7)
@@ -306,13 +305,13 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
                              )
                     
                     
-                        }.listRowBackground(Color.primary.opacity(0.05))
+                        }.listRowBackground(Color("SquaresColor"))
                 Section {
                     VStack(spacing: 18){
                         Toggle(isOn: $enableRepeat){
                             Text("Repeat")
                                 .bold()
-                        }.toggleStyle(OrangeToggleStyle())
+                        }.toggleStyle(CustomToggleStyle())
                         
                         HStack {
                                     ForEach(0..<7) { i in
@@ -343,14 +342,14 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
                         RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)
                             .disabled(!enableRepeat)
                     }
-                }.listRowBackground(Color.primary.opacity(0.05))
+                }.listRowBackground(Color("SquaresColor"))
                 Section {
                     VStack{
                         
                         Toggle(isOn: $notifyMe){
                             Text("Remind Me")
                                 .bold()
-                        }.toggleStyle(OrangeToggleStyle())
+                        }.toggleStyle(CustomToggleStyle())
                         
                         Picker("When", selection: $selectedReminderTime) {
                             ForEach(ReminderTime.allCases) { reminderTime in
@@ -359,7 +358,7 @@ func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: B
                         }.disabled(!notifyMe)
                         
                     }
-                }.listRowBackground(Color.primary.opacity(0.05))
+                }.listRowBackground(Color("SquaresColor"))
             }.scrollContentBackground(.hidden)
             
                 .toolbar{
@@ -603,7 +602,7 @@ struct ListViewRow: View {
     
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateStyle = .short
+        formatter.dateStyle = .none
         formatter.timeStyle = .short
         return formatter
     }
@@ -644,7 +643,9 @@ struct ListViewRow: View {
 
     
     var body: some View {
-        Section{
+        Section(header: Text("\(dateFormatter.string(from: shift.startDate ?? Date())) - \(dateFormatter.string(from: shift.endDate ?? Date()))")
+            .bold()
+            .textCase(nil)){
             ZStack{
             VStack(alignment: .leading){
                 HStack(spacing : 10){
@@ -663,6 +664,7 @@ struct ListViewRow: View {
                         Text(formattedDuration())
                             .bold()
                             .foregroundColor(.gray)
+                        
                         
                         
                         
@@ -698,39 +700,22 @@ struct ListViewRow: View {
                                 //dismiss()
                                 CustomConfirmationAlert(action: {
                                     cancelRepeatingShiftSeries(shift: shift)
-                                }, title: "End all future repeating shifts for this shift?").showAndStack()
+                                }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
                             }){
                                 Text("End Repeat")
-                                   /* .font(.caption)
-                                    .bold()
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 5)
-                                    .background(Color.primary.opacity(0.04))
-                                    .cornerRadius(20) */
                             }.disabled(!shift.isRepeating)
                         } label: {
                             Image(systemName: "ellipsis")
                                 .bold()
+                                .font(.title3)
                         }
                         
                     }.padding(.vertical)
                     Spacer()
                 }
             
-                
-                
-            /*   Chart{
-             BarMark(
-             xStart: .value("Start Time", shift.startDate ?? Date()),
-             xEnd: .value("End Time", shift.endDate ?? Date())
-             //y: .value("Job", $0.job)
-             ).foregroundStyle(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
-             }.chartXScale(domain: (shift.startDate?.addingTimeInterval(-3600) ?? Date())...(shift.endDate?.addingTimeInterval(3600) ?? Date()))
-             .frame(height: 50) */
-            
 
-            /*  Text("From \(dateFormatter.string(from: shift.startDate ?? Date())) to \(dateFormatter.string(from: shift.endDate ?? Date()))")
-             .bold() */
+  
         }
     }
         
@@ -751,7 +736,7 @@ struct ScheduledShiftView_Previews: PreviewProvider {
         return dateComponents
     }
     static var previews: some View {
-        ScheduledShiftsView(dateSelected: .constant(dateComponents), showMenu: .constant(false))
+        ScheduledShiftsView(dateSelected: .constant(dateComponents))
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

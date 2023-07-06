@@ -417,7 +417,7 @@ struct AddressConfirmView: View {
                         }.padding()
                     
                         
-                    }.background(Color.primary.opacity(0.04))
+                    }.background(Color("SquaresColor"))
                         .cornerRadius(12)
                         .padding(.horizontal, 18)
                 

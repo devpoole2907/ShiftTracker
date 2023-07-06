@@ -17,7 +17,7 @@ struct ScheduleView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
-
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)], animation: .default)
     private var scheduledShifts: FetchedResults<ScheduledShift>
@@ -27,7 +27,6 @@ struct ScheduleView: View {
     
     @State private var showAddJobView = false
     
-    @Binding var showMenu: Bool
     
     @State private var showCreateShiftSheet = false
     
@@ -50,16 +49,11 @@ struct ScheduleView: View {
                        // Section{
                             CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents, someScheduledShifts: scheduledShifts)
                                 .id(scheduledShifts.count)
-                                .onAppear{
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        navigationState.gestureEnabled = false
-                                    }
-                                }
-                     //   }
+                     //   
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
                     //    Section{
-                            ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu)
+                        ScheduledShiftsView(dateSelected: $dateSelected)
                   //      }
                         
                         
@@ -105,21 +99,20 @@ struct ScheduleView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
                         Button(action: {
-                            if jobs.isEmpty {
-                                OkButtonPopupWithAction(title: "Create a job before scheduling a shift.", action: {showMenu.toggle()}).showAndStack()
-                                
-                            } else {
+                            
                                 showCreateShiftSheet = true
-                            }
+                            
                         }) {
                             Image(systemName: "plus")
                                 .bold()
                         }.padding()
+                        .disabled(dateSelected == nil)
+                        .disabled(jobSelectionViewModel.selectedJobUUID == nil)
                     }
                 ToolbarItem(placement: .navigationBarLeading){
                     Button{
                         withAnimation{
-                            showMenu.toggle()
+                            navigationState.showMenu.toggle()
                         }
                     } label: {
                         Image(systemName: "line.3.horizontal")
@@ -156,7 +149,7 @@ struct ScheduleView: View {
 
 struct ScheduleView_Previews: PreviewProvider {
     static var previews: some View {
-        ScheduleView(showMenu: .constant(false))
+        ScheduleView()
     }
 }
 

@@ -27,6 +27,7 @@ struct DetailView: View {
     @FocusState private var noteIsFocused: Bool
     @State var isEditing: Bool = false
     @State private var isAddingBreak: Bool = false
+    @State private var isUnpaid: Bool = false
     
     @State private var showingDeleteAlert = false
     
@@ -119,7 +120,7 @@ struct DetailView: View {
                     
                     ZStack{
                         RoundedRectangle(cornerRadius: 12)
-                            .foregroundColor(.primary.opacity(0.04))
+                            .foregroundColor(Color("SquaresColor"))
                             .frame(width: UIScreen.main.bounds.width - 40)
                             .shadow(radius: 5, x: 0, y: 4)
                         VStack(alignment: .center, spacing: 5) {
@@ -256,7 +257,7 @@ struct DetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal)
                             .padding(.vertical, 10)
-                            .background(Color.primary.opacity(0.04),in:
+                            .background(Color("SquaresColor"),in:
                                             RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                     VStack(alignment: .leading){
@@ -282,7 +283,7 @@ struct DetailView: View {
                             .frame(maxWidth: .infinity)
                             .padding(.horizontal)
                             .padding(.vertical, 10)
-                            .background(Color.primary.opacity(0.04),in:
+                            .background(Color("SquaresColor"),in:
                                             RoundedRectangle(cornerRadius: 12, style: .continuous))
                         
                     }
@@ -306,13 +307,8 @@ struct DetailView: View {
                         .focused($payIsFocused)
                         .padding(.horizontal)
                         .padding(.vertical, 10)
-                        .background(Color.primary.opacity(0.04),in:
+                        .background(Color("SquaresColor"),in:
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    
-                    
-                    
-                    
-                    
                     
                 }
                 if shift.tax > 0 || taxEnabled {
@@ -350,7 +346,7 @@ struct DetailView: View {
                             .focused($payIsFocused)
                             .padding(.horizontal)
                             .padding(.vertical, 10)
-                            .background(Color.primary.opacity(0.04),in:
+                            .background(Color("SquaresColor"),in:
                                             RoundedRectangle(cornerRadius: 12, style: .continuous))
                         
                         
@@ -380,10 +376,8 @@ struct DetailView: View {
 
                         .padding(.horizontal)
                         .padding(.vertical, 10)
-                        .background(Color.primary.opacity(0.04),in:
+                        .background(Color("SquaresColor"),in:
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    
-                    
                     
                         .frame(minHeight: 200, maxHeight: .infinity)
                 }
@@ -409,7 +403,10 @@ struct DetailView: View {
                 .listRowBackground(Color.clear)
                 .sheet(isPresented: $isAddingBreak){
          
-                    AddBreakView(shift: shift, isAddingBreak: $isAddingBreak)
+                    BreakInputView(newBreakStartDate: $selectedBreakStartDate, newBreakEndDate: $selectedBreakEndDate, isUnpaid: $isUnpaid, startDate: selectedStartDate, endDate: selectedEndDate, buttonAction: { breakManager.addBreak(oldShift: shift, startDate: selectedBreakStartDate, endDate: selectedBreakEndDate, isUnpaid: isUnpaid, context: context)
+                        isAddingBreak = false})
+                    
+                    
                         .presentationDetents([ .fraction(0.45)])
                         .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                         .presentationCornerRadius(35)
@@ -480,14 +477,14 @@ struct DetailView: View {
                         if presentedAsSheet{
                             dismiss()
                             
-                            CustomConfirmAlertWithCancelAction(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").showAndStack()
+                            CustomConfirmationAlert(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").showAndStack()
                             
                         }
                         else {
                             CustomConfirmationAlert(action: {
                                 deleteShift()
                                 dismiss()
-                            }, title: "Are you sure you want to delete this shift?").showAndStack()
+                            }, cancelAction: nil, title: "Are you sure you want to delete this shift?").showAndStack()
                         }
                     }) {
                         Image(systemName: "trash")
