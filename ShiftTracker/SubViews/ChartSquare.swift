@@ -110,6 +110,8 @@ struct ChartSquare: View {
                         .padding(.leading)
                     .opacity(showSelectionBar ? 0.0 : 1.0)
                 }
+                
+                /*
                 Chart {
                         ForEach(self.lastShifts) { shift in
                             
@@ -478,7 +480,7 @@ struct ChartSquare: View {
                         }
                     })
                 
-                
+                */
                 /*
                     .chartOverlay { pr in
                         GeometryReader { geoProxy in
