@@ -111,7 +111,7 @@ struct ChartSquare: View {
                     .opacity(showSelectionBar ? 0.0 : 1.0)
                 }
                 
-                /*
+                
                 Chart {
                         ForEach(self.lastShifts) { shift in
                             
@@ -124,7 +124,7 @@ struct ChartSquare: View {
                                 
                                 
                                     if let currentActiveShift, currentActiveShift.id == shift.id{
-                                        if #available(iOS 17, *){
+                                     /*   if #available(iOS 17, *){
                                         RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekday))
                                             .foregroundStyle(Color(.systemGray6))
                                             .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
@@ -139,7 +139,7 @@ struct ChartSquare: View {
                                                 
                                             }
                                         
-                                    } else {
+                                    } else { */
                                         RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekday))
                                             .foregroundStyle(Color(.systemGray6))
                                             .annotation(position: .top){
@@ -153,7 +153,7 @@ struct ChartSquare: View {
                                                 }
                                                 
                                             }
-                                    }
+                                   // }
                                 }
                                 
                                 
@@ -236,7 +236,7 @@ struct ChartSquare: View {
                             case .halfYear:
                                 
                                 if let currentActiveShift, currentActiveShift.id == shift.id{
-                                    if #available(iOS 17, *){
+                                 /*   if #available(iOS 17, *){
                                     RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekOfYear))
                                         .foregroundStyle(Color(.systemGray6))
                                         .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
@@ -251,7 +251,7 @@ struct ChartSquare: View {
                                             
                                         }
                                     
-                                } else {
+                                } else { */
                                     RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekOfYear))
                                         .foregroundStyle(Color(.systemGray6))
                                         .annotation(position: .top){
@@ -265,7 +265,7 @@ struct ChartSquare: View {
                                             }
                                             
                                         }
-                                }
+                                //}
                             }
                                 
                                 
@@ -297,7 +297,7 @@ struct ChartSquare: View {
                                 
                                 
                                 if let currentActiveShift, currentActiveShift.id == shift.id{
-                                    if #available(iOS 17, *){
+                                 /*   if #available(iOS 17, *){
                                     RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
                                         .foregroundStyle(Color(.systemGray6))
                                         .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
@@ -312,7 +312,7 @@ struct ChartSquare: View {
                                             
                                         }
                                     
-                                } else {
+                                } else { */
                                     RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
                                         .foregroundStyle(Color(.systemGray6))
                                         .annotation(position: .top){
@@ -326,7 +326,7 @@ struct ChartSquare: View {
                                             }
                                             
                                         }
-                                }
+                               // }
                             }
                                 
                                 
@@ -480,7 +480,7 @@ struct ChartSquare: View {
                         }
                     })
                 
-                */
+                
                 /*
                     .chartOverlay { pr in
                         GeometryReader { geoProxy in
