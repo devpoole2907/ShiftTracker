@@ -10,17 +10,17 @@ import Haptics
 import UIKit
 import CoreLocation
 import MapKit
+import CoreData
 
 
 struct ScheduleView: View {
+    
+    @ObservedObject var calendarModel: CalendarModel = CalendarModel()
     
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
-    
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)], animation: .default)
-    private var scheduledShifts: FetchedResults<ScheduledShift>
     
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
@@ -40,6 +40,18 @@ struct ScheduleView: View {
     
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
+    
+    @FetchRequest var scheduledShifts: FetchedResults<ScheduledShift>
+    
+    init(){
+        
+        let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+        fetchRequest.predicate = nil
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)]
+        _scheduledShifts = FetchRequest(fetchRequest: fetchRequest)
+    }
+    
+    
     var body: some View {
         NavigationStack {
             ZStack{
@@ -48,12 +60,18 @@ struct ScheduleView: View {
                     List {
                        // Section{
                             CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents, someScheduledShifts: scheduledShifts)
-                                .id(scheduledShifts.count)
-                     //   
+                            .onReceive(calendarModel.$shiftDeleted) { _ in
+                                
+                            }
+                        
+                        
+                               // .id(scheduledShifts.count)
+                     //
                                 .listRowBackground(Color.clear)
                                 .listRowSeparator(.hidden)
                     //    Section{
                         ScheduledShiftsView(dateSelected: $dateSelected)
+                            .environmentObject(calendarModel)
                   //      }
                         
                         
@@ -142,6 +160,20 @@ struct ScheduleView: View {
             WatchConnectivityManager.shared.sendDeleteJobMessage(jobId)
         }
     }
+    
+    private func fetchShifts() -> [ScheduledShift] {
+            let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "job.uuid == %@", jobSelectionViewModel.selectedJobUUID! as any CVarArg)
+
+            do {
+                let shifts = try viewContext.fetch(fetchRequest)
+                return shifts
+            } catch {
+                print("Failed to fetch shifts: \(error)")
+                return []
+            }
+        }
     
     
     

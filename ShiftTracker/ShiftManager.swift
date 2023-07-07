@@ -8,8 +8,22 @@
 import Foundation
 import CoreData
 import SwiftUI
+import Combine
 
 class ShiftDataManager: ObservableObject {
+    
+    @Published var recentShifts: [singleShift] = []
+    @Published var monthlyShifts: [singleShift] = []
+    @Published var halfYearlyShifts: [singleShift] = []
+    @Published var yearlyShifts: [singleShift] = []
+    
+    @Published var weeklyTotalPay: Double = 0
+    @Published var weeklyTotalHours: Double = 0
+    @Published var totalPay: Double = 0
+    @Published var totalHours: Double = 0
+    @Published var totalShifts: Int = 0
+    
+    let shiftDataLoaded = PassthroughSubject<Void, Never>()
     
     @Published var statsMode: StatsMode = .earnings
     let statsModes = ["Earnings", "Hours", "Breaks"]
@@ -85,7 +99,34 @@ class ShiftDataManager: ObservableObject {
         return Calendar.current.date(from: components)!
     }
     
-   
+    func getAllShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> [singleShift] {
+        
+        var allShifts: [singleShift] = []
+        
+        for shift in shifts {
+            if shouldIncludeShift(shift, jobModel: jobModel) {
+                allShifts.append(singleShift(shift: shift))
+            }
+        }
+        
+        return allShifts.reversed()
+        
+    }
+    
+    func getShiftCount(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Int {
+        
+        
+        var shiftCount: Int = 0
+        
+        for shift in shifts {
+            if shouldIncludeShift(shift, jobModel: jobModel) {
+               shiftCount += 1
+            }
+        }
+        
+        return shiftCount
+        
+    }
 
     func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel, dateRange: DateRange) -> [singleShift] {
         var shiftsByDay: [String: [OldShift]] = [:]
@@ -187,64 +228,6 @@ class ShiftDataManager: ObservableObject {
         return periodShifts.reversed()
     }
 
-    
-    func getLastShiftWeeks(from allShifts: [singleShift], jobModel: JobSelectionViewModel, dateRange: DateRange) -> [ShiftWeek] {
-
-        let calendar = Calendar.current
-        let today = Date()
-        let weeks = 26
-
- 
-        var shiftsByWeek: [Int: [singleShift]] = [:]
-        for shift in allShifts {
-            let dateComponents = calendar.dateComponents([.weekOfYear], from: shift.shiftStartDate, to: today)
-            let weekOfYear = dateComponents.weekOfYear!
-            if weekOfYear < weeks {
-                if shiftsByWeek[weekOfYear] != nil {
-                    shiftsByWeek[weekOfYear]!.append(shift)
-                } else {
-                    shiftsByWeek[weekOfYear] = [shift]
-                }
-            }
-        }
-        
-        var shiftWeeks: [ShiftWeek] = []
-        for week in 0..<weeks {
-            if let shiftsForWeek = shiftsByWeek[week] {
-                shiftWeeks.append(ShiftWeek(shifts: shiftsForWeek))
-            }
-        }
-
-        return shiftWeeks.reversed()
-    }
-    
-    func getLastShiftMonths(from allShifts: [singleShift], jobModel: JobSelectionViewModel, dateRange: DateRange) -> [ShiftMonth] {
-
-        let calendar = Calendar.current
-        let months = 12
-
-   
-        var shiftsByMonth: [Int: [singleShift]] = [:]
-        for shift in allShifts {
-            let dateComponents = calendar.dateComponents([.month], from: shift.shiftStartDate, to: Date())
-            let monthOfYear = dateComponents.month!
-            if shiftsByMonth[monthOfYear] != nil {
-                shiftsByMonth[monthOfYear]!.append(shift)
-            } else {
-                shiftsByMonth[monthOfYear] = [shift]
-            }
-        }
-
-        
-        var shiftMonths: [ShiftMonth] = []
-        for month in 0..<months {
-            if let shiftsForMonth = shiftsByMonth[month] {
-                shiftMonths.append(ShiftMonth(shifts: shiftsForMonth))
-            }
-        }
-
-        return shiftMonths.reversed()
-    }
 
 
     func getDateRange() -> ClosedRange<Date> {

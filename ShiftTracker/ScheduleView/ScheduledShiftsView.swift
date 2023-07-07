@@ -15,6 +15,8 @@ import UserNotifications
 struct ScheduledShiftsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
+    @EnvironmentObject var calendarModel: CalendarModel
+    
     @Environment(\.colorScheme) var colorScheme
     
     
@@ -57,7 +59,13 @@ struct ScheduledShiftsView: View {
                                         Button(role: .destructive) {
                                             cancelNotification(for: shift)
                                             viewContext.delete(shift)
+                                            
+                                            
                                             try? viewContext.save()
+                                            
+                                            calendarModel.shiftDeleted.toggle()
+                                            
+                                            
                                         } label: {
                                             Image(systemName: "trash")
                                         }
@@ -620,7 +628,7 @@ struct ListViewRow: View {
         let request: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "repeatID == %@", repeatID),
-            NSPredicate(format: "startDate > %@", shift.startDate! as NSDate)
+            NSPredicate(format: "startDate >= %@", shift.startDate! as NSDate)
         ])
         
         do {

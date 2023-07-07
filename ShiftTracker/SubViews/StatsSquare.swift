@@ -14,15 +14,6 @@ struct StatsSquare: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     
-    @FetchRequest var shifts: FetchedResults<OldShift>
-    
-    init(){
-        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
-        fetchRequest.predicate = nil
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
-        _shifts = FetchRequest(fetchRequest: fetchRequest)
-    }
-    
     var body: some View {
         
         let subTextColor: Color = colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)
@@ -35,13 +26,13 @@ struct StatsSquare: View {
                     .bold()
                     .foregroundStyle(headerColor)
                 if shiftManager.statsMode == .earnings {
-                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.getTotalPay(from: shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week)))) ?? "0")")
+                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.weeklyTotalPay)) ?? "0")")
                         .font(.title)
                         .bold()
                         .foregroundStyle(headerColor)
                 } else {
                     
-                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.getTotalHours(from: shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week))))")
+                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.weeklyTotalHours))")
                     
                         .font(.title)
                         .bold()
@@ -49,13 +40,13 @@ struct StatsSquare: View {
                 }
                 
                 if shiftManager.statsMode == .earnings {
-                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel))) ?? "0") Total")
+                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.totalPay)) ?? "0") Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
                 } else {
 
-                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: jobSelectionViewModel))) Total")
+                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.totalHours)) Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
@@ -65,7 +56,7 @@ struct StatsSquare: View {
             .padding(.leading)
             Spacer()
         }
-            .padding(.vertical, 8)
+            .padding(.vertical, 16)
             .background(Color("SquaresColor"))
             .cornerRadius(12)
         

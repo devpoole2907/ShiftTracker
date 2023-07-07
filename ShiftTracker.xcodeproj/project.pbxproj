@@ -138,6 +138,8 @@
 		1AECCC5429DC218E00D879FE /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5229DC218E00D879FE /* Tag.swift */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7CAB87102A58214600A08219 /* ExportSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB870F2A58214600A08219 /* ExportSquare.swift */; };
+		7CAB87122A58667A00A08219 /* CalendarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87112A58667A00A08219 /* CalendarModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +264,8 @@
 		1AECCC4C29DBFCFD00D879FE /* TagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
 		1AECCC5229DC218E00D879FE /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Tag.swift; path = ShiftTracker/Tag.swift; sourceTree = SOURCE_ROOT; };
 		1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreak.swift; sourceTree = "<group>"; };
+		7CAB870F2A58214600A08219 /* ExportSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportSquare.swift; sourceTree = "<group>"; };
+		7CAB87112A58667A00A08219 /* CalendarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -357,6 +361,7 @@
 				1AB7D69729FB97C000326AAA /* ScheduleView.swift */,
 				1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */,
 				1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */,
+				7CAB87112A58667A00A08219 /* CalendarModel.swift */,
 			);
 			path = ScheduleView;
 			sourceTree = "<group>";
@@ -501,6 +506,7 @@
 				1A12240929C900150036D04C /* RoundedSquareView.swift */,
 				1AEBFE002A5132B900884DBF /* StatsSquare.swift */,
 				1A0D86EB2A51783A00EA4438 /* ChartSquare.swift */,
+				7CAB870F2A58214600A08219 /* ExportSquare.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -820,6 +826,7 @@
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
+				7CAB87102A58214600A08219 /* ExportSquare.swift in Sources */,
 				1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */,
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
 				1A8D4ADE2A4EFC6000EEB334 /* ShiftDetailRow.swift in Sources */,
@@ -845,6 +852,7 @@
 				1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */,
 				1A12240A29C900150036D04C /* RoundedSquareView.swift in Sources */,
 				1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */,
+				7CAB87122A58667A00A08219 /* CalendarModel.swift in Sources */,
 				1A4AB18D29FE1DFA00AA62BC /* JobsViewModel.swift in Sources */,
 				1AB7D6AD29FC097700326AAA /* CustomIndicatorView.swift in Sources */,
 				1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */,

@@ -18,12 +18,11 @@ struct ShiftsList: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.editMode) private var editMode
     
     @State private var isShareSheetShowing = false
     
     @State private var searchTerm = ""
-    
-    @State private var isEditing: Bool = false
     
     @State private var showingAddShiftSheet: Bool = false
     
@@ -73,13 +72,13 @@ struct ShiftsList: View {
             .listRowBackground(Color("SquaresColor"))
             
             .swipeActions {
-                if !isEditing {
+         
                     Button(role: .destructive) {
                         deleteShift(shift)
                     } label: {
                         Image(systemName: "trash")
                     }
-                }
+                
             }
             
             
@@ -100,7 +99,41 @@ struct ShiftsList: View {
         
         .toolbar{
             
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing){
+                
+                
+                if editMode?.wrappedValue.isEditing != nil {
+                    Button(action: {
+                        CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                    }) {
+                        Image(systemName: "trash")
+                    }.disabled(selection.isEmpty)
+                } else {
+                    
+                    Button(action: {
+                        
+                       // CustomConfirmationAlert(action: <#T##() -> Void#>, cancelAction: nil, title: "")
+                        
+                        
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    
+                    
+                }
+                
+                
+            }
+            
+            
+            ToolbarItem(placement: .navigationBarTrailing){
+                 
+         EditButton()
+                 
+                 
+             }
+            
+            ToolbarItem(placement: .navigationBarTrailing){
                 Menu {
                     Picker("Sort By", selection: $selectedSort) {
                         ForEach(ShiftSort.sorts, id: \.self) { sort in
@@ -112,21 +145,11 @@ struct ShiftsList: View {
                         "Sort",
                         systemImage: "line.horizontal.3.decrease.circle")
                 }
-                .pickerStyle(.inline)
                 .disabled(!selection.isEmpty)
                 .onChange(of: selectedSort) { _ in
                     let request = shifts
                     request.sortDescriptors = selectedSort.descriptors
                 }
-                
-                Button(action: {
-                    CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                }) {
-                    Image(systemName: "trash")
-                }.disabled(selection.isEmpty)
-                
-                
-                EditButton()
             }
             
         }
@@ -150,32 +173,7 @@ struct ShiftsList: View {
         }
     }
     
-    func shareButton() {
-        let fileName = "export.csv"
-        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "Start Date,End Date,Break Start,Break End,Before Tax,After Tax\n"
-        
-        for shift in shifts {
-            csvText += "\(shift.shiftStartDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.breakStartDate ?? Date())\(shift.breakEndDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.totalPay ),\(shift.taxedPay )\n"
-        }
-        
-        do {
-            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
-        } catch {
-            print("Failed to create file")
-            print("\(error)")
-        }
-        print(path ?? "not found")
-        
-        var filesToShare = [Any]()
-        filesToShare.append(path!)
-        
-        let av = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
-        
-        UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
-        
-        isShareSheetShowing.toggle()
-    }
+
 
     
 }

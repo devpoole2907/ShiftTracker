@@ -17,6 +17,8 @@ struct JobOverview: View {
     
     @State private var showingAddShiftSheet = false
     
+    @State private var isShareSheetShowing = false
+    
     @State private var isChartViewPrimary: Bool = false
     
     @Environment(\.colorScheme) var colorScheme
@@ -61,46 +63,39 @@ struct JobOverview: View {
         List{
             Section{
                 GeometryReader { geometry in
-                    VStack(alignment: .leading){
-                    HStack(spacing: 5){
-                        VStack(spacing: 5) {
+                    VStack(alignment: .leading, spacing: 0){
+                    HStack(spacing: 8){
+                        VStack(spacing: 0) {
                             if !isChartViewPrimary {
                                 StatsSquare()
                                     .environmentObject(shiftManager)
-                                    .frame(width: geometry.size.width / 2)
-                                    .frame(height: geometry.size.height / 2)
-                                
+                                    .frame(width: geometry.size.width / 2 - 8)
+                                Spacer()
                             }
                             ChartSquare(isChartViewPrimary: $isChartViewPrimary)
                                 .environmentObject(shiftManager)
-                                .frame(width: isChartViewPrimary ? geometry.size.width : geometry.size.width / 2)
+                                .frame(width: isChartViewPrimary ? geometry.size.width : geometry.size.width / 2 - 8)
                                 .frame(height: isChartViewPrimary ? geometry.size.height : geometry.size.height / 2)
                                 .animation(.easeInOut, value: isChartViewPrimary)
-                               /* .onTapGesture {
-                                    withAnimation {
-                                        if !isChartViewPrimary {
-                                            isChartViewPrimary = true
-                                        }
-                                    }
-                                }*/
                         }
                         if !isChartViewPrimary {
                         
-                                RoundedRectangle(cornerRadius: 12)
-                                    .foregroundStyle(Color("SquaresColor"))
+                            ExportSquare(action: shareButton)
+                                .environmentObject(shiftManager)
+                                .frame(width: geometry.size.width / 2 - 8)
+                                .frame(height: geometry.size.height)
                             
                         }
                         
                     }
-                }
+                    }.frame(maxWidth: .infinity)
                 }
                     .padding(.trailing, 2)
-                    .padding(.bottom, 5)
             }.frame(minHeight: isChartViewPrimary ? 400 : 200)
             
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets())
+                .listRowInsets(.init(top: 20, leading: 0, bottom: 20, trailing: 0))
                 .haptics(onChangeOf: isChartViewPrimary, type: .light)
             
             
@@ -142,7 +137,23 @@ struct JobOverview: View {
             
         .onAppear {
             navigationState.gestureEnabled = true
+            
+            loadShiftData()
+            
         }
+  
+        .onReceive(shiftManager.$shiftAdded) { _ in
+            
+            loadShiftData()
+        }
+            
+        .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
+            
+            loadShiftData()
+        }
+            
+            
+            
 
             
         .navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext)?.name ?? "Summary")
@@ -159,6 +170,7 @@ struct JobOverview: View {
                     ForEach(0..<shiftManager.statsModes.count) { index in
                         Button(action: {
                             shiftManager.statsMode = StatsMode(rawValue: index) ?? .earnings
+                            shiftManager.shiftDataLoaded.send(())
                         }) {
                             HStack {
                                 Text(shiftManager.statsModes[index])
@@ -199,39 +211,86 @@ struct JobOverview: View {
         
     }
     
+    func shareButton() {
+        
+        var fileName = "export.csv"
+        
+        if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
+            
+            fileName = "\(job.name ?? "") ShiftTracker export"
+            
+        }
+        
+        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
+        var csvText = "Job,Start Date,End Date,Duration,Hourly Rate,Before Tax,After Tax,Tips,Notes\n"
+        
+        
+        for shift in shifts {
+            
+            if let jobid = jobSelectionViewModel.selectedJobUUID {
+                if shift.job?.uuid == jobSelectionViewModel.selectedJobUUID {
+                    csvText += "\(shift.job?.name ?? ""),\(shift.shiftStartDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.duration),\(shift.hourlyPay),\(shift.totalPay ),\(shift.taxedPay),\(shift.totalTips),\(shift.shiftNote ?? "")\n"
+                }
+                
+            } else {
+                
+                csvText += "\(shift.job?.name ?? ""),\(shift.shiftStartDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.duration),\(shift.hourlyPay),\(shift.totalPay ),\(shift.taxedPay),\(shift.totalTips),\(shift.shiftNote ?? "")\n"
+                
+            }
+            
+            
+        }
+        
+        do {
+            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
+        } catch {
+            print("Failed to create file")
+            print("\(error)")
+        }
+        print(path ?? "not found")
+        
+        var filesToShare = [Any]()
+        filesToShare.append(path!)
+        
+        let av = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
+        
+        UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
+        
+        isShareSheetShowing.toggle()
+    }
+    
+    
+    private func loadShiftData() {
+        
+        shiftManager.recentShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week)
+        shiftManager.monthlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .month)
+        shiftManager.halfYearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .halfYear)
+        shiftManager.yearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .year)
+        shiftManager.weeklyTotalPay = shiftManager.getTotalPay(from: shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week))
+        shiftManager.weeklyTotalHours = shiftManager.getTotalHours(from: shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week))
+        shiftManager.totalPay = shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel)
+        shiftManager.totalHours = shiftManager.addAllHours(shifts: shifts, jobModel: jobSelectionViewModel)
+        shiftManager.totalShifts = shiftManager.getShiftCount(from: shifts, jobModel: jobSelectionViewModel)
+        
+        shiftManager.shiftDataLoaded.send(())
+        
+        
+    }
+    
 }
 
+struct JobOverview_Previews: PreviewProvider {
+    static var previews: some View {
+        let mockShiftManager = ShiftDataManager() // provide mock implementation
+        let mockNavigationState = NavigationState() // provide mock implementation
+        let mockJobSelectionViewModel = JobSelectionViewModel() // provide mock implementation
+        let mockManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType) // provide mock implementation
 
-
-
-
-//  .padding(.top, 20)
-
-/*  HStack(spacing: 15) {
-
-RoundedSquareView(text: "Shifts", count: "\(shifts.filter({ shouldIncludeShift($0) }).count)", color: Color.primary.opacity(0.04), imageColor: .blue, systemImageName: "briefcase.circle.fill")
-.frame(maxWidth: .infinity)
-
-// .frame(width: self.animate ? 100 : .infinity, height: self.animate ? 60 : 90)
-//   if !showSquare1{
-RoundedSquareView(text: "Taxed", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllTaxedPay())", color: Color.primary.opacity(0.04), imageColor: .green, systemImageName: "dollarsign.circle.fill")
-.frame(maxWidth: .infinity)
-
-//   }
-
-
-}
-HStack(spacing: 15) {
-// if !showSquare1 {
-RoundedSquareView(text: "Hours", count: "\(addAllHours())", color: Color.primary.opacity(0.04), imageColor: .orange, systemImageName: "stopwatch.fill")
-
-.frame(maxWidth: .infinity)
-
-RoundedSquareView(text: "Total", count: "\(currencyFormatter.currencySymbol ?? "")\(addAllPay())", color: Color.primary.opacity(0.04), imageColor: .pink, systemImageName: "chart.line.downtrend.xyaxis.circle.fill")
-
-.frame(maxWidth: .infinity)
-
-// }
+        JobOverview()
+            .environmentObject(mockShiftManager)
+            .environmentObject(mockNavigationState)
+            .environmentObject(mockJobSelectionViewModel)
+            .environment(\.managedObjectContext, mockManagedObjectContext)
+    }
 }
 
-}.padding(.horizontal, -15) */

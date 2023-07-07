@@ -15,7 +15,6 @@ struct CalendarView: UIViewRepresentable {
     var someScheduledShifts: FetchedResults<ScheduledShift>
     
     
-    
     @Environment(\.managedObjectContext) private var viewContext
     
     @FetchRequest(entity: ScheduledShift.entity(),
