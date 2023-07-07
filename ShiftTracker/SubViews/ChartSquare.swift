@@ -177,7 +177,7 @@ struct ChartSquare: View {
                                 .cornerRadius(shiftManager.statsMode == .earnings ? 10 : 5, style: .continuous)
                             case .month:
                                 
-                                if let currentActiveShift, currentActiveShift.id == shift.id{
+                           /*     if let currentActiveShift, currentActiveShift.id == shift.id{
                                 /*    if #available(iOS 17, *){
                                     RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .day))
                                         .foregroundStyle(Color(.systemGray6))
@@ -208,7 +208,7 @@ struct ChartSquare: View {
                                             
                                         }
                                 //}
-                            }
+                            } */
                                 
                                 
                                 
