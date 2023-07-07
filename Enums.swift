@@ -20,6 +20,7 @@ public enum StatsMode: Int, CaseIterable {
             return "Hours"
         case .breaks:
             return "Breaks"
+            
         }
     }
 }

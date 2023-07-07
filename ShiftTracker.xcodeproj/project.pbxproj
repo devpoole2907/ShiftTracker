@@ -37,7 +37,6 @@
 		1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A30F3C82A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
-		1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3424982A04D406007AB271 /* JobSummaryView.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
 		1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4AB18629FCFE6D00AA62BC /* PopupView */; };
 		1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */; };
@@ -193,7 +192,6 @@
 		1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		1A30F3C32A223AA400A7BD92 /* BreakInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakInputView.swift; sourceTree = "<group>"; };
 		1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreaksManager.swift; sourceTree = "<group>"; };
-		1A3424982A04D406007AB271 /* JobSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSummaryView.swift; sourceTree = "<group>"; };
 		1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFinderView.swift; sourceTree = "<group>"; };
 		1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlobalFunctions+Extensions.swift"; sourceTree = "<group>"; };
 		1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseJob.swift; sourceTree = "<group>"; };
@@ -592,7 +590,6 @@
 		1AECCC5E29E0BD2E00D879FE /* SummaryViews */ = {
 			isa = PBXGroup;
 			children = (
-				1A3424982A04D406007AB271 /* JobSummaryView.swift */,
 				1A1DEC9629F101040002D9E4 /* ChartView.swift */,
 				1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */,
 				1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */,
@@ -825,7 +822,6 @@
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
 				1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */,
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
-				1A3424992A04D406007AB271 /* JobSummaryView.swift in Sources */,
 				1A8D4ADE2A4EFC6000EEB334 /* ShiftDetailRow.swift in Sources */,
 				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
