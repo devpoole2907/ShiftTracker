@@ -105,7 +105,6 @@
 		1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B529D7F07100B279CB /* AddShiftView.swift */; };
 		1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */; };
-		1ACA60BE29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */; };
 		1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
@@ -142,6 +141,14 @@
 		7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */; };
 		7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87192A59762D00A08219 /* SchedulingViewModel.swift */; };
 		7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB871B2A59892D00A08219 /* CreateShiftForm.swift */; };
+		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
+		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
+		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
+		BF8191422A5A70FB0079E449 /* Tempgraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191412A5A70FB0079E449 /* Tempgraph.swift */; };
+		BF8191442A5A71130079E449 /* ThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191432A5A71130079E449 /* ThemeView.swift */; };
+		BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191452A5A73190079E449 /* ThemeColorPicker.swift */; };
+		BF8191482A5A73620079E449 /* CustomThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191472A5A73620079E449 /* CustomThemePicker.swift */; };
+		BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191492A5A752F0079E449 /* ThemesGuideView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -271,6 +278,14 @@
 		7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleScheduledShift.swift; sourceTree = "<group>"; };
 		7CAB87192A59762D00A08219 /* SchedulingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulingViewModel.swift; sourceTree = "<group>"; };
 		7CAB871B2A59892D00A08219 /* CreateShiftForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateShiftForm.swift; sourceTree = "<group>"; };
+		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
+		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
+		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
+		BF8191412A5A70FB0079E449 /* Tempgraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tempgraph.swift; sourceTree = "<group>"; };
+		BF8191432A5A71130079E449 /* ThemeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeView.swift; sourceTree = "<group>"; };
+		BF8191452A5A73190079E449 /* ThemeColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeColorPicker.swift; sourceTree = "<group>"; };
+		BF8191472A5A73620079E449 /* CustomThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThemePicker.swift; sourceTree = "<group>"; };
+		BF8191492A5A752F0079E449 /* ThemesGuideView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemesGuideView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -409,6 +424,7 @@
 			children = (
 				1A83C6182A5794F90054E3B1 /* BreakTimerView.swift */,
 				1A83C6192A5794F90054E3B1 /* TimerView.swift */,
+				BF81913E2A5A70540079E449 /* PreviewTimerView.swift */,
 			);
 			path = TimerViews;
 			sourceTree = "<group>";
@@ -447,6 +463,7 @@
 		1A9855D229C55F8A003F512C /* ShiftTracker */ = {
 			isa = PBXGroup;
 			children = (
+				BF8191392A5A6E9E0079E449 /* ThemeManager */,
 				1AB7D6A729FC03F400326AAA /* Intro */,
 				1AD72A9729F5237100534342 /* GoogleService-Info.plist */,
 				1AECCC4B29DBFCD700D879FE /* SettingsViews */,
@@ -564,6 +581,7 @@
 				1A5B0BA22A5500BF0021572B /* CurrencyTextField.swift */,
 				1A5B0BAA2A5503510021572B /* ShakeModifier.swift */,
 				1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */,
+				BF81913C2A5A6FF80079E449 /* SelectableButton.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -594,6 +612,7 @@
 		1AECCC4B29DBFCD700D879FE /* SettingsViews */ = {
 			isa = PBXGroup;
 			children = (
+				BF8191402A5A70E70079E449 /* ThemeViews */,
 				1A22EFFE29C6559100A23F33 /* SettingsView.swift */,
 				1AECCC4C29DBFCFD00D879FE /* TagsView.swift */,
 				1AECCC5229DC218E00D879FE /* Tag.swift */,
@@ -609,6 +628,26 @@
 				1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */,
 			);
 			path = SummaryViews;
+			sourceTree = "<group>";
+		};
+		BF8191392A5A6E9E0079E449 /* ThemeManager */ = {
+			isa = PBXGroup;
+			children = (
+				BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */,
+			);
+			path = ThemeManager;
+			sourceTree = "<group>";
+		};
+		BF8191402A5A70E70079E449 /* ThemeViews */ = {
+			isa = PBXGroup;
+			children = (
+				BF8191492A5A752F0079E449 /* ThemesGuideView.swift */,
+				BF8191472A5A73620079E449 /* CustomThemePicker.swift */,
+				BF8191452A5A73190079E449 /* ThemeColorPicker.swift */,
+				BF8191432A5A71130079E449 /* ThemeView.swift */,
+				BF8191412A5A70FB0079E449 /* Tempgraph.swift */,
+			);
+			path = ThemeViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -790,7 +829,6 @@
 				1A52AFAD29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift in Sources */,
 				1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */,
-				1ACA60BE29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
 				1AECCC5429DC218E00D879FE /* Tag.swift in Sources */,
 				1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */,
 				1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */,
@@ -824,6 +862,7 @@
 				1AC9DDF829F7B28700C15008 /* JobData.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */,
+				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
 				1A13F18A29CE56CD009BE6B0 /* Location.swift in Sources */,
 				1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */,
 				1A1914192A15D43B000D0F8B /* UpcomingShiftView.swift in Sources */,
@@ -831,6 +870,7 @@
 				1AB7D6AB29FC059500326AAA /* IntroMainView.swift in Sources */,
 				1A5B0BA32A5500BF0021572B /* CurrencyTextField.swift in Sources */,
 				1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */,
+				BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */,
 				1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */,
 				1A8D4ADA2A4EE16400EEB334 /* JobOverview.swift in Sources */,
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
@@ -840,6 +880,7 @@
 				1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */,
 				1AE3845729D444060002378F /* TabItemData.swift in Sources */,
 				1A8D4ADE2A4EFC6000EEB334 /* ShiftDetailRow.swift in Sources */,
+				BF8191442A5A71130079E449 /* ThemeView.swift in Sources */,
 				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
@@ -849,6 +890,8 @@
 				1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
+				BF8191422A5A70FB0079E449 /* Tempgraph.swift in Sources */,
+				BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */,
 				1A13F19529D02914009BE6B0 /* ProView.swift in Sources */,
 				1A4AB18B29FE1DB300AA62BC /* FirebaseJob.swift in Sources */,
 				1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
@@ -876,9 +919,12 @@
 				1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */,
 				1AB7D69329FB6CE100326AAA /* MainWithSideBarView.swift in Sources */,
 				1AB7D6AF29FCAA1B00326AAA /* CustomTextField.swift in Sources */,
+				BF8191482A5A73620079E449 /* CustomThemePicker.swift in Sources */,
 				1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */,
 				1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */,
 				1AE3845B29D444800002378F /* TabBottomView.swift in Sources */,
+				BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */,
+				BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

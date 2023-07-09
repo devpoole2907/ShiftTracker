@@ -12,6 +12,8 @@ struct ActionView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     @Environment(\.dismiss) var dismiss
     @State private var actionDate = Date()
     @State private var isRounded = false
@@ -99,11 +101,11 @@ struct ActionView: View {
                 
                 if actionType == .startBreak {
                     HStack {
-                        ActionButtonView(title: "Unpaid Break", backgroundColor: Color.indigo, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                        ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: true)
                             dismiss()
                         }
-                        ActionButtonView(title: "Paid Break", backgroundColor: Color.indigo, textColor: .white, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                        ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: false)
                             dismiss()
                         }

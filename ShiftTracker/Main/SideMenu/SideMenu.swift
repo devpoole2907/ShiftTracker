@@ -24,6 +24,7 @@ struct SideMenu: View {
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     @EnvironmentObject var navigationState: NavigationState
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
     
@@ -197,7 +198,7 @@ struct SideMenu: View {
             VStack{
                 Divider()
                 
-                TabButton(title: "Settings", image: "gearshape.fill", destination: { AnyView(SettingsView()) })
+                TabButton(title: "Settings", image: "gearshape.fill", destination: { AnyView(SettingsView().environmentObject(themeManager)) })
                     .padding()
                     .padding(.leading)
                 

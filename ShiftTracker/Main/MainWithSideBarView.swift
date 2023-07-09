@@ -29,6 +29,8 @@ struct MainWithSideBarView: View {
     @StateObject var shiftStore = ScheduledShiftStore()
     @StateObject var scheduleModel = SchedulingViewModel()
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     
     private let notificationManager = ShiftNotificationManager.shared
     
@@ -72,6 +74,7 @@ struct MainWithSideBarView: View {
                             .environmentObject(navigationState)
                             .environmentObject(viewModel)
                             .environmentObject(jobSelectionModel)
+                            .environmentObject(themeManager)
                         
                         VStack(spacing: 0){
                             

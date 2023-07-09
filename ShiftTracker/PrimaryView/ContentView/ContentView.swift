@@ -34,6 +34,8 @@ struct ContentView: View {
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     @State private var activeSheet: ActiveSheet?
     
     @State private var payShakeTimes: CGFloat = 0
@@ -213,13 +215,13 @@ struct ContentView: View {
                                                     if breakItem.isUnpaid{
                                                         Text("Unpaid")
                                                             .font(.subheadline)
-                                                            .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : .indigo)
+                                                            .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : themeManager.breaksColor)
                                                             .bold()
                                                     }
                                                     else {
                                                         Text("Paid")
                                                             .font(.subheadline)
-                                                            .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : .indigo)
+                                                            .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : themeManager.breaksColor)
                                                             .bold()
                                                     }
                                                     if viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" {

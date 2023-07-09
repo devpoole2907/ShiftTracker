@@ -19,6 +19,8 @@ struct ShiftTrackerApp: App {
         private let defaults = UserDefaults.standard
     
     @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
+    
+    @StateObject var themeManager = ThemeDataManager()
 
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
@@ -38,6 +40,7 @@ struct ShiftTrackerApp: App {
                 .implementPopupView()
                 .preferredColorScheme(getPreferredColorScheme())
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(themeManager)
             // deep link tests
                 .onOpenURL { url in
                     print("got a URL boss man")

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct TimerView: View {
     @Binding var timeElapsed: TimeInterval
+    
+    @EnvironmentObject var themeManager: ThemeDataManager
 
     @Environment(\.colorScheme) var colorScheme
     
@@ -113,7 +115,7 @@ struct TimerView: View {
                         .bold()
                         .lineLimit(1)
                         .allowsTightening(true)
-                }.foregroundColor(.pink)
+                }.foregroundStyle(themeManager.taxColor)
                 
                     .padding(.horizontal, 20)
                 
@@ -135,7 +137,7 @@ struct TimerView: View {
                     }
                 }
             }
-            .foregroundColor(.orange)
+            .foregroundStyle(themeManager.timerColor)
             .frame(maxWidth: .infinity)
             .padding(.bottom)
             

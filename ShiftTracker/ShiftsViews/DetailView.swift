@@ -18,6 +18,8 @@ struct DetailView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     let breakManager = BreaksManager()
     
     var presentedAsSheet: Bool
@@ -146,7 +148,7 @@ struct DetailView: View {
                                             .bold()
                                             .lineLimit(1)
                                             .allowsTightening(true)
-                                    }.foregroundColor(.pink)
+                                    }.foregroundStyle(themeManager.taxColor)
                                 }
                                 if shift.totalTips > 0 {
                                     HStack(spacing: 2){
@@ -157,7 +159,7 @@ struct DetailView: View {
                                             .font(.system(size: 20).monospacedDigit())
                                             .bold()
                                             .lineLimit(1)
-                                    }.foregroundColor(.teal)
+                                    }.foregroundStyle(themeManager.tipsColor)
                                 }
                             }
                                 
@@ -182,7 +184,7 @@ struct DetailView: View {
                                             }
                                         }
                                     }
-                                    .foregroundColor(.orange)
+                                    .foregroundStyle(themeManager.timerColor)
                                     //.frame(width: 250, height: 70)
                                     .frame(maxWidth: .infinity)
                                     
@@ -197,7 +199,7 @@ struct DetailView: View {
                                             }
                                         }
                                     }
-                                    .foregroundColor(.indigo)
+                                    .foregroundStyle(themeManager.breaksColor)
                                     //.frame(width: 250, height: 70)
                                     .frame(maxWidth: .infinity)
                                     .padding(.bottom)
@@ -215,7 +217,7 @@ struct DetailView: View {
                                             }
                                         }
                                     }
-                                    .foregroundColor(.orange)
+                                    .foregroundStyle(themeManager.timerColor)
                                     //.frame(width: 250, height: 70)
                                     .frame(maxWidth: .infinity)
                                     .padding(.bottom)

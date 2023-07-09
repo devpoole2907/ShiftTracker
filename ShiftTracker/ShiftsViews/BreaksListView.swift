@@ -13,6 +13,8 @@ struct BreaksListView: View {
     
     @Environment(\.managedObjectContext) private var context
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     @Binding var isEditing: Bool
     
     let breakManager = BreaksManager()
@@ -47,13 +49,13 @@ struct BreaksListView: View {
                         if breakItem.isUnpaid{
                             Text("Unpaid")
                                 .font(.subheadline)
-                                .foregroundColor(.indigo)
+                                .foregroundStyle(themeManager.breaksColor)
                                 .bold()
                         }
                         else {
                             Text("Paid")
                                 .font(.subheadline)
-                                .foregroundColor(.indigo)
+                                .foregroundStyle(themeManager.breaksColor)
                                 .bold()
                         }
                         Text("\(breakManager.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")

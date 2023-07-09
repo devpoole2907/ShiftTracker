@@ -12,6 +12,8 @@ struct BreakTimerView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     private let shiftKeys = ShiftKeys()
     
     let sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
@@ -27,7 +29,7 @@ struct BreakTimerView: View {
     var body: some View {
    
             Text("\(timeElapsed.stringFromTimeInterval())")
-                .foregroundColor(.indigo)
+            .foregroundStyle(themeManager.breaksColor)
                 .font(.system(size: 15, weight: .bold).monospacedDigit())
     }
 }
