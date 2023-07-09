@@ -31,7 +31,7 @@ struct JobOverview: View {
     
     @FetchRequest var shifts: FetchedResults<OldShift>
     
-    init(navPath: Binding<[OldShift]>){
+    init(navPath: Binding<NavigationPath>){
         
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         fetchRequest.predicate = nil
@@ -49,7 +49,10 @@ struct JobOverview: View {
         return formatter
     }
     
-    @Binding var navPath: [OldShift]
+    @Binding var navPath: NavigationPath
+    
+    
+   // @State var testNav: [OldShift] = []
     
     @State private var selectedView: String? = nil
     
@@ -62,6 +65,9 @@ struct JobOverview: View {
         
         let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
         let textColor: Color = colorScheme == .dark ? .white : .black
+        
+        
+        
         NavigationStack(path: $navPath){
         List{
             Section{
@@ -112,10 +118,7 @@ struct JobOverview: View {
                     }
                     .navigationDestination(for: OldShift.self) { shift in
                         
-                        
-                        // the worlds greatest workaround, take me to shiftslist if the start date doesnt exist (i.e we've created a fake shift so the button navigates and is compatible with the navigation path array data type
-                        if shift.shiftStartDate != nil {
-                            
+                        // it was not the worlds greatest workaround ... lets do things properly!
                             DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle("Shift Details")
                             
                         } else {
@@ -124,9 +127,11 @@ struct JobOverview: View {
                                 ShiftsList(navPath: $navPath).environmentObject(shiftManager)
                                 
                             
-                        }
+                    }
+                    
+                    .navigationDestination(for: Int.self) { _ in
                         
-                       
+                        ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState)
                         
                     }
                     
@@ -134,7 +139,7 @@ struct JobOverview: View {
                 }
             } header: {
                 
-                NavigationLink(value: OldShift(context: viewContext)) {
+                NavigationLink(value: 1) {
                     
                     Text("Latest Shifts")
                         .textCase(nil)

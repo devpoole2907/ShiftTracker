@@ -51,7 +51,7 @@ struct ShiftsList: View {
 
     @State private var selectedSort = ShiftSort.default
     
-    @Binding var navPath: [OldShift]
+    @Binding var navPath: NavigationPath
     
     @State private var selection = Set<NSManagedObjectID>()
     

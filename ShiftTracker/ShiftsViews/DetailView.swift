@@ -25,7 +25,7 @@ struct DetailView: View {
     var presentedAsSheet: Bool
     @Binding var activeSheet: ActiveSheet?
     
-    @Binding var navPath: [OldShift]
+    @Binding var navPath: NavigationPath
     
     @State private var notes: String
     @FocusState private var noteIsFocused: Bool
@@ -70,7 +70,7 @@ struct DetailView: View {
     
     @EnvironmentObject var navigationState: NavigationState
     
-    init(shift: OldShift, presentedAsSheet: Bool, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<[OldShift]>) {
+    init(shift: OldShift, presentedAsSheet: Bool, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<NavigationPath>) {
         self.shift = shift
         _notes = State(wrappedValue: shift.shiftNote ?? "")
         _selectedStartDate = State(wrappedValue: shift.shiftStartDate ?? Date())

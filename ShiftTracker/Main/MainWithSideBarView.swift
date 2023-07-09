@@ -27,6 +27,8 @@ struct MainWithSideBarView: View {
     
     @State private var settingsPath: [Int] = []
     
+    @State private var path = NavigationPath()
+    
     
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionViewModel()
@@ -97,7 +99,7 @@ struct MainWithSideBarView: View {
                                     .tag(Tab.home)
 
 
-                                JobOverview(navPath: $navPath)
+                                JobOverview(navPath: $path)
                                             .environment(\.managedObjectContext, context)
                                             .environmentObject(jobSelectionModel)
                                             .environmentObject(navigationState)
@@ -126,10 +128,9 @@ struct MainWithSideBarView: View {
                             
                             
                             VStack(spacing: 0){
-                                //Divider()
                                 HStack(spacing: 0) {
                                     TabButton(tab: .home, useSystemImage: true)
-                                    TabButton(tab: .timesheets, useSystemImage: true, action: {navPath = []}) // Use system image for this tab only
+                                    TabButton(tab: .timesheets, useSystemImage: true, action: {path = NavigationPath()}) 
                                     TabButton(tab: .schedule, useSystemImage: true)
                                     TabButton(tab: .settings, useSystemImage: true, action: {settingsPath = []})
                                 }

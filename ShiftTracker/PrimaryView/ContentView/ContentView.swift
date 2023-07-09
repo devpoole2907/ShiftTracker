@@ -30,7 +30,7 @@ struct ContentView: View {
     @EnvironmentObject var navigationState: NavigationState
     
     // change me to be a binding and take from mainwithsidebar later
-    @State var navPath: [OldShift] = []
+    @State var navPath = NavigationPath()
     
     @Environment(\.presentationMode) private var presentationMode
     
