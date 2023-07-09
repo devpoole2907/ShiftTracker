@@ -11,6 +11,8 @@ struct ShiftDetailRow: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     let shift: OldShift
     
     private var dateFormatter: DateFormatter {
@@ -45,7 +47,7 @@ struct ShiftDetailRow: View {
                     .font(.title)
                     .bold()
                 Text(" \(durationString) hours")
-                    .foregroundColor(.orange)
+                    .foregroundStyle(themeManager.timerColor)
                     .font(.subheadline)
                     .bold()
                 Text(dateString)

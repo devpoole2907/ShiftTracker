@@ -10,6 +10,8 @@ import SwiftUI
 
 struct CustomToggleStyle: ToggleStyle {
     
+    @EnvironmentObject var themeColors: ThemeDataManager
+    
     @Environment(\.isEnabled) var isEnabled
     
     @Environment(\.colorScheme) var colorScheme
@@ -25,10 +27,10 @@ struct CustomToggleStyle: ToggleStyle {
             Spacer()
             RoundedRectangle(cornerRadius: 16)
                 .frame(width: 50, height: 30)
-                .foregroundColor(configuration.isOn ? toggleColor : Color.gray.opacity(0.25))
+                .foregroundStyle(configuration.isOn ? themeColors.customUIColor : Color.gray.opacity(0.25))
                 .overlay(
                     Circle()
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .padding(.all, 3)
                         
                         .overlay(
@@ -37,7 +39,7 @@ struct CustomToggleStyle: ToggleStyle {
                                                             .aspectRatio(contentMode: .fit)
                                                             .font(Font.title.weight(.black))
                                                             .frame(width: 8, height: 8, alignment: .center)
-                                                            .foregroundColor(configuration.isOn ? tickColor : Color.gray.opacity(0.25))
+                                                            .foregroundStyle(configuration.isOn ? tickColor : Color.gray.opacity(0.25))
                         )
                         .offset(x: configuration.isOn ? 10 : -10, y: 0)
                         .animation(Animation.linear(duration: 0.2))

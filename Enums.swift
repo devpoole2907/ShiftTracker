@@ -93,3 +93,20 @@ public enum ShiftState {
     case inProgress
     //case onBreak
 }
+
+public enum CustomColor {
+    
+    case customUIColorPicker
+    
+    case customTextColorPicker
+    
+    case earningsColorPicker
+    
+    case taxColorPicker
+    
+    case timerColorPicker
+    
+    case breaksColorPicker
+    
+    case tipsColorPicker
+}

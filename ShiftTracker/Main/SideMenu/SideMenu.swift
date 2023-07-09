@@ -24,6 +24,7 @@ struct SideMenu: View {
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     @EnvironmentObject var navigationState: NavigationState
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
     
