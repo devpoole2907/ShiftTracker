@@ -53,6 +53,13 @@ struct ScheduleView: View {
         
         _dateSelected = State(initialValue: Date().dateComponents)
         
+      
+            let appearance = UINavigationBarAppearance()
+            appearance.shadowColor = .clear
+            UINavigationBar.appearance().standardAppearance = appearance
+           // UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        
+        
     }
     
     

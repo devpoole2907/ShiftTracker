@@ -30,6 +30,8 @@ struct SettingsView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var navigationState: NavigationState
+    
     @StateObject private var locationManager = LocationDataManager()
     
     var body: some View {
@@ -43,226 +45,227 @@ struct SettingsView: View {
         
         
         
-       // NavigationView{
-        ScrollView{
-            VStack(spacing: 20){
-             /*   if isSubscriptionActive(){
-                    NavigationLink(destination: ProSettingsView()){
-                        HStack {
-                            Image(systemName: "briefcase")
-                            Spacer().frame(width: 10)
-                            Text("ShiftTracker Pro")
-                        }
-                    }
-                }*/
-                
-                if !isProVersion{
-                    Group{
-                        Button(action: {
-                            showingProView = true
-                        }) {
-                            Group{
-                                ZStack {
-                                    backgroundColor
-                                        .cornerRadius(20)
-                                        .frame(height: 80)
-                                    VStack(spacing: 2) {
-                                        HStack{
-                                            Text("ShiftTracker")
-                                                .font(.title2)
+        NavigationStack{
+            ScrollView{
+                VStack(spacing: 20){
+                    /*   if isSubscriptionActive(){
+                     NavigationLink(destination: ProSettingsView()){
+                     HStack {
+                     Image(systemName: "briefcase")
+                     Spacer().frame(width: 10)
+                     Text("ShiftTracker Pro")
+                     }
+                     }
+                     }*/
+                    
+                    if !isProVersion{
+                        Group{
+                            Button(action: {
+                                showingProView = true
+                            }) {
+                                Group{
+                                    ZStack {
+                                        backgroundColor
+                                            .cornerRadius(20)
+                                            .frame(height: 80)
+                                        VStack(spacing: 2) {
+                                            HStack{
+                                                Text("ShiftTracker")
+                                                    .font(.title2)
+                                                    .bold()
+                                                    .foregroundColor(textColor)
+                                                Text("PRO")
+                                                    .font(.title)
+                                                    .bold()
+                                                    .foregroundColor(proButtonColor)
+                                            }
+                                            //.padding(.top, 3)
+                                            
+                                            Text("Upgrade Now")
+                                                .font(.subheadline)
                                                 .bold()
                                                 .foregroundColor(textColor)
-                                            Text("PRO")
-                                                .font(.title)
-                                                .bold()
-                                                .foregroundColor(proButtonColor)
                                         }
-                                        //.padding(.top, 3)
-                                        
-                                        Text("Upgrade Now")
-                                            .font(.subheadline)
-                                            .bold()
-                                            .foregroundColor(textColor)
                                     }
-                                }
-                                .frame(maxWidth: UIScreen.main.bounds.width - 20)
-                            }//.padding(.bottom, 75)
+                                    .frame(maxWidth: UIScreen.main.bounds.width - 20)
+                                }//.padding(.bottom, 75)
+                            }
                         }
                     }
-                }
-                
-                NavigationLink(destination: EmptyView()){
-                    HStack {
-                        Image(systemName: "paintpalette")
-                        Spacer().frame(width: 10)
-                        Text("Theme")
-                            .font(.title2)
-                            .bold()
-                        Spacer()
-                        Text("Default")
-                            .foregroundStyle(.gray)
-                            .bold()
-                    }
-                }.padding()
-                    .background(Color("SquaresColor"))
-                    .cornerRadius(12)
-                
-                NavigationLink(destination: LocationView()){
-                    HStack {
-                        Image(systemName: "location")
-                        Spacer().frame(width: 10)
-                        Text("Location")
-                            .font(.title2)
-                            .bold()
-                        Spacer()
-                        if locationManager.authorizationStatus != .authorizedAlways {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(.gray)
-                        } else {
-                            Text("Always")
+                    
+                    NavigationLink(destination: EmptyView()){
+                        HStack {
+                            Image(systemName: "paintpalette")
+                            Spacer().frame(width: 10)
+                            Text("Theme")
+                                .font(.title2)
+                                .bold()
+                            Spacer()
+                            Text("Default")
                                 .foregroundStyle(.gray)
                                 .bold()
                         }
-                    }
-                }.padding()
-                    .background(Color("SquaresColor"))
-                    .cornerRadius(12)
-                NavigationLink(destination: NotificationView()){
-                    HStack {
-                        Image(systemName: "bell")
-                            .padding(.leading, 2)
-                        Spacer().frame(width: 10)
-                        Text("Notifications")
-                            .font(.title2)
-                            .bold()
-                        Spacer()
-                    }
-                }.padding()
-                   // .frame(maxWidth: .infinity)
-                    .background(Color("SquaresColor"))
+                    }.padding()
+                        .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                NavigationLink(destination: AppearanceView()) {
-                    HStack {
-                        Image("AppearanceIconSymbol")
-                            .padding(.leading, -1)
-                        Spacer().frame(width: 10)
-                        Text("Appearance")
-                            .font(.title2)
-                            .bold()
-                        Spacer()
-                        Text("\(userColorScheme)".capitalized)
-                            .foregroundStyle(.gray)
-                            .bold()
-                    }
-                }.padding()
-                    .background(Color("SquaresColor"))
-                        .cornerRadius(12)
-                Toggle(isOn: $authEnabled){
-                    HStack {
-                        Image(systemName: "faceid")
-                            .padding(.leading, 2)
-                        Spacer().frame(width: 10)
-                        Text("App Lock")
-                            .font(.title2)
-                            .bold()
-                    }
-                }.toggleStyle(CustomToggleStyle())
-                    .onChange(of: authEnabled) { newValue in
-                        if newValue {
-                            authenticateUser { success in
-                                if success {
-                                    isAuthenticated = true
-                                } else {
-                                    authEnabled = false
-                                }
+                    
+                    NavigationLink(destination: LocationView()){
+                        HStack {
+                            Image(systemName: "location")
+                            Spacer().frame(width: 10)
+                            Text("Location")
+                                .font(.title2)
+                                .bold()
+                            Spacer()
+                            if locationManager.authorizationStatus != .authorizedAlways {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.gray)
+                            } else {
+                                Text("Always")
+                                    .foregroundStyle(.gray)
+                                    .bold()
                             }
-                        } else {
-                            isAuthenticated = false
                         }
-                    }
-                    .padding()
-                    .background(Color("SquaresColor"))
+                    }.padding()
+                        .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                Toggle(isOn: $iCloudSyncOn) {
-                    HStack {
-                        Image("iCloudIconSymbol")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: 20)
-                        Spacer().frame(width: 10)
-                        Text("iCloud Sync")
-                            .font(.title2)
-                            .bold()
-                    }
-                }.toggleStyle(CustomToggleStyle())
-                    .onChange(of: iCloudSyncOn) { value in
-                        PersistenceController.shared.updateCloudKitSyncStatus()
-                    }
-                    .padding()
-                    .background(Color("SquaresColor"))
+                    NavigationLink(destination: NotificationView()){
+                        HStack {
+                            Image(systemName: "bell")
+                                .padding(.leading, 2)
+                            Spacer().frame(width: 10)
+                            Text("Notifications")
+                                .font(.title2)
+                                .bold()
+                            Spacer()
+                        }
+                    }.padding()
+                    // .frame(maxWidth: .infinity)
+                        .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                Toggle(isOn: $tipsEnabled) {
-                    HStack {
-                        Image("TipsIconSymbol")
-                            .padding(.leading, -2)
-                        Spacer().frame(width: 10)
-                        Text("Tips")
-                            .font(.title2)
-                            .bold()
-                    }
-                }.toggleStyle(CustomToggleStyle())
-                    .padding()
-                    .background(Color("SquaresColor"))
+                    NavigationLink(destination: AppearanceView()) {
+                        HStack {
+                            Image("AppearanceIconSymbol")
+                                .padding(.leading, -1)
+                            Spacer().frame(width: 10)
+                            Text("Appearance")
+                                .font(.title2)
+                                .bold()
+                            Spacer()
+                            Text("\(userColorScheme)".capitalized)
+                                .foregroundStyle(.gray)
+                                .bold()
+                        }
+                    }.padding()
+                        .background(Color("SquaresColor"))
                         .cornerRadius(12)
+                    Toggle(isOn: $authEnabled){
+                        HStack {
+                            Image(systemName: "faceid")
+                                .padding(.leading, 2)
+                            Spacer().frame(width: 10)
+                            Text("App Lock")
+                                .font(.title2)
+                                .bold()
+                        }
+                    }.toggleStyle(CustomToggleStyle())
+                        .onChange(of: authEnabled) { newValue in
+                            if newValue {
+                                authenticateUser { success in
+                                    if success {
+                                        isAuthenticated = true
+                                    } else {
+                                        authEnabled = false
+                                    }
+                                }
+                            } else {
+                                isAuthenticated = false
+                            }
+                        }
+                        .padding()
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
+                    Toggle(isOn: $iCloudSyncOn) {
+                        HStack {
+                            Image("iCloudIconSymbol")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: 20)
+                            Spacer().frame(width: 10)
+                            Text("iCloud Sync")
+                                .font(.title2)
+                                .bold()
+                        }
+                    }.toggleStyle(CustomToggleStyle())
+                        .onChange(of: iCloudSyncOn) { value in
+                            PersistenceController.shared.updateCloudKitSyncStatus()
+                        }
+                        .padding()
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
+                    Toggle(isOn: $tipsEnabled) {
+                        HStack {
+                            Image("TipsIconSymbol")
+                                .padding(.leading, -2)
+                            Spacer().frame(width: 10)
+                            Text("Tips")
+                                .font(.title2)
+                                .bold()
+                        }
+                    }.toggleStyle(CustomToggleStyle())
+                        .padding()
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
+                    
+                    Toggle(isOn: $taxEnabled) {
+                        HStack {
+                            Image("TaxIconSymbol")
+                                .padding(.leading, -1)
+                            Spacer().frame(width: 10)
+                            Text("Estimated Tax")
+                                .font(.title2)
+                                .bold()
+                        }
+                    }.toggleStyle(CustomToggleStyle())
+                        .onChange(of: taxEnabled){ value in
+                            sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
+                        }
+                        .padding()
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
+                    
+                    NavigationLink(destination: TipView()){
+                        HStack {
+                            Image(systemName: "hammer.circle.fill")
+                            Spacer().frame(width: 10)
+                            Text("Support the Developer")
+                                .font(.title2)
+                                .bold()
+                            Spacer()
+                        }
+                    }.padding()
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
+                    
+                }.padding(.horizontal)
                 
-                Toggle(isOn: $taxEnabled) {
-                    HStack {
-                        Image("TaxIconSymbol")
-                            .padding(.leading, -1)
-                        Spacer().frame(width: 10)
-                        Text("Estimated Tax")
-                            .font(.title2)
-                            .bold()
-                    }
-                }.toggleStyle(CustomToggleStyle())
-                    .onChange(of: taxEnabled){ value in
-                        sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
-                    }
-                    .padding()
-                    .background(Color("SquaresColor"))
-                        .cornerRadius(12)
                 
-                NavigationLink(destination: TipView()){
-                    HStack {
-                        Image(systemName: "hammer.circle.fill")
-                        Spacer().frame(width: 10)
-                        Text("Support the Developer")
-                            .font(.title2)
-                            .bold()
-                        Spacer()
-                    }
-                }.padding()
-                    .background(Color("SquaresColor"))
-                        .cornerRadius(12)
                 
-            }
-          
-           
-            
-            
-            VStack(spacing: 10){
-                if isSubscriptionActive(){
-                    Text("Thank you for purchasing ShiftTracker Pro!")
+                
+                VStack(spacing: 10){
+                    if isSubscriptionActive(){
+                        Text("Thank you for purchasing ShiftTracker Pro!")
+                            .foregroundColor(.gray.opacity(0.3))
+                            .font(.caption)
+                    }
+                    Text("Made by James Poole")
                         .foregroundColor(.gray.opacity(0.3))
                         .font(.caption)
-                }
-                Text("Made by James Poole")
-                    .foregroundColor(.gray.opacity(0.3))
-                    .font(.caption)
-                Text("Icons by Louie Kolodzinksi")
-                    .foregroundColor(.gray.opacity(0.3))
-                    .font(.caption)
-            }.padding(.vertical)
+                    Text("Icons by Louie Kolodzinksi")
+                        .foregroundColor(.gray.opacity(0.3))
+                        .font(.caption)
+                }.padding(.vertical)
+                    .padding(.horizontal)
                 VStack(alignment: .leading){
                     Button(action: {
                         
@@ -273,31 +276,44 @@ struct SettingsView: View {
                         
                     }.buttonStyle(.bordered)
                         .tint(.red)
-                }
-            Spacer()
-            
-            
-        }.scrollContentBackground(.hidden)
-            .padding(.horizontal)
-            .navigationTitle("Settings")
-            .toolbarRole(.editor)
+                }.padding(.horizontal)
+                Spacer()
+                
+                
+            }.scrollContentBackground(.hidden)
+                
+                .navigationTitle("Settings")
+            // .toolbarRole(.editor)
             //.scrollIndicators(.hidden)
-        
-            .fullScreenCover(isPresented: $showingProView) {
-                NavigationStack{
-                    ProView()
-                        .toolbar{
-                            ToolbarItem(placement: .navigationBarLeading){
-                                CloseButton{
-                                    self.showingProView = false
+            
+                .fullScreenCover(isPresented: $showingProView) {
+                    NavigationStack{
+                        ProView()
+                            .toolbar{
+                                ToolbarItem(placement: .navigationBarLeading){
+                                    CloseButton{
+                                        self.showingProView = false
+                                    }
                                 }
                             }
-                        }
+                    }
+                    
                 }
-                
+                .toolbar{
+            ToolbarItem(placement: .navigationBarLeading){
+                Button{
+                    withAnimation{
+                        navigationState.showMenu.toggle()
+                    }
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .bold()
+                    
+                }
             }
+        }
         
-    //}
+        }
     }
     
     private func authenticateUser(completion: @escaping (Bool) -> Void) {

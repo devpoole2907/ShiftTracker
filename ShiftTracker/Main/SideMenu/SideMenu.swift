@@ -180,11 +180,7 @@ struct SideMenu: View {
                             .haptics(onChangeOf: jobSelectionViewModel.selectedJobUUID, type: .light)
                         
                         
-                        if !isSubscriptionActive(){
-                            TabButton(title: "Upgrade", image: "plus.diamond.fill", destination: { AnyView(
-                                ProView().toolbarRole(.editor)
-                            ) })
-                        }
+                        
                     }
                     .padding()
                     .padding(.leading)
@@ -195,11 +191,29 @@ struct SideMenu: View {
                 }
             }
             VStack{
-                Divider()
                 
-                TabButton(title: "Settings", image: "gearshape.fill", destination: { AnyView(SettingsView()) })
+                if !isSubscriptionActive(){
+                    
+                    Divider()
+                    
+                    Button(action: { showUpgradeScreen.toggle()}){
+                        HStack(spacing: 25) {
+                            Image(systemName: "plus.diamond.fill")
+                                .resizable()
+                                .renderingMode(.template)
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 30, height: 30)
+                            Text("Upgrade")
+                                .font(.largeTitle)
+                                .bold()
+                        }
+                        .foregroundColor(.primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                     .padding()
                     .padding(.leading)
+                }
+                    
                 
                 
                 
@@ -247,7 +261,7 @@ struct SideMenu: View {
     
     @ViewBuilder
     func TabButton(title: String, image: String, destination: @escaping () -> AnyView) -> some View {
-        NavigationLink(destination: destination()) {
+        NavigationLink(destination: destination().toolbar(.hidden)) {
             HStack(spacing: 25) {
                 Image(systemName: image)
                     .resizable()

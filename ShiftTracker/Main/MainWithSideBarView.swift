@@ -55,6 +55,8 @@ struct MainWithSideBarView: View {
             }
         }
     
+    
+    
     var body: some View {
         
         let sideBarWidth = getRect().width - 90
@@ -104,15 +106,24 @@ struct MainWithSideBarView: View {
                          
                                     .tag(Tab.schedule)
                                 
+                                SettingsView()
+                                    .environment(\.managedObjectContext, context)
+                                    .environmentObject(navigationState)
+                                    .navigationBarTitleDisplayMode(.inline)
+                         
+                                    .tag(Tab.settings)
+                                
+                                
                             }
                             
                             
                             VStack(spacing: 0){
-                                Divider()
+                                //Divider()
                                 HStack(spacing: 0) {
                                     TabButton(tab: .home, useSystemImage: true)
                                     TabButton(tab: .timesheets, useSystemImage: true) // Use system image for this tab only
                                     TabButton(tab: .schedule, useSystemImage: true)
+                                    TabButton(tab: .settings, useSystemImage: true)
                                 }
                                 .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
                                 .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
@@ -309,6 +320,7 @@ enum Tab: String, CaseIterable {
     case home = "Home"
     case timesheets = "Timesheets"
     case schedule = "Schedule"
+    case settings = "Settings"
     
     var image: String? {
         switch self {
@@ -318,6 +330,9 @@ enum Tab: String, CaseIterable {
             return "Timesheets"
         case .schedule:
             return "Schedule"
+        case .settings:
+            return "Settings"
+        
         }
     }
     
@@ -329,6 +344,8 @@ enum Tab: String, CaseIterable {
             return "clock.fill"
         case .schedule:
             return "calendar"
+        case .settings:
+            return "gear"
         }
     }
 }
