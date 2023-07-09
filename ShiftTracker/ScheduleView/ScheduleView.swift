@@ -15,12 +15,13 @@ import CoreData
 
 struct ScheduleView: View {
     
-    @ObservedObject var calendarModel: CalendarModel = CalendarModel()
-    
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    
+    @EnvironmentObject var scheduleModel: SchedulingViewModel
+    @EnvironmentObject var shiftStore: ScheduledShiftStore
     
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
@@ -30,7 +31,7 @@ struct ScheduleView: View {
     
     @State private var showCreateShiftSheet = false
     
-    @State private var dateSelected: DateComponents?
+    @State private var dateSelected: DateComponents? = Date().dateComponents
     @State private var displayEvents = false
     
     @State private var deleteJobAlert = false
@@ -49,6 +50,9 @@ struct ScheduleView: View {
         fetchRequest.predicate = nil
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)]
         _scheduledShifts = FetchRequest(fetchRequest: fetchRequest)
+        
+        _dateSelected = State(initialValue: Date().dateComponents)
+        
     }
     
     
@@ -58,21 +62,18 @@ struct ScheduleView: View {
                 if !showAllScheduledShiftsView{
                     
                     List {
-                       // Section{
-                            CalendarView(interval: DateInterval(start: .now, end: .distantFuture), dateSelected: $dateSelected, displayEvents: $displayEvents, someScheduledShifts: scheduledShifts)
-                            .onReceive(calendarModel.$shiftDeleted) { _ in
-                                
-                            }
-                        
-                        
-                               // .id(scheduledShifts.count)
-                     //
-                                .listRowBackground(Color.clear)
+                        let interval = DateInterval(start: .now, end: .distantFuture)
+                        CalendarView(interval: interval, shiftStore: shiftStore, dateSelected: $dateSelected, displayEvents: $displayEvents)
+                            .padding()
+                            .tint(colorScheme == .dark ? .white.opacity(0.7) : nil)
+                                .listRowBackground(Color("SquaresColor"))
                                 .listRowSeparator(.hidden)
-                    //    Section{
+                                .listRowInsets(.init(top: 0, leading: 10, bottom: 0, trailing: 10))
+     
                         ScheduledShiftsView(dateSelected: $dateSelected)
-                            .environmentObject(calendarModel)
-                  //      }
+                            .environmentObject(shiftStore)
+                            .environmentObject(scheduleModel)
+
                         
                         
                         
@@ -88,15 +89,6 @@ struct ScheduleView: View {
                 }
             }
             
-            
-            
-          /*  .sheet(isPresented: $displayEvents) {
-                ScheduledShiftsView(dateSelected: $dateSelected, showMenu: $showMenu)
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.hidden)
-                    .presentationCornerRadius(35)
-                    .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-            }*/
             
             .navigationBarTitle("Schedule", displayMode: .inline)
             .toolbar{
@@ -124,7 +116,7 @@ struct ScheduleView: View {
                             Image(systemName: "plus")
                                 .bold()
                         }.padding()
-                        .disabled(dateSelected == nil)
+                        //.disabled(dateSelected == nil)
                         .disabled(jobSelectionViewModel.selectedJobUUID == nil)
                     }
                 ToolbarItem(placement: .navigationBarLeading){
@@ -142,23 +134,30 @@ struct ScheduleView: View {
             
             
                 .sheet(isPresented: $showCreateShiftSheet) {
-                    CreateShiftForm(jobs: jobs, dateSelected: dateSelected?.date, onShiftCreated: {
-                        showCreateShiftSheet = false
-                    })
+                    CreateShiftForm(dateSelected: dateSelected?.date ?? Date())
+                    .environmentObject(shiftStore)
+                    .environmentObject(jobSelectionViewModel)
                     .environment(\.managedObjectContext, viewContext)
                     .presentationDetents([.large])
                     .presentationCornerRadius(35)
                     .presentationBackground(colorScheme == .dark ? .black : .white)
                 }
             
+        }.onAppear{
+            
+            shiftStore.fetchShifts(from: scheduledShifts, jobModel: jobSelectionViewModel)
+            
         }
         
-    }
-    // old
-    func deleteJobFromWatch(_ job: Job) {
-        if let jobId = job.uuid {
-            WatchConnectivityManager.shared.sendDeleteJobMessage(jobId)
+        .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
+            
+            shiftStore.fetchShifts(from: scheduledShifts, jobModel: jobSelectionViewModel)
+            
+            print("Changed job")
+            shiftStore.changedJob = jobSelectionViewModel.fetchJob(in: viewContext)
+            
         }
+        
     }
     
     private func fetchShifts() -> [ScheduledShift] {

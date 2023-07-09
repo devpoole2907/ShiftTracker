@@ -43,6 +43,16 @@ struct PersistenceController {
                         storeDescription.cloudKitContainerOptions = containerOptions
                     }
                 }
+        // use this to wipe core data upon launch if modifying the data base
+     /*   do {
+            try container.persistentStoreCoordinator.destroyPersistentStore(at: container.persistentStoreDescriptions.first!.url!, type: .sqlite)
+        } catch {
+            
+            fatalError("Error: \(error.localizedDescription)")
+            
+        } */
+            
+        
 
         container.loadPersistentStores { description, error in
             if let error = error {

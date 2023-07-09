@@ -10,22 +10,10 @@ import CoreData
 
 struct CalendarView: UIViewRepresentable {
     let interval: DateInterval
+    @ObservedObject var shiftStore: ScheduledShiftStore
     @Binding var dateSelected: DateComponents?
     @Binding var displayEvents: Bool
-    var someScheduledShifts: FetchedResults<ScheduledShift>
     
-    
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    @FetchRequest(entity: ScheduledShift.entity(),
-                  sortDescriptors: [],
-                  animation: .default)
-    private var scheduledShifts: FetchedResults<ScheduledShift>
-    
-    @FetchRequest(entity: Job.entity(),
-                  sortDescriptors: [],
-                  animation: .default)
-    private var jobs: FetchedResults<Job>
     
     func makeUIView(context: Context) -> some UICalendarView {
         let view = UICalendarView()
@@ -34,6 +22,15 @@ struct CalendarView: UIViewRepresentable {
         view.availableDateRange = interval
         let dateSelection = UICalendarSelectionSingleDate(delegate: context.coordinator)
         view.selectionBehavior = dateSelection
+        
+        let startDateComponents = view.calendar.dateComponents([.year, .month, .day], from: interval.start)
+            dateSelection.setSelected(startDateComponents, animated: true)
+        
+        context.coordinator.dateSelection = dateSelection
+        
+       // dateSelection.setSelected(interval.start.dateComponents, animated: true)
+        print("date is set to \(startDateComponents)")
+        
         //view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
@@ -42,96 +39,115 @@ struct CalendarView: UIViewRepresentable {
         return view
     }
     func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self, viewContext: viewContext)
+        Coordinator(parent: self, shiftStore: _shiftStore)
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        var dateComponentsSet = Set<DateComponents>()
         
-        for scheduledShift in scheduledShifts {
-            guard let dateComponents = scheduledShift.startDate?.dateComponents else { continue }
-            dateComponentsSet.insert(dateComponents)
-        }
+        print("I have updated the calendar UI.")
         
-        // Convert the Set back to an array
-        let dateComponents = Array(dateComponentsSet)
-        let validDateComponents = dateComponents.filter { $0.isValidDate(in: Calendar.current) }
-        // prevents reloading decorations not currently visible which results in a crash
-        if let selectedDate = dateSelected, let visibleMonth = selectedDate.month, let visibleYear = selectedDate.year {
-            let visibleDateComponents = validDateComponents.filter { dateComponents in
-                guard let month = dateComponents.month, let year = dateComponents.year else { return false }
-                return month == visibleMonth && year == visibleYear
+        
+        
+   
+            for shift in shiftStore.previousSelectedShifts {
+                print("updating decorations for previous selection")
+                uiView.reloadDecorations(forDateComponents: [shift.dateComponents], animated: true)
             }
-            uiView.reloadDecorations(forDateComponents: visibleDateComponents, animated: true)
-        } else {
-            uiView.reloadDecorations(forDateComponents: [], animated: true)
+            
+            print("shift count is: \(shiftStore.previousSelectedShifts.count)")
+            
+        
+        
+        
+        for shift in shiftStore.shifts.prefix(60) {
+   
+                uiView.reloadDecorations(forDateComponents: [shift.dateComponents], animated: true)
+            
         }
+        
+        if let changedEvent = shiftStore.changedShift {
+            print("an event was changed.")
+   
+                uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
+                shiftStore.changedShift = nil
+            
+                }
         
         
     }
     
     class Coordinator: NSObject, UICalendarViewDelegate, UICalendarSelectionSingleDateDelegate {
         var parent: CalendarView
+        var dateSelection: UICalendarSelectionSingleDate?
         
-        let viewContext: NSManagedObjectContext
+        @ObservedObject var shiftStore: ScheduledShiftStore
         
-        init(parent: CalendarView, viewContext: NSManagedObjectContext) {
+        init(parent: CalendarView, shiftStore: ObservedObject<ScheduledShiftStore>) {
             self.parent = parent
-            self.viewContext = viewContext
+            self._shiftStore = shiftStore
         }
         
         @MainActor
         func calendarView(_ calendarView: UICalendarView,
                           decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
             
-            let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
             
-            // Filter by start date
-            if let date = dateComponents.date?.startOfDay {
-                fetchRequest.predicate = NSPredicate(format: "startDate >= %@ AND startDate < %@",
-                                                     argumentArray: [date, date.addingTimeInterval(24 * 60 * 60)])
-                fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startDate", ascending: true),
-                                                NSSortDescriptor(key: "objectID", ascending: true)]
-                
-            }
             
-            do {
-                // Execute the fetch request
-                let scheduledShifts = try viewContext.fetch(fetchRequest)
-                
-                if scheduledShifts.isEmpty { return nil }
-                
-                if scheduledShifts.count > 1 {
-                    let color: UIColor = calendarView.traitCollection.userInterfaceStyle == .dark ? .white : .black
-                    return .image(UIImage(systemName: "doc.on.doc.fill"),
-                                  color: color,
-                                  size: .large)
-                }
-                
-                
-                let job = scheduledShifts.first!.job
-                
-                let color = UIColor(red: CGFloat(job?.colorRed ?? 0),
-                                    green: CGFloat(job?.colorGreen ?? 0),
-                                    blue: CGFloat(job?.colorBlue ?? 0),
-                                    alpha: 1)
-                
-                return .image(UIImage(systemName: job?.icon ?? "briefcase.circle"),
-                              color: color,
+            let foundShifts = shiftStore.shifts
+                .filter {$0.startDate.startOfDay == dateComponents.date?.startOfDay}
+            if foundShifts.isEmpty { return nil }
+            
+            if foundShifts.count > 1 {
+                return .image(UIImage(systemName: "doc.on.doc.fill"),
+                              color: calendarView.traitCollection.userInterfaceStyle == .dark ? .white : .black,
                               size: .large)
-            } catch {
-                print("Failed to fetch ScheduledShifts: \(error)")
-                return nil
             }
+            let singleShift = foundShifts.first!
+        
+            
+            
+            let job = singleShift.job
+                            
+            let color = UIColor(red: CGFloat(job?.colorRed ?? 0.0 ),
+                                green: CGFloat(job?.colorGreen ?? 0.0 ),
+                                blue: CGFloat(job?.colorBlue ?? 0.0 ),
+                                                alpha: 1)
+                            
+            return .image(UIImage(systemName: job?.icon ?? "briefcase.circle"),
+                                          color: color,
+                                          size: .large)
+            
+            
+        }
+    
+        func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
+              parent.dateSelected = dateComponents
+            
+            if dateComponents == nil {
+                        // User has deselected a date, so reselect the current date
+                        let currentDateComponents = Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: Date())
+                        dateSelection?.setSelected(currentDateComponents, animated: true)
+                    }
+            
+            guard let dateComponents else { return }
+            
+            
+            let foundEvents = shiftStore.shifts
+                .filter {$0.startDate.startOfDay == dateComponents.date?.startOfDay}
+            if !foundEvents.isEmpty {
+                  parent.displayEvents.toggle()
+            }
+            
+            print("the tapped date is : \(dateComponents)")
             
             
         }
         
-        func dateSelection(_ selection: UICalendarSelectionSingleDate,
-                           didSelectDate dateComponents: DateComponents?) {
+        func dateSelection(_ selection: UICalendarSelectionSingleDate, didDeselectDate dateComponents: DateComponents?) {
+            
+            print("deselected date")
+            
             parent.dateSelected = dateComponents
-            guard let dateComponents else { return }
-            parent.displayEvents.toggle()
         }
         
         func dateSelection(_ selection: UICalendarSelectionSingleDate,
@@ -139,7 +155,11 @@ struct CalendarView: UIViewRepresentable {
             return true
         }
         
+        func dateSelection(_ selection: UICalendarSelectionSingleDate,
+                           canDeselectDate dateComponents: DateComponents?) -> Bool {
+            return true
+        }
+        
     }
-    
     
 }

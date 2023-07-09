@@ -26,6 +26,8 @@ struct MainWithSideBarView: View {
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionViewModel()
     @StateObject var navigationState = NavigationState()
+    @StateObject var shiftStore = ScheduledShiftStore()
+    @StateObject var scheduleModel = SchedulingViewModel()
     
     
     private let notificationManager = ShiftNotificationManager.shared
@@ -96,6 +98,8 @@ struct MainWithSideBarView: View {
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(navigationState)
                                     .environmentObject(jobSelectionModel)
+                                    .environmentObject(shiftStore)
+                                    .environmentObject(scheduleModel)
                                     .navigationBarTitleDisplayMode(.inline)
                          
                                     .tag(Tab.schedule)
