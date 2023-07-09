@@ -19,7 +19,6 @@ struct CustomToggleStyle: ToggleStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         
-        let toggleColor: Color = colorScheme == .dark ? .orange : .cyan
         let tickColor: Color = colorScheme == .dark ? .black : .black
         
         HStack {

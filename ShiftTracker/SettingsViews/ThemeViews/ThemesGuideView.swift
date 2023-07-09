@@ -22,8 +22,8 @@ struct ThemesGuideView: View {
                     
                     Rectangle()
                         .frame(maxWidth: 350, maxHeight: 125)
-                        .foregroundStyle(.thinMaterial)
-                        .background(.thinMaterial)
+                        .foregroundStyle(Color("SquaresColor"))
+                        .background(Color("SquaresColor"))
                         .cornerRadius(12)
                         
                     
@@ -74,8 +74,8 @@ struct ThemesGuideView: View {
                 Rectangle()
                 
                     .frame(maxWidth: 350, maxHeight: 250)
-                    .background(.thinMaterial)
-                    .foregroundStyle(.thinMaterial)
+                    .background(Color("SquaresColor"))
+                    .foregroundStyle(Color("SquaresColor"))
                     .cornerRadius(12)
                 
                 
@@ -92,8 +92,8 @@ struct ThemesGuideView: View {
                             .cornerRadius(12)
                         HStack{
                             Rectangle()
-                                .foregroundStyle(.thinMaterial)
-                                .background(.thinMaterial)
+                                .foregroundStyle(Color("SquaresColor"))
+                                .background(Color("SquaresColor"))
                                 .frame(maxWidth: 30, maxHeight: 140)
                                 .cornerRadius(12)
                                 .padding(.top,80)
@@ -101,8 +101,8 @@ struct ThemesGuideView: View {
                                 .padding(.horizontal, 0)
                             
                             Rectangle()
-                                .foregroundStyle(.thinMaterial)
-                                .background(.thinMaterial)
+                                .foregroundStyle(Color("SquaresColor"))
+                                .background(Color("SquaresColor"))
                                 .frame(maxWidth: 30, maxHeight: 165)
                                 .cornerRadius(12)
                                 .padding(.top, 55)
@@ -111,8 +111,8 @@ struct ThemesGuideView: View {
                             
                             
                             Rectangle()
-                                .foregroundStyle(.thinMaterial)
-                                .background(.thinMaterial)
+                                .foregroundStyle(Color("SquaresColor"))
+                                .background(Color("SquaresColor"))
                                 .frame(maxWidth: 30, maxHeight: 90)
                                 .cornerRadius(12)
                                 .padding(.top, 130)

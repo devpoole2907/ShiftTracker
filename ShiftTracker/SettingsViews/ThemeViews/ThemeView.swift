@@ -48,7 +48,7 @@ struct ThemeView: View {
                             TempGraph()
                                 .padding()
                                 .frame(width: 200, height: 300)
-                                .background(.thinMaterial)
+                                .background(Color("SquaresColor"))
                                 .cornerRadius(12)
                             
                             VStack{
@@ -58,7 +58,7 @@ struct ThemeView: View {
                                     Text("eat my booty hole")
                                         .padding()
                                         .frame(maxWidth: 150, maxHeight: 140)
-                                        .background(.thinMaterial)
+                                        .background(Color("SquaresColor"))
                                         .cornerRadius(12)
                                         .foregroundStyle(themeManager.customTextColor)
                                         .font(.title)
@@ -84,7 +84,7 @@ struct ThemeView: View {
                                         .font(.title2)
                                         .frame(maxWidth: 150, maxHeight: 150)
                                     
-                                        .background(.thinMaterial)
+                                        .background(Color("SquaresColor"))
                                         .cornerRadius(12)
                                     
                                     
@@ -179,7 +179,7 @@ struct ThemeView: View {
         
     }
     
-    struct ContentView_Previews: PreviewProvider {
+    struct ThemeView_Previews: PreviewProvider {
         static var previews: some View {
             ThemeView()
                 .environmentObject(ThemeDataManager())

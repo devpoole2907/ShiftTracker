@@ -31,6 +31,7 @@ struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     @StateObject private var locationManager = LocationDataManager()
     
@@ -93,7 +94,7 @@ struct SettingsView: View {
                         }
                     }
                     
-                    NavigationLink(destination: EmptyView()){
+                    NavigationLink(destination: ThemeView()){
                         HStack {
                             Image(systemName: "paintpalette")
                             Spacer().frame(width: 10)
@@ -101,7 +102,7 @@ struct SettingsView: View {
                                 .font(.title2)
                                 .bold()
                             Spacer()
-                            Text("Default")
+                            Text(themeManager.isCustom ? "Custom" : "Default")
                                 .foregroundStyle(.gray)
                                 .bold()
                         }

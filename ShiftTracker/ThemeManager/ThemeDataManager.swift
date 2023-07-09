@@ -39,7 +39,6 @@ class ThemeDataManager: ObservableObject {
     @Environment(\.colorScheme) var colorScheme
     
     
-    
     @Published var selectedColorToChange: CustomColor = .customUIColorPicker
     @Published var selectedButton: Int? = nil
     @Published var showDetail = false
@@ -85,6 +84,18 @@ class ThemeDataManager: ObservableObject {
             saveColor()
         }
     }
+    
+    @Published var isCustom: Bool = false {
+        didSet {
+            print("setting iscustom to: \(isCustom)")
+            UserDefaults.standard.set(isCustom, forKey: "isCustomTheme")
+            
+        }
+        
+        
+    }
+    
+    
 
     init() {
         let earningsRed = UserDefaults.standard.double(forKey: "earningsColorRed")
@@ -122,10 +133,17 @@ class ThemeDataManager: ObservableObject {
         breaksColor = Color(red: breaksRed, green: breaksGreen, blue: breaksBlue)
         customUIColor = Color(red: customUIRed, green: customUIGreen, blue: customUIBlue)
         tipsColor = Color(red: tipsRed, green: tipsGreen, blue: tipsBlue)
+        
+        
+        isCustom = UserDefaults.standard.bool(forKey: "isCustomTheme")
+        
         //resetColorsToDefaults()
     }
 
     private func saveColor() {
+        
+        self.isCustom = true
+        
         let earningsComponents = UIColor(earningsColor).rgbComponents
         earningsColorRed = Double(earningsComponents.0)
         earningsColorGreen = Double(earningsComponents.1)
@@ -164,6 +182,9 @@ class ThemeDataManager: ObservableObject {
 
     
     func resetColorsToDefaults() {
+        
+        
+        
         earningsColor = Color.green
         customTextColor = Color.black
         taxColor = Color.pink
@@ -181,7 +202,7 @@ class ThemeDataManager: ObservableObject {
         print("tipsColor default: \(UIColor(tipsColor).rgbComponents)")
         
         
-        
+        self.isCustom = false
         
     }
 }
