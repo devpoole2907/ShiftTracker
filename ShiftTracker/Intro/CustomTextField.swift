@@ -17,7 +17,7 @@ struct CustomTextField: View {
         HStack(spacing: 0){
             leadingIcon
                 .font(.callout)
-                .foregroundColor(.gray)
+                .foregroundStyle(.gray)
                 .frame(width: 40, alignment: .leading)
             
             
