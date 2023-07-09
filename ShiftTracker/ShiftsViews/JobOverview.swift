@@ -31,12 +31,15 @@ struct JobOverview: View {
     
     @FetchRequest var shifts: FetchedResults<OldShift>
     
-    init(){
+    init(navPath: Binding<[OldShift]>){
         
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         fetchRequest.predicate = nil
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
         _shifts = FetchRequest(fetchRequest: fetchRequest)
+        
+        
+        _navPath = navPath
     }
     
     private var currencyFormatter: NumberFormatter {
@@ -46,7 +49,7 @@ struct JobOverview: View {
         return formatter
     }
     
-    
+    @Binding var navPath: [OldShift]
     
     @State private var selectedView: String? = nil
     
@@ -59,7 +62,7 @@ struct JobOverview: View {
         
         let backgroundColor: Color = colorScheme == .dark ? Color(red: 28/255, green: 28/255, blue: 30/255) : .white
         let textColor: Color = colorScheme == .dark ? .white : .black
-        NavigationStack{
+        NavigationStack(path: $navPath){
         List{
             Section{
                 GeometryReader { geometry in
@@ -101,26 +104,53 @@ struct JobOverview: View {
             
             Section{
                 ForEach(shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }).prefix(10), id: \.objectID) { shift in
-                    NavigationLink(destination: DetailView(shift: shift, presentedAsSheet: false).navigationBarTitle(Text("Shift Details")), label: {
+                    
+                    NavigationLink(value: shift) {
                         ShiftDetailRow(shift: shift)
-                    })
+                            
+                        
+                    }
+                    .navigationDestination(for: OldShift.self) { shift in
+                        
+                        
+                        // the worlds greatest workaround, take me to shiftslist if the start date doesnt exist (i.e we've created a fake shift so the button navigates and is compatible with the navigation path array data type
+                        if shift.shiftStartDate != nil {
+                            
+                            DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle("Shift Details")
+                            
+                        } else {
+                            
+                      
+                                ShiftsList(navPath: $navPath).environmentObject(shiftManager)
+                                
+                            
+                        }
+                        
+                       
+                        
+                    }
                     
                     
                 }
             } header: {
-                NavigationLink(destination: ShiftsList().environmentObject(shiftManager)) {
+                
+                NavigationLink(value: OldShift(context: viewContext)) {
                     
-                        Text("Latest Shifts")
-                            .textCase(nil)
-                            .foregroundColor(textColor)
-                            .padding(.leading, -12)
-                            .font(.title2)
-                            .bold()
-                        Spacer()
-                        Image(systemName: "chevron.right")
+                    Text("Latest Shifts")
+                        .textCase(nil)
+                        .foregroundColor(textColor)
+                        .padding(.leading, -12)
+                        .font(.title2)
                         .bold()
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                    .bold()
+                    
+                }
+                
+                        
                   
-                    }
+                    
             }
             .listRowBackground(Color("SquaresColor"))
         }.scrollContentBackground(.hidden)
@@ -278,7 +308,7 @@ struct JobOverview: View {
     }
     
 }
-
+/*
 struct JobOverview_Previews: PreviewProvider {
     static var previews: some View {
         let mockShiftManager = ShiftDataManager() // provide mock implementation
@@ -286,11 +316,11 @@ struct JobOverview_Previews: PreviewProvider {
         let mockJobSelectionViewModel = JobSelectionViewModel() // provide mock implementation
         let mockManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType) // provide mock implementation
 
-        JobOverview()
+        JobOverview(navPath: <#Binding<[OldShift]>#>)
             .environmentObject(mockShiftManager)
             .environmentObject(mockNavigationState)
             .environmentObject(mockJobSelectionViewModel)
             .environment(\.managedObjectContext, mockManagedObjectContext)
     }
 }
-
+*/

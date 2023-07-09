@@ -29,6 +29,9 @@ struct ContentView: View {
     
     @EnvironmentObject var navigationState: NavigationState
     
+    // change me to be a binding and take from mainwithsidebar later
+    @State var navPath: [OldShift] = []
+    
     @Environment(\.presentationMode) private var presentationMode
     
     @EnvironmentObject var viewModel: ContentViewModel
@@ -336,7 +339,7 @@ struct ContentView: View {
             case .detailSheet:
                 if let thisShift = viewModel.lastEndedShift {
                     NavigationStack{
-                        DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $activeSheet).navigationBarTitle("Shift Ended")
+                        DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $activeSheet, navPath: $navPath).navigationBarTitle("Shift Ended")
                             .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
                             .environment(\.managedObjectContext, context)
                     }.presentationDetents([ .large])

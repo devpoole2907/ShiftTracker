@@ -23,6 +23,11 @@ struct MainWithSideBarView: View {
     
     @State private var jobId: NSManagedObjectID? = nil
     
+    @State private var navPath: [OldShift] = []
+    
+    @State private var settingsPath: [Int] = []
+    
+    
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionViewModel()
     @StateObject var navigationState = NavigationState()
@@ -92,7 +97,7 @@ struct MainWithSideBarView: View {
                                     .tag(Tab.home)
 
 
-                                        JobOverview()
+                                JobOverview(navPath: $navPath)
                                             .environment(\.managedObjectContext, context)
                                             .environmentObject(jobSelectionModel)
                                             .environmentObject(navigationState)
@@ -109,7 +114,7 @@ struct MainWithSideBarView: View {
                          
                                     .tag(Tab.schedule)
                                 
-                                SettingsView()
+                                SettingsView(navPath: $settingsPath)
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(navigationState)
                                     .navigationBarTitleDisplayMode(.inline)
@@ -124,9 +129,9 @@ struct MainWithSideBarView: View {
                                 //Divider()
                                 HStack(spacing: 0) {
                                     TabButton(tab: .home, useSystemImage: true)
-                                    TabButton(tab: .timesheets, useSystemImage: true) // Use system image for this tab only
+                                    TabButton(tab: .timesheets, useSystemImage: true, action: {navPath = []}) // Use system image for this tab only
                                     TabButton(tab: .schedule, useSystemImage: true)
-                                    TabButton(tab: .settings, useSystemImage: true)
+                                    TabButton(tab: .settings, useSystemImage: true, action: {settingsPath = []})
                                 }
                                 .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
                                 .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
@@ -273,9 +278,35 @@ func onEnd(value: DragGesture.Value) {
 }
     
     @ViewBuilder
-    func TabButton(tab: Tab, useSystemImage: Bool = false) -> some View {
+    func TabButton(tab: Tab, useSystemImage: Bool = false, action: (() -> Void)? = nil) -> some View {
         Button {
-            withAnimation { currentTab = tab }
+            
+            if currentTab != tab {
+                withAnimation {
+                    currentTab = tab
+                }
+                
+            } else {
+                
+                guard let action else {
+                    
+                    return
+                }
+                
+                action()
+                
+                
+            }
+            
+            
+        
+                
+                
+            
+            
+            
+        
+            
         } label: {
             if useSystemImage, let systemImage = tab.systemImage {
                 Image(systemName: systemImage)

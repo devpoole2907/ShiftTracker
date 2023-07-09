@@ -19,7 +19,6 @@ struct TipView: View {
     @State private var products: [Product] = []
     
     var body: some View {
-        NavigationStack{
             VStack {
                 List{
                     if !isProVersion{
@@ -84,7 +83,7 @@ struct TipView: View {
                 
             }
             
-        }.navigationTitle("Support Us")
+        .navigationTitle("Support Us")
             .sheet(isPresented: $showingProView) { // present the sheet with ProView
                 if #available(iOS 16.4, *) {
                     ProView()

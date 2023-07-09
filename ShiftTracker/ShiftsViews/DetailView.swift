@@ -25,6 +25,8 @@ struct DetailView: View {
     var presentedAsSheet: Bool
     @Binding var activeSheet: ActiveSheet?
     
+    @Binding var navPath: [OldShift]
+    
     @State private var notes: String
     @FocusState private var noteIsFocused: Bool
     @State var isEditing: Bool = false
@@ -68,7 +70,7 @@ struct DetailView: View {
     
     @EnvironmentObject var navigationState: NavigationState
     
-    init(shift: OldShift, presentedAsSheet: Bool, activeSheet: Binding<ActiveSheet?>? = nil) {
+    init(shift: OldShift, presentedAsSheet: Bool, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<[OldShift]>) {
         self.shift = shift
         _notes = State(wrappedValue: shift.shiftNote ?? "")
         _selectedStartDate = State(wrappedValue: shift.shiftStartDate ?? Date())
@@ -82,6 +84,7 @@ struct DetailView: View {
         _selectedTotalTips = State(wrappedValue: "\(shift.totalTips)")
         self.presentedAsSheet = presentedAsSheet
         _activeSheet = activeSheet ?? Binding.constant(nil)
+        _navPath = navPath 
     }
     
     func totalBreakDuration(for breaks: Set<Break>) -> TimeInterval {
@@ -547,7 +550,7 @@ struct DetailView: View {
     
     
 }
-
+/*
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
         @StateObject var navigationState = NavigationState()
@@ -567,7 +570,7 @@ struct DetailView_Previews: PreviewProvider {
         }
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
-}
+} */
 
 private extension TimeInterval {
     func stringFromTimeInterval() -> String {

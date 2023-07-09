@@ -51,6 +51,8 @@ struct ShiftsList: View {
 
     @State private var selectedSort = ShiftSort.default
     
+    @Binding var navPath: [OldShift]
+    
     @State private var selection = Set<NSManagedObjectID>()
     
     private func deleteShift(_ shift: OldShift) {
@@ -66,9 +68,18 @@ struct ShiftsList: View {
         List(selection: $selection){
             
             ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
-            NavigationLink(destination: DetailView(shift: shift, presentedAsSheet: false).navigationBarTitle(Text("Shift Details")), label: {
-                ShiftDetailRow(shift: shift)
-            })
+                
+                
+                NavigationLink(value: shift) {
+                    ShiftDetailRow(shift: shift)
+                }
+                
+                .navigationDestination(for: OldShift.self) { shift in
+                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle("Shift Details")
+                    
+                }
+                
+            
             .listRowBackground(Color("SquaresColor"))
             
             .swipeActions {

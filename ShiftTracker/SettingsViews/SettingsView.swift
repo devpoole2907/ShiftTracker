@@ -35,6 +35,10 @@ struct SettingsView: View {
     
     @StateObject private var locationManager = LocationDataManager()
     
+    @Binding var navPath: [Int]
+    
+    let settingsScreens: [any View] = [ThemeView(), LocationView(), NotificationView(), AppearanceView()]
+    
     var body: some View {
         
         let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
@@ -46,7 +50,7 @@ struct SettingsView: View {
         
         
         
-        NavigationStack{
+        NavigationStack(path: $navPath){
             ScrollView{
                 VStack(spacing: 20){
                     /*   if isSubscriptionActive(){
@@ -89,12 +93,13 @@ struct SettingsView: View {
                                         }
                                     }
                                     .frame(maxWidth: UIScreen.main.bounds.width - 20)
-                                }//.padding(.bottom, 75)
+                                }
                             }
                         }
                     }
+
                     
-                    NavigationLink(destination: ThemeView()){
+                    NavigationLink(value: 0){
                         HStack {
                             Image(systemName: "paintpalette")
                             Spacer().frame(width: 10)
@@ -110,7 +115,8 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
-                    NavigationLink(destination: LocationView()){
+                    NavigationLink(value: 1){
+                        
                         HStack {
                             Image(systemName: "location")
                             Spacer().frame(width: 10)
@@ -127,10 +133,13 @@ struct SettingsView: View {
                                     .bold()
                             }
                         }
+                        
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                    NavigationLink(destination: NotificationView()){
+                    
+                    NavigationLink(value: 2){
+                        
                         HStack {
                             Image(systemName: "bell")
                                 .padding(.leading, 2)
@@ -140,11 +149,13 @@ struct SettingsView: View {
                                 .bold()
                             Spacer()
                         }
+                        
                     }.padding()
-                    // .frame(maxWidth: .infinity)
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                    NavigationLink(destination: AppearanceView()) {
+                    
+                    
+                    NavigationLink(value: 3){
                         HStack {
                             Image("AppearanceIconSymbol")
                                 .padding(.leading, -1)
@@ -160,6 +171,22 @@ struct SettingsView: View {
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
+                    
+                    
+                    
+                        
+                        
+                        
+                        
+                    
+                    
+                    
+                /*    NavigationLink(destination: AppearanceView()) {
+                        
+                    } */
+                    
+                        
+                    
                     Toggle(isOn: $authEnabled){
                         HStack {
                             Image(systemName: "faceid")
@@ -235,7 +262,7 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
-                    NavigationLink(destination: TipView()){
+                    NavigationLink(value: 4){
                         HStack {
                             Image(systemName: "hammer.circle.fill")
                             Spacer().frame(width: 10)
@@ -282,6 +309,36 @@ struct SettingsView: View {
                 
                 
             }.scrollContentBackground(.hidden)
+            
+                .navigationDestination(for: Int.self) { i in
+                    
+                    if i == 0 {
+                        
+                        ThemeView()
+                        
+                    }
+                    else if i == 1 {
+                        
+                        LocationView()
+                        
+                    } else if i == 2 {
+                        
+                        NotificationView()
+                        
+                    } else if i == 3 {
+                        
+                        AppearanceView()
+                        
+                    } else {
+                        
+                        TipView()
+                        
+                        
+                    }
+        
+                    
+                    
+                }
                 
                 .navigationTitle("Settings")
             // .toolbarRole(.editor)
@@ -343,12 +400,12 @@ struct SettingsView: View {
     
     
 }
-
+/*
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
     }
-}
+} */
 
 
 struct ProSettingsView: View{
@@ -420,7 +477,7 @@ struct NotificationView: View{
                 .scrollContentBackground(.hidden)
             
             .navigationTitle("Notifications")
-            .toolbarRole(.editor)
+      
     }
     
 }
@@ -469,7 +526,6 @@ struct LocationView: View{
                 }.scrollContentBackground(.hidden)
             
             .navigationTitle("Location")
-        .toolbarRole(.editor)
         
     }
 }
@@ -509,7 +565,7 @@ struct AppearanceView: View {
         }.scrollContentBackground(.hidden)
             .padding(.horizontal)
             .navigationTitle("Appearance")
-        .toolbarRole(.editor)
+  
     }
 }
 
