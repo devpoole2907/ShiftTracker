@@ -149,6 +149,8 @@ struct MainWithSideBarView: View {
                                 .fill(
                                     Color.primary.opacity(Double((offset / sideBarWidth) / 5))
                                 )
+                            
+                            
                                 .ignoresSafeArea(.container, edges: .vertical)
                         )
                     }

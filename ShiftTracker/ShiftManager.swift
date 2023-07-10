@@ -52,6 +52,16 @@ class ShiftDataManager: ObservableObject {
     }
     
     
+    func deleteShift(_ shift: OldShift, in viewContext: NSManagedObjectContext) {
+        viewContext.delete(shift)
+        do {
+            try viewContext.save()
+        } catch {
+            print("Error deleting shift: \(error)")
+        }
+    }
+    
+    
     // this function determines whether a shift should be included in the current selection of job
      func shouldIncludeShift(_ shift: OldShift, jobModel: JobSelectionViewModel) -> Bool {
         if let selectedJobUUID = jobModel.selectedJobUUID {

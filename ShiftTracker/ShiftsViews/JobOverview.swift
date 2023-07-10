@@ -121,17 +121,24 @@ struct JobOverview: View {
                         // it was not the worlds greatest workaround ... lets do things properly!
                             DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle("Shift Details")
                             
-                        } else {
-                            
-                      
-                                ShiftsList(navPath: $navPath).environmentObject(shiftManager)
+                        }
                                 
                             
-                    }
+                    
                     
                     .navigationDestination(for: Int.self) { _ in
                         
                         ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState)
+                        
+                    }
+                    
+                    .swipeActions {
+                 
+                            Button(role: .destructive) {
+                                shiftManager.deleteShift(shift, in: viewContext)
+                            } label: {
+                                Image(systemName: "trash")
+                            }
                         
                     }
                     
@@ -220,7 +227,7 @@ struct JobOverview: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
-                        .font(.title2)
+                        .bold()
                 }
                 .haptics(onChangeOf: shiftManager.statsMode, type: .soft)
             }

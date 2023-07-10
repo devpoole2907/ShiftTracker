@@ -9,14 +9,18 @@ import SwiftUI
 import CoreData
 
 struct AllScheduledShiftsView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(
-        entity: ScheduledShift.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: false)]
-    ) private var allShifts: FetchedResults<ScheduledShift>
     
-    var groupedShifts: [Date: [ScheduledShift]] {
-        Dictionary(grouping: allShifts, by: { $0.startDate?.startOfTheDay() ?? Date() })
+    @EnvironmentObject var shiftStore: ScheduledShiftStore
+    @EnvironmentObject var scheduleModel: SchedulingViewModel
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(entity: ScheduledShift.entity(),
+                  sortDescriptors: [],
+                  animation: .default)
+    private var scheduledShifts: FetchedResults<ScheduledShift>
+    
+    var groupedShifts: [Date: [SingleScheduledShift]] {
+        Dictionary(grouping: shiftStore.shifts, by: { $0.startDate.startOfTheDay() })
     }
     
     @Environment(\.colorScheme) var colorScheme
@@ -31,8 +35,8 @@ struct AllScheduledShiftsView: View {
     
     var nextShiftDate: Date? {
         let currentDate = Date()
-        return allShifts
-            .compactMap { $0.startDate?.startOfTheDay() }
+        return shiftStore.shifts
+            .compactMap { $0.startDate.startOfTheDay() }
             .filter { $0 >= currentDate.startOfTheDay() }
             .min()
     }
@@ -50,13 +54,60 @@ struct AllScheduledShiftsView: View {
                     ForEach(groupedShifts.keys.sorted(by: <), id: \.self) { date in
                         Section(header: Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(textColor)) {
                             ForEach(groupedShifts[date] ?? [], id: \.self) { shift in
-                                ScheduledShiftRow(shift: shift, viewContext: viewContext)
+                                ScheduledShiftRow(shift: shift)
+                                    .environmentObject(shiftStore)
+                                    .environmentObject(scheduleModel)
+                                
+                                    .swipeActions {
+                                        Button(role: .destructive) {
+                                            
+                                            scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                            
+                                            
+                                            
+                                            
+                                        } label: {
+                                            Image(systemName: "trash")
+                                        }
+                                        
+                                        Button(role: .none){
+                                            
+                                            // edit scheduled shift to go here
+                                            
+                                            
+                                        } label: {
+                                            
+                                            Image(systemName: "pencil")
+                                                
+                                            
+                                        }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
+                                        
+                                        Button(role: .cancel) {
+                                            
+                                           // scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                            
+                                            
+                                                //dismiss()
+                                                CustomConfirmationAlert(action: {
+                                                    scheduleModel.cancelRepeatingShiftSeries(shift: shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                                }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
+                                            
+                                            
+                                            
+                                        } label: {
+                                            Image(systemName: "clock.arrow.2.circlepath")
+                                        }.disabled(!shift.isRepeating)
+                                        
+                                        
+                                        
+                                    }
+                                
                             }
-                        }.id(date.startOfTheDay())
+                        }//.id(date.startOfTheDay())
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                             .foregroundColor(date < Date() ? .gray : textColor)
-                    }.id(UUID())
+                    }//.id(UUID())
                 }
                 .onAppear {
                     if let nextShiftDate = nextShiftDate {
@@ -64,10 +115,6 @@ struct AllScheduledShiftsView: View {
                             scrollProxy.scrollTo(nextShiftDate, anchor: .top)
                         }
                     }
-                   // navigationState.gestureEnabled = false
-                }
-                .onDisappear {
-                 //   navigationState.gestureEnabled = true
                 }
                 
                 .listStyle(PlainListStyle())
@@ -99,8 +146,13 @@ extension Date {
 
 
 struct ScheduledShiftRow: View {
-    let shift: ScheduledShift
-    let viewContext: NSManagedObjectContext
+    
+    @EnvironmentObject var shiftStore: ScheduledShiftStore
+    @EnvironmentObject var scheduleModel: SchedulingViewModel
+    
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    let shift: SingleScheduledShift
     
     private var timeFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -125,25 +177,17 @@ struct ScheduledShiftRow: View {
             Spacer()
             
             VStack(alignment: .trailing){
-                if let startDate = shift.startDate {
-                    Text(timeFormatter.string(from: startDate))
+            
+                    Text(timeFormatter.string(from: shift.startDate))
                         .font(.subheadline)
                         .bold()
-                }
-                if let endDate = shift.endDate {
-                    Text(timeFormatter.string(from: endDate))
+                
+              
+                Text(timeFormatter.string(from: shift.endDate))
                         .font(.subheadline)
                         .bold()
                         .foregroundColor(.gray)
-                }
-            }
-        }
-        .swipeActions {
-            Button(role: .destructive) {
-                viewContext.delete(shift)
-                try? viewContext.save()
-            } label: {
-                Image(systemName: "trash")
+                
             }
         }
     }

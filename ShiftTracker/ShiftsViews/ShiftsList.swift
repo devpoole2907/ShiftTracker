@@ -55,14 +55,7 @@ struct ShiftsList: View {
     
     @State private var selection = Set<NSManagedObjectID>()
     
-    private func deleteShift(_ shift: OldShift) {
-        viewContext.delete(shift)
-        do {
-            try viewContext.save()
-        } catch {
-            print("Error deleting shift: \(error)")
-        }
-    }
+    
     
     var body: some View {
         List(selection: $selection){
@@ -83,16 +76,20 @@ struct ShiftsList: View {
             .listRowBackground(Color("SquaresColor"))
             
             .swipeActions {
-         
                     Button(role: .destructive) {
-                        deleteShift(shift)
+                        shiftManager.deleteShift(shift, in: viewContext)
+                        
+                        if shifts.isEmpty {
+                            // navigates back if all shifts are deleted
+                            navPath.removeLast()
+                            
+                        }
+                        
                     } label: {
                         Image(systemName: "trash")
                     }
-                
             }
-            
-            
+                
         }
         
         

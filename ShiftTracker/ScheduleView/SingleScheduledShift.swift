@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SingleScheduledShift: Identifiable {
+struct SingleScheduledShift: Hashable, Identifiable {
     
     var startDate: Date
     var endDate: Date

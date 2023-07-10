@@ -57,11 +57,7 @@ struct ContentView: View {
     
     @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
     
-    @State  var isAnimating = false
-    
-    
-    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
-    var shifts: FetchedResults<OldShift>
+    @State var isAnimating = false
     
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
