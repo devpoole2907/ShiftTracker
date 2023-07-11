@@ -32,6 +32,7 @@ struct SideMenu: View {
     @State private var isEditJobPresented: Bool = false
     
     @State private var showAddJobView = false
+    @State private var showingTagSheet = false
     @State private var showUpgradeScreen = false
     
     var body: some View {
@@ -132,6 +133,11 @@ struct SideMenu: View {
                                             .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
                                             .cornerRadius(50)
                                         
+                                        
+                                        
+                                        
+                                        
+                                        
                                     }
                                     
                                     .fullScreenCover(item: $selectedJobForEditing) { job in
@@ -140,6 +146,24 @@ struct SideMenu: View {
                                                 selectedJobForEditing = nil
                                             }
                                     }
+                                    
+                                    Button(action: {
+                                        
+                                        showingTagSheet = true
+                                        
+                                    }){
+                                        
+                                        Image(systemName: "plus")
+                                        
+                                    }
+                                    
+                                    .sheet(isPresented: $showingTagSheet){
+                                        
+                                        AddTagView()
+                                        
+                                    }
+                                    
+                                    
                                     
                                     
                                 /*    Button(action: {

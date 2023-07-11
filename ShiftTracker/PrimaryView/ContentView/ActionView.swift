@@ -13,15 +13,15 @@ struct ActionView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var themeManager: ThemeDataManager
+    @EnvironmentObject var viewModel: ContentViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    
     
     @Environment(\.dismiss) var dismiss
     @State private var actionDate = Date()
     @State private var isRounded = false
     
-    @ObservedObject var viewModel: ContentViewModel
-    @ObservedObject var jobSelectionViewModel: JobSelectionViewModel
     @Environment(\.managedObjectContext) private var context
-    @Binding var activeSheet: ActiveSheet?
     let navTitle: String
     var pickerStartDate: Date?
     
@@ -125,7 +125,7 @@ struct ActionView: View {
                             dismiss()
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                activeSheet = .detailSheet
+                                viewModel.activeSheet = .detailSheet
                             }
                             
                         }
@@ -153,3 +153,4 @@ struct ActionView: View {
         
     }
 }
+

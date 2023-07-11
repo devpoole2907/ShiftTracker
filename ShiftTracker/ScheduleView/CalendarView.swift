@@ -143,22 +143,11 @@ struct CalendarView: UIViewRepresentable {
             
         }
         
-        func dateSelection(_ selection: UICalendarSelectionSingleDate, didDeselectDate dateComponents: DateComponents?) {
-            
-            print("deselected date")
-            
-            parent.dateSelected = dateComponents
-        }
-        
         func dateSelection(_ selection: UICalendarSelectionSingleDate,
                            canSelectDate dateComponents: DateComponents?) -> Bool {
             return true
         }
         
-        func dateSelection(_ selection: UICalendarSelectionSingleDate,
-                           canDeselectDate dateComponents: DateComponents?) -> Bool {
-            return true
-        }
         
     }
     

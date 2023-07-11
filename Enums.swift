@@ -110,3 +110,11 @@ public enum CustomColor {
     
     case tipsColorPicker
 }
+
+public enum ActiveSheet: Identifiable {
+    case detailSheet, startBreakSheet, endShiftSheet, endBreakSheet, startShiftSheet
+    
+    public var id: Int {
+        hashValue
+    }
+}

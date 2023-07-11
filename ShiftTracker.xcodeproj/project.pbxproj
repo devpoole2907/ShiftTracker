@@ -130,12 +130,12 @@
 		1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845C29D447DE0002378F /* CustomTabView.swift */; };
 		1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEBFE002A5132B900884DBF /* StatsSquare.swift */; };
 		1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = 1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */; };
-		1AECCC4D29DBFCFD00D879FE /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC4C29DBFCFD00D879FE /* TagsView.swift */; };
-		1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC4C29DBFCFD00D879FE /* TagsView.swift */; };
-		1AECCC5329DC218E00D879FE /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5229DC218E00D879FE /* Tag.swift */; };
-		1AECCC5429DC218E00D879FE /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AECCC5229DC218E00D879FE /* Tag.swift */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */; };
+		7C8CEA962A5D29B1006C833F /* ContentViewButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA952A5D29B1006C833F /* ContentViewButtonsView.swift */; };
+		7C8CEA982A5D3836006C833F /* AddTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA972A5D3836006C833F /* AddTagView.swift */; };
+		7C8CEA9A2A5D3B2E006C833F /* TagButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA992A5D3B2E006C833F /* TagButtonView.swift */; };
 		7CAB87102A58214600A08219 /* ExportSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB870F2A58214600A08219 /* ExportSquare.swift */; };
 		7CAB87162A5878C900A08219 /* ScheduledShiftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87152A5878C900A08219 /* ScheduledShiftStore.swift */; };
 		7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */; };
@@ -270,9 +270,11 @@
 		1AE3845A29D444800002378F /* TabBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBottomView.swift; sourceTree = "<group>"; };
 		1AE3845C29D447DE0002378F /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		1AEBFE002A5132B900884DBF /* StatsSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsSquare.swift; sourceTree = "<group>"; };
-		1AECCC4C29DBFCFD00D879FE /* TagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
-		1AECCC5229DC218E00D879FE /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Tag.swift; path = ShiftTracker/Tag.swift; sourceTree = SOURCE_ROOT; };
 		1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreak.swift; sourceTree = "<group>"; };
+		7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentBreaksListView.swift; sourceTree = "<group>"; };
+		7C8CEA952A5D29B1006C833F /* ContentViewButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewButtonsView.swift; sourceTree = "<group>"; };
+		7C8CEA972A5D3836006C833F /* AddTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagView.swift; sourceTree = "<group>"; };
+		7C8CEA992A5D3B2E006C833F /* TagButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagButtonView.swift; sourceTree = "<group>"; };
 		7CAB870F2A58214600A08219 /* ExportSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportSquare.swift; sourceTree = "<group>"; };
 		7CAB87152A5878C900A08219 /* ScheduledShiftStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftStore.swift; sourceTree = "<group>"; };
 		7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleScheduledShift.swift; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 			children = (
 				1A19141F2A16C257000D0F8B /* JobViews */,
 				1AB7D69529FB70F000326AAA /* SideMenu.swift */,
+				7C8CEA972A5D3836006C833F /* AddTagView.swift */,
 			);
 			path = SideMenu;
 			sourceTree = "<group>";
@@ -519,6 +522,9 @@
 				1A19141A2A15DC02000D0F8B /* CurrentShiftView.swift */,
 				1A19141C2A15F96D000D0F8B /* SelectedJobView.swift */,
 				1A1914242A188256000D0F8B /* ActionView.swift */,
+				7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */,
+				7C8CEA952A5D29B1006C833F /* ContentViewButtonsView.swift */,
+				7C8CEA992A5D3B2E006C833F /* TagButtonView.swift */,
 			);
 			path = ContentView;
 			sourceTree = "<group>";
@@ -614,8 +620,6 @@
 			children = (
 				BF8191402A5A70E70079E449 /* ThemeViews */,
 				1A22EFFE29C6559100A23F33 /* SettingsView.swift */,
-				1AECCC4C29DBFCFD00D879FE /* TagsView.swift */,
-				1AECCC5229DC218E00D879FE /* Tag.swift */,
 			);
 			path = SettingsViews;
 			sourceTree = "<group>";
@@ -823,13 +827,11 @@
 				1AC048C129E0D50E00355767 /* Shift.swift in Sources */,
 				1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */,
 				1A5B0BA92A55030A0021572B /* Enums.swift in Sources */,
-				1AECCC4E29DBFCFD00D879FE /* TagsView.swift in Sources */,
 				1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */,
 				1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */,
 				1A52AFAD29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift in Sources */,
 				1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */,
-				1AECCC5429DC218E00D879FE /* Tag.swift in Sources */,
 				1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */,
 				1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */,
 				1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */,
@@ -842,9 +844,8 @@
 			files = (
 				1A8D4ADC2A4EFAC100EEB334 /* ShiftsList.swift in Sources */,
 				1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */,
-				1AECCC5329DC218E00D879FE /* Tag.swift in Sources */,
 				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
-				1AECCC4D29DBFCFD00D879FE /* TagsView.swift in Sources */,
+				7C8CEA962A5D29B1006C833F /* ContentViewButtonsView.swift in Sources */,
 				1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */,
 				7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */,
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
@@ -859,6 +860,7 @@
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
+				7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */,
 				1AC9DDF829F7B28700C15008 /* JobData.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */,
@@ -884,6 +886,7 @@
 				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
+				7C8CEA9A2A5D3B2E006C833F /* TagButtonView.swift in Sources */,
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
 				1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
@@ -921,6 +924,7 @@
 				1AB7D6AF29FCAA1B00326AAA /* CustomTextField.swift in Sources */,
 				BF8191482A5A73620079E449 /* CustomThemePicker.swift in Sources */,
 				1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */,
+				7C8CEA982A5D3836006C833F /* AddTagView.swift in Sources */,
 				1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */,
 				1AE3845B29D444800002378F /* TabBottomView.swift in Sources */,
 				BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */,

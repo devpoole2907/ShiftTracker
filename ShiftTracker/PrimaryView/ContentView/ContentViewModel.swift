@@ -20,6 +20,9 @@ class ContentViewModel: ObservableObject {
     
     @Published var shiftState: ShiftState = .notStarted
     
+    // for new tag system
+    @Published var selectedTags = Set<UUID>()
+    
     let breaksManager = BreaksManager()
     
     @Published var lastEndedShift: OldShift? = nil // store the latest shift to return when popping the detail view
@@ -39,6 +42,7 @@ class ContentViewModel: ObservableObject {
     @Published  var overtimeTimer: Timer?
     @Published  var isFirstLaunch = false
     @Published  var isPresented = false
+    @Published var activeSheet: ActiveSheet?
     
     @Published  var showEndAlert = false
     @Published  var showStartBreakAlert = false
@@ -442,6 +446,15 @@ class ContentViewModel: ObservableObject {
             latestShift!.overtimeRate = overtimeRate
             
             latestShift!.job = job
+            
+            let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "tagID IN %@", selectedTags)
+            let selectedTagEntities = try? viewContext.fetch(fetchRequest)
+            
+            latestShift!.tags = NSSet(array: selectedTagEntities ?? [])
+            
+            // empty the selected tags
+            selectedTags = Set<UUID>()
             
             
             for tempBreak in tempBreaks {

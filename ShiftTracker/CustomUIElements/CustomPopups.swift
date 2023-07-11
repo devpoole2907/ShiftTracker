@@ -15,6 +15,7 @@ struct OkButtonPopup: CentrePopup {
     
     func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
         popup.horizontalPadding(28)
+            .backgroundColour(Color.clear)
     }
     func createContent() -> some View {
         VStack(spacing: 5) {
@@ -29,12 +30,16 @@ struct OkButtonPopup: CentrePopup {
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
+        
         .background(Color("SquaresColor"))
+        .cornerRadius(20)
+        .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
     }
     
     func createTitle() -> some View {
         Text(title)
+            .bold()
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
     }
@@ -47,10 +52,10 @@ struct OkButtonPopup: CentrePopup {
         }) {
             Text("OK")
                 .bold()
-                .foregroundColor(.white)
+                .foregroundColor(colorScheme == .dark ? .black : .white)
                 .frame(height: 46)
                 .frame(maxWidth: .infinity)
-                .background(.black)
+                .background(colorScheme == .dark ? .white : .black)
                 .cornerRadius(8)
         }
     }
@@ -76,6 +81,7 @@ struct CustomConfirmationAlert: CentrePopup {
         VStack(spacing: 5) {
             
             Text(title)
+                .bold()
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical)
@@ -88,7 +94,7 @@ struct CustomConfirmationAlert: CentrePopup {
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
-        .background(colorScheme == .dark ? Color(.systemGray6) : .white)
+        .background(Color("SquaresColor"))
         .cornerRadius(20)
         .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
@@ -114,10 +120,10 @@ struct CustomConfirmationAlert: CentrePopup {
         }) {
             Text("Confirm")
                 .bold()
-                .foregroundColor(.white)
+                .foregroundColor(colorScheme == .dark ? .black : .white)
                 .frame(height: 46)
                 .frame(maxWidth: .infinity)
-                .background(.black)
+                .background(colorScheme == .dark ? .white : .black)
                 .cornerRadius(8)
         }
     }

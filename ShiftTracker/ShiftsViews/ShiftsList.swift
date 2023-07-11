@@ -11,11 +11,15 @@ import Foundation
 
 struct ShiftsList: View {
     
+   // @StateObject var temporaryViewModel = ContentViewModel()
+    
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     @EnvironmentObject var shiftManager: ShiftDataManager
+    
+    
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.editMode) private var editMode
@@ -59,6 +63,11 @@ struct ShiftsList: View {
     
     var body: some View {
         List(selection: $selection){
+        /*    Section {
+                TagButtonView().environmentObject(temporaryViewModel)
+                    .frame(maxWidth: .infinity)
+            }.listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets()) */
             
             ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 
@@ -68,7 +77,7 @@ struct ShiftsList: View {
                 }
                 
                 .navigationDestination(for: OldShift.self) { shift in
-                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle("Shift Details")
+                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details")
                     
                 }
                 
@@ -94,7 +103,7 @@ struct ShiftsList: View {
         
         
         
-        }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes & Tags")
+        }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             .tint(Color.gray)
             .scrollContentBackground(.hidden)
 

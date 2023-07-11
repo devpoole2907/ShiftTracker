@@ -20,6 +20,8 @@ struct DetailView: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
+    @StateObject var temporaryViewModel = ContentViewModel()
+    
     let breakManager = BreaksManager()
     
     var presentedAsSheet: Bool
@@ -232,6 +234,21 @@ struct DetailView: View {
                             
                         }
                     }
+                
+                // WIP
+                
+               TagButtonView().environmentObject(temporaryViewModel)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top)
+                
+                    .onAppear {
+                        
+                        
+                        temporaryViewModel.selectedTags = Set(shift.tags?.compactMap { ($0 as? Tag)?.tagID } ?? [])
+                        
+                        
+                    }
+                
             }.listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
             
@@ -451,29 +468,54 @@ struct DetailView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(isEditing ? "Done" : "\(Image(systemName: "pencil"))") {
-                        isEditing.toggle()
-                        shift.shiftStartDate = selectedStartDate
-                        shift.shiftEndDate = selectedEndDate
-                        shift.breakStartDate = selectedBreakStartDate
-                        shift.breakEndDate = selectedBreakEndDate
-                        shift.tax = selectedTaxPercentage
-                        shift.hourlyPay = Double(selectedHourlyPay) ?? 0.0
-                        //shift.tag = selectedTag
-                        shift.totalTips = Double(selectedTotalTips) ?? 0.0
-                        // this is old code....
                         
-                        shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
+                        let allBreaks = (shift.breaks?.allObjects as? [Break]) ?? []
+                            let allBreaksAreWithin = allBreaks.allSatisfy {
+                                $0.startDate! >= selectedStartDate && $0.endDate! <= selectedEndDate
+                            }
                         
                         
-                        let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
-                        let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
-                        let paidDuration = shift.duration - totalBreakDuration
-                        shift.totalPay = (paidDuration / 3600.0) * shift.hourlyPay
-
-
-                        shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
-                        saveContext()
-                        breakManager.saveChanges(in: context)
+                        if allBreaksAreWithin {
+                            isEditing.toggle()
+                            shift.shiftStartDate = selectedStartDate
+                            shift.shiftEndDate = selectedEndDate
+                            
+                            
+                            // ignore this block its old
+                            shift.breakStartDate = selectedBreakStartDate
+                            shift.breakEndDate = selectedBreakEndDate
+                            
+                            //
+                            
+                            shift.tax = selectedTaxPercentage
+                            shift.hourlyPay = Double(selectedHourlyPay) ?? 0.0
+                            //shift.tag = selectedTag
+                            shift.totalTips = Double(selectedTotalTips) ?? 0.0
+                            // this is old code....
+                            
+                            shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
+                            
+                            
+                            let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
+                            let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
+                            let paidDuration = shift.duration - totalBreakDuration
+                            shift.totalPay = (paidDuration / 3600.0) * shift.hourlyPay
+                            
+                            
+                            shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
+                            saveContext()
+                            breakManager.saveChanges(in: context)
+                            
+                        }
+                        else {
+                            
+                            OkButtonPopup(title: "Saved breaks are not within the shift start and end dates.", action: nil).showAndStack()
+                            
+                        }
+                        
+                        
+                        
+                        
                     }.padding(.vertical)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){

@@ -119,7 +119,8 @@ struct JobOverview: View {
                     .navigationDestination(for: OldShift.self) { shift in
                         
                         // it was not the worlds greatest workaround ... lets do things properly!
-                            DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle("Shift Details")
+                            DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details")
+
                             
                         }
                                 
