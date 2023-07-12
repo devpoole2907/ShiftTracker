@@ -141,7 +141,7 @@ struct SideMenu: View {
                                     }
                                     
                                     .fullScreenCover(item: $selectedJobForEditing) { job in
-                                        JobView(job: job)
+                                        JobView(job: job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $selectedJobForEditing)
                                             .onDisappear {
                                                 selectedJobForEditing = nil
                                             }
@@ -266,7 +266,7 @@ struct SideMenu: View {
         
         
         .fullScreenCover(isPresented: $showAddJobView){
-            JobView()
+            JobView(isEditJobPresented: $isEditJobPresented, selectedJobForEditing: .constant(nil))
         }
         
         .fullScreenCover(isPresented: $showUpgradeScreen){

@@ -113,6 +113,11 @@ struct AddShiftView: View {
         _hourlyPay = State(initialValue: "\(job.hourlyPay)")
         _taxPercentage = State(initialValue: job.tax)
         self.job = job
+        
+        
+        // adds clear text button to text fields
+        UITextField.appearance().clearButtonMode = .whileEditing
+        
     }
     
     func totalBreakDuration(for tempBreaks: [TempBreak]) -> TimeInterval {
@@ -333,7 +338,6 @@ struct AddShiftView: View {
                             
                             AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Hourly Pay", text: $hourlyPay)
                                 .keyboardType(.decimalPad)
-                                .focused($payIsFocused)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color("SquaresColor"),in:
@@ -402,10 +406,8 @@ struct AddShiftView: View {
                                 .cornerRadius(20)
                             
                             TextEditor(text: $notes)
-                            
-                            //.textFieldStyle(PlainTextFieldStyle())
-                                .focused($noteIsFocused)
-                            //.padding()
+                   
+             
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color("SquaresColor"),in:
@@ -417,6 +419,8 @@ struct AddShiftView: View {
                         }
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
+                    
+                        
                     
                     HStack{
                         Text("Breaks:")
@@ -453,38 +457,26 @@ struct AddShiftView: View {
                     
                     Spacer()
                         .listRowBackground(Color.clear)
-                    
-                    /*   Section(header: Text("Break Details")) {
-                     DatePicker("Break Start", selection: $breakStartDate, displayedComponents: [.date, .hourAndMinute])
-                     .onChange(of: breakStartDate) { newValue in
-                     if newValue < shiftStartDate {
-                     breakStartDate = shiftStartDate
-                     } else if newValue > shiftEndDate {
-                     breakStartDate = shiftEndDate
-                     }
-                     }
-                     DatePicker("Break End", selection: $breakEndDate, displayedComponents: [.date, .hourAndMinute])
-                     .onChange(of: breakEndDate) { newValue in
-                     if newValue < breakStartDate {
-                     breakEndDate = breakStartDate
-                     } else if newValue > shiftEndDate {
-                     breakEndDate = shiftEndDate
-                     }
-                     }
-                     }.listRowSeparator(.hidden) */
+
                 }.scrollContentBackground(.hidden)
                     .listStyle(.inset)
-            }
-            .toolbar{
-                ToolbarItemGroup(placement: .keyboard){
-                    Spacer()
-                    
-                    Button("Done"){
-                        payIsFocused = false
-                        tipIsFocused = false
+                
+                
+                    .toolbar{
+                        ToolbarItemGroup(placement: .keyboard){
+                            
+                           
+                            
+                            Spacer()
+                            
+                            Button("Done"){
+                                hideKeyboard()
+                            }
+                        }
                     }
-                }
+                    
             }
+            
             .navigationBarTitle("Add Shift", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading){

@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum Field: Hashable {
+    case field1, field2, field3
+}
+
 public enum StatsMode: Int, CaseIterable {
     case earnings
     case hours
