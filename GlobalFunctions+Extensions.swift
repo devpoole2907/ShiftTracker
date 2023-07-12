@@ -139,6 +139,15 @@ class JobSelectionViewModel: ObservableObject {
         }
     }
     
+    // used when editing the currently selected job
+    func updateJob(_ job: Job){
+        
+        selectedJobUUID = job.uuid
+        storedSelectedJobUUID = job.uuid!.uuidString
+        
+    }
+    
+    
     func deselectJob(){
         selectedJobUUID = nil
         storedSelectedJobUUID = ""

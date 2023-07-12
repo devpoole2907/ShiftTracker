@@ -24,6 +24,7 @@ struct JobView: View {
     @ObservedObject private var locationManager = LocationDataManager()
     
     @EnvironmentObject var viewModel: ContentViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
     private let addressManager = AddressManager()
     private let notificationManager = ShiftNotificationManager.shared
     
@@ -541,11 +542,25 @@ struct JobView: View {
             print("Failed to save job: \(error.localizedDescription)")
         }
         
+        // checks if content views selected job is this job
         if newJob.uuid == viewModel.selectedJobUUID {
             viewModel.hourlyPay = newJob.hourlyPay
             viewModel.saveHourlyPay()
             viewModel.taxPercentage = newJob.tax
             viewModel.saveTaxPercentage()
+        }
+        
+        
+        // checks if this is the overall selected job
+        if newJob.uuid == jobSelectionViewModel.selectedJobUUID {
+            print("its the selected job yes")
+            
+            jobSelectionViewModel.deselectJob()
+            
+            jobSelectionViewModel.updateJob(newJob)
+            
+            
+            
         }
         
         
