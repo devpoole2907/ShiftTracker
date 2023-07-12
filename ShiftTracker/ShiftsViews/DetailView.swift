@@ -30,12 +30,13 @@ struct DetailView: View {
     @Binding var navPath: NavigationPath
     
     @State private var notes: String
-    @FocusState private var noteIsFocused: Bool
     @State var isEditing: Bool = false
     @State private var isAddingBreak: Bool = false
     @State private var isUnpaid: Bool = false
     
     @State private var showingDeleteAlert = false
+    
+    @FocusState private var focusedField: Field?
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -63,8 +64,6 @@ struct DetailView: View {
     @AppStorage("TipsEnabled") private var tipsEnabled: Bool = true
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
-    @FocusState private var payIsFocused: Bool
-    
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
     
@@ -86,7 +85,11 @@ struct DetailView: View {
         _selectedTotalTips = State(wrappedValue: "\(shift.totalTips)")
         self.presentedAsSheet = presentedAsSheet
         _activeSheet = activeSheet ?? Binding.constant(nil)
-        _navPath = navPath 
+        _navPath = navPath
+        
+        // adds clear text button to text fields
+        UITextField.appearance().clearButtonMode = .whileEditing
+        
     }
     
     func totalBreakDuration(for breaks: Set<Break>) -> TimeInterval {
@@ -105,7 +108,7 @@ struct DetailView: View {
         return formatter
     }()
     
-
+    
     
     @State private var offsetX = 0.0
     @State private var offsetY = 150.0
@@ -124,120 +127,120 @@ struct DetailView: View {
         List{
             
             Section{
-                    
-                    ZStack{
-                        RoundedRectangle(cornerRadius: 12)
-                            .foregroundColor(Color("SquaresColor"))
-                            .frame(width: UIScreen.main.bounds.width - 40)
-                            .shadow(radius: 5, x: 0, y: 4)
-                        VStack(alignment: .center, spacing: 5) {
-                            VStack {
-                                Text("\(currencyFormatter.string(from: NSNumber(value: shift.taxedPay)) ?? "")")
-                                    .padding(.horizontal, 20)
-                                    .font(.system(size: 60).monospacedDigit())
-                                    .fontWeight(.bold)
-                                    .lineLimit(1)
-                                    .allowsTightening(true)
-                                
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top)
-                            HStack(spacing: 10){
-                                if shift.tax > 0 {
-                                    HStack(spacing: 2){
-                                        Image(systemName: "chart.line.downtrend.xyaxis")
-                                            .font(.system(size: 15).monospacedDigit())
-                                            .fontWeight(.light)
-                                        Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalPay)) ?? "")")
-                                            .font(.system(size: 20).monospacedDigit())
-                                            .bold()
-                                            .lineLimit(1)
-                                            .allowsTightening(true)
-                                    }.foregroundStyle(themeManager.taxColor)
-                                }
-                                if shift.totalTips > 0 {
-                                    HStack(spacing: 2){
-                                        Image(systemName: "chart.line.uptrend.xyaxis")
-                                            .font(.system(size: 15).monospacedDigit())
-                                            .fontWeight(.light)
-                                        Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalTips)) ?? "")")
-                                            .font(.system(size: 20).monospacedDigit())
-                                            .bold()
-                                            .lineLimit(1)
-                                    }.foregroundStyle(themeManager.tipsColor)
-                                }
-                            }
-                                
-                                    .padding(.horizontal, 20)
-                                
-                                
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.bottom, 5)
-                            
-                            // }
-                            
-                            Divider().frame(maxWidth: 200)
-                            if let shiftsBreaks = shift.breaks, totalBreakDuration(for: shift.breaks as! Set<Break>) > 0 {
-                                    HStack(spacing: 0) {
-                                        ForEach(0..<timeDigits.count, id: \.self) { index in
-                                            RollingDigit(digit: timeDigits[index])
-                                                .frame(width: 20, height: 30)
-                                                .mask(FadeMask())
-                                            if index == 1 || index == 3 {
-                                                Text(":")
-                                                    .font(.system(size: 30, weight: .bold).monospacedDigit())
-                                            }
-                                        }
-                                    }
-                                    .foregroundStyle(themeManager.timerColor)
-                                    //.frame(width: 250, height: 70)
-                                    .frame(maxWidth: .infinity)
-                                    
-                                    HStack(spacing: 0) {
-                                        ForEach(0..<breakDigits.count, id: \.self) { index in
-                                            RollingDigit(digit: breakDigits[index])
-                                                .frame(width: 9, height: 14)
-                                                .mask(FadeMask())
-                                            if index == 1 || index == 3 {
-                                                Text(":")
-                                                    .font(.system(size: 12, weight: .bold).monospacedDigit())
-                                            }
-                                        }
-                                    }
-                                    .foregroundStyle(themeManager.breaksColor)
-                                    //.frame(width: 250, height: 70)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.bottom)
-                                
-                                    
-                                } else {
-                                    HStack(spacing: 0) {
-                                        ForEach(0..<timeDigits.count, id: \.self) { index in
-                                            RollingDigit(digit: timeDigits[index])
-                                                .frame(width: 20, height: 30)
-                                                .mask(FadeMask())
-                                            if index == 1 || index == 3 {
-                                                Text(":")
-                                                    .font(.system(size: 30, weight: .bold).monospacedDigit())
-                                            }
-                                        }
-                                    }
-                                    .foregroundStyle(themeManager.timerColor)
-                                    //.frame(width: 250, height: 70)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.bottom)
-                                }
-                                
-                            
-                            
-                            
+                
+                ZStack{
+                    RoundedRectangle(cornerRadius: 12)
+                        .foregroundColor(Color("SquaresColor"))
+                        .frame(width: UIScreen.main.bounds.width - 40)
+                        .shadow(radius: 5, x: 0, y: 4)
+                    VStack(alignment: .center, spacing: 5) {
+                        VStack {
+                            Text("\(currencyFormatter.string(from: NSNumber(value: shift.taxedPay)) ?? "")")
+                                .padding(.horizontal, 20)
+                                .font(.system(size: 60).monospacedDigit())
+                                .fontWeight(.bold)
+                                .lineLimit(1)
+                                .allowsTightening(true)
                             
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top)
+                        HStack(spacing: 10){
+                            if shift.tax > 0 {
+                                HStack(spacing: 2){
+                                    Image(systemName: "chart.line.downtrend.xyaxis")
+                                        .font(.system(size: 15).monospacedDigit())
+                                        .fontWeight(.light)
+                                    Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalPay)) ?? "")")
+                                        .font(.system(size: 20).monospacedDigit())
+                                        .bold()
+                                        .lineLimit(1)
+                                        .allowsTightening(true)
+                                }.foregroundStyle(themeManager.taxColor)
+                            }
+                            if shift.totalTips > 0 {
+                                HStack(spacing: 2){
+                                    Image(systemName: "chart.line.uptrend.xyaxis")
+                                        .font(.system(size: 15).monospacedDigit())
+                                        .fontWeight(.light)
+                                    Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalTips)) ?? "")")
+                                        .font(.system(size: 20).monospacedDigit())
+                                        .bold()
+                                        .lineLimit(1)
+                                }.foregroundStyle(themeManager.tipsColor)
+                            }
+                        }
+                        
+                        .padding(.horizontal, 20)
+                        
+                        
+                        .frame(maxWidth: .infinity)
+                        .padding(.bottom, 5)
+                        
+                        // }
+                        
+                        Divider().frame(maxWidth: 200)
+                        if let shiftsBreaks = shift.breaks, totalBreakDuration(for: shift.breaks as! Set<Break>) > 0 {
+                            HStack(spacing: 0) {
+                                ForEach(0..<timeDigits.count, id: \.self) { index in
+                                    RollingDigit(digit: timeDigits[index])
+                                        .frame(width: 20, height: 30)
+                                        .mask(FadeMask())
+                                    if index == 1 || index == 3 {
+                                        Text(":")
+                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                    }
+                                }
+                            }
+                            .foregroundStyle(themeManager.timerColor)
+                            //.frame(width: 250, height: 70)
+                            .frame(maxWidth: .infinity)
+                            
+                            HStack(spacing: 0) {
+                                ForEach(0..<breakDigits.count, id: \.self) { index in
+                                    RollingDigit(digit: breakDigits[index])
+                                        .frame(width: 9, height: 14)
+                                        .mask(FadeMask())
+                                    if index == 1 || index == 3 {
+                                        Text(":")
+                                            .font(.system(size: 12, weight: .bold).monospacedDigit())
+                                    }
+                                }
+                            }
+                            .foregroundStyle(themeManager.breaksColor)
+                            //.frame(width: 250, height: 70)
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom)
+                            
+                            
+                        } else {
+                            HStack(spacing: 0) {
+                                ForEach(0..<timeDigits.count, id: \.self) { index in
+                                    RollingDigit(digit: timeDigits[index])
+                                        .frame(width: 20, height: 30)
+                                        .mask(FadeMask())
+                                    if index == 1 || index == 3 {
+                                        Text(":")
+                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                    }
+                                }
+                            }
+                            .foregroundStyle(themeManager.timerColor)
+                            //.frame(width: 250, height: 70)
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom)
+                        }
+                        
+                        
+                        
+                        
+                        
                     }
+                }
                 
                 // WIP
                 
-               TagButtonView().environmentObject(temporaryViewModel)
+                TagButtonView().environmentObject(temporaryViewModel)
                     .frame(maxWidth: .infinity)
                     .padding(.top)
                 
@@ -271,9 +274,6 @@ struct DetailView: View {
                                 //saveContext() // Save the value of tax percent whenever it changes
                             }
                             .disabled(!isEditing)
-                            .onAppear {
-                                noteIsFocused = false // Dismiss the text editor when the picker appears
-                            }
                             .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
                             .animation(.easeInOut(duration: 0.2))
                             .frame(maxWidth: .infinity)
@@ -297,9 +297,6 @@ struct DetailView: View {
                                 //shift.shiftEndDate = selectedEndDate
                                 //saveContext() // Save the value of tax percent whenever it changes
                             }.disabled(!isEditing)
-                            .onAppear {
-                                noteIsFocused = false // Dismiss the text editor when the picker appears
-                            }
                             .scaleEffect(isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
                             .animation(.easeInOut(duration: 0.2)) // Add an animation modifier to create the pulse effect
                             .frame(maxWidth: .infinity)
@@ -325,8 +322,8 @@ struct DetailView: View {
                     
                     CurrencyTextField(placeholder: "Hourly Pay", text: $selectedHourlyPay)
                         .disabled(!isEditing)
+                        .focused($focusedField, equals: .field1)
                         .keyboardType(.decimalPad)
-                        .focused($payIsFocused)
                         .padding(.horizontal)
                         .padding(.vertical, 10)
                         .background(Color("SquaresColor"),in:
@@ -364,8 +361,8 @@ struct DetailView: View {
                         
                         CurrencyTextField(placeholder: "Total tips", text: $selectedTotalTips)
                             .disabled(!isEditing)
+                            .focused($focusedField, equals: .field2)
                             .keyboardType(.decimalPad)
-                            .focused($payIsFocused)
                             .padding(.horizontal)
                             .padding(.vertical, 10)
                             .background(Color("SquaresColor"),in:
@@ -386,16 +383,16 @@ struct DetailView: View {
                 VStack(alignment: .leading){
                     Text("Notes:")
                         .bold()
-              
+                    
                         .padding(.vertical, 5)
-            
+                    
                         .cornerRadius(20)
                     
                     TextEditor(text: $notes)
-                    .disabled(!isEditing)
-         
-                        .focused($noteIsFocused)
-
+                        .disabled(!isEditing)
+                        .focused($focusedField, equals: .field3)
+                    
+                    
                         .padding(.horizontal)
                         .padding(.vertical, 10)
                         .background(Color("SquaresColor"),in:
@@ -424,14 +421,14 @@ struct DetailView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
                 .sheet(isPresented: $isAddingBreak){
-         
+                    
                     BreakInputView(newBreakStartDate: $selectedBreakStartDate, newBreakEndDate: $selectedBreakEndDate, isUnpaid: $isUnpaid, startDate: selectedStartDate, endDate: selectedEndDate, buttonAction: { breakManager.addBreak(oldShift: shift, startDate: selectedBreakStartDate, endDate: selectedBreakEndDate, isUnpaid: isUnpaid, context: context)
                         isAddingBreak = false})
                     
                     
-                        .presentationDetents([ .fraction(0.45)])
-                        .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                        .presentationCornerRadius(35)
+                    .presentationDetents([ .fraction(0.45)])
+                    .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                    .presentationCornerRadius(35)
                 }
             if let breaks = shift.breaks as? Set<Break> {
                 let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
@@ -441,113 +438,142 @@ struct DetailView: View {
             Spacer()
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
-                .toolbar{
-                    ToolbarItemGroup(placement: .keyboard){
-                        Spacer()
-                        
-                        Button("Done"){
-                            noteIsFocused = false
-                            payIsFocused = false
-                            shift.shiftNote = notes
-                            //shift.tag = selectedTag
-                            saveContext()
-                        }
-                    }
-                }
-            // }
             
         }
-            .scrollContentBackground(.hidden)
-            .listStyle(.inset)
         
-            .onAppear {
-                navigationState.gestureEnabled = false
-            }
-        //.padding(.horizontal, 30)
-        
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(isEditing ? "Done" : "\(Image(systemName: "pencil"))") {
-                        
-                        let allBreaks = (shift.breaks?.allObjects as? [Break]) ?? []
-                            let allBreaksAreWithin = allBreaks.allSatisfy {
-                                $0.startDate! >= selectedStartDate && $0.endDate! <= selectedEndDate
-                            }
-                        
-                        
-                        if allBreaksAreWithin {
-                            isEditing.toggle()
-                            shift.shiftStartDate = selectedStartDate
-                            shift.shiftEndDate = selectedEndDate
-                            
-                            
-                            // ignore this block its old
-                            shift.breakStartDate = selectedBreakStartDate
-                            shift.breakEndDate = selectedBreakEndDate
-                            
-                            //
-                            
-                            shift.tax = selectedTaxPercentage
-                            shift.hourlyPay = Double(selectedHourlyPay) ?? 0.0
-                            //shift.tag = selectedTag
-                            shift.totalTips = Double(selectedTotalTips) ?? 0.0
-                            // this is old code....
-                            
-                            shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
-                            
-                            
-                            let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
-                            let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
-                            let paidDuration = shift.duration - totalBreakDuration
-                            shift.totalPay = (paidDuration / 3600.0) * shift.hourlyPay
-                            
-                            
-                            shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
-                            saveContext()
-                            breakManager.saveChanges(in: context)
-                            
-                        }
-                        else {
-                            
-                            OkButtonPopup(title: "Saved breaks are not within the shift start and end dates.", action: nil).showAndStack()
-                            
-                        }
-                        
-                        
-                        
-                        
-                    }.padding(.vertical)
-                }
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button(action: {
-                        showingDeleteAlert = true
-                        if presentedAsSheet{
-                            dismiss()
-                            
-                            CustomConfirmationAlert(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").showAndStack()
-                            
-                        }
-                        else {
-                            CustomConfirmationAlert(action: {
-                                deleteShift()
-                                dismiss()
-                            }, cancelAction: nil, title: "Are you sure you want to delete this shift?").showAndStack()
-                        }
-                    }) {
-                        Image(systemName: "trash")
+        .toolbar{
+            ToolbarItemGroup(placement: .keyboard){
+                Button(action: {
+                    switch focusedField {
+                    case .field1, .none:
+                        focusedField = .field3
+                    case .field2:
+                        focusedField = .field1
+                    case .field3:
+                        focusedField = .field2
                     }
-                    .foregroundColor(.red)
-                    .padding([.vertical, .trailing])
+                }) {
+                    Image(systemName: "chevron.up")
+                        .bold()
+                }
+                Button(action: {
+                    switch focusedField {
+                    case .field1:
+                        focusedField = .field2
+                    case .field2:
+                        focusedField = .field3
+                    case .field3, .none:
+                        focusedField = .field1
+                    }
+                }) {
+                    Image(systemName: "chevron.down")
+                        .bold()
+                }
+                
+                
+                
+                
+                Spacer()
+                
+                Button("Done"){
+                    
+                    hideKeyboard()
                     
                 }
-                if presentedAsSheet{
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        CloseButton {
+            }
+        }
+        
+        
+        .scrollContentBackground(.hidden)
+        .listStyle(.inset)
+        
+        .onAppear {
+            navigationState.gestureEnabled = false
+        }
+        
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(isEditing ? "Done" : "\(Image(systemName: "pencil"))") {
+                    
+                    let allBreaks = (shift.breaks?.allObjects as? [Break]) ?? []
+                    let allBreaksAreWithin = allBreaks.allSatisfy {
+                        $0.startDate! >= selectedStartDate && $0.endDate! <= selectedEndDate
+                    }
+                    
+                    
+                    if allBreaksAreWithin {
+                        isEditing.toggle()
+                        shift.shiftStartDate = selectedStartDate
+                        shift.shiftEndDate = selectedEndDate
+                        
+                        
+                        // ignore this block its old
+                        shift.breakStartDate = selectedBreakStartDate
+                        shift.breakEndDate = selectedBreakEndDate
+                        
+                        //
+                        
+                        shift.tax = selectedTaxPercentage
+                        shift.hourlyPay = Double(selectedHourlyPay) ?? 0.0
+                        //shift.tag = selectedTag
+                        shift.totalTips = Double(selectedTotalTips) ?? 0.0
+                        // this is old code....
+                        
+                        shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
+                        
+                        
+                        let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
+                        let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
+                        let paidDuration = shift.duration - totalBreakDuration
+                        shift.totalPay = (paidDuration / 3600.0) * shift.hourlyPay
+                        shift.shiftNote = notes
+                        
+                        shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
+                        saveContext()
+                        breakManager.saveChanges(in: context)
+                        
+                    }
+                    else {
+                        
+                        OkButtonPopup(title: "Saved breaks are not within the shift start and end dates.", action: nil).showAndStack()
+                        
+                    }
+                    
+                    
+                    
+                    
+                }.padding(.vertical)
+            }
+            ToolbarItem(placement: .navigationBarTrailing){
+                Button(action: {
+                    showingDeleteAlert = true
+                    if presentedAsSheet{
+                        dismiss()
+                        
+                        CustomConfirmationAlert(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").showAndStack()
+                        
+                    }
+                    else {
+                        CustomConfirmationAlert(action: {
+                            deleteShift()
                             dismiss()
-                        }
+                        }, cancelAction: nil, title: "Are you sure you want to delete this shift?").showAndStack()
+                    }
+                }) {
+                    Image(systemName: "trash")
+                }
+                .foregroundColor(.red)
+                .padding([.vertical, .trailing])
+                
+            }
+            if presentedAsSheet{
+                ToolbarItem(placement: .navigationBarLeading) {
+                    CloseButton {
+                        dismiss()
                     }
                 }
             }
+        }
         
         
         
@@ -593,26 +619,26 @@ struct DetailView: View {
     
 }
 /*
-struct DetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        @StateObject var navigationState = NavigationState()
-        let shift = OldShift(context: PersistenceController.preview.container.viewContext)
-        shift.shiftNote = "Some notes"
-        shift.taxedPay = 120.0
-        shift.totalPay = 200.0
-        shift.hourlyPay = 20.0
-        shift.shiftStartDate = Date().addingTimeInterval(-3600)
-        shift.shiftEndDate = Date()
-        shift.duration = 53434.0
-        shift.totalTips = 50.0
-        
-        return NavigationStack {
-            DetailView(shift: shift, presentedAsSheet: false)
-                .environmentObject(navigationState)
-        }
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-} */
+ struct DetailView_Previews: PreviewProvider {
+ static var previews: some View {
+ @StateObject var navigationState = NavigationState()
+ let shift = OldShift(context: PersistenceController.preview.container.viewContext)
+ shift.shiftNote = "Some notes"
+ shift.taxedPay = 120.0
+ shift.totalPay = 200.0
+ shift.hourlyPay = 20.0
+ shift.shiftStartDate = Date().addingTimeInterval(-3600)
+ shift.shiftEndDate = Date()
+ shift.duration = 53434.0
+ shift.totalTips = 50.0
+ 
+ return NavigationStack {
+ DetailView(shift: shift, presentedAsSheet: false)
+ .environmentObject(navigationState)
+ }
+ .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+ }
+ } */
 
 private extension TimeInterval {
     func stringFromTimeInterval() -> String {

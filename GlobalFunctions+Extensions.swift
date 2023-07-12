@@ -460,3 +460,11 @@ extension UIImage {
         }
     }
 }
+
+// because the focus state just straight up isnt working on JobView, lets use UIKit code - from hackingwithswift
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}

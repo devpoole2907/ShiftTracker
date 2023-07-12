@@ -57,9 +57,11 @@ struct JobView: View {
     
     @State private var activeSheet: ActiveSheet?
     
-    @FocusState private var textIsFocused: Bool
-    
     @State private var selectedAddress: String?
+    
+    
+    @Binding var selectedJobForEditing: Job?
+    @Binding var isEditJobPresented: Bool
     
     @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     @State private var miniMapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
@@ -73,8 +75,8 @@ struct JobView: View {
     }
     
     
-    // Initialize state properties with job values
-    init(job: Job? = nil) {
+    // Initialize state properties with job values - we shouldnt need to pass the binding for the selected job to edit but here we are for now it works
+    init(job: Job? = nil, isEditJobPresented: Binding<Bool>, selectedJobForEditing: Binding<Job?>) {
         self.job = job
         _name = State(initialValue: job?.name ?? "")
         _title = State(initialValue: job?.title ?? "")
@@ -111,6 +113,16 @@ struct JobView: View {
         _rosterReminder = State(initialValue: job?.rosterReminder ?? false)
         _selectedDay = State(initialValue: Int(job?.rosterDayOfWeek ?? 1))
         _selectedTime = State(initialValue: job?.rosterTime ?? Date())
+        
+        
+        
+        // shows clear button for textfields
+                UITextField.appearance().clearButtonMode = .whileEditing
+        
+        _isEditJobPresented = isEditJobPresented
+        _selectedJobForEditing = selectedJobForEditing
+            
+        
     }
     
     private let daysOfWeek = [
@@ -151,7 +163,7 @@ struct JobView: View {
                     
                     VStack(spacing: 15){
                         
-                        Group{
+                      //  Group{
                             TextField("Company Name", text: $name)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
@@ -174,19 +186,9 @@ struct JobView: View {
                                 .keyboardType(.decimalPad)
                                 .shake(times: payShakeTimes)
                             
-                        }.focused($textIsFocused)
+                       // }
                             .haptics(onChangeOf: payShakeTimes, type: .error)
                             .haptics(onChangeOf: nameShakeTimes, type: .error)
-                        
-                            .toolbar {
-                                ToolbarItemGroup(placement: .keyboard){
-                                    Spacer()
-                                    
-                                    Button("Done"){
-                                        textIsFocused = false
-                                    }
-                                }
-                            }
                         
                         HStack(spacing: 0){
                             ForEach(1...6, id: \.self) { index in
@@ -420,66 +422,70 @@ struct JobView: View {
                         
                     }
                     
-                    .toolbar{
-                        ToolbarItemGroup(placement: .keyboard){
-                            Spacer()
-                            
-                            Button("Done"){
-                                textIsFocused = false
-                            }
-                        }
+                    
+                    
+                }.toolbar{
+                    ToolbarItemGroup(placement: .keyboard){
+                        Spacer()
                         
+                        Button("Done"){
+                            hideKeyboard()
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            
+                            if name.isEmpty {
+                                withAnimation(.linear(duration: 0.4)) {
+                                    nameShakeTimes += 2
+                                }
+                            }
+                            else if hourlyPay.isEmpty {
+                                withAnimation(.linear(duration: 0.4)) {
+                                    payShakeTimes += 2
+                                }
+                            }
+                            else {
+                                saveJob()
+                            }
+                            
+                            
+                            
+                        }) {
+                            Image(systemName: "folder.badge.plus")
+                                .bold()
+                        }
+                    }
+                    if job != nil {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button(action: {
                                 
-                                if name.isEmpty {
-                                    withAnimation(.linear(duration: 0.4)) {
-                                        nameShakeTimes += 2
-                                    }
-                                }
-                                else if hourlyPay.isEmpty {
-                                    withAnimation(.linear(duration: 0.4)) {
-                                        payShakeTimes += 2
-                                    }
-                                }
-                                else {
-                                    saveJob()
-                                }
+                                dismiss()
+                                
+                                CustomConfirmationAlert(action: deleteJob, cancelAction: {
+                                    isEditJobPresented = true
+                                    selectedJobForEditing = job
+                                    
+                                    
+                                }, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").showAndStack()
                                 
                                 
-                                
-                            }) {
-                                Image(systemName: "folder.badge.plus")
+                            }
+                            ) {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
                                     .bold()
                             }
                         }
-                        if let job = job {
-                            ToolbarItem(placement: .navigationBarTrailing) {
-                                Button(action: {
-                                    
-                                    dismiss()
-                                    
-                                    CustomConfirmationAlert(action: deleteJob, cancelAction: nil, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").showAndStack()
-                                    
-                                    
-                                }
-                                ) {
-                                    Image(systemName: "trash")
-                                        .foregroundColor(.red)
-                                        .bold()
-                                }
-                            }
+                    }
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        CloseButton {
+                            dismiss()
                         }
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            CloseButton {
-                                dismiss()
-                            }
-                        }
-                        
                     }
                     
-                }
-            }
+                }            }
         }
     }
     
@@ -577,13 +583,13 @@ struct JobView: View {
     }
     
 }
-
+/*
 struct JobView_Previews: PreviewProvider {
     static var previews: some View {
         JobView()
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
-}
+} */
 
 
 let jobIcons = [
