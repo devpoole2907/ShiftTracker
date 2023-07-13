@@ -249,6 +249,13 @@ struct MainWithSideBarView: View {
             
         } else {
             IntroMainView(isFirstLaunch: $isFirstLaunch)
+                .onAppear {
+                    
+                    themeManager.resetColorsToDefaults()
+                    
+                    
+                    
+                }
             
             //.onAppear{ authModel.checkUserLoginStatus() }
         }

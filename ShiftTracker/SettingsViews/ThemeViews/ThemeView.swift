@@ -156,7 +156,7 @@ struct ThemeView: View {
         .onAppear {
             if isFirstAppear {
                 
-                themeManager.resetColorsToDefaults()
+              
                 
                 showThemeInfoSheet.toggle()
                 
