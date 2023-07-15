@@ -92,9 +92,45 @@ struct ShiftsList: View {
             
             ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 
-                
-                NavigationLink(value: shift) {
-                    ShiftDetailRow(shift: shift)
+                ZStack {
+                    NavigationLink(value: shift) {
+                        ShiftDetailRow(shift: shift)
+                    }
+                    
+                    if !searchTerm.isEmpty {
+                        
+                        HStack {
+                            Spacer()
+                        VStack(alignment: .trailing){
+                            
+                            if jobSelectionViewModel.fetchJob(in: viewContext) == nil {
+                                Spacer()
+                                
+                            }
+                            
+                            
+                            HStack{
+                                Spacer()
+                                
+                                HighlightedText(text: shift.shiftNote ?? "", highlight: searchTerm)
+                                    .padding(.vertical, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 2 : 5)
+                                    .background(Color.gray.opacity(0.1))
+                                    .cornerRadius(6)
+                                    .padding(.bottom, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 5 : 0)
+                                    .padding(.trailing, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 0 : 12)
+                            }//
+                            
+                            
+                            
+                            
+                        }.frame(maxWidth: 180)
+                            .frame(alignment: .trailing)
+                        
+                        //    HighlightedText(text: shift.note ?? "", highlight: searchTerm)
+                    }
+                            }
+                    
+                    
                 }
                 
                 .navigationDestination(for: OldShift.self) { shift in
@@ -360,4 +396,91 @@ struct TagFilter: Hashable, Identifiable, Equatable {
 }
 
 
+struct HighlightedText: View {
+    let text: String
+    let highlight: String
 
+    @Environment(\.managedObjectContext) var viewContext
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        if let parts = highlightSnippet(in: text, highlight: highlight) {
+            HStack(spacing: 0) {
+                Text("..")
+                    .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                    .bold()
+                ForEach(parts, id: \.0) { part, isHighlighted in
+                    if isHighlighted {
+                        Text(part)
+                            .bold()
+                            .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                            .foregroundStyle(.black)
+                            .background(Color.yellow.opacity(0.8))
+                            .cornerRadius(4)// Change to suit your design
+                    } else {
+                        Text(part)
+                            .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                            .bold()
+                            .font(.caption)
+                    }
+                }
+                Text("..")
+                    .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                    .bold()
+            }.lineLimit(1)
+            //.padding([.leading, .trailing])
+            .padding(.horizontal, 10)
+        }
+    }
+
+    
+    
+    func highlightSnippet(in text: String, highlight: String) -> [(String, Bool)]? {
+        guard let range = text.range(of: highlight, options: .caseInsensitive) else {
+            return nil
+        }
+
+        let start = text.index(range.lowerBound, offsetBy: -2, limitedBy: text.startIndex) ?? text.startIndex
+        let end = text.index(range.upperBound, offsetBy: 5, limitedBy: text.endIndex) ?? text.endIndex
+
+        let snippet = text[start..<end]
+
+        return separateText(String(snippet), highlight: highlight)
+    }
+
+    
+    func separateText(_ fullText: String, highlight: String) -> [(String, Bool)] {
+        var separatedText: [(String, Bool)] = []
+        let lowercasedHighlight = highlight.lowercased()
+        let parts = fullText.lowercased().components(separatedBy: lowercasedHighlight)
+
+        for (i, part) in parts.enumerated() {
+            if i != parts.count - 1 {
+                if let partRange = fullText.range(of: part, options: .caseInsensitive),
+                   let endIndex = fullText.index(partRange.upperBound, offsetBy: lowercasedHighlight.count, limitedBy: fullText.endIndex) {
+                    let nextPart = String(fullText[partRange.upperBound..<endIndex])
+                    separatedText.append((part, false))
+                    separatedText.append((nextPart, true))
+                } else if part.isEmpty {
+                    // Special case when the highlight is at the start
+                    let startIndex = fullText.startIndex
+                    if let endIndex = fullText.index(startIndex, offsetBy: lowercasedHighlight.count, limitedBy: fullText.endIndex) {
+                        let nextPart = String(fullText[startIndex..<endIndex])
+                        separatedText.append((nextPart, true))
+                    }
+                }
+            } else {
+                separatedText.append((part, false))
+            }
+        }
+
+        return separatedText
+    }
+
+
+
+
+
+    
+}
