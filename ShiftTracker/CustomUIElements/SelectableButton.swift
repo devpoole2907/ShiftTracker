@@ -39,6 +39,7 @@ struct SelectableButton<Content: View>: View {
             .cornerRadius(12, antialiased: true)
             .scaleEffect(showDetail ? 1.5 : 1)
             .animation(.spring(), value: showDetail)
+           
             
         
         

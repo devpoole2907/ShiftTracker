@@ -12,6 +12,12 @@ struct PreviewTimerView: View {
     
     @EnvironmentObject var themeColors: ThemeDataManager
     
+    @Environment(\.colorScheme) var colorScheme
+    
+    var textColor: Color {
+            return colorScheme == .dark ? .white : .black
+        }
+    
     
     var body: some View {
         
@@ -32,7 +38,7 @@ struct PreviewTimerView: View {
                     .lineLimit(1)
                     .allowsTightening(true)
                 
-                    .foregroundColor(.black)
+                    .foregroundColor(textColor)
                    //
                     
                     //.padding(.horizontal, 20)

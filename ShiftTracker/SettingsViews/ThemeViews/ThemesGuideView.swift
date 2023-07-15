@@ -11,7 +11,13 @@ struct ThemesGuideView: View {
     
     @Environment(\.dismiss) var dismiss
     
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var guideColor = false
+    
+    var guideBackgroundColor: Color {
+        return colorScheme == .dark ? .gray.opacity(0.1) : .white
+        }
     
     
     var body: some View {
@@ -88,7 +94,7 @@ struct ThemesGuideView: View {
                         Rectangle()
                         //.background(.white)
                             .frame(maxWidth: 155, maxHeight: 205)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(guideBackgroundColor)
                             .cornerRadius(12)
                         HStack{
                             Rectangle()
@@ -124,34 +130,34 @@ struct ThemesGuideView: View {
                             Rectangle()
                             //.background(.white)
                                 .frame(maxWidth: 155, maxHeight: 100)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(guideBackgroundColor)
                                 .cornerRadius(12)
                                
                             
                             VStack(alignment: .leading){
                                 Rectangle()
                                     .frame(maxWidth: 100, maxHeight: 10)
-                                    .foregroundColor(guideColor ? .cyan : .clear)
-                                    .background(.ultraThickMaterial)
+                                    .foregroundColor(Color("SquaresColor"))
+                                    .background(Color("SquaresColor"))
                                     .cornerRadius(12)
                                 
                                 Rectangle()
                                     .frame(maxWidth: 70, maxHeight: 10)
-                                    .foregroundColor(guideColor ? .cyan : .clear)
-                                    .background(.thinMaterial)
+                                    .foregroundColor(Color("SquaresColor"))
+                                    .background(Color("SquaresColor"))
                                     .cornerRadius(12)
                                 
                                 Rectangle()
                                     .frame(maxWidth: 85, maxHeight: 10)
-                                    .foregroundColor(guideColor ? .cyan : .clear
+                                    .foregroundColor(Color("SquaresColor")
                                     )
-                                    .background(.ultraThickMaterial)
+                                    .background(Color("SquaresColor"))
                                     .cornerRadius(12)
                                 
                                 Rectangle()
                                     .frame(maxWidth: 95, maxHeight: 10)
-                                    .foregroundColor(guideColor ? .cyan : .clear)
-                                    .background(.ultraThinMaterial)
+                                    .foregroundColor(Color("SquaresColor"))
+                                    .background(Color("SquaresColor"))
                                     .cornerRadius(12)
                             }
                         }
@@ -160,7 +166,7 @@ struct ThemesGuideView: View {
                         Rectangle()
                         //.background(.white)
                             .frame(maxWidth: 155, maxHeight: 100)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(guideBackgroundColor)
                             .cornerRadius(12)
                     }
                     
@@ -171,8 +177,8 @@ struct ThemesGuideView: View {
             ZStack{
                 Rectangle()
                     .frame(maxWidth: 350, maxHeight: 55)
-                    .foregroundStyle(.thinMaterial)
-                    .background(.thinMaterial)
+                    .foregroundStyle(Color("SquaresColor"))
+                    .background(Color("SquaresColor"))
                     .cornerRadius(12)
                 
                 HStack{
@@ -202,7 +208,7 @@ struct ThemesGuideView: View {
                         Circle()
                             .frame(maxWidth: 15, maxHeight: 15)
                         
-                            .foregroundStyle(.thinMaterial)
+                            .foregroundStyle(Color("SquaresColor"))
                         
                             
                     }
@@ -230,7 +236,7 @@ struct ThemesGuideView: View {
                         
                         Circle()
                             .frame(maxWidth: 20, maxHeight: 20)
-                            .foregroundStyle(.thinMaterial)
+                            .foregroundStyle(Color("SquaresColor"))
                         
                         Circle()
                             .frame(maxWidth: 10, maxHeight: 10)

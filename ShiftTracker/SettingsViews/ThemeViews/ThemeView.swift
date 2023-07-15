@@ -55,7 +55,7 @@ struct ThemeView: View {
                                 Button(action: {
                                     themeManager.selectedColorToChange = .customTextColorPicker
                                 }){
-                                    Text("eat my booty hole")
+                                    Text("Test Text")
                                         .padding()
                                         .frame(maxWidth: 150, maxHeight: 140)
                                         .background(Color("SquaresColor"))
@@ -90,11 +90,10 @@ struct ThemeView: View {
                                     
                                     SelectableButton(id: 6, selectedButton: $themeManager.selectedButton, content: {
                                         // Spacer()
-                                        Rectangle()
-                                            .cornerRadius(12)
-                                            .frame(maxWidth: 105, maxHeight: 120)
-                                            .background(.clear)
-                                            .opacity(0)
+                                 
+                                      
+                                         
+                                            
                                         
                                         
                                         
