@@ -100,38 +100,21 @@ struct SettingsView: View {
 
                     
                     NavigationLink(value: 0){
-                        HStack {
-                            Image(systemName: "paintpalette")
-                            Spacer().frame(width: 10)
-                            Text("Theme")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                            Text(themeManager.isCustom ? "Custom" : "Default")
-                                .foregroundStyle(.gray)
-                                .bold()
-                        }
+                        
+                        SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
+                        
+                    
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
                     NavigationLink(value: 1){
                         
-                        HStack {
-                            Image(systemName: "location")
-                            Spacer().frame(width: 10)
-                            Text("Location")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                            if locationManager.authorizationStatus != .authorizedAlways {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.gray)
-                            } else {
-                                Text("Always")
-                                    .foregroundStyle(.gray)
-                                    .bold()
-                            }
+                        if locationManager.authorizationStatus != .authorizedAlways {
+                            SettingsRow(icon: "location", title: "Location", secondaryImage: "exclamationmark.triangle.fill")
+                        } else {
+                            SettingsRow(icon: "location", title: "Location", secondaryInfo: "Always")
+                            
                         }
                         
                     }.padding()
@@ -140,15 +123,10 @@ struct SettingsView: View {
                     
                     NavigationLink(value: 2){
                         
-                        HStack {
-                            Image(systemName: "bell")
-                                .padding(.leading, 2)
-                            Spacer().frame(width: 10)
-                            Text("Notifications")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                        }
+                        
+                        SettingsRow(icon: "bell", title: "Notifications", secondaryImage: "chevron.right")
+                        
+                        
                         
                     }.padding()
                         .background(Color("SquaresColor"))
@@ -156,18 +134,9 @@ struct SettingsView: View {
                     
                     
                     NavigationLink(value: 3){
-                        HStack {
-                            Image("AppearanceIconSymbol")
-                                .padding(.leading, -1)
-                            Spacer().frame(width: 10)
-                            Text("Appearance")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                            Text("\(userColorScheme)".capitalized)
-                                .foregroundStyle(.gray)
-                                .bold()
-                        }
+                        
+                        SettingsRow(icon: "circle.lefthalf.filled", title: "Appearance", secondaryInfo: "\(userColorScheme)".capitalized)
+                        
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
@@ -188,14 +157,9 @@ struct SettingsView: View {
                         
                     
                     Toggle(isOn: $authEnabled){
-                        HStack {
-                            Image(systemName: "faceid")
-                                .padding(.leading, 2)
-                            Spacer().frame(width: 10)
-                            Text("App Lock")
-                                .font(.title2)
-                                .bold()
-                        }
+                        
+                        SettingsRow(icon: "faceid", title: "App Lock")
+                      
                     }.toggleStyle(CustomToggleStyle())
                         .onChange(of: authEnabled) { newValue in
                             if newValue {
@@ -214,16 +178,9 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     Toggle(isOn: $iCloudSyncOn) {
-                        HStack {
-                            Image("iCloudIconSymbol")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: 20)
-                            Spacer().frame(width: 10)
-                            Text("iCloud Sync")
-                                .font(.title2)
-                                .bold()
-                        }
+                        
+                        SettingsRow(icon: "icloud", title: "iCloud Sync")
+                    
                     }.toggleStyle(CustomToggleStyle())
                         .onChange(of: iCloudSyncOn) { value in
                             PersistenceController.shared.updateCloudKitSyncStatus()
@@ -232,28 +189,17 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     Toggle(isOn: $tipsEnabled) {
-                        HStack {
-                            Image("TipsIconSymbol")
-                                .padding(.leading, -2)
-                            Spacer().frame(width: 10)
-                            Text("Tips")
-                                .font(.title2)
-                                .bold()
-                        }
+                        SettingsRow(icon: "dollarsign.circle", title: "Tips")
                     }.toggleStyle(CustomToggleStyle())
                         .padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
                     Toggle(isOn: $taxEnabled) {
-                        HStack {
-                            Image("TaxIconSymbol")
-                                .padding(.leading, -1)
-                            Spacer().frame(width: 10)
-                            Text("Estimated Tax")
-                                .font(.title2)
-                                .bold()
-                        }
+                        
+                        SettingsRow(icon: "percent", title: "Estimated Tax")
+                        
+                        
                     }.toggleStyle(CustomToggleStyle())
                         .onChange(of: taxEnabled){ value in
                             sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
@@ -263,14 +209,10 @@ struct SettingsView: View {
                         .cornerRadius(12)
                     
                     NavigationLink(value: 4){
-                        HStack {
-                            Image(systemName: "hammer.circle.fill")
-                            Spacer().frame(width: 10)
-                            Text("Support the Developer")
-                                .font(.title2)
-                                .bold()
-                            Spacer()
-                        }
+                        
+                        
+                        SettingsRow(icon: "hammer", title: "Support the Developer", secondaryImage: "chevron.right")
+                        
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
@@ -400,12 +342,12 @@ struct SettingsView: View {
     
     
 }
-/*
+
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(navPath: .constant([])).environmentObject(ThemeDataManager())
     }
-} */
+}
 
 
 struct ProSettingsView: View{
@@ -432,6 +374,56 @@ struct ProSettingsView: View{
             }
         }.navigationTitle("ShiftTracker Pro")
         
+    }
+}
+
+struct SettingsRow: View {
+    var icon: String
+    var title: String
+    var secondaryInfo: String?
+    var secondaryImage: String?
+    
+    init(icon: String, title: String, secondaryInfo: String? = nil, secondaryImage: String? = nil) {
+        self.icon = icon
+        self.title = title
+        self.secondaryInfo = secondaryInfo
+        self.secondaryImage = secondaryImage
+    }
+    
+    var body: some View{
+        HStack {
+         
+                Image(systemName: icon)
+                .frame(width: 25, alignment: .center)
+            Text(title)
+                .font(.title2)
+                .bold()
+            
+            Spacer()
+            
+            if let secondInfo = secondaryInfo {
+                HStack(alignment: .center, spacing: 5){
+                    Text(secondInfo)
+                        .foregroundStyle(.gray)
+                        .bold()
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(.gray)
+                        .bold()
+                        .font(.caption)
+                        .padding(.top, 1)
+                }
+                
+            } else if let secondImage = secondaryImage {
+                
+                Image(systemName: secondImage)
+                    .foregroundStyle(.gray)
+                    .bold()
+                
+            }
+            
+            
+            
+        }
     }
 }
 
