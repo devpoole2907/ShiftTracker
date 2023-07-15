@@ -35,6 +35,8 @@ struct SettingsView: View {
     
     @StateObject private var locationManager = LocationDataManager()
     
+    @StateObject var notificationManager = NotificationManager()
+    
     @Binding var navPath: [Int]
     
     let settingsScreens: [any View] = [ThemeView(), LocationView(), NotificationView(), AppearanceView()]
@@ -123,14 +125,25 @@ struct SettingsView: View {
                     
                     NavigationLink(value: 2){
                         
-                        
-                        SettingsRow(icon: "bell", title: "Notifications", secondaryImage: "chevron.right")
+                        if notificationManager.authorizationStatus != .authorized  {
+                            SettingsRow(icon: "bell", title: "Notifications", secondaryImage: "exclamationmark.triangle.fill")
+                               
+                        } else {
+                            SettingsRow(icon: "bell", title: "Notifications", secondaryInfo: "Enabled")
+                                
+                        }
+                            
                         
                         
                         
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
+                        .onReceive(notificationManager.$authorizationStatus) { _ in
+                            
+                            notificationManager.checkNotificationStatus()
+                            
+                        }
                     
                     
                     NavigationLink(value: 3){
@@ -429,8 +442,18 @@ struct SettingsRow: View {
 
 
 struct NotificationView: View{
+    
+    @StateObject var notificationManager = NotificationManager()
+    
     var body: some View{
                 ScrollView{
+                        
+                    SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
+                    .onReceive(notificationManager.$authorizationStatus) { _ in
+                        
+                        notificationManager.checkNotificationStatus()
+                        
+                    }
                     
                     Button("Request notification access"){
                         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
@@ -446,7 +469,7 @@ struct NotificationView: View{
                     .padding()
                         .buttonStyle(.bordered)
                         .padding()
-                    Button("Test notification"){
+                   /* Button("Test notification"){
                         let content = UNMutableNotificationContent()
                         content.title = "ShiftTracker"
                         content.subtitle = "Ready to take a break? You've been working for __ hours and made $___ so far!"
@@ -463,7 +486,7 @@ struct NotificationView: View{
                     }.bold()
                         .padding()
                             .buttonStyle(.bordered)
-                            .padding()
+                            .padding()*/
                 }
                 
                 .scrollContentBackground(.hidden)
@@ -474,6 +497,43 @@ struct NotificationView: View{
     
 }
 
+struct SettingsCheckView: View {
+    
+    
+    var image: String
+    var headline: String
+    var subheadline: String
+    var checkmarkColor: Color
+    
+    var body: some View {
+        
+        
+        VStack(alignment: .center, spacing: 10){
+            Image(systemName: image)
+                                           .resizable()
+                                           .aspectRatio(contentMode: .fit)
+                                           .frame(maxWidth: 50)
+                                           .bold().foregroundStyle(checkmarkColor)
+                                           .padding(.top)
+                                           
+            Text(headline)
+                                           .bold()
+                                           .font(.title3)
+                                           .padding(.bottom)
+            Text(subheadline)
+                                           .font(.callout)
+                                           .padding()
+                                   }.padding()
+                                       .background(Color("SquaresColor"))
+                                       .cornerRadius(12)
+                                       .padding()
+        
+        
+    }
+    
+    
+}
+
 struct LocationView: View{
     
     @StateObject private var locationManager = LocationDataManager()
@@ -481,38 +541,12 @@ struct LocationView: View{
     var body: some View{
                 ScrollView{
                     
-                    if locationManager.authorizationStatus != .authorizedAlways {
-                        VStack(alignment: .leading, spacing: 10){
-                            Text("Location settings are not set to always.")
-                                .bold()
-                                .font(.title3)
-                                .padding()
-                            Text("Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker.")
-                                .font(.callout)
-                                .padding()
-                        }.padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
-                            .padding()
-                        
-                        Button("Request location access"){
-                            locationManager.requestAlways()
-                        }.bold()
-                        .padding()
-                            .buttonStyle(.bordered)
-                            .padding()
-                        
-                        
-                    } else {
-                        VStack(alignment: .leading, spacing: 10){
-                            Text("Location settings are set to always.")
-                                .bold()
-                                .font(.title3)
-                        }.padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
-                            .padding()
-                    }
+                    
+                    
+                    SettingsCheckView(image: locationManager.authorizationStatus != .authorizedAlways ? "exclamationmark.triangle" : "checkmark.circle", headline: locationManager.authorizationStatus != .authorizedAlways ? "Location settings are not set to always." : "You're all set.", subheadline: locationManager.authorizationStatus != .authorizedAlways ? "Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker." : "Location settings are set to always.", checkmarkColor: locationManager.authorizationStatus != .authorizedAlways ? .orange : .green)
+                    
+                    
+                 
                     
                   
                 }.scrollContentBackground(.hidden)

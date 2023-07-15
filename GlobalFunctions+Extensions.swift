@@ -493,3 +493,20 @@ func createTags(in viewContext: NSManagedObjectContext) {
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
+class NotificationManager: ObservableObject {
+    @Published var authorizationStatus: UNAuthorizationStatus?
+    
+    init() {
+        checkNotificationStatus()
+    }
+    
+    func checkNotificationStatus() {
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            DispatchQueue.main.async {
+                self?.authorizationStatus = settings.authorizationStatus
+            }
+        }
+    }
+
+    
+}
