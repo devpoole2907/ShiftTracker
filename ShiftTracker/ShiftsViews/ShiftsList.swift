@@ -124,6 +124,7 @@ struct ShiftsList: View {
                             
                         }
                     }
+                            }
                     
                     
                 }
@@ -387,6 +388,8 @@ struct TagFilter: Hashable, Identifiable, Equatable {
         }
         return [allFilter] + tagFilters
     }
+    return [allFilter] + tagFilters
+  }
 }
 
 
