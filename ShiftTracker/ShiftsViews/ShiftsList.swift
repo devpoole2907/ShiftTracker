@@ -11,7 +11,7 @@ import Foundation
 
 struct ShiftsList: View {
     
-   // @StateObject var temporaryViewModel = ContentViewModel()
+    // @StateObject var temporaryViewModel = ContentViewModel()
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -31,34 +31,34 @@ struct ShiftsList: View {
     @State private var showingAddShiftSheet: Bool = false
     
     var searchQuery: Binding<String> {
-      Binding {
-        searchTerm
-      } set: { newValue in
-        searchTerm = newValue
-        
-        var predicates = Array(selectedFilters.compactMap { $0.predicate })
-        
-        if !newValue.isEmpty {
-          let searchPredicate = NSPredicate(
-            format: "shiftNote contains[cd] %@",
-            newValue)
-          predicates.append(searchPredicate)
+        Binding {
+            searchTerm
+        } set: { newValue in
+            searchTerm = newValue
+            
+            var predicates = Array(selectedFilters.compactMap { $0.predicate })
+            
+            if !newValue.isEmpty {
+                let searchPredicate = NSPredicate(
+                    format: "shiftNote contains[cd] %@",
+                    newValue)
+                predicates.append(searchPredicate)
+            }
+            
+            if predicates.isEmpty {
+                shifts.nsPredicate = nil
+            } else {
+                shifts.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+            }
         }
-        
-        if predicates.isEmpty {
-          shifts.nsPredicate = nil
-        } else {
-          shifts.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
-        }
-      }
     }
-
-
+    
+    
     
     @FetchRequest(
         sortDescriptors: ShiftSort.default.descriptors,
         predicate: nil,
-      animation: .default)
+        animation: .default)
     private var shifts: FetchedResults<OldShift>
     
     @FetchRequest(
@@ -68,8 +68,8 @@ struct ShiftsList: View {
         ]
     )
     private var tags: FetchedResults<Tag>
-
-
+    
+    
     @State private var selectedSort = ShiftSort.default
     @State private var selectedFilters: Set<TagFilter> = [TagFilter(id: 0, name: "All", predicate: nil)]
     
@@ -81,20 +81,51 @@ struct ShiftsList: View {
     
     var body: some View {
         
-      
-           
+        
+        
         List(selection: $selection){
-            /*    Section {
-             TagButtonView().environmentObject(temporaryViewModel)
-             .frame(maxWidth: .infinity)
-             }.listRowBackground(Color.clear)
-             .listRowInsets(EdgeInsets()) */
             
             ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 
-                
-                NavigationLink(value: shift) {
-                    ShiftDetailRow(shift: shift)
+                ZStack {
+                    NavigationLink(value: shift) {
+                        ShiftDetailRow(shift: shift)
+                    }
+                    
+                    if !searchTerm.isEmpty {
+                        
+                        HStack {
+                            Spacer()
+                            VStack(alignment: .trailing){
+                                
+                                if jobSelectionViewModel.fetchJob(in: viewContext) == nil {
+                                    Spacer()
+                                    
+                                }
+                                
+                                
+                                HStack{
+                                    Spacer()
+                                    
+                                    HighlightedText(text: shift.shiftNote ?? "", highlight: searchTerm)
+                                        .padding(.vertical, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 2 : 5)
+                                        .background(Color.gray.opacity(0.1))
+                                        .cornerRadius(6)
+                                        .padding(.bottom, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 5 : 0)
+                                        .padding(.trailing, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 0 : 12)
+                                }
+                                
+                                
+                                
+                                
+                            }.frame(maxWidth: 180)
+                                .frame(alignment: .trailing)
+                            
+                            
+                        }
+                    }
+                    
+                    
                 }
                 
                 .navigationDestination(for: OldShift.self) { shift in
@@ -127,146 +158,145 @@ struct ShiftsList: View {
         }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             .tint(Color.gray)
             .scrollContentBackground(.hidden)
-          //  .padding(.top, 25)
         
         
             .onAppear {
                 navigationState.gestureEnabled = false
                 
             }
-            
         
-    
+        
+        
         
             .navigationBarTitle(selectedSort.name)
-          
         
-        .toolbar{
-            
-            
-            
-            ToolbarItem(placement: .navigationBarTrailing){
+        
+            .toolbar{
                 
                 
-                if editMode?.wrappedValue.isEditing == true {
+                
+                ToolbarItem(placement: .navigationBarTrailing){
                     
+                    
+                    if editMode?.wrappedValue.isEditing == true {
+                        
                         Button(action: {
                             CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
                         }) {
                             Image(systemName: "trash")
                         }.disabled(selection.isEmpty)
+                        
+                    }
+                    
                     
                 }
                 
                 
-            }
-            
-            
-            ToolbarItem(placement: .navigationBarTrailing){
-                 
-         EditButton()
-                 
-                 
-             }
-            
-            ToolbarItem(placement: .navigationBarTrailing){
-                
-                Menu {
-                
-                Menu {
-                    Picker("Sort By", selection: $selectedSort) {
-                        ForEach(ShiftSort.sorts, id: \.self) { sort in
-                            Text("\(sort.name)")
-                        }
-                    }
-                } label: {
-                    Label(
-                        "Sort",
-                        systemImage: "line.horizontal.3.decrease.circle")
+                ToolbarItem(placement: .navigationBarTrailing){
+                    
+                    EditButton()
+                    
+                    
                 }
-                .disabled(!selection.isEmpty)
-                .onChange(of: selectedSort) { _ in
-                    let request = shifts
-                    request.sortDescriptors = selectedSort.descriptors
-                }
+                
+                ToolbarItem(placement: .navigationBarTrailing){
                     
                     Menu {
-                      ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
-                        Toggle(isOn: Binding(
-                          get: {
-                            if filter.name == "All" {
-                              return self.selectedFilters.count == 1 && self.selectedFilters.contains(filter)
-                            } else {
-                              return self.selectedFilters.contains(filter)
+                        
+                        Menu {
+                            Picker("Sort By", selection: $selectedSort) {
+                                ForEach(ShiftSort.sorts, id: \.self) { sort in
+                                    Text("\(sort.name)")
+                                }
                             }
-                          },
-                          set: { _ in
-                            if filter.name == "All" {
-                              self.selectedFilters = [filter]
-                            } else {
-                              if self.selectedFilters.contains(filter) {
-                                self.selectedFilters.remove(filter)
-                              } else {
-                                self.selectedFilters.insert(filter)
-                                // If "All" is in the set, remove it when another filter is added
-                                self.selectedFilters.remove(TagFilter(id: 0, name: "All", predicate: nil))
-                              }
+                        } label: {
+                            Label(
+                                "Sort",
+                                systemImage: "line.horizontal.3.decrease.circle")
+                        }
+                        .disabled(!selection.isEmpty)
+                        .onChange(of: selectedSort) { _ in
+                            let request = shifts
+                            request.sortDescriptors = selectedSort.descriptors
+                        }
+                        
+                        Menu {
+                            ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
+                                Toggle(isOn: Binding(
+                                    get: {
+                                        if filter.name == "All" {
+                                            return self.selectedFilters.count == 1 && self.selectedFilters.contains(filter)
+                                        } else {
+                                            return self.selectedFilters.contains(filter)
+                                        }
+                                    },
+                                    set: { _ in
+                                        if filter.name == "All" {
+                                            self.selectedFilters = [filter]
+                                        } else {
+                                            if self.selectedFilters.contains(filter) {
+                                                self.selectedFilters.remove(filter)
+                                            } else {
+                                                self.selectedFilters.insert(filter)
+                                                // If "All" is in the set, remove it when another filter is added
+                                                self.selectedFilters.remove(TagFilter(id: 0, name: "All", predicate: nil))
+                                            }
+                                        }
+                                    })) {
+                                        Text("\(filter.name)")
+                                    }
                             }
-                          })) {
-                          Text("\(filter.name)")
+                        } label: {
+                            Label(
+                                "Tag",
+                                systemImage: "number.circle")
                         }
-                      }
-                    } label: {
-                      Label(
-                        "Tag",
-                        systemImage: "number.circle")
-                    }
-                    .disabled(!selection.isEmpty)
-
-                    .onChange(of: selectedFilters) { newValue in
-                      let predicates = newValue.compactMap { $0.predicate } // 1. filter out `nil` predicates
-                      if predicates.isEmpty {
-                        let request = shifts
-                        request.nsPredicate = nil // reset predicate if no filters are selected
-                      } else {
-                        let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates) // 2. use `.and` instead of `.or`
-                        let request = shifts
-                        request.nsPredicate = compoundPredicate
-                      }
-                    }
-
-                    
-                /*    Menu {
-                      Picker("Filter By", selection: $selectedFilter) {
-                        ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
-                          Text("\(filter.name)")
+                        .disabled(!selection.isEmpty)
+                        
+                        .onChange(of: selectedFilters) { newValue in
+                            let predicates = newValue.compactMap { $0.predicate } // 1. filter out `nil` predicates
+                            if predicates.isEmpty {
+                                let request = shifts
+                                request.nsPredicate = nil // reset predicate if no filters are selected
+                            } else {
+                                let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates) // 2. use `.and` instead of `.or`
+                                let request = shifts
+                                request.nsPredicate = compoundPredicate
+                            }
                         }
-                      }
+                        
+                        
+                        /*    Menu {
+                         Picker("Filter By", selection: $selectedFilter) {
+                         ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
+                         Text("\(filter.name)")
+                         }
+                         }
+                         } label: {
+                         Label(
+                         "Tags",
+                         systemImage: "number.circle")
+                         }
+                         .disabled(!selection.isEmpty)
+                         .onChange(of: selectedFilter) { newValue in
+                         let request = shifts
+                         request.nsPredicate = newValue.predicate
+                         // request.predicate = newValue.predicate
+                         } */
+                        
+                        
+                        
                     } label: {
-                      Label(
-                        "Tags",
-                        systemImage: "number.circle")
-                    }
-                    .disabled(!selection.isEmpty)
-                    .onChange(of: selectedFilter) { newValue in
-                      let request = shifts
-                        request.nsPredicate = newValue.predicate
-                     // request.predicate = newValue.predicate
-                    } */
-
-                
-                
-                } label: {
-                    
-                    
-                    
+                        
+                        
+                        
                         Image(systemName: "ellipsis.circle")
-                    
+                        
+                    }
                 }
+                
+                
             }
-         
-            
-        }
         
     }
     
@@ -287,56 +317,56 @@ struct ShiftsList: View {
         }
     }
     
-
-
+    
+    
     
 }
 
 struct ShiftSort: Hashable, Identifiable {
-  let id: Int
-  let name: String
-  let descriptors: [SortDescriptor<OldShift>]
+    let id: Int
+    let name: String
+    let descriptors: [SortDescriptor<OldShift>]
     
     
     static let sorts: [ShiftSort] = [
-      ShiftSort(
-        id: 0,
-        name: "Latest",
-        descriptors: [
-          SortDescriptor(\OldShift.shiftStartDate, order: .reverse)
-        ]),
-      ShiftSort(
-        id: 1,
-        name: "Oldest",
-        descriptors: [
-          SortDescriptor(\OldShift.shiftStartDate, order: .forward)
-        ]),
-      ShiftSort(
-        id: 2,
-        name: "Pay | Ascending",
-        descriptors: [
-            SortDescriptor(\OldShift.taxedPay, order: .reverse)
-        ]),
-      ShiftSort(
-        id: 3,
-        name: "Pay | Descending",
-        descriptors: [
-            SortDescriptor(\OldShift.taxedPay, order: .forward)
-        ]),
-      ShiftSort(
-        id: 4,
-        name: "Longest",
-        descriptors: [
-          SortDescriptor(\OldShift.duration, order: .reverse)
-        ]),
-      ShiftSort(
-        id: 5,
-        name: "Shortest",
-        descriptors: [
-          SortDescriptor(\OldShift.duration, order: .forward)
-        ])
+        ShiftSort(
+            id: 0,
+            name: "Latest",
+            descriptors: [
+                SortDescriptor(\OldShift.shiftStartDate, order: .reverse)
+            ]),
+        ShiftSort(
+            id: 1,
+            name: "Oldest",
+            descriptors: [
+                SortDescriptor(\OldShift.shiftStartDate, order: .forward)
+            ]),
+        ShiftSort(
+            id: 2,
+            name: "Pay | Ascending",
+            descriptors: [
+                SortDescriptor(\OldShift.taxedPay, order: .reverse)
+            ]),
+        ShiftSort(
+            id: 3,
+            name: "Pay | Descending",
+            descriptors: [
+                SortDescriptor(\OldShift.taxedPay, order: .forward)
+            ]),
+        ShiftSort(
+            id: 4,
+            name: "Longest",
+            descriptors: [
+                SortDescriptor(\OldShift.duration, order: .reverse)
+            ]),
+        ShiftSort(
+            id: 5,
+            name: "Shortest",
+            descriptors: [
+                SortDescriptor(\OldShift.duration, order: .forward)
+            ])
     ]
-
+    
     // 4
     static var `default`: ShiftSort { sorts[0] }
     
@@ -344,20 +374,106 @@ struct ShiftSort: Hashable, Identifiable {
 }
 
 struct TagFilter: Hashable, Identifiable, Equatable {
-  let id: Int
-  let name: String
-  let predicate: NSPredicate?
-
-  static func filters(from tags: [Tag]) -> [TagFilter] {
-    let allFilter = TagFilter(id: 0, name: "All", predicate: nil)
-    let tagFilters = tags.enumerated().map { (index: Int, tag: Tag) -> TagFilter in
-      TagFilter(id: index + 1,
-                name: "#\(tag.name ?? "Unknown")",
-                predicate: NSPredicate(format: "ANY tags.tagID == %@", tag.tagID! as CVarArg))
+    let id: Int
+    let name: String
+    let predicate: NSPredicate?
+    
+    static func filters(from tags: [Tag]) -> [TagFilter] {
+        let allFilter = TagFilter(id: 0, name: "All", predicate: nil)
+        let tagFilters = tags.enumerated().map { (index: Int, tag: Tag) -> TagFilter in
+            TagFilter(id: index + 1,
+                      name: "#\(tag.name ?? "Unknown")",
+                      predicate: NSPredicate(format: "ANY tags.tagID == %@", tag.tagID! as CVarArg))
+        }
+        return [allFilter] + tagFilters
     }
-    return [allFilter] + tagFilters
-  }
 }
 
 
-
+struct HighlightedText: View {
+    let text: String
+    let highlight: String
+    
+    @Environment(\.managedObjectContext) var viewContext
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        if let parts = highlightSnippet(in: text, highlight: highlight) {
+            HStack(spacing: 0) {
+                Text("..")
+                    .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                    .bold()
+                ForEach(parts, id: \.0) { part, isHighlighted in
+                    if isHighlighted {
+                        Text(part)
+                            .bold()
+                            .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                            .foregroundStyle(.black)
+                            .background(Color.yellow.opacity(0.8))
+                            .cornerRadius(4)
+                    } else {
+                        Text(part)
+                            .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                            .bold()
+                            .font(.caption)
+                    }
+                }
+                Text("..")
+                    .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                    .bold()
+            }.lineLimit(1)
+                .padding(.horizontal, 10)
+        }
+    }
+    
+    
+    
+    func highlightSnippet(in text: String, highlight: String) -> [(String, Bool)]? {
+        guard let range = text.range(of: highlight, options: .caseInsensitive) else {
+            return nil
+        }
+        
+        let start = text.index(range.lowerBound, offsetBy: -2, limitedBy: text.startIndex) ?? text.startIndex
+        let end = text.index(range.upperBound, offsetBy: 5, limitedBy: text.endIndex) ?? text.endIndex
+        
+        let snippet = text[start..<end]
+        
+        return separateText(String(snippet), highlight: highlight)
+    }
+    
+    
+    func separateText(_ fullText: String, highlight: String) -> [(String, Bool)] {
+        var separatedText: [(String, Bool)] = []
+        let lowercasedHighlight = highlight.lowercased()
+        let parts = fullText.lowercased().components(separatedBy: lowercasedHighlight)
+        
+        for (i, part) in parts.enumerated() {
+            if i != parts.count - 1 {
+                if let partRange = fullText.range(of: part, options: .caseInsensitive),
+                   let endIndex = fullText.index(partRange.upperBound, offsetBy: lowercasedHighlight.count, limitedBy: fullText.endIndex) {
+                    let nextPart = String(fullText[partRange.upperBound..<endIndex])
+                    separatedText.append((part, false))
+                    separatedText.append((nextPart, true))
+                } else if part.isEmpty {
+                    // Special case when the highlight is at the start
+                    let startIndex = fullText.startIndex
+                    if let endIndex = fullText.index(startIndex, offsetBy: lowercasedHighlight.count, limitedBy: fullText.endIndex) {
+                        let nextPart = String(fullText[startIndex..<endIndex])
+                        separatedText.append((nextPart, true))
+                    }
+                }
+            } else {
+                separatedText.append((part, false))
+            }
+        }
+        
+        return separatedText
+    }
+    
+    
+    
+    
+    
+    
+}
