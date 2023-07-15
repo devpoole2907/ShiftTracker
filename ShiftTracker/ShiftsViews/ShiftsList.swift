@@ -266,27 +266,6 @@ struct ShiftsList: View {
                             }
                         }
                         
-                        
-                        /*    Menu {
-                         Picker("Filter By", selection: $selectedFilter) {
-                         ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
-                         Text("\(filter.name)")
-                         }
-                         }
-                         } label: {
-                         Label(
-                         "Tags",
-                         systemImage: "number.circle")
-                         }
-                         .disabled(!selection.isEmpty)
-                         .onChange(of: selectedFilter) { newValue in
-                         let request = shifts
-                         request.nsPredicate = newValue.predicate
-                         // request.predicate = newValue.predicate
-                         } */
-                        
-                        
-                        
                     } label: {
                         
                         
