@@ -12,7 +12,7 @@ struct UpcomingShiftView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     @FetchRequest(
         entity: ScheduledShift.entity(),
@@ -56,10 +56,20 @@ struct UpcomingShiftView: View {
                     .padding(.bottom, -1)
                 Divider().frame(maxWidth: 200)
                 HStack{
-                    Image(systemName: upcomingShift.job?.icon ?? "briefcase.circle")
-                        .foregroundColor(Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)))
+                    Image(systemName: upcomingShift.job?.icon ?? "")
+                        .foregroundStyle(.white)
+                        .font(.callout)
+                        .padding(10)
+                        .background {
+                            
+                            Circle()
+                                .foregroundStyle(Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient)
+                            
+                        }
+                        
+                        
                     VStack(alignment: .leading, spacing: 5){
-                        Text("\(upcomingShift.job?.name ?? "Unknown")")
+                        Text("\(upcomingShift.job?.name ?? "")")
                             .bold()
                         Text("\(upcomingShift.startDate ?? Date(),formatter: Self.dateFormatter)")
                             .foregroundColor(.gray)
@@ -80,7 +90,7 @@ struct UpcomingShiftView: View {
                 .padding(.bottom, -1)
             Divider().frame(maxWidth: 200)
             HStack{
-                Image(systemName: "briefcase.circle")
+                Image(systemName: "briefcase.fill")
                 Text("No Upcoming Shifts")
                 
             }.foregroundColor(.gray)

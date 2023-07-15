@@ -79,7 +79,7 @@ class AddressManager: ObservableObject {
 
 
 
-class JobSelectionViewModel: ObservableObject {
+class JobSelectionManager: ObservableObject {
     @Published var selectedJobUUID: UUID?
     @Published var selectedJobOffset: CGFloat = 0.0
     @Published var latestShifts: [OldShift] = []
@@ -468,3 +468,28 @@ extension View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+
+// used to create 3 default tags when the app launches
+
+func createTags(in viewContext: NSManagedObjectContext) {
+        let tagNames = ["Night", "Overtime", "Late"]
+        let tagColors = [UIColor(.indigo), UIColor(.orange), UIColor(.pink)]
+
+        for index in tagNames.indices {
+            let tag = Tag(context: viewContext)
+            tag.name = tagNames[index]
+            
+            let (r, g, b) = tagColors[index].rgbComponents
+            tag.colorRed = Double(r)
+            tag.colorGreen = Double(g)
+            tag.colorBlue = Double(b)
+            tag.tagID = UUID()
+        }
+
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }

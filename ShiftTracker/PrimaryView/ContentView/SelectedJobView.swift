@@ -10,7 +10,7 @@ import SwiftUI
 struct SelectedJobView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -24,7 +24,15 @@ struct SelectedJobView: View {
                 HStack{
                     Image(systemName: job.icon ?? "briefcase.circle")
                         .font(.callout)
-                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                        .foregroundStyle(.white)
+                        .padding(10)
+                        .background {
+                            
+                            
+                            Circle()
+                                .foregroundStyle(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient)
+                            
+                        }
                     VStack(alignment: .leading, spacing: 3){
                         Text(job.name ?? "")
                             .font(.callout)

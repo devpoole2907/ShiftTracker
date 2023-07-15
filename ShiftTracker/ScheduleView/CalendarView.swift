@@ -113,8 +113,8 @@ struct CalendarView: UIViewRepresentable {
                                 blue: CGFloat(job?.colorBlue ?? 0.0 ),
                                                 alpha: 1)
                             
-            return .image(UIImage(systemName: job?.icon ?? "briefcase.circle"),
-                                          color: color,
+            return .image(UIImage(systemName: job?.icon ?? "briefcase.fill"),
+                          color: color,
                                           size: .large)
             
             

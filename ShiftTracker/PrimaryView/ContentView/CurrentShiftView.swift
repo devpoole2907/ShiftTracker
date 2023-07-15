@@ -10,7 +10,7 @@ import CoreData
 
 struct CurrentShiftView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     let startDate: Date
     
     
@@ -46,10 +46,22 @@ struct CurrentShiftView: View {
             }
             if let job = job {
                 HStack{
-                    Image(systemName: job.icon ?? "briefcase.circle")
-                        .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
+                    Image(systemName: job.icon ?? "")
+                        .font(.callout)
+                        .foregroundStyle(.white)
+                        .padding(10)
+                        .background {
+                            let color = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
+                            Circle()
+                                .foregroundStyle(color)
+                          
+                            
+                                
+                            
+                        }
+                    
                     VStack(alignment: .leading, spacing: 5){
-                        Text(job.name ?? "")
+                        Text(job.name ?? "No Job Found")
                             .bold()
                         Text("\(startDate,formatter: Self.dateFormatter)")
                             .foregroundColor(.gray)

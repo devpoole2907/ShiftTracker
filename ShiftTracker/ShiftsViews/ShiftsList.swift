@@ -16,7 +16,7 @@ struct ShiftsList: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var shiftManager: ShiftDataManager
     
     
@@ -62,12 +62,15 @@ struct ShiftsList: View {
     
     
     var body: some View {
+        
+      
+           
         List(selection: $selection){
-        /*    Section {
-                TagButtonView().environmentObject(temporaryViewModel)
-                    .frame(maxWidth: .infinity)
-            }.listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets()) */
+            /*    Section {
+             TagButtonView().environmentObject(temporaryViewModel)
+             .frame(maxWidth: .infinity)
+             }.listRowBackground(Color.clear)
+             .listRowInsets(EdgeInsets()) */
             
             ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 
@@ -81,10 +84,10 @@ struct ShiftsList: View {
                     
                 }
                 
-            
-            .listRowBackground(Color("SquaresColor"))
-            
-            .swipeActions {
+                .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+                .listRowBackground(Color("SquaresColor"))
+                
+                .swipeActions {
                     Button(role: .destructive) {
                         shiftManager.deleteShift(shift, in: viewContext)
                         
@@ -97,45 +100,43 @@ struct ShiftsList: View {
                     } label: {
                         Image(systemName: "trash")
                     }
-            }
+                }
                 
-        }
-        
-        
-        
+            }
+            
+            
+            
         }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             .tint(Color.gray)
             .scrollContentBackground(.hidden)
-
+          //  .padding(.top, 25)
+        
+        
             .onAppear {
                 navigationState.gestureEnabled = false
+                
+            }
             
-        }
+        
+    
         
             .navigationBarTitle(selectedSort.name)
+          
         
         .toolbar{
+            
+            
             
             ToolbarItem(placement: .navigationBarTrailing){
                 
                 
-                if editMode?.wrappedValue.isEditing != nil {
-                    Button(action: {
-                        CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                    }) {
-                        Image(systemName: "trash")
-                    }.disabled(selection.isEmpty)
-                } else {
+                if editMode?.wrappedValue.isEditing == true {
                     
-                    Button(action: {
-                        
-                       // CustomConfirmationAlert(action: <#T##() -> Void#>, cancelAction: nil, title: "")
-                        
-                        
-                    }) {
-                        Image(systemName: "square.and.arrow.up")
-                    }
-                    
+                        Button(action: {
+                            CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                        }) {
+                            Image(systemName: "trash")
+                        }.disabled(selection.isEmpty)
                     
                 }
                 
@@ -151,6 +152,9 @@ struct ShiftsList: View {
              }
             
             ToolbarItem(placement: .navigationBarTrailing){
+                
+                Menu {
+                
                 Menu {
                     Picker("Sort By", selection: $selectedSort) {
                         ForEach(ShiftSort.sorts, id: \.self) { sort in
@@ -167,7 +171,34 @@ struct ShiftsList: View {
                     let request = shifts
                     request.sortDescriptors = selectedSort.descriptors
                 }
+                    
+                    Menu {
+                        Picker("Sort By", selection: $selectedSort) {
+                            ForEach(ShiftSort.sorts, id: \.self) { sort in
+                                Text("\(sort.name)")
+                            }
+                        }
+                    } label: {
+                        Label(
+                            "Tags",
+                            systemImage: "number.circle")
+                    }
+                    .disabled(!selection.isEmpty)
+                    .onChange(of: selectedSort) { _ in
+                        let request = shifts
+                        request.nsPredicate = nil
+                    }
+                
+                
+                } label: {
+                    
+                    
+                    
+                        Image(systemName: "ellipsis.circle")
+                    
+                }
             }
+         
             
         }
         

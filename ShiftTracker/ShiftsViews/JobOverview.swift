@@ -27,7 +27,7 @@ struct JobOverview: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     @FetchRequest var shifts: FetchedResults<OldShift>
     
@@ -152,7 +152,7 @@ struct JobOverview: View {
                     Text("Latest Shifts")
                         .textCase(nil)
                         .foregroundColor(textColor)
-                        .padding(.leading, -12)
+                        .padding(.leading, jobSelectionViewModel.fetchJob(in: viewContext) != nil ? -12 : -4)
                         .font(.title2)
                         .bold()
                     Spacer()
@@ -166,6 +166,7 @@ struct JobOverview: View {
                     
             }
             .listRowBackground(Color("SquaresColor"))
+            .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
         }.scrollContentBackground(.hidden)
             
         .fullScreenCover(isPresented: $showingAddShiftSheet) {
@@ -200,6 +201,7 @@ struct JobOverview: View {
 
             
         .navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext)?.name ?? "Summary")
+      //  .toolbarBackground(Color(red: Double(jobSelectionViewModel.fetchJob(in: viewContext)?.colorRed ?? 0), green: Double(jobSelectionViewModel.fetchJob(in: viewContext)?.colorGreen ?? 0), blue: Double(jobSelectionViewModel.fetchJob(in: viewContext)?.colorBlue ?? 0)).gradient)
             
         .toolbar{
             

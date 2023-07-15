@@ -12,7 +12,7 @@ struct StatsSquare: View {
     
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var shiftManager: ShiftDataManager
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     var body: some View {
         

@@ -63,7 +63,7 @@ class ShiftDataManager: ObservableObject {
     
     
     // this function determines whether a shift should be included in the current selection of job
-     func shouldIncludeShift(_ shift: OldShift, jobModel: JobSelectionViewModel) -> Bool {
+     func shouldIncludeShift(_ shift: OldShift, jobModel: JobSelectionManager) -> Bool {
         if let selectedJobUUID = jobModel.selectedJobUUID {
             return shift.job?.uuid == selectedJobUUID
         }
@@ -72,18 +72,18 @@ class ShiftDataManager: ObservableObject {
     
     // these functions calculate totals for the three key variables in shifts
     
-    func addAllTaxedPay(shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Double {
+    func addAllTaxedPay(shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> Double {
         let total = shifts.filter({ shouldIncludeShift($0, jobModel: jobModel) }).reduce(0) { $0 + $1.taxedPay }
         return Double(round(100*total)/100)
     }
 
     
-     func addAllPay(shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Double {
+     func addAllPay(shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> Double {
          let total = shifts.filter({ shouldIncludeShift($0, jobModel: jobModel) }).reduce(0) { $0 + $1.totalPay }
          return Double(round(100*total)/100)
     }
     
-    func addAllHours(shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Double {
+    func addAllHours(shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> Double {
         let total = shifts.filter({ shouldIncludeShift($0, jobModel: jobModel) }).reduce(0) { $0 + $1.duration }
         return total / 3600
     }
@@ -109,7 +109,7 @@ class ShiftDataManager: ObservableObject {
         return Calendar.current.date(from: components)!
     }
     
-    func getAllShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> [singleShift] {
+    func getAllShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> [singleShift] {
         
         var allShifts: [singleShift] = []
         
@@ -123,7 +123,7 @@ class ShiftDataManager: ObservableObject {
         
     }
     
-    func getShiftCount(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel) -> Int {
+    func getShiftCount(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> Int {
         
         
         var shiftCount: Int = 0
@@ -138,7 +138,7 @@ class ShiftDataManager: ObservableObject {
         
     }
 
-    func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionViewModel, dateRange: DateRange) -> [singleShift] {
+    func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager, dateRange: DateRange) -> [singleShift] {
         var shiftsByDay: [String: [OldShift]] = [:]
         let formatter = DateFormatter()
         formatter.dateFormat = "d/M/yyyy"

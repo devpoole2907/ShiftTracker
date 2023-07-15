@@ -22,7 +22,7 @@ struct SideMenu: View {
     
     @State private var showJobs: Bool = false
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var themeManager: ThemeDataManager
     
@@ -129,7 +129,8 @@ struct SideMenu: View {
                                                 
                                             }
                                             
-                                        }.padding()
+                                        }.padding(.horizontal, 8)
+                                            .padding(.vertical, 10)
                                             .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
                                             .cornerRadius(50)
                                         
@@ -332,44 +333,4 @@ extension View {
     }
 }
 
-struct JobRow: View {
-    let job: Job
-    let isSelected: Bool
-    let editAction: () -> Void
-    var showEdit: Bool
-    
-    @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var viewModel: ContentViewModel
-    
-    var body: some View {
-        
-        let textColor: Color = colorScheme == .dark ? .white : .black
-        
-        HStack {
-            
-            Image(systemName: job.icon ?? "briefcase.circle")
-                .foregroundColor(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)))
-            
-            Text(job.name ?? "")
-                .bold()
-                .foregroundColor(isSelected ? .white : textColor)
-                .lineLimit(1)
-                .allowsTightening(true)
-            Spacer()
-            if showEdit{
-                Button(action: {
-                    if (isSelected && viewModel.shift == nil) || !isSelected {
-                        editAction()
-                    }
-                    else {
-                        OkButtonPopup(title: "End your current shift before editing.", action: nil).showAndStack()
-                    }}) {
-                        Image(systemName: "pencil")
-                            .foregroundColor(isSelected ? .white : textColor)
-                    }
-            }
-            
-            
-        }
-    }
-}
+

@@ -19,14 +19,14 @@ class ScheduledShiftStore: ObservableObject {
     @Published var changedJob: Job?
     let shiftDataLoaded = PassthroughSubject<Void, Never>()
     
-    func shouldIncludeShift(_ shift: ScheduledShift, jobModel: JobSelectionViewModel) -> Bool {
+    func shouldIncludeShift(_ shift: ScheduledShift, jobModel: JobSelectionManager) -> Bool {
        if let selectedJobUUID = jobModel.selectedJobUUID {
            return shift.job?.uuid == selectedJobUUID
        }
        return true
    }
     
-    func fetchShifts(from shifts: FetchedResults<ScheduledShift>, jobModel: JobSelectionViewModel){
+    func fetchShifts(from shifts: FetchedResults<ScheduledShift>, jobModel: JobSelectionManager){
         
         previousSelectedShifts = []
         for shift in self.shifts {

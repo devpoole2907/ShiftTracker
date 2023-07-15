@@ -31,7 +31,7 @@ struct MainWithSideBarView: View {
     
     
     @StateObject var viewModel = ContentViewModel()
-    @StateObject var jobSelectionModel = JobSelectionViewModel()
+    @StateObject var jobSelectionModel = JobSelectionManager()
     @StateObject var navigationState = NavigationState()
     @StateObject var shiftStore = ScheduledShiftStore()
     @StateObject var scheduleModel = SchedulingViewModel()
@@ -130,9 +130,33 @@ struct MainWithSideBarView: View {
                             VStack(spacing: 0){
                                 HStack(spacing: 0) {
                                     TabButton(tab: .home, useSystemImage: true)
-                                    TabButton(tab: .timesheets, useSystemImage: true, action: {path = NavigationPath()}) 
+                                    TabButton(tab: .timesheets, useSystemImage: true, action: {
+                                        
+                                        if path.isEmpty {
+                                            
+                                            navigationState.showMenu.toggle()
+                                            
+                                        } else {
+                                            path = NavigationPath()
+                                            
+                                        }
+                                        
+                                        
+                                    })
                                     TabButton(tab: .schedule, useSystemImage: true)
-                                    TabButton(tab: .settings, useSystemImage: true, action: {settingsPath = []})
+                                    TabButton(tab: .settings, useSystemImage: true, action: {
+                                        
+                                        if settingsPath.isEmpty {
+                                            
+                                            navigationState.showMenu.toggle()
+                                            
+                                        } else {
+                                            
+                                            settingsPath = []
+                                            
+                                        }
+                                        
+                                    })
                                 }
                                 .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
                                 .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
@@ -252,7 +276,7 @@ struct MainWithSideBarView: View {
                 .onAppear {
                     
                     themeManager.resetColorsToDefaults()
-                    
+                    createTags(in: context)
                     
                     
                 }
@@ -296,15 +320,15 @@ func onEnd(value: DragGesture.Value) {
                     currentTab = tab
                 }
                 
-            } else {
+            } else if let action {
                 
-                guard let action else {
-                    
-                    return
-                }
                 
                 action()
                 
+                
+            } else {
+                
+                navigationState.showMenu.toggle()
                 
             }
             

@@ -12,7 +12,7 @@ struct CreateShiftForm: View {
     @Environment(\.dismiss) private var dismiss
     
     @EnvironmentObject var shiftStore: ScheduledShiftStore
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     @Environment(\.colorScheme) var colorScheme
     

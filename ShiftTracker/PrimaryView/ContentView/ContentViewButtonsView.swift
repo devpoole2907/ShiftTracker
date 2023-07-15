@@ -11,7 +11,7 @@ import Haptics
 struct ContentViewButtonsView: View {
     
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var navigationState: NavigationState
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) private var context

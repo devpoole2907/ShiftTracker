@@ -14,7 +14,7 @@ struct ActionView: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     
     @Environment(\.dismiss) var dismiss

@@ -13,7 +13,7 @@ struct ChartSquare: View {
     
     @EnvironmentObject var shiftManager: ShiftDataManager
     
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     @State private var selectedDateRange: DateRange = .week
     

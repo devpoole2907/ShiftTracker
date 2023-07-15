@@ -154,9 +154,18 @@ struct ListViewRow: View {
                 ZStack{
                     VStack(alignment: .leading){
                         HStack(spacing : 10){
-                            Image(systemName: shift.job?.icon ?? "briefcase.circle")
-                                .foregroundColor(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
-                                .font(.system(size: 30))
+                            Image(systemName: shift.job?.icon ?? "briefcase.fill")
+                                .padding(12)
+                                .foregroundStyle(.white)
+                                .font(.title2)
+                                .background {
+                                    
+                                    Circle()
+                                        .foregroundStyle(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)).gradient)
+                                    
+                                }
+                                
+                               
                                 .frame(width: UIScreen.main.bounds.width / 7)
                             VStack(alignment: .leading, spacing: 5){
                                 Text(shift.job?.name ?? "")

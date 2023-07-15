@@ -35,7 +35,7 @@ struct ContentView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     @EnvironmentObject var themeManager: ThemeDataManager
     

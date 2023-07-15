@@ -24,7 +24,7 @@ struct JobView: View {
     @ObservedObject private var locationManager = LocationDataManager()
     
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     private let addressManager = AddressManager()
     private let notificationManager = ShiftNotificationManager.shared
     
@@ -33,7 +33,7 @@ struct JobView: View {
     @State private var title = ""
     @State private var hourlyPay: String = ""
     @State private var taxPercentage: Double = 0
-    @State private var selectedColor = Color.cyan
+    @State private var selectedColor = Color.pink
     @State private var clockInReminder = false
     @State private var autoClockIn = false
     @State private var clockOutReminder = false
@@ -82,7 +82,7 @@ struct JobView: View {
         _title = State(initialValue: job?.title ?? "")
         _hourlyPay = State(initialValue: "\(job?.hourlyPay ?? 0)")
         _taxPercentage = State(initialValue: job?.tax ?? 0)
-        _selectedIcon = State(initialValue: job?.icon ?? "briefcase.circle")
+        _selectedIcon = State(initialValue: job?.icon ?? "briefcase.fill")
         
         if let jobColorRed = job?.colorRed, let jobColorBlue = job?.colorBlue, let jobColorGreen = job?.colorGreen {
             _selectedColor = State(initialValue: Color(red: Double(jobColorRed), green: Double(jobColorGreen), blue: Double(jobColorBlue)))
@@ -150,7 +150,15 @@ struct JobView: View {
                             Image(systemName: selectedIcon)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .foregroundColor(selectedColor)
+                                .foregroundColor(.white)
+                                .padding(20)
+                                .background {
+                                    
+                                    Circle()
+                                        .foregroundStyle(selectedColor.gradient)
+                                    
+                                    
+                                }
                                 .scaleEffect(1 + (offset / 1000))
                                 .onTapGesture {
                                     activeSheet = .symbolSheet
@@ -399,7 +407,7 @@ struct JobView: View {
                                 .presentationDetents([ .fraction(0.4)])
                             .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationDragIndicator(.visible)
-                                .presentationCornerRadius(50)
+                                .presentationCornerRadius(35)
                             
                             
                         case .symbolSheet:
@@ -408,7 +416,7 @@ struct JobView: View {
                                 .presentationDetents([ .medium, .large])
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                                .presentationCornerRadius(50)
+                                .presentationCornerRadius(35)
                         case .proSheet:
                             NavigationStack{
                                 ProView()
@@ -417,7 +425,7 @@ struct JobView: View {
                                 .presentationDetents([ .large])
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                                .presentationCornerRadius(50)
+                                .presentationCornerRadius(35)
                         }
                         
                     }
@@ -583,18 +591,20 @@ struct JobView: View {
     }
     
 }
-/*
+
 struct JobView_Previews: PreviewProvider {
     static var previews: some View {
-        JobView()
+        JobView(isEditJobPresented: .constant(true), selectedJobForEditing: .constant(nil))
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
-} */
+}
 
 
 let jobIcons = [
-    "briefcase.circle", "display", "tshirt.fill", "takeoutbag.and.cup.and.straw.fill", "trash.fill",
-    "wineglass.fill", "cup.and.saucer.fill", "film.fill", "building.columns.circle.fill", "camera.fill", "camera.macro.circle", "bus.fill", "box.truck", "fuelpump.circle", "popcorn.circle", "cross.case.circle", "frying.pan", "cart.circle", "paintbrush", "wrench.adjustable"]
+    "briefcase.fill", "display", "tshirt.fill", "takeoutbag.and.cup.and.straw.fill", "trash.fill",
+    "wineglass.fill", "cup.and.saucer.fill", "film.fill", "building.columns.fill", "camera.fill", "camera.macro", "bus.fill", "box.truck.fill", "fuelpump.fill", "popcorn.fill", "cross.case.fill", "frying.pan.fill", "cart.fill", "paintbrush.fill", "wrench.adjustable.fill",
+            "car.fill", "ferry.fill", "bolt.fill", "books.vertical.fill",
+                "newspaper.fill", "theatermasks.fill", "lightbulb.led.fill", "spigot.fill"]
 
 let jobColors = [
     Color.pink, Color.green, Color.blue, Color.purple, Color.orange, Color.cyan]
@@ -620,14 +630,29 @@ struct JobIconPicker: View {
                                 Image(systemName: icon)
                                     .font(.title2)
                                     .frame(height: 20)
-                                    .foregroundColor(iconColor)
+                                    .foregroundStyle(.white)
+                                
+                            }.padding()
+                            .background{
+                                Circle()
+                                    .foregroundStyle(iconColor.gradient)
+                                    
                             }
                         }
                     }
                 }
                 .padding()
             }
-            .navigationBarTitle("Job Icon", displayMode: .inline)
+            .navigationBarTitle("Icon", displayMode: .inline)
+            
+            
+            .toolbar {
+                
+                
+                CloseButton(action: { dismiss() })
+                
+            }
+            
         }
     }
 }

@@ -12,7 +12,7 @@ struct ExportSquare: View {
     
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var shiftManager: ShiftDataManager
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionViewModel
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     let action: () -> Void
     
@@ -74,7 +74,7 @@ struct ExportSquare_Previews: PreviewProvider {
     static var previews: some View {
         
         let mockShiftManager = ShiftDataManager() // provide mock implementation
-        let mockJobSelectionViewModel = JobSelectionViewModel() // provide mock implementation
+        let mockJobSelectionViewModel = JobSelectionManager() // provide mock implementation
         let mockManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType) // provide mock implementation
         
         
