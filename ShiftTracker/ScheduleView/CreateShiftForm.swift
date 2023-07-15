@@ -19,7 +19,7 @@ struct CreateShiftForm: View {
     private let notificationManager = ShiftNotificationManager.shared
     
     //  let jobs: FetchedResults<Job>
-    var dateSelected: Date?
+    @Binding var dateSelected: DateComponents?
     
     @State private var selectedJob: Job?
     @State private var startDate: Date
@@ -37,17 +37,17 @@ struct CreateShiftForm: View {
     @State private var selectedReminderTime: ReminderTime = .fifteenMinutes
     
     
-    init(dateSelected: Date?) {
-        self.dateSelected = dateSelected
-        
-        let defaultDate = dateSelected ?? Date()
+    init(dateSelected: Binding<DateComponents?>) {
+        _dateSelected = dateSelected
+
+        let defaultDate: Date = Calendar.current.date(from: dateSelected.wrappedValue ?? DateComponents()) ?? Date()
         _startDate = State(initialValue: defaultDate)
         _endDate = State(initialValue: defaultDate)
-        
+
         let defaultRepeatEnd = Calendar.current.date(byAdding: .month, value: 2, to: defaultDate)!
         _selectedRepeatEnd = State(initialValue: defaultRepeatEnd)
-        
     }
+
     
     
     private func createShift() {
@@ -303,6 +303,11 @@ struct CreateShiftForm: View {
                 }
                 .navigationBarTitle("Schedule", displayMode: .inline)
                 .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
+        }.onAppear {
+            
+            
+            print("heres the fucking date \(dateSelected)")
+            
         }
     }
     
@@ -440,8 +445,7 @@ struct CreateShiftForm: View {
         
         // Use the dateSelected value
         if let dateSelected = dateSelected {
-            let calendar = Calendar.current
-            let dateComponents = calendar.dateComponents([.year, .month, .day], from: dateSelected)
+            let dateComponents = dateSelected
             components.year = dateComponents.year
             components.month = dateComponents.month
             components.day = dateComponents.day

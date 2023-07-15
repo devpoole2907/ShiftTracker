@@ -28,7 +28,7 @@ struct CalendarView: UIViewRepresentable {
         
         context.coordinator.dateSelection = dateSelection
         
-       // dateSelection.setSelected(interval.start.dateComponents, animated: true)
+        dateSelection.setSelected(interval.start.dateComponents, animated: true)
         print("date is set to \(startDateComponents)")
         
         //view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -123,10 +123,13 @@ struct CalendarView: UIViewRepresentable {
         func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
               parent.dateSelected = dateComponents
             
-            if dateComponents == nil {
+         //   print("setting date selected to \(dateComponents?.date)")
+            
+           if dateComponents == nil {
                         // User has deselected a date, so reselect the current date
                         let currentDateComponents = Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: Date())
                         dateSelection?.setSelected(currentDateComponents, animated: true)
+               parent.dateSelected = Date().dateComponents
                     }
             
             guard let dateComponents else { return }
@@ -138,7 +141,7 @@ struct CalendarView: UIViewRepresentable {
                   parent.displayEvents.toggle()
             }
             
-            print("the tapped date is : \(dateComponents)")
+          //  print("the tapped date is : \(dateComponents.date)")
             
             
         }

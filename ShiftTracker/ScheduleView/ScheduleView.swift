@@ -51,7 +51,7 @@ struct ScheduleView: View {
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)]
         _scheduledShifts = FetchRequest(fetchRequest: fetchRequest)
         
-        _dateSelected = State(initialValue: Date().dateComponents)
+       _dateSelected = State(initialValue: Date().dateComponents)
         
       
             let appearance = UINavigationBarAppearance()
@@ -81,6 +81,12 @@ struct ScheduleView: View {
                             .environmentObject(shiftStore)
                             .environmentObject(scheduleModel)
 
+                            .onAppear {
+                                
+                                print("heres the fucking date before passing to create shift \(dateSelected?.date)")
+                                
+                                
+                            }
                         
                         
                         
@@ -141,7 +147,9 @@ struct ScheduleView: View {
             
             
                 .sheet(isPresented: $showCreateShiftSheet) {
-                    CreateShiftForm(dateSelected: dateSelected?.date)
+                    
+                    
+                    CreateShiftForm(dateSelected: $dateSelected)
                     .environmentObject(shiftStore)
                     .environmentObject(jobSelectionViewModel)
                     .environment(\.managedObjectContext, viewContext)
