@@ -124,10 +124,10 @@ struct ShiftsList: View {
                             
                         }
                     }
-                            }
-                    
-                    
                 }
+                
+                
+                
                 
                 .navigationDestination(for: OldShift.self) { shift in
                     DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details")
@@ -152,9 +152,9 @@ struct ShiftsList: View {
                     }
                 }
                 
+                
+                
             }
-            
-            
             
         }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             .tint(Color.gray)
@@ -266,6 +266,9 @@ struct ShiftsList: View {
                             }
                         }
                         
+                        
+                        
+                        
                     } label: {
                         
                         
@@ -367,8 +370,6 @@ struct TagFilter: Hashable, Identifiable, Equatable {
         }
         return [allFilter] + tagFilters
     }
-    return [allFilter] + tagFilters
-  }
 }
 
 
