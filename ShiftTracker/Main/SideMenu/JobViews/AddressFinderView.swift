@@ -30,17 +30,19 @@ struct AddressFinderView: View {
     @Environment(\.colorScheme) var colorScheme
     
     let iconColor: Color
+    let icon: String
     
     @StateObject private var locationManager = LocationDataManager()
     
     @Binding var mapRegion: MKCoordinateRegion
     @Binding var selectedRadius: Double
     
-    init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>, selectedRadius: Binding<Double>, iconColor: Color) {
+    init(selectedAddress: Binding<String?>, mapRegion: Binding<MKCoordinateRegion>, selectedRadius: Binding<Double>, icon: String, iconColor: Color) {
         _selectedAddressString = selectedAddress
         _mapRegion = mapRegion
         _selectedRadius = selectedRadius
         self.iconColor = iconColor
+        self.icon = icon
         loadSavedAddress()
     }
     
@@ -79,7 +81,7 @@ struct AddressFinderView: View {
                         
                         Map(coordinateRegion: $mapRegion, showsUserLocation: true, annotationItems: mapAnnotation != nil ? [mapAnnotation!] : []) { annotation in
                             MapAnnotation(coordinate: annotation.coordinate) {
-                                AnnotationView(coordinate: annotation.coordinate, addressConfirmSheet: $addressConfirmSheet, iconColor: iconColor)
+                                AnnotationView(coordinate: annotation.coordinate, addressConfirmSheet: $addressConfirmSheet, icon: icon, iconColor: iconColor)
                                     .id(annotation.id)
                             }
                         }.ignoresSafeArea()
@@ -449,15 +451,22 @@ struct AnnotationView: View {
     @Binding var addressConfirmSheet: Bool
     @State private var id = UUID()
     
+    let icon: String
     let iconColor: Color
     
     
     var body: some View {
-        Image(systemName: "mappin.circle")
-            .font(.system(size: 50))
+        Image(systemName: icon)
+            .font(.callout)
             .foregroundColor(.white)
-            .background(iconColor)
-            .cornerRadius(100)
+            .padding()
+            .background {
+                
+                Circle()
+                    .foregroundStyle(iconColor.gradient)
+                
+                
+            }.frame(width: 50, alignment: .center)
             .offset(y: show ? 0 : -30)
             .animation(.easeInOut(duration: 0.8), value: show)
             .onAppear {

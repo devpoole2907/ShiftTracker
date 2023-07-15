@@ -64,10 +64,6 @@ struct ContentView: View {
     var body: some View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
-        let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
-        let disabledButtonColor: Color = Color("SquaresColor")
-        let foregroundColor: Color = colorScheme == .dark ? .black : .white
-        
         
         NavigationStack{
             List{

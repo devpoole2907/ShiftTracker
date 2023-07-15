@@ -74,8 +74,6 @@
 		1A9855D829C55F8C003F512C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A9855D729C55F8C003F512C /* Assets.xcassets */; };
 		1A9855DB29C55F8C003F512C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A9855DA29C55F8C003F512C /* Preview Assets.xcassets */; };
 		1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */; };
-		1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */; };
-		1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC400129F26B5B00E204C8 /* EditJobView.swift */; };
 		1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC400329F2B09A00E204C8 /* OvertimeView.swift */; };
 		1AB7C88129FA3E110008B3B3 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
@@ -237,8 +235,6 @@
 		1A9855D729C55F8C003F512C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A9855DA29C55F8C003F512C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
-		1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddJobView.swift; sourceTree = "<group>"; };
-		1AAC400129F26B5B00E204C8 /* EditJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditJobView.swift; sourceTree = "<group>"; };
 		1AAC400329F2B09A00E204C8 /* OvertimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvertimeView.swift; sourceTree = "<group>"; };
 		1AB7D69029FB4C3300326AAA /* JobSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSelectionView.swift; sourceTree = "<group>"; };
 		1AB7D69229FB6CE100326AAA /* MainWithSideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWithSideBarView.swift; sourceTree = "<group>"; };
@@ -352,7 +348,6 @@
 		1A19141F2A16C257000D0F8B /* JobViews */ = {
 			isa = PBXGroup;
 			children = (
-				1A5B0B9F2A53B1C90021572B /* New Group */,
 				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
 				1A5B0B9D2A53A3F00021572B /* JobView.swift */,
 			);
@@ -414,15 +409,6 @@
 				1A52AFB229C5616A00415870 /* Info.plist */,
 			);
 			path = ShiftTrackerWidget;
-			sourceTree = "<group>";
-		};
-		1A5B0B9F2A53B1C90021572B /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-				1AAC3FFF29F26B2400E204C8 /* AddJobView.swift */,
-				1AAC400129F26B5B00E204C8 /* EditJobView.swift */,
-			);
-			path = "New Group";
 			sourceTree = "<group>";
 		};
 		1A83C6172A5794E50054E3B1 /* TimerViews */ = {
@@ -877,7 +863,6 @@
 				1A5B0BA32A5500BF0021572B /* CurrencyTextField.swift in Sources */,
 				1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */,
 				BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */,
-				1AAC400029F26B2400E204C8 /* AddJobView.swift in Sources */,
 				1A8D4ADA2A4EE16400EEB334 /* JobOverview.swift in Sources */,
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
@@ -894,7 +879,6 @@
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
 				1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
-				1AAC400229F26B5B00E204C8 /* EditJobView.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
 				BF8191422A5A70FB0079E449 /* Tempgraph.swift in Sources */,

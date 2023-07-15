@@ -52,8 +52,18 @@ struct ShiftsList: View {
         predicate: nil,
       animation: .default)
     private var shifts: FetchedResults<OldShift>
+    
+    @FetchRequest(
+        entity: Tag.entity(),
+        sortDescriptors: [
+            NSSortDescriptor(keyPath: \Tag.tagID, ascending: true)
+        ]
+    )
+    private var tags: FetchedResults<Tag>
+
 
     @State private var selectedSort = ShiftSort.default
+    @State private var selectedFilter: TagFilter = TagFilter(id: 0, name: "All", predicate: nil)
     
     @Binding var navPath: NavigationPath
     
@@ -173,21 +183,23 @@ struct ShiftsList: View {
                 }
                     
                     Menu {
-                        Picker("Sort By", selection: $selectedSort) {
-                            ForEach(ShiftSort.sorts, id: \.self) { sort in
-                                Text("\(sort.name)")
-                            }
+                      Picker("Filter By", selection: $selectedFilter) {
+                        ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
+                          Text("\(filter.name)")
                         }
+                      }
                     } label: {
-                        Label(
-                            "Tags",
-                            systemImage: "number.circle")
+                      Label(
+                        "Tags",
+                        systemImage: "number.circle")
                     }
                     .disabled(!selection.isEmpty)
-                    .onChange(of: selectedSort) { _ in
-                        let request = shifts
-                        request.nsPredicate = nil
+                    .onChange(of: selectedFilter) { newValue in
+                      let request = shifts
+                        request.nsPredicate = newValue.predicate
+                     // request.predicate = newValue.predicate
                     }
+
                 
                 
                 } label: {
@@ -277,6 +289,21 @@ struct ShiftSort: Hashable, Identifiable {
     
 }
 
+struct TagFilter: Hashable, Identifiable {
+  let id: Int
+  let name: String
+  let predicate: NSPredicate?
+
+  static func filters(from tags: [Tag]) -> [TagFilter] {
+    let allFilter = TagFilter(id: 0, name: "All", predicate: nil)
+    let tagFilters = tags.enumerated().map { (index: Int, tag: Tag) -> TagFilter in
+      TagFilter(id: index + 1,
+                name: "#\(tag.name ?? "Unknown")",
+                predicate: NSPredicate(format: "ANY tags.tagID == %@", tag.tagID! as CVarArg))
+    }
+    return [allFilter] + tagFilters
+  }
+}
 
 
 

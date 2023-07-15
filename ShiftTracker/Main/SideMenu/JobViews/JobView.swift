@@ -298,7 +298,7 @@ struct JobView: View {
                                 .padding(.bottom, 10)
                                 
                                 
-                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, iconColor: selectedColor)
+                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, icon: selectedIcon, iconColor: selectedColor)
                                     .onDisappear {
                                         self.miniMapRegion = self.mapRegion
                                     }) {
@@ -309,7 +309,13 @@ struct JobView: View {
                                                     VStack {
                                                         Image(systemName: selectedIcon)
                                                             .font(.title2)
-                                                            .foregroundColor(selectedColor)
+                                                            .foregroundStyle(.white)
+                                                            .padding(10)
+                                                            .background{
+                                                                Circle()
+                                                                    .foregroundStyle(selectedColor.gradient)
+                                                                
+                                                            }
                                                         
                                                     }
                                                 }
