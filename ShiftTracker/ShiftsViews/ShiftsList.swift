@@ -36,15 +36,23 @@ struct ShiftsList: View {
       } set: { newValue in
         searchTerm = newValue
         
-        guard !newValue.isEmpty else {
-          shifts.nsPredicate = nil
-          return
+        var predicates = Array(selectedFilters.compactMap { $0.predicate })
+        
+        if !newValue.isEmpty {
+          let searchPredicate = NSPredicate(
+            format: "shiftNote contains[cd] %@",
+            newValue)
+          predicates.append(searchPredicate)
         }
-        shifts.nsPredicate = NSPredicate(
-          format: "shiftNote contains[cd] %@",
-          newValue)
+        
+        if predicates.isEmpty {
+          shifts.nsPredicate = nil
+        } else {
+          shifts.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+        }
       }
     }
+
 
     
     @FetchRequest(
@@ -63,7 +71,7 @@ struct ShiftsList: View {
 
 
     @State private var selectedSort = ShiftSort.default
-    @State private var selectedFilter: TagFilter = TagFilter(id: 0, name: "All", predicate: nil)
+    @State private var selectedFilters: Set<TagFilter> = [TagFilter(id: 0, name: "All", predicate: nil)]
     
     @Binding var navPath: NavigationPath
     
@@ -183,6 +191,52 @@ struct ShiftsList: View {
                 }
                     
                     Menu {
+                      ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
+                        Toggle(isOn: Binding(
+                          get: {
+                            if filter.name == "All" {
+                              return self.selectedFilters.count == 1 && self.selectedFilters.contains(filter)
+                            } else {
+                              return self.selectedFilters.contains(filter)
+                            }
+                          },
+                          set: { _ in
+                            if filter.name == "All" {
+                              self.selectedFilters = [filter]
+                            } else {
+                              if self.selectedFilters.contains(filter) {
+                                self.selectedFilters.remove(filter)
+                              } else {
+                                self.selectedFilters.insert(filter)
+                                // If "All" is in the set, remove it when another filter is added
+                                self.selectedFilters.remove(TagFilter(id: 0, name: "All", predicate: nil))
+                              }
+                            }
+                          })) {
+                          Text("\(filter.name)")
+                        }
+                      }
+                    } label: {
+                      Label(
+                        "Tag",
+                        systemImage: "number.circle")
+                    }
+                    .disabled(!selection.isEmpty)
+
+                    .onChange(of: selectedFilters) { newValue in
+                      let predicates = newValue.compactMap { $0.predicate } // 1. filter out `nil` predicates
+                      if predicates.isEmpty {
+                        let request = shifts
+                        request.nsPredicate = nil // reset predicate if no filters are selected
+                      } else {
+                        let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates) // 2. use `.and` instead of `.or`
+                        let request = shifts
+                        request.nsPredicate = compoundPredicate
+                      }
+                    }
+
+                    
+                /*    Menu {
                       Picker("Filter By", selection: $selectedFilter) {
                         ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
                           Text("\(filter.name)")
@@ -198,7 +252,7 @@ struct ShiftsList: View {
                       let request = shifts
                         request.nsPredicate = newValue.predicate
                      // request.predicate = newValue.predicate
-                    }
+                    } */
 
                 
                 
@@ -289,7 +343,7 @@ struct ShiftSort: Hashable, Identifiable {
     
 }
 
-struct TagFilter: Hashable, Identifiable {
+struct TagFilter: Hashable, Identifiable, Equatable {
   let id: Int
   let name: String
   let predicate: NSPredicate?
