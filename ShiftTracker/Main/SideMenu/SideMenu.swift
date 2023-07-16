@@ -161,7 +161,9 @@ struct SideMenu: View {
                                     .sheet(isPresented: $showingTagSheet){
                                         
                                         AddTagView()
-                                        
+                                            .presentationDetents([.medium])
+                                            .presentationCornerRadius(35)
+                                            
                                     }
                                     
                                     

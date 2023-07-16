@@ -272,7 +272,7 @@ struct MainWithSideBarView: View {
              } */
             
         } else {
-            IntroMainView(isFirstLaunch: $isFirstLaunch)
+            IntroMainView(isFirstLaunch: $isFirstLaunch).environmentObject(viewModel).environmentObject(jobSelectionModel)
                 .onAppear {
                     
                     themeManager.resetColorsToDefaults()

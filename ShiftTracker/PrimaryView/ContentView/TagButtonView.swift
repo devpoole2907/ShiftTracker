@@ -36,13 +36,7 @@ struct TagButtonView: View {
                         .buttonStyle(.bordered)
                         .tint(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue, opacity: 1.0))
                         .opacity(viewModel.selectedTags.contains(tag.tagID!) ? 1 : 0.5)
-                        .contextMenu {
-                                                    Button(action: {
-                                                        deleteTag(tag)
-                                                    }) {
-                                                        Label("Delete", systemImage: "trash")
-                                                    }
-                                                }
+                       
                     }
                 }
             }
@@ -56,15 +50,7 @@ struct TagButtonView: View {
             }
         }
     
-    private func deleteTag(_ tag: Tag) {
-            viewContext.delete(tag)
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
+    
     
     
 }
