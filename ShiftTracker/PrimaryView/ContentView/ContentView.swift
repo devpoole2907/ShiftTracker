@@ -16,10 +16,6 @@ import MapKit
 
 struct ContentView: View {
     
-    
-    
-    @ObservedObject var locationManager: LocationDataManager = LocationDataManager()
-    
     @Environment(\.colorScheme) var colorScheme
     
     @Environment(\.managedObjectContext) private var context

@@ -87,102 +87,113 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
     }
     
     
-    public func startMonitoring(job: Job, clockOut: Bool = false) {
+    public func startMonitoringAllLocations() {
+        stopMonitoringAllRegions()
+
+        let context = PersistenceController.shared.container.viewContext
+        let fetchRequest: NSFetchRequest<JobLocation> = JobLocation.fetchRequest()
+
+        do {
+            let locations = try context.fetch(fetchRequest)
+            locations.forEach { startMonitoring(location: $0) }
+            print("monitoring \(locations.count) locations")
+        } catch let error {
+            print("Could not fetch locations: \(error.localizedDescription)")
+        }
+    }
+
+    
+    
+    public func startMonitoring(location: JobLocation) {
+        print("Starting to monitor for location with ID: \(location.objectID.uriRepresentation().absoluteString)")
         
-        
-        if let locationSet = job.locations, let jobLocation = locationSet.allObjects.first as? JobLocation {
-            if let savedAddress = jobLocation.address {
-                print("got an address to monitor, \(savedAddress)")
+        if let savedAddress = location.address {
+            print("got an address to monitor, \(savedAddress)")
             let geocoder = CLGeocoder()
             geocoder.geocodeAddressString(savedAddress) { placemarks, error in
                 if let error = error {
                     print("Error geocoding address: \(error.localizedDescription)")
-                } else if let placemarks = placemarks, let firstPlacemark = placemarks.first, let location = firstPlacemark.location {
-                    let region = CLCircularRegion(center: location.coordinate, radius: jobLocation.radius, identifier: job.objectID.uriRepresentation().absoluteString)
-                    region.notifyOnEntry = !clockOut
-                    region.notifyOnExit = clockOut
+                } else if let placemarks = placemarks, let firstPlacemark = placemarks.first, let locationCoordinate = firstPlacemark.location {
+                    let region = CLCircularRegion(center: locationCoordinate.coordinate, radius: location.radius, identifier: location.objectID.uriRepresentation().absoluteString)
+                    region.notifyOnEntry = true
+                    region.notifyOnExit = true
                     
                     self.locationManager.startMonitoring(for: region)
                 }
             }
         }
     }
-        }
+
 
 
     
     
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        // ...
+        print("Entered the region")
 
-        guard let jobURI = URL(string: region.identifier),
-              let jobID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: jobURI) else {
+        guard let locationURI = URL(string: region.identifier),
+              let locationID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: locationURI) else {
             return
         }
 
         let context = PersistenceController.shared.container.viewContext
-        if let job = try? context.existingObject(with: jobID) as? Job {
-            if job.autoClockIn {
+        if let location = try? context.existingObject(with: locationID) as? JobLocation {
+            if let job = location.job {
+                if job.autoClockIn {
+                    print("Region entered, sending notification") // debugging
+                    
+                    if let jobName = job.name {
+                        notificationManager.sendLocationNotification(with: "ShiftTracker Pro", body: "You're near \(jobName) - clocking you in... Enjoy your shift!")
+                    }
+                    
+                    NotificationCenter.default.post(name: .didEnterRegion, object: nil, userInfo: ["jobID": job.uuid!])
+                } else if job.clockInReminder {
+                    // Handle clock-in reminder for the job
+                    print("Region entered, sending notification") // debugging
+                    if let jobName = job.name {
+                        notificationManager.sendLocationNotification(with: "You're near \(jobName)", body: "Ready to track your shift? Let's make some bank.")
+                    }
                 
-                print("Region entered, sending notification") // debugging
-                
-                if let jobName = job.name {
-                    notificationManager.sendLocationNotification(with: "ShiftTracker Pro", body: "You're near \(jobName) - clocking you in... Enjoy your shift!")
-                }
-            
-                NotificationCenter.default.post(name: .didEnterRegion, object: nil, userInfo: ["jobID": job.uuid!])
-                
-                
-                
-                
-            } else if job.clockInReminder {
-                // Handle clock-in reminder for the job
-                print("Region entered, sending notification") // debugging
-                if let jobName = job.name {
-                    notificationManager.sendLocationNotification(with: "You're near \(jobName)", body: "Ready to track your shift? Let's make some bank.")
-                }
-            
                     NotificationCenter.default.post(name: .didEnterRegion, object: nil)
-                
-                
+                }
             }
         }
     }
+
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("Exited the region")
-        guard let jobURI = URL(string: region.identifier),
-              let jobID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: jobURI) else {
+
+        guard let locationURI = URL(string: region.identifier),
+              let locationID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: locationURI) else {
             return
         }
 
         let context = PersistenceController.shared.container.viewContext
-        if let job = try? context.existingObject(with: jobID) as? Job {
-            if job.autoClockOut {
-                
-                print("Region exited, sending notification") // debugging
-                
-                if let jobName = job.name {
-                    notificationManager.sendLocationNotification(with: "ShiftTracker Pro", body: "Looks like you're leaving \(jobName) - clocking you out. Open ShiftTracker and see how much you made!")
-                }
+        if let location = try? context.existingObject(with: locationID) as? JobLocation {
+            if let job = location.job {
+                if job.autoClockOut {
+                    print("Region exited, sending notification") // debugging
+                    
+                    if let jobName = job.name {
+                        notificationManager.sendLocationNotification(with: "ShiftTracker Pro", body: "Looks like you're leaving \(jobName) - clocking you out. Open ShiftTracker and see how much you made!")
+                    }
 
-            
-            NotificationCenter.default.post(name: .didExitRegion, object: nil)
-                
-            } else if job.clockOutReminder {
-                
-                
-                if let jobName = job.name {
-                    notificationManager.sendLocationNotification(with: "Looks like you're leaving \(jobName)...", body: "Don't forget to clock out - open ShiftTracker and see how much you made today!")
-                }
+                    NotificationCenter.default.post(name: .didExitRegion, object: nil)
+                } else if job.clockOutReminder {
+                    if let jobName = job.name {
+                        notificationManager.sendLocationNotification(with: "Looks like you're leaving \(jobName)...", body: "Don't forget to clock out - open ShiftTracker and see how much you made today!")
+                    }
 
-                print("Region exited, sending notification") // debugging
-            
-            NotificationCenter.default.post(name: .didExitRegion, object: nil)
+                    print("Region exited, sending notification") // debugging
+
+                    NotificationCenter.default.post(name: .didExitRegion, object: nil)
+                }
             }
         }
     }
+
 
     func stopMonitoringAllRegions() {
         for region in locationManager.monitoredRegions {

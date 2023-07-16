@@ -12,4 +12,5 @@ struct TempBreak: Hashable, Codable, Identifiable {
     var startDate: Date
     var endDate: Date?
     var isUnpaid: Bool
+    
 }

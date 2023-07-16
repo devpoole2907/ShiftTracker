@@ -32,8 +32,7 @@ struct SettingsView: View {
     
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var themeManager: ThemeDataManager
-    
-    @StateObject private var locationManager = LocationDataManager()
+    @EnvironmentObject var locationManager: LocationDataManager
     
     @StateObject var notificationManager = NotificationManager()
     
@@ -536,7 +535,7 @@ struct SettingsCheckView: View {
 
 struct LocationView: View{
     
-    @StateObject private var locationManager = LocationDataManager()
+    @EnvironmentObject private var locationManager: LocationDataManager
     
     var body: some View{
                 ScrollView{

@@ -21,8 +21,8 @@ struct JobView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var job: Job?
-    @ObservedObject private var locationManager = LocationDataManager()
     
+    @EnvironmentObject private var locationManager: LocationDataManager
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     private let addressManager = AddressManager()
@@ -532,12 +532,13 @@ struct JobView: View {
         newJob.rosterDayOfWeek = Int16(selectedDay)
         
         // replace this code with adding locations later when multiple address system update releases
-        if let locationSet = job?.locations, let location = locationSet.allObjects.first as? JobLocation {
+        if let locationSet = newJob.locations, let location = locationSet.allObjects.first as? JobLocation {
             location.address = selectedAddress
         } else { // for multi jobs we need this to add more
             let location = JobLocation(context: viewContext)
             location.address = selectedAddress
-            job?.addToLocations(location)
+            location.radius = selectedRadius
+            newJob.addToLocations(location)
         }
 
         
@@ -554,7 +555,7 @@ struct JobView: View {
             try viewContext.save()
             
         
-                locationManager.startMonitoring(job: newJob) // might need to check clock out works with this, ive forgotten my implementation
+            locationManager.startMonitoringAllLocations()
             notificationManager.updateRosterNotifications(viewContext: viewContext)
             
             dismiss()
@@ -600,7 +601,7 @@ struct JobView: View {
             
             notificationManager.scheduleNotifications()
             notificationManager.updateRosterNotifications(viewContext: viewContext)
-            
+            locationManager.startMonitoringAllLocations()
             
         } catch {
             let nsError = error as NSError

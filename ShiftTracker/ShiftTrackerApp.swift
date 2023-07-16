@@ -14,12 +14,11 @@ import PopupView
 struct ShiftTrackerApp: App {
     
     @State private var selectedTab: Tab = .home
-    
-    private let locationManager = LocationDataManager()
         private let defaults = UserDefaults.standard
     
     @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
     
+    @StateObject var locationManager = LocationDataManager()
     @StateObject var themeManager = ThemeDataManager()
 
     @AppStorage("colorScheme") var userColorScheme: String = "system"
@@ -41,6 +40,7 @@ struct ShiftTrackerApp: App {
                 .preferredColorScheme(getPreferredColorScheme())
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(themeManager)
+                .environmentObject(locationManager)
             // deep link tests
                 .onOpenURL { url in
                     print("got a URL boss man")
@@ -50,7 +50,7 @@ struct ShiftTrackerApp: App {
                     }
                 }
                 .onAppear {
-                    startMonitoringAllJobLocations()
+                    locationManager.startMonitoringAllLocations()
                 }
                 
 
@@ -72,21 +72,7 @@ struct ShiftTrackerApp: App {
             }
         }
     
-    private func startMonitoringAllJobLocations() {
-        locationManager.stopMonitoringAllRegions()
-        
-        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-        do {
-            let jobs = try persistenceController.container.viewContext.fetch(fetchRequest)
-            for job in jobs {
-                if let locations = job.locations as? Set<JobLocation>, !locations.isEmpty {
-                    locationManager.startMonitoring(job: job)
-                }
-            }
-        } catch {
-            print("Error fetching jobs: \(error.localizedDescription)")
-        }
-    }
+
 
 
 }

@@ -37,6 +37,7 @@ struct MainWithSideBarView: View {
     @StateObject var scheduleModel = SchedulingViewModel()
     
     @EnvironmentObject var themeManager: ThemeDataManager
+    @EnvironmentObject var locationManager: LocationDataManager
     
     
     private let notificationManager = ShiftNotificationManager.shared

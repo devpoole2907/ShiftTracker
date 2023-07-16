@@ -32,7 +32,7 @@ struct AddressFinderView: View {
     let iconColor: Color
     let icon: String
     
-    @StateObject private var locationManager = LocationDataManager()
+    @EnvironmentObject private var locationManager: LocationDataManager
     
     @Binding var mapRegion: MKCoordinateRegion
     @Binding var selectedRadius: Double
