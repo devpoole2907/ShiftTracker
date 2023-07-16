@@ -101,17 +101,15 @@ struct CurrentBreaksListView: View {
             }
             .listRowBackground(Color("SquaresColor"))
             .listRowSeparator(.hidden)
-            // swipe
             
             .swipeActions {
                 Button(role: .destructive) {
                     viewModel.deleteSpecificBreak(breakItem: breakItem)
                 } label: {
                     Image(systemName: "trash")
-                }
+                }.disabled(breakItem.endDate == nil)
             }
             
-            // for each end
         }
     }
         

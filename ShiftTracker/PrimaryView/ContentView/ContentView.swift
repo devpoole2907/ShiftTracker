@@ -197,7 +197,7 @@ struct ContentView: View {
                         viewModel.startShift(using: context, startDate: shiftStartDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                         print("Resuming app with saved shift start date")
                         
-                        viewModel.loadTempBreaksFromUserDefaults()
+                       // viewModel.loadTempBreaksFromUserDefaults()
                         print("Loading breaks from user defaults")
                     }
                 } else {

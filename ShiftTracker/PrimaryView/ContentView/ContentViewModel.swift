@@ -322,6 +322,9 @@ class ContentViewModel: ObservableObject {
         func saveTempBreaksToUserDefaults() {
             let tempBreaksDictionaries = tempBreaksToDictionaries(tempBreaks: tempBreaks)
             UserDefaults.standard.set(tempBreaksDictionaries, forKey: "tempBreaks")
+            
+            print("after saving breaks the count is: \(tempBreaksDictionaries.count)")
+            
         }
         
         func clearTempBreaksFromUserDefaults() {
@@ -330,8 +333,19 @@ class ContentViewModel: ObservableObject {
         
         func loadTempBreaksFromUserDefaults() {
             if let tempBreaksDictionaries = UserDefaults.standard.array(forKey: "tempBreaks") as? [[String: Any]] {
-                tempBreaks = dictionariesToTempBreaks(dictionaries: tempBreaksDictionaries)
+                let loadedBreaks = dictionariesToTempBreaks(dictionaries: tempBreaksDictionaries)
+                
+                for tempBreak in loadedBreaks {
+                            if tempBreak.endDate == nil {
+                                startBreak(startDate: tempBreak.startDate, isUnpaid: tempBreak.isUnpaid)
+                            } else {
+                                tempBreaks.append(tempBreak)
+                            }
+                        }
+                
             }
+            
+            print("after loading breaks the count is: \(tempBreaks.count)")
         }
         
         func saveCurrentBreakIndexToUserDefaults() {
@@ -657,17 +671,11 @@ class ContentViewModel: ObservableObject {
                 }
                 
                 loadTempBreaksFromUserDefaults()
-                if let currentBreakIndex = loadCurrentBreakIndexFromUserDefaults(),
-                   currentBreakIndex < tempBreaks.count,
-                   tempBreaks[currentBreakIndex].endDate == nil {
-                    let ongoingBreakStartDate = tempBreaks[currentBreakIndex].startDate
-                    if tempBreaks[currentBreakIndex].isUnpaid{
-                        startBreak(startDate: ongoingBreakStartDate, isUnpaid: true)
-                    }
-                    else {
-                        startBreak(startDate: ongoingBreakStartDate, isUnpaid: false)
-                    }
-                }
+               
+                
+                print("temp break count after starting break is now: \(tempBreaks.count)")
+                
+           
                 
                 
                 
