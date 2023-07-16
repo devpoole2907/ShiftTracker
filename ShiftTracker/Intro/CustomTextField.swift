@@ -13,6 +13,19 @@ struct CustomTextField: View {
     var hint: String
     var leadingIcon: Image
     var isPassword: Bool = false
+    
+    init(text: Binding<String>, hint: String, leadingIcon: Image, isPassword: Bool = false) {
+        _text = text
+        self.hint = hint
+        self.leadingIcon = leadingIcon
+        self.isPassword = isPassword
+        
+        // adds clear text button to text fields
+        UITextField.appearance().clearButtonMode = .whileEditing
+        
+    }
+    
+    
     var body: some View {
         HStack(spacing: 0){
             leadingIcon

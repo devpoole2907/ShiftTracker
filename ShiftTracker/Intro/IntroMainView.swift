@@ -16,6 +16,7 @@ struct IntroMainView: View {
     @State private var activeIntro: PageIntro = pageIntros[0]
     
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var viewModel: ContentViewModel
     
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.colorScheme) private var colorScheme
@@ -62,6 +63,8 @@ struct IntroMainView: View {
             }
             .fullScreenCover(isPresented: $showAddJobView){
                 JobView(isEditJobPresented: .constant(true), selectedJobForEditing: .constant(nil))
+                    .environmentObject(viewModel)
+                    .environmentObject(jobSelectionViewModel)
                     .onDisappear{
                         isFirstLaunch = false
                     }
