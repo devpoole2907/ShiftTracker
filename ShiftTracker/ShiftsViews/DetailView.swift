@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 import Foundation
 import Charts
+import StoreKit
 
 struct DetailView: View {
     
@@ -18,11 +19,15 @@ struct DetailView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @Environment(\.requestReview) var requestReview
+    
     @EnvironmentObject var themeManager: ThemeDataManager
     
     @StateObject var temporaryViewModel = ContentViewModel()
     
     let breakManager = BreaksManager()
+    
+    @AppStorage("displayedCount") private var displayedCount: Int = 0
     
     var presentedAsSheet: Bool
     @Binding var activeSheet: ActiveSheet?
@@ -438,6 +443,27 @@ struct DetailView: View {
             Spacer()
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
+            
+        }.onAppear{
+            
+            if presentedAsSheet {
+                
+                displayedCount += 1
+                
+                print("displayed count is: \(displayedCount)")
+                if displayedCount >= 2 {
+                    
+                    
+                    requestReview()
+                    
+                    print("requested review")
+                    
+                    
+                }
+                
+                
+            }
+            
             
         }
         
