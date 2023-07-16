@@ -587,9 +587,21 @@ struct JobView: View {
     }
     
     private func deleteJob() {
+        
+        if job!.uuid == jobSelectionViewModel.selectedJobUUID {
+            
+            jobSelectionViewModel.deselectJob()
+            
+        }
+        
         viewContext.delete(job!)
         do {
             try viewContext.save()
+            
+            notificationManager.scheduleNotifications()
+            notificationManager.updateRosterNotifications(viewContext: viewContext)
+            
+            
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")

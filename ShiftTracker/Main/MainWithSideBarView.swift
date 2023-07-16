@@ -251,7 +251,7 @@ struct MainWithSideBarView: View {
             .onAppear(perform: {
                 notificationManager.scheduleNotifications() // cancels and reschedules the next 20 scheduled shifts with notify == true
                 
-                notificationManager.updateRosterNotifications(viewContext: context)
+                notificationManager.updateRosterNotifications(viewContext: context) // cancels and reschedules any roster reminders
                 
                 checkIfLocked()
             })

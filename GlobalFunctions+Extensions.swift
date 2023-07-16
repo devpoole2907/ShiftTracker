@@ -194,7 +194,7 @@ class ShiftNotificationManager {
         let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "notifyMe == true")
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.reminderTime, ascending: true)]
-        fetchRequest.fetchLimit = 20
+        fetchRequest.fetchLimit = 10
         
         do {
             let shifts = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
@@ -217,9 +217,14 @@ class ShiftNotificationManager {
             
             
             if let reminderDate = shift.startDate?.addingTimeInterval(-shift.reminderTime),
-               let startDate = shift.startDate, let jobName = shift.job?.name {
+               let _ = shift.startDate, let jobName = shift.job?.name {
+                
+                let minutesToStart = Int(shift.reminderTime / 60)
+                
                 content.title = "\(jobName) Shift Reminder"
-                content.body = "Your scheduled shift starts at \(startDate)"
+            
+                    content.body = "Shift starting in \(minutesToStart) \(minutesToStart == 1 ? "minute." : "minutes.")"
+                
                 content.interruptionLevel = .timeSensitive
                 let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: reminderDate)
                 let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
@@ -275,8 +280,8 @@ class ShiftNotificationManager {
                     // Schedule the notification
                     
                     let content = UNMutableNotificationContent()
-                    content.title = "Time to check your roster"
-                    content.body = "Open the app to schedule your shifts for \(job.name ?? "")"
+                    content.title = "Check your roster"
+                    content.body = "Open the app to schedule your shifts for \(job.name ?? "")."
 
                     content.userInfo = ["url": "shifttrackerapp://schedule"]
                     content.categoryIdentifier = "rosterCategory"

@@ -251,7 +251,7 @@ struct CreateShiftForm: View {
                                 .disabled(!enableRepeat)
                             }
                         }.onAppear {
-                            selectedDays[getDayOfWeek(date: (dateSelected?.date!)!) - 1] = true
+                            selectedDays[getDayOfWeek(date: (dateSelected?.date ?? Date())) - 1] = true
                             
                             print("start date is : \(startDate)")
                         }
