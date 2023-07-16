@@ -16,6 +16,8 @@ class ScheduledShiftStore: ObservableObject {
     @Published var shifts = [SingleScheduledShift]()
     @Published var previousSelectedShifts = [SingleScheduledShift]()
     @Published var changedShift: SingleScheduledShift?
+    @Published var batchDeletedShifts: [SingleScheduledShift]?
+    
     @Published var changedJob: Job?
     let shiftDataLoaded = PassthroughSubject<Void, Never>()
     
@@ -77,6 +79,9 @@ class ScheduledShiftStore: ObservableObject {
             shifts.append(shift)
             changedShift = shift
         }
+    
+    
+    
     
     
 }

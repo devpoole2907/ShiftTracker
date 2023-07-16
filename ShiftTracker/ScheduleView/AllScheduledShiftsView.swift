@@ -14,10 +14,6 @@ struct AllScheduledShiftsView: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     
     @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(entity: ScheduledShift.entity(),
-                  sortDescriptors: [],
-                  animation: .default)
-    private var scheduledShifts: FetchedResults<ScheduledShift>
     
     var groupedShifts: [Date: [SingleScheduledShift]] {
         Dictionary(grouping: shiftStore.shifts, by: { $0.startDate.startOfTheDay() })
@@ -61,7 +57,7 @@ struct AllScheduledShiftsView: View {
                                     .swipeActions {
                                         Button(role: .destructive) {
                                             
-                                            scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                            scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
                                             
                                             
                                             
@@ -89,7 +85,7 @@ struct AllScheduledShiftsView: View {
                                             
                                                 //dismiss()
                                                 CustomConfirmationAlert(action: {
-                                                    scheduleModel.cancelRepeatingShiftSeries(shift: shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                                    scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
                                                 }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
                                             
                                             

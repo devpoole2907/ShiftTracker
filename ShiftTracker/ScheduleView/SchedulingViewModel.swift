@@ -13,52 +13,87 @@ import CoreData
 class SchedulingViewModel: ObservableObject {
     
 
-    func deleteShift(_ shift: SingleScheduledShift, in scheduledShifts: FetchedResults<ScheduledShift>, with shiftStore: ScheduledShiftStore, using viewContext: NSManagedObjectContext){
+    func deleteShift(_ shift: SingleScheduledShift, with shiftStore: ScheduledShiftStore, using viewContext: NSManagedObjectContext){
         
-        
-        
-        if let shiftToDelete = scheduledShifts.first(where: { $0.id == shift.id }) {
-            shiftStore.delete(shift)
-            viewContext.delete(shiftToDelete)
-            
-            do {
-                print("Successfully deleted the scheduled shift.")
-                try viewContext.save()
-                
-                
-            } catch {
-                print("Failed to delete the corresponding shift.")
-                
-            }
-            
-        }
-    }
-    
-    func cancelRepeatingShiftSeries(shift: SingleScheduledShift, in scheduledShifts: FetchedResults<ScheduledShift>, with shiftStore: ScheduledShiftStore, using viewContext: NSManagedObjectContext) {
-        guard let repeatID = shift.repeatID else { return }
+        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", shift.id as CVarArg)
+        request.fetchLimit = 1
         
         do {
-            for scheduledShift in scheduledShifts {
-                guard let scheduledShiftRepeatID = scheduledShift.newRepeatID else { return }
-                if repeatID == scheduledShiftRepeatID  {
-                    
-                    print("repeatID")
-                    
-                    shiftStore.delete(shift)
-                    viewContext.delete(scheduledShift)
+            let results = try viewContext.fetch(request)
+            
+            if let shiftToDelete = results.first as? ScheduledShift {
+                shiftStore.delete(shift)
+                viewContext.delete(shiftToDelete)
+                cancelNotification(for: shiftToDelete)
+                
+                do {
+                    print("Successfully deleted the scheduled shift.")
                     try viewContext.save()
+                    
+                    
+                } catch {
+                    print("Failed to delete the corresponding shift.")
+                    
                 }
                 
             }
-            //cancelNotifications(for: futureShifts)
-            
         } catch {
-            print("Error canceling repeating shift series: \(error)")
+            
+            print("Failed to fetch the corresponding shift to delete.")
+            
         }
+        
+        
     }
     
     
     
+    func cancelRepeatingShiftSeries(shift: SingleScheduledShift, with shiftStore: ScheduledShiftStore, using viewContext: NSManagedObjectContext) {
+        guard let repeatID = shift.repeatID else { return }
+        let shiftDate = shift.startDate
+        
+        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "newRepeatID == %@", repeatID as CVarArg),
+            NSPredicate(format: "startDate > %@", shiftDate as NSDate)
+        ])
+
+        var batchDeleted = [SingleScheduledShift]()
+        
+        do {
+                if let shiftsToDelete = try viewContext.fetch(request) as? [ScheduledShift] {
+                    for shiftToDelete in shiftsToDelete {
+                        if let correspondingSingleShift = shiftStore.shifts.first(where: { $0.id == shiftToDelete.id }) {
+                           
+                            
+                            
+                            shiftStore.delete(correspondingSingleShift)
+                            batchDeleted.append(correspondingSingleShift)
+                            viewContext.delete(shiftToDelete)
+                            cancelNotification(for: shiftToDelete)
+                           
+                            
+                            
+                        }
+                    }
+
+                    print("Successfully deleted the scheduled shifts.")
+                    try viewContext.save()
+                    shiftStore.batchDeletedShifts = batchDeleted
+                    
+                }
+            } catch {
+                print("Failed to delete the corresponding shifts.")
+            }
+            
+    }
+    
+    
+    func cancelNotification(for scheduledShift: ScheduledShift) {
+        let identifier = "ScheduledShift-\(scheduledShift.objectID)"
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
+    }
     
     
 }

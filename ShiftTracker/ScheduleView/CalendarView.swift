@@ -73,6 +73,21 @@ struct CalendarView: UIViewRepresentable {
             
                 }
         
+        if let changedEvents = shiftStore.batchDeletedShifts {
+            
+            
+            for changedEvent in changedEvents {
+                uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
+                shiftStore.batchDeletedShifts = nil
+            }
+            
+           
+            
+            
+        }
+        
+        
+        
         
     }
     

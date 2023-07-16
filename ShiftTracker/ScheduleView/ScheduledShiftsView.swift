@@ -20,19 +20,7 @@ struct ScheduledShiftsView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
-    @FetchRequest(entity: ScheduledShift.entity(),
-                  sortDescriptors: [],
-                  animation: .default)
-    private var scheduledShifts: FetchedResults<ScheduledShift>
-    
-    
     @Binding var dateSelected: DateComponents?
-    
-    
-    func cancelNotification(for scheduledShift: ScheduledShift) {
-        let identifier = "ScheduledShift-\(scheduledShift.objectID)"
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
-    }
     
     
     var body: some View {
@@ -46,7 +34,7 @@ struct ScheduledShiftsView: View {
                             .swipeActions {
                                 Button(role: .destructive) {
                                     
-                                    scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                    scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
                                     
                                     
                                     
@@ -68,13 +56,9 @@ struct ScheduledShiftsView: View {
                                 }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
                                 
                                 Button(role: .cancel) {
-                                    
-                                   // scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
-                                    
-                                    
-                                        //dismiss()
+
                                         CustomConfirmationAlert(action: {
-                                            scheduleModel.cancelRepeatingShiftSeries(shift: shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                            scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
                                         }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
                                     
                                     
@@ -135,17 +119,6 @@ struct ListViewRow: View {
         return "\(hours)h \(minutes)m"
     }
     
-    func cancelNotifications(for shifts: [ScheduledShift]) {
-        let identifiers = shifts.map { "ScheduledShift-\($0.objectID)" }
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
-    }
-    
-    @FetchRequest(entity: ScheduledShift.entity(),
-                  sortDescriptors: [],
-                  animation: .default)
-    private var scheduledShifts: FetchedResults<ScheduledShift>
-    
-    
     var body: some View {
         Section(header: Text("\(dateFormatter.string(from: shift.startDate )) - \(dateFormatter.string(from: shift.endDate ))")
             .bold()
@@ -191,7 +164,7 @@ struct ListViewRow: View {
                             Menu{
                                 Button(action:{
                                     CustomConfirmationAlert(action: {
-                                        scheduleModel.cancelRepeatingShiftSeries(shift: shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                        scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
                                     }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
                                 }){
                                     HStack{
@@ -260,10 +233,18 @@ struct RepeatEndPicker: View {
     
     @State private var selectedIndex = 1
     @Binding var selectedRepeatEnd: Date
-    let startDate: Date 
+    @Binding var dateSelected: DateComponents?
+    @State private var startDate: Date
     
-    init(startDate: Date, selectedRepeatEnd: Binding<Date>) {
-        self.startDate = startDate
+    init(dateSelected: Binding<DateComponents?>, selectedRepeatEnd: Binding<Date>) {
+        
+        _dateSelected = dateSelected
+
+        
+        let defaultDate: Date = Calendar.current.date(from: dateSelected.wrappedValue ?? DateComponents()) ?? Date()
+        _startDate = State(initialValue: defaultDate)
+        
+        
         self._selectedRepeatEnd = selectedRepeatEnd
         let defaultRepeatEnd = calendar.date(byAdding: .month, value: 2, to: startDate)!
         self._selectedIndex = State(initialValue: self.options.firstIndex(of: "\(2) months")!)

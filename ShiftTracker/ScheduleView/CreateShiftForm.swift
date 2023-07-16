@@ -43,6 +43,8 @@ struct CreateShiftForm: View {
         let defaultDate: Date = Calendar.current.date(from: dateSelected.wrappedValue ?? DateComponents()) ?? Date()
         _startDate = State(initialValue: defaultDate)
         _endDate = State(initialValue: defaultDate)
+        
+        
 
         let defaultRepeatEnd = Calendar.current.date(byAdding: .month, value: 2, to: defaultDate)!
         _selectedRepeatEnd = State(initialValue: defaultRepeatEnd)
@@ -72,6 +74,7 @@ struct CreateShiftForm: View {
         newShift.endDate = endDate
         newShift.id = shiftID
         newShift.newRepeatID = repeatID
+        newShift.isRepeating = enableRepeat
         newShift.reminderTime = selectedReminderTime.timeInterval
         newShift.notifyMe = notifyMe
         newShift.job = jobSelectionViewModel.fetchJob(in: viewContext)
@@ -85,6 +88,9 @@ struct CreateShiftForm: View {
             
             shiftStore.add(shiftToAdd)
             
+            if newShift.isRepeating {
+                        saveRepeatingShiftSeries(startDate: startDate, endDate: endDate, repeatEveryWeek: enableRepeat, repeatID: repeatID)
+                    }
             
             //  onShiftCreated()
             dismiss()
@@ -98,8 +104,8 @@ struct CreateShiftForm: View {
     func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: UUID) {
         
         let calendar = Calendar.current
-        var currentStartDate = startDate
-        var currentEndDate = endDate
+        var currentStartDate = calendar.date(byAdding: .day, value: 1, to: startDate)!
+            var currentEndDate = calendar.date(byAdding: .day, value: 1, to: endDate)!
         
 
         
@@ -114,7 +120,7 @@ struct CreateShiftForm: View {
                 shift.job = jobSelectionViewModel.fetchJob(in: viewContext)
                 shift.id = shiftID
                 shift.isRepeating = repeatEveryWeek
-                shift.newRepeatID = repeatEveryWeek ? repeatID : UUID()
+                shift.newRepeatID = repeatEveryWeek ? repeatID : UUID() //  check this code
                 shift.notifyMe = notifyMe
                 shift.reminderTime = selectedReminderTime.timeInterval
                 
@@ -160,7 +166,6 @@ struct CreateShiftForm: View {
     var body: some View {
         
         let iconColor: Color = colorScheme == .dark ? .orange : .cyan
-        let jobBackground: Color = colorScheme == .dark ? Color(.systemGray5) : .black
         NavigationStack {
             List{
                 Section{
@@ -246,12 +251,14 @@ struct CreateShiftForm: View {
                                 .disabled(!enableRepeat)
                             }
                         }.onAppear {
-                            selectedDays[getDayOfWeek(date: startDate) - 1] = true
+                            selectedDays[getDayOfWeek(date: (dateSelected?.date!)!) - 1] = true
+                            
+                            print("start date is : \(startDate)")
                         }
                         .haptics(onChangeOf: selectedDays, type: .light)
                         
                         
-                        RepeatEndPicker(startDate: getTime(angle: startAngle), selectedRepeatEnd: $selectedRepeatEnd)
+                        RepeatEndPicker(dateSelected: $dateSelected, selectedRepeatEnd: $selectedRepeatEnd)
                             .disabled(!enableRepeat)
                     }
                 }.listRowBackground(Color("SquaresColor"))
@@ -280,15 +287,10 @@ struct CreateShiftForm: View {
                             endDate = getTime(angle: toAngle, isEndDate: true)
                             selectedJob = jobSelectionViewModel.fetchJob(in: viewContext)
                             
-                            if enableRepeat {
-                                
-                                
-                                saveRepeatingShiftSeries(startDate: getTime(angle: startAngle), endDate: getTime(angle: toAngle, isEndDate: true), repeatEveryWeek: true, repeatID: UUID())
-                                 
-                            }
-                            else {
-                                createShift()
-                            }
+                            
+                            createShift()
+                            
+                           
                         } label: {
                             Text("Save")
                                 .bold()
@@ -305,8 +307,8 @@ struct CreateShiftForm: View {
                 .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
         }.onAppear {
             
+            print("start date is \(startDate)")
             
-            print("heres the fucking date \(dateSelected)")
             
         }
     }
@@ -443,13 +445,18 @@ struct CreateShiftForm: View {
         components.hour = hour
         components.minute = minute
         
-        // Use the dateSelected value
+        
         if let dateSelected = dateSelected {
+            
             let dateComponents = dateSelected
+            
             components.year = dateComponents.year
             components.month = dateComponents.month
             components.day = dateComponents.day
+            
         }
+
+        
         
         // Handle end date moving to the next day
         if isEndDate && angle < startAngle {
