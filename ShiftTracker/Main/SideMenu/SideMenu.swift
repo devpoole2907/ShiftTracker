@@ -35,6 +35,8 @@ struct SideMenu: View {
     @State private var showingTagSheet = false
     @State private var showUpgradeScreen = false
     
+    @Binding var currentTab: Tab
+    
     var body: some View {
         
         
@@ -118,7 +120,7 @@ struct SideMenu: View {
                                                     jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
                                                     
                                                 } else {
-                                                    jobSelectionViewModel.deselectJob()
+                                                    jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
                                                 }
                                                 
                                                 withAnimation(.easeInOut) {

@@ -79,7 +79,7 @@ struct MainWithSideBarView: View {
                 ZStack{
                     
                     HStack(spacing: 0){
-                        SideMenu()
+                        SideMenu(currentTab: $currentTab)
                             .disabled(!navigationState.showMenu)
                             .environmentObject(navigationState)
                             .environmentObject(viewModel)

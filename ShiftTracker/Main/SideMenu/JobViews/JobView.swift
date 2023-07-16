@@ -576,7 +576,7 @@ struct JobView: View {
         if newJob.uuid == jobSelectionViewModel.selectedJobUUID {
             print("its the selected job yes")
             
-            jobSelectionViewModel.deselectJob()
+            jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
             
             jobSelectionViewModel.updateJob(newJob)
             
@@ -591,7 +591,7 @@ struct JobView: View {
         
         if job!.uuid == jobSelectionViewModel.selectedJobUUID {
             
-            jobSelectionViewModel.deselectJob()
+            jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
             
         }
         

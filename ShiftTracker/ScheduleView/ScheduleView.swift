@@ -130,7 +130,7 @@ struct ScheduleView: View {
                                 .bold()
                         }.padding()
                         //.disabled(dateSelected == nil)
-                        .disabled(jobSelectionViewModel.selectedJobUUID == nil)
+                        .disabled(jobSelectionViewModel.selectedJobUUID == nil || showAllScheduledShiftsView)
                     }
                 ToolbarItem(placement: .navigationBarLeading){
                     Button{

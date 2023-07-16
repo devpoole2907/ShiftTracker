@@ -148,9 +148,20 @@ class JobSelectionManager: ObservableObject {
     }
     
     
-    func deselectJob(){
-        selectedJobUUID = nil
-        storedSelectedJobUUID = ""
+    func deselectJob(shiftViewModel: ContentViewModel){
+        
+        if shiftViewModel.shift == nil {
+            
+            selectedJobUUID = nil
+            storedSelectedJobUUID = ""
+        } else {
+            
+            OkButtonPopup(title: "End your current shift to deselect this job.", action: nil).showAndStack()
+            
+        }
+        
+        
+        
     }
     
     
