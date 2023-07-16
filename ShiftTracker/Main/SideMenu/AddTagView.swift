@@ -13,25 +13,25 @@ struct AddTagView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @State private var tagName = ""
-    @State private var tagColor = Color.white
+    @State private var tagColor = Color.purple
     
     @State private var selectedTag: Tag? = nil
     
     @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
     
     var isEditing: Bool {
-            selectedTag != nil
-        }
-        
-        var buttonTitle: String {
-            isEditing ? "Update Tag" : "Add Tag"
-        }
+        selectedTag != nil
+    }
+    
+    var buttonTitle: String {
+        isEditing ? "Update Tag" : "Add Tag"
+    }
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 
-                LazyVStack (alignment: .center) {
+                VStack(alignment: .center) {
                     
                     
                     
@@ -49,16 +49,16 @@ struct AddTagView: View {
                         ForEach(tags, id: \.self) { tag in
                             Button(action: {
                                 if selectedTag == tag {
-                                                                    selectedTag = nil
+                                    selectedTag = nil
                                     tagName = ""
                                     tagColor = .white
-                                                                    
-                                                            
-                                                                } else {
-                                                                    selectedTag = tag
-                                                                    tagName = tag.name ?? ""
-                                                                    tagColor = Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue)
-                                                                }
+                                    
+                                    
+                                } else {
+                                    selectedTag = tag
+                                    tagName = tag.name ?? ""
+                                    tagColor = Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue)
+                                }
                             }) {
                                 Text("#\(tag.name ?? "")")
                                     .bold()
@@ -72,86 +72,97 @@ struct AddTagView: View {
                     .background(Color("SquaresColor"))
                     .cornerRadius(12)
                     
-                    .padding(.bottom, 30)
+             
                     
-                    HStack{
-                        
-                        
-                        CustomTextField(text: $tagName, hint: "Add Tag", leadingIcon: Image(systemName: "number"))
-                            .frame(maxHeight: 50)
-                        
-                        
-                        ZStack{
-                            Circle()
-                                .foregroundStyle(Color("SquaresColor"))
-                                .frame(maxHeight: 50)
-                            ColorPicker("", selection: $tagColor, supportsOpacity: false)
-                                .padding()
-                                .labelsHidden()
-                                
-                        }
-                    }
                     
-                    HStack{
-                        
-                        if selectedTag != nil {
-                            Button(action: {
-                                guard let selectedTag = selectedTag else { return }
-                                
-                                deleteTag(selectedTag)
-                                clearSelection()
-                                
-                                
-                            }) {
-                                
-                                
-                                HStack{
-                                    Image(systemName: "trash")
-                                    Text("Delete")
-                                        .bold()
-                                }
-                            }.listRowSeparator(.hidden)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(.red)
-                                .foregroundColor(.white)
-                                .cornerRadius(20)
-                        }
-                        
-                        
-                        Button(action: {
-                            
-                            
-                            if let selectedTag = selectedTag {
-                                
-                                updateTag(selectedTag)
-                                clearSelection()
-                            } else {
-                                addTag()
-                                clearSelection()
-                            }
-                                
-                                
-                            
-                            
-                            
-                        }) {
-                            Text(buttonTitle)
-                                .bold()
-                        }.listRowSeparator(.hidden)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(colorScheme == .dark ? .white : .black)
-                            .foregroundColor(colorScheme == .dark ? .black : .white)
-                            .cornerRadius(20)
-                        
-                        
-                    }
+                    
+                    
+                    
+                    
                 }.padding()
                 
                 
                 
             }
+            VStack(alignment: .center){
+                
+                HStack{
+                    
+                    
+                    CustomTextField(text: $tagName, hint: "Add Tag", leadingIcon: Image(systemName: "number"))
+                        .frame(maxHeight: 40)
+                    
+                    
+                    ZStack{
+                        Circle()
+                            .foregroundStyle(Color("SquaresColor"))
+                            .frame(maxHeight: 30)
+                        ColorPicker("", selection: $tagColor, supportsOpacity: false)
+                            .padding()
+                            .labelsHidden()
+                        
+                    }
+                }
+            
+            HStack{
+                
+                if selectedTag != nil {
+                    Button(action: {
+                        guard let selectedTag = selectedTag else { return }
+                        
+                        deleteTag(selectedTag)
+                        clearSelection()
+                        
+                        
+                    }) {
+                        
+                        
+                        HStack{
+                            Image(systemName: "trash")
+                            Text("Delete")
+                                .bold()
+                        }
+                    }.listRowSeparator(.hidden)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(20)
+                }
+                
+                
+                Button(action: {
+                    
+                    
+                    if let selectedTag = selectedTag {
+                        
+                        updateTag(selectedTag)
+                        clearSelection()
+                    } else {
+                        addTag()
+                        clearSelection()
+                    }
+                    
+                    
+                    
+                    
+                    
+                }) {
+                    Text(buttonTitle)
+                        .bold()
+                }.listRowSeparator(.hidden)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(colorScheme == .dark ? .white : .black)
+                    .foregroundColor(colorScheme == .dark ? .black : .white)
+                    .cornerRadius(20)
+                
+                
+            }
+            
+            }.padding()
+            
+            
             
             .navigationTitle("Tags")
             .navigationBarTitleDisplayMode(.inline)
@@ -218,19 +229,19 @@ struct AddTagView: View {
     }
     
     private func deleteTag(_ tag: Tag) {
-            viewContext.delete(tag)
-            do {
-                try viewContext.save()
-            } catch {
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+        viewContext.delete(tag)
+        do {
+            try viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
+    }
     
     
-
-
-private func clearSelection() {
+    
+    
+    private func clearSelection() {
         selectedTag = nil
         tagName = ""
         tagColor = Color.white

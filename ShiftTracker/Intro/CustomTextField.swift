@@ -40,10 +40,10 @@ struct CustomTextField: View {
                 TextField(hint, text: $text)
             }
             
-        }.padding(.horizontal, 15)
-            .padding(.vertical, 15)
+        }.padding(.horizontal)
+            .padding(.vertical, 10)
             .background {
-                RoundedRectangle(cornerRadius: 50, style: .continuous)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(.gray.opacity(0.1))
             }
     }
