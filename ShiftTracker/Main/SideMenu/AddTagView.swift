@@ -55,7 +55,7 @@ struct AddTagView: View {
                                 if selectedTag == tag {
                                     selectedTag = nil
                                     tagName = ""
-                                    tagColor = .white
+                                    //tagColor = .white
                                     
                                     
                                 } else {
