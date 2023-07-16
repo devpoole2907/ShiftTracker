@@ -159,12 +159,14 @@ struct SideMenu: View {
                                         Image(systemName: "plus")
                                         
                                     }
+                                    .haptics(onChangeOf: showingTagSheet, type: .light)
                                     
                                     .sheet(isPresented: $showingTagSheet){
                                         
                                         AddTagView()
                                             .presentationDetents([.medium])
                                             .presentationCornerRadius(35)
+                                            .presentationBackground(colorScheme == .dark ? .black : .white)
                                             
                                     }
                                     

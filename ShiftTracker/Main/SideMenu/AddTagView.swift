@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import Haptics
 
 struct AddTagView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -14,6 +15,9 @@ struct AddTagView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var tagName = ""
     @State private var tagColor = Color.purple
+    @State private var tagAdded = false
+    
+    @State private var buttonScale: CGFloat = 1.0
     
     @State private var selectedTag: Tag? = nil
     
@@ -65,13 +69,14 @@ struct AddTagView: View {
                             }
                             .buttonStyle(.bordered)
                             .tint(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue, opacity: selectedTag == tag ? 1.0 : 0.5))
+                            
                         }
                         
                     }
                     .padding(10)
                     .background(Color("SquaresColor"))
                     .cornerRadius(12)
-                    
+                    .haptics(onChangeOf: selectedTag, type: .soft)
              
                     
                     
@@ -133,18 +138,40 @@ struct AddTagView: View {
                 
                 Button(action: {
                     
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6, blendDuration: 0.5)) {
+                            buttonScale = 1.2
+                        }
                     
-                    if let selectedTag = selectedTag {
+                    
+                    
+                    if tagName != "" { // prevents empty tags
+                        // !!!!!!!!!!!!!!!!! this also needs to check for duplicate names
+                        if let selectedTag = selectedTag {
+                            
+                            updateTag(selectedTag)
+                            tagAdded.toggle()
+                            clearSelection()
+                        } else {
+                            addTag()
+                            tagAdded.toggle()
+                            clearSelection()
+                        }
                         
-                        updateTag(selectedTag)
-                        clearSelection()
+                        
+                        
                     } else {
-                        addTag()
-                        clearSelection()
+                        
+                        // make the button do haptic feedback .error type & jiggle side to side like jobview
+                        
+                        
+                        
                     }
                     
+                    // this is for some reason causing the lazy v grid to animate not this button! but keep it here its a feature now it looks sweet >:)
                     
-                    
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6, blendDuration: 0.5)) {
+                            buttonScale = 1.0
+                        }
                     
                     
                 }) {
@@ -156,6 +183,10 @@ struct AddTagView: View {
                     .background(colorScheme == .dark ? .white : .black)
                     .foregroundColor(colorScheme == .dark ? .black : .white)
                     .cornerRadius(20)
+                    .scaleEffect(buttonScale)
+                    .buttonStyle(.plain)
+                    .contentShape(Rectangle())
+                    .haptics(onChangeOf: tagAdded, type: .success)
                 
                 
             }
