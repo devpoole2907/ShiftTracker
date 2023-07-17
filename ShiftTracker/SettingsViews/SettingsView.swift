@@ -28,6 +28,7 @@ struct SettingsView: View {
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.scenePhase) var scenePhase
     
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var themeManager: ThemeDataManager
@@ -121,6 +122,7 @@ struct SettingsView: View {
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
+ 
                     
                     NavigationLink(value: 2){
                         
@@ -138,11 +140,12 @@ struct SettingsView: View {
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                        .onReceive(notificationManager.$authorizationStatus) { _ in
-                            
-                            notificationManager.checkNotificationStatus()
-                            
-                        }
+                        .onAppear(perform: notificationManager.checkNotificationStatus)
+                                .onChange(of: scenePhase) { newPhase in
+                                    if newPhase == .active {
+                                        notificationManager.checkNotificationStatus()
+                                    }
+                                }
                     
                     
                     NavigationLink(value: 3){
@@ -292,7 +295,7 @@ struct SettingsView: View {
         
                     
                     
-                }
+               }
                 
                 .navigationTitle("Settings")
             // .toolbarRole(.editor)
@@ -443,16 +446,18 @@ struct SettingsRow: View {
 struct NotificationView: View{
     
     @StateObject var notificationManager = NotificationManager()
+    @Environment(\.scenePhase) var scenePhase
     
     var body: some View{
                 ScrollView{
                         
                     SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
-                    .onReceive(notificationManager.$authorizationStatus) { _ in
-                        
-                        notificationManager.checkNotificationStatus()
-                        
-                    }
+                        .onAppear(perform: notificationManager.checkNotificationStatus)
+                                .onChange(of: scenePhase) { newPhase in
+                                    if newPhase == .active {
+                                        notificationManager.checkNotificationStatus()
+                                    }
+                                }
                     
                     Button("Request notification access"){
                         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
