@@ -38,6 +38,7 @@ struct MainWithSideBarView: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var locationManager: LocationDataManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     
     private let notificationManager = ShiftNotificationManager.shared
@@ -258,10 +259,27 @@ struct MainWithSideBarView: View {
             })
             
             .onAppear {
-                if !isSubscriptionChecked {
-                checkSubscriptionStatus()
-                isSubscriptionChecked = true
-                }
+              
+                
+                  
+                        
+                        Task {
+                            
+                            do {
+                                
+                                try await purchaseManager.loadProducts()
+                            } catch {
+                                
+                                print(error)
+                            }
+                            
+                        }
+                        
+                     
+                        
+                        
+                    
+                
             }
             
             /*     .onAppear{ authModel.checkUserLoginStatus()
@@ -364,15 +382,7 @@ func onEnd(value: DragGesture.Value) {
         }
     }
     
-    private func checkSubscriptionStatus() {
-        if isSubscriptionActive() {
-            print("Subscription is active")
-            // Perform any actions required when the subscription is active
-        } else {
-            print("Subscription is not active")
-            // Perform any actions required when the subscription is not active
-        }
-    }
+
     
     
     

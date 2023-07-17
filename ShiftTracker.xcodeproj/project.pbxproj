@@ -135,6 +135,7 @@
 		7C8CEA962A5D29B1006C833F /* ContentViewButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA952A5D29B1006C833F /* ContentViewButtonsView.swift */; };
 		7C8CEA982A5D3836006C833F /* AddTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA972A5D3836006C833F /* AddTagView.swift */; };
 		7C8CEA9A2A5D3B2E006C833F /* TagButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA992A5D3B2E006C833F /* TagButtonView.swift */; };
+		7C934D3A2A6522F9004F2622 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C934D392A6522F9004F2622 /* PurchaseManager.swift */; };
 		7CAB87102A58214600A08219 /* ExportSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB870F2A58214600A08219 /* ExportSquare.swift */; };
 		7CAB87162A5878C900A08219 /* ScheduledShiftStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87152A5878C900A08219 /* ScheduledShiftStore.swift */; };
 		7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */; };
@@ -273,6 +274,7 @@
 		7C8CEA952A5D29B1006C833F /* ContentViewButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewButtonsView.swift; sourceTree = "<group>"; };
 		7C8CEA972A5D3836006C833F /* AddTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagView.swift; sourceTree = "<group>"; };
 		7C8CEA992A5D3B2E006C833F /* TagButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagButtonView.swift; sourceTree = "<group>"; };
+		7C934D392A6522F9004F2622 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
 		7CAB870F2A58214600A08219 /* ExportSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportSquare.swift; sourceTree = "<group>"; };
 		7CAB87152A5878C900A08219 /* ScheduledShiftStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftStore.swift; sourceTree = "<group>"; };
 		7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleScheduledShift.swift; sourceTree = "<group>"; };
@@ -424,6 +426,7 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				7C934D392A6522F9004F2622 /* PurchaseManager.swift */,
 				1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */,
 				1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */,
 				1A1DEC9329F100950002D9E4 /* Enums.swift */,
@@ -892,6 +895,7 @@
 				7CAB87162A5878C900A08219 /* ScheduledShiftStore.swift in Sources */,
 				1A1914212A185281000D0F8B /* ShiftManager.swift in Sources */,
 				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,
+				7C934D3A2A6522F9004F2622 /* PurchaseManager.swift in Sources */,
 				1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */,
 				1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */,
 				1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */,

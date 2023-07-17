@@ -16,26 +16,6 @@ import Haptics
 import UserNotifications
 
 
-
-
-func isSubscriptionActive() -> Bool {
-    
-    let subscriptionStatus = UserDefaults.standard.bool(forKey: "subscriptionStatus")
-    return subscriptionStatus
-}
-
-func setUserSubscribed(_ subscribed: Bool) {
-    
-    let userDefaults = UserDefaults.standard
-    userDefaults.set(subscribed, forKey: "subscriptionStatus")
-    if subscribed{
-        print("set subscription to true ")
-    }
-    else {
-        print("subscription is false")
-    }
-}
-
 extension UIColor {
     var rgbComponents: (Float, Float, Float) {
         var r: CGFloat = 0

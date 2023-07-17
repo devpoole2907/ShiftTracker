@@ -13,6 +13,9 @@ struct ExportSquare: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
+    
+    @State private var showingProView = false
     
     let action: () -> Void
     
@@ -36,7 +39,13 @@ struct ExportSquare: View {
             
             Button(action: {
                 
-                action()
+                if purchaseManager.hasUnlockedPro {
+                    action()
+                } else {
+                    
+                    showingProView.toggle()
+                    
+                }
                 
             }){
                 HStack{
@@ -64,7 +73,14 @@ struct ExportSquare: View {
         .background(Color("SquaresColor"))
             .cornerRadius(12)
 
-          
+            .sheet(isPresented: $showingProView) {
+                
+                ProView()
+                    .environmentObject(purchaseManager)
+                
+            }
+        
+        
     }
     
     

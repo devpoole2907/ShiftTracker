@@ -18,6 +18,7 @@ struct ShiftTrackerApp: App {
     
     @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
     
+    @StateObject private var purchaseManager = PurchaseManager()
     @StateObject var locationManager = LocationDataManager()
     @StateObject var themeManager = ThemeDataManager()
 
@@ -41,6 +42,14 @@ struct ShiftTrackerApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(themeManager)
                 .environmentObject(locationManager)
+                .environmentObject(purchaseManager)
+            
+                .task{
+                    
+                    await purchaseManager.updatePurchasedProducts()
+                    
+                }
+            
             // deep link tests
                 .onOpenURL { url in
                     print("got a URL boss man")

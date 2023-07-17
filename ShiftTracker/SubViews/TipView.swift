@@ -14,14 +14,15 @@ import StoreKit
 struct TipView: View {
     let productIDs = ["ShiftTracker_Small_Tip", "ShiftTracker_Medium_Tip", "ShiftTracker_Large_Tip"]
     @State private var showingProView = false
-    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
+    
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     @State private var products: [Product] = []
     
     var body: some View {
             VStack {
                 List{
-                    if !isProVersion{
+                    if !purchaseManager.hasUnlockedPro {
                         Section{
                         Button(action: {
                             showingProView = true // set the state variable to true to show the sheet

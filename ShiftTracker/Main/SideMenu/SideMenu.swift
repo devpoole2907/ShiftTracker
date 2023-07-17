@@ -12,8 +12,6 @@ import Haptics
 
 struct SideMenu: View {
     
-    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
-    
     @Environment(\.colorScheme) var colorScheme
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -25,6 +23,7 @@ struct SideMenu: View {
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var themeManager: ThemeDataManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
     
@@ -49,7 +48,7 @@ struct SideMenu: View {
             
             VStack(alignment: .leading, spacing: 14){
                 HStack{
-                    if isProVersion{
+                    if purchaseManager.hasUnlockedPro{
                         Text("ShiftTracker")
                             .font(.title)
                             .bold()
@@ -88,7 +87,7 @@ struct SideMenu: View {
                                     .bold()
                                 Spacer()
                                 Button(action: {
-                                    if isSubscriptionActive() || jobs.isEmpty {
+                                    if purchaseManager.hasUnlockedPro || jobs.isEmpty {
                                         showAddJobView = true
                                     } else {
                                         showUpgradeScreen = true
@@ -224,7 +223,7 @@ struct SideMenu: View {
             }
             VStack{
                 
-                if !isSubscriptionActive(){
+                if !purchaseManager.hasUnlockedPro{
                     
                     Divider()
                     

@@ -13,7 +13,6 @@ import LocalAuthentication
 struct SettingsView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
-    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
     @State private var showingProView = false
     @AppStorage("iCloudEnabled") private var iCloudSyncOn: Bool = false
     @AppStorage("AuthEnabled") private var authEnabled: Bool = false
@@ -33,6 +32,7 @@ struct SettingsView: View {
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var locationManager: LocationDataManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     @StateObject var notificationManager = NotificationManager()
     
@@ -64,7 +64,7 @@ struct SettingsView: View {
                      }
                      }*/
                     
-                    if !isProVersion{
+                    if !purchaseManager.hasUnlockedPro{
                         Group{
                             Button(action: {
                                 showingProView = true
@@ -235,7 +235,7 @@ struct SettingsView: View {
                 
                 
                 VStack(spacing: 10){
-                    if isSubscriptionActive(){
+                    if purchaseManager.hasUnlockedPro {
                         Text("Thank you for purchasing ShiftTracker Pro!")
                             .foregroundColor(.gray.opacity(0.3))
                             .font(.caption)
@@ -373,7 +373,7 @@ struct ProSettingsView: View{
                     Button(action: {
                         isProVersion.toggle()
 
-                        setUserSubscribed(isProVersion)
+                        //setUserSubscribed(isProVersion)
                     }) {
                         Text(isProVersion ? "Unsubscribe" : "Upgrade now")
                             .foregroundColor(.white)
