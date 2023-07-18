@@ -298,8 +298,6 @@ struct SettingsView: View {
                }
                 
                 .navigationTitle("Settings")
-            // .toolbarRole(.editor)
-            //.scrollIndicators(.hidden)
             
                 .fullScreenCover(isPresented: $showingProView) {
                     NavigationStack{

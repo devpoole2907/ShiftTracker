@@ -99,112 +99,80 @@ struct SideMenu: View {
                             }
                             .foregroundColor(.primary)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .haptics(onChangeOf: showAddJobView, type: .light)
                         
                         VStack{
                           //  if isJobsExpanded {
-                                VStack(alignment: .leading, spacing: 10){
-                                    ForEach(jobs) { job in
-                                        
-                                        
-                                        
-                                        VStack(spacing: 0) {
-                                            JobRow(job: job, isSelected: jobSelectionViewModel.selectedJobUUID == job.uuid, editAction: {
-                                                selectedJobForEditing = job
-                                                isEditJobPresented = true
-                                            }, showEdit: true)
-                                            .contentShape(Rectangle())
-                                            .onTapGesture {
+                            VStack(alignment: .leading, spacing: 10){
+                                ForEach(jobs) { job in
+                                    
+                                    
+                                    
+                                    VStack(spacing: 0) {
+                                        JobRow(job: job, isSelected: jobSelectionViewModel.selectedJobUUID == job.uuid, editAction: {
+                                            selectedJobForEditing = job
+                                            isEditJobPresented = true
+                                        }, showEdit: true)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            
+                                            if !(jobSelectionViewModel.selectedJobUUID == job.uuid) {
+                                                jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
                                                 
-                                                if !(jobSelectionViewModel.selectedJobUUID == job.uuid) {
-                                                    jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
-                                                    
-                                                } else {
-                                                    jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
-                                                }
+                                            } else {
+                                                jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
+                                            }
+                                            
+                                            withAnimation(.easeInOut) {
                                                 
-                                                withAnimation(.easeInOut) {
-                                                    
-                                                    navigationState.showMenu = false
-                                                    
-                                                }
+                                                navigationState.showMenu = false
                                                 
                                             }
                                             
-                                        }.padding(.horizontal, 8)
-                                            .padding(.vertical, 10)
-                                            .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
-                                            .cornerRadius(50)
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
-                                    }
-                                    
-                                    .fullScreenCover(item: $selectedJobForEditing) { job in
-                                        JobView(job: job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $selectedJobForEditing)
-                                            .onDisappear {
-                                                selectedJobForEditing = nil
-                                            }
-                                    }
-                                    
-                                    Button(action: {
-                                        
-                                        showingTagSheet = true
-                                        
-                                    }){
-                                        
-                                        Image(systemName: "plus")
-                                        
-                                    }
-                                    .haptics(onChangeOf: showingTagSheet, type: .light)
-                                    
-                                    .sheet(isPresented: $showingTagSheet){
-                                        
-                                        AddTagView()
-                                            .presentationDetents([.medium])
-                                            .presentationCornerRadius(35)
-                                            .presentationBackground(colorScheme == .dark ? .black : .white)
-                                            
-                                    }
-                                    
-                                    
-                                    
-                                    
-                                /*    Button(action: {
-                                        if isSubscriptionActive() || jobs.isEmpty {
-                                            showAddJobView = true
-                                        } else {
-                                            showUpgradeScreen = true
                                         }
-                                    }) {
-                                        Image(systemName: "plus")
-                                            .resizable()
-                                            .frame(width: 25, height: 25)
-                                            .padding(.leading, 40)
-                                    }.padding()
-                                        .frame(alignment: .leading)*/
+                                        
+                                    }.padding(.horizontal, 8)
+                                        .padding(.vertical, 10)
+                                        .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
+                                        .cornerRadius(50)
+                                    
+                                    
+                                    
+                                    
+                                    
                                     
                                 }
-                                //  }
-                          /*  else if let selectedJob = findSelectedJob() {
-                                VStack(spacing: 0) {
-                                    JobRow(job: selectedJob, isSelected: jobSelectionViewModel.selectedJobUUID == selectedJob.uuid, editAction: {
-                                        selectedJobForEditing = selectedJob
-                                        isEditJobPresented = true
-                                    }, showEdit: false)
-                                    .contentShape(Rectangle()) // Make the whole row tappable
+                                
+                                .fullScreenCover(item: $selectedJobForEditing) { job in
+                                    JobView(job: job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $selectedJobForEditing)
+                                        .onDisappear {
+                                            selectedJobForEditing = nil
+                                        }
+                                }
+                                
+                                Button(action: {
                                     
-                                }.padding()
-                                    .background(jobSelectionViewModel.selectedJobUUID == selectedJob.uuid ? jobBackground : Color.primary.opacity(0.04))
-                                    .cornerRadius(50)
-                                    .padding(.leading, 40)
-                            } else {
-                                // Handle the case when the selected job is not found
-                                Text("No job selected")
-                                    .bold()
-                            }*/
+                                    showingTagSheet = true
+                                    
+                                }){
+                                    
+                                    Image(systemName: "plus")
+                                    
+                                }
+                                .haptics(onChangeOf: showingTagSheet, type: .light)
+                                
+                                .haptics(onChangeOf: selectedJobForEditing, type: .light)
+                                
+                                .sheet(isPresented: $showingTagSheet){
+                                    
+                                    AddTagView()
+                                        .presentationDetents([.medium])
+                                        .presentationCornerRadius(35)
+                                        .presentationBackground(colorScheme == .dark ? .black : .white)
+                                    
+                                }
+                                
+                            }
                             
                             
                         } .transition(.move(edge: .top))

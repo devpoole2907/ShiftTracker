@@ -160,14 +160,14 @@ struct ScheduledShiftRow: View {
         HStack {
             // Vertical line
             RoundedRectangle(cornerRadius: 1)
-                .fill(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
+                .fill(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)).gradient)
                 .frame(width: 4)
             
             VStack(alignment: .leading) {
                 Text(shift.job?.name ?? "")
                     .bold()
                 Text(shift.job?.title ?? "")
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .bold()
             }
             Spacer()
@@ -182,7 +182,7 @@ struct ScheduledShiftRow: View {
                 Text(timeFormatter.string(from: shift.endDate))
                         .font(.subheadline)
                         .bold()
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 
             }
         }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import Haptics
 
 struct ExportSquare: View {
     
@@ -17,12 +18,11 @@ struct ExportSquare: View {
     
     @State private var showingProView = false
     
+    @State private var isTapped: Bool = false
+    
     let action: () -> Void
     
     var body: some View {
-        
-        let subTextColor: Color = colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)
-        let headerColor: Color = colorScheme == .dark ? .white : .black
         
         VStack(alignment: .leading, spacing: 10){
 
@@ -39,6 +39,8 @@ struct ExportSquare: View {
             
             Button(action: {
                 
+                isTapped.toggle()
+                
                 if purchaseManager.hasUnlockedPro {
                     action()
                 } else {
@@ -46,6 +48,13 @@ struct ExportSquare: View {
                     showingProView.toggle()
                     
                 }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    
+                    isTapped.toggle()
+                    
+                }
+                
                 
             }){
                 HStack{
@@ -62,13 +71,18 @@ struct ExportSquare: View {
                     .foregroundStyle(colorScheme == .dark ? .black : .white)
                     .font(.title3)
                 }
-            }.padding(.horizontal)
-                .padding(.vertical, 10)
+                .padding(.horizontal, 26)
+                    .padding(.vertical, 10)
+                .background(colorScheme == .dark ? .white : .black)
+                    .cornerRadius(20)
+                    .buttonStyle(.plain)
+                    .contentShape(Rectangle())
+            }
             .frame(maxWidth: .infinity)
-            .background(colorScheme == .dark ? .white : .black)
-                .cornerRadius(20)
-                .buttonStyle(.plain)
-                .contentShape(Rectangle())
+            .scaleEffect(isTapped ? 1.35 : 1)
+            .animation(.easeInOut(duration: 0.5))
+            .haptics(onChangeOf: isTapped, type: .light)
+            
         }.padding()
         .background(Color("SquaresColor"))
             .cornerRadius(12)

@@ -209,6 +209,7 @@ struct JobOverview: View {
                 Button("\(Image(systemName: "plus"))") {
                     showingAddShiftSheet.toggle()
                 }.disabled(jobSelectionViewModel.selectedJobUUID == nil)
+                    .bold()
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {

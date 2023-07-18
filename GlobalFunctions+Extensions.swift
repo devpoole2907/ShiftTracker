@@ -313,7 +313,7 @@ func getDayShortName(day: Int) -> String {
     let formatter = DateFormatter()
     let symbols = formatter.shortWeekdaySymbols
     let symbol = symbols?[day % 7] ?? ""
-    return String(symbol.prefix(2))
+    return String(symbol.prefix(1))
 }
 
 // for calculating a week ahead
