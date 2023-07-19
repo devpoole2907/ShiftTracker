@@ -129,10 +129,10 @@ struct ShiftsList: View {
                 
                 
                 
-                .navigationDestination(for: OldShift.self) { shift in
+             /*   .navigationDestination(for: OldShift.self) { shift in
                     DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details")
                     
-                }
+                } */
                 
                 .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                 .listRowBackground(Color("SquaresColor"))

@@ -127,11 +127,7 @@ struct JobOverview: View {
                             
                     
                     
-                    .navigationDestination(for: Int.self) { _ in
-                        
-                        ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState)
-                        
-                    }
+                 /*    */
                     
                     .swipeActions {
                  
@@ -160,6 +156,11 @@ struct JobOverview: View {
                     .bold()
                     
                 }
+                .navigationDestination(for: Int.self) { _ in
+                       
+                       ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState)
+                       
+                   }
                 
                         
                   
@@ -167,6 +168,9 @@ struct JobOverview: View {
             }
             .listRowBackground(Color("SquaresColor"))
             .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+            
+           
+            
         }.scrollContentBackground(.hidden)
             
         .fullScreenCover(isPresented: $showingAddShiftSheet) {
@@ -178,6 +182,8 @@ struct JobOverview: View {
                 Text("Error")
             }
         }
+            
+        
             
         .onAppear {
             navigationState.gestureEnabled = true

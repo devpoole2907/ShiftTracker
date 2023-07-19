@@ -461,7 +461,7 @@ struct DetailView: View {
                 displayedCount += 1
                 
                 print("displayed count is: \(displayedCount)")
-                if displayedCount >= 2 {
+                if displayedCount == 2 {
                     
                     
                     requestReview()
