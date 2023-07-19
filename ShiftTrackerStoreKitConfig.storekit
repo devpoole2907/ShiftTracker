@@ -5,13 +5,13 @@
   ],
   "products" : [
     {
-      "displayPrice" : "7.99",
+      "displayPrice" : "14.99",
       "familyShareable" : false,
       "internalID" : "6446510538",
       "localizations" : [
         {
-          "description" : "A large tip!",
-          "displayName" : "ShiftTracker Large Tip",
+          "description" : "A large sized tip!",
+          "displayName" : "Large Tip",
           "locale" : "en_AU"
         }
       ],
@@ -20,13 +20,13 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "5.99",
+      "displayPrice" : "9.99",
       "familyShareable" : false,
       "internalID" : "6446510679",
       "localizations" : [
         {
           "description" : "A medium sized tip!",
-          "displayName" : "ShiftTracker Medium Tip",
+          "displayName" : "Medium Tip",
           "locale" : "en_AU"
         }
       ],
@@ -35,7 +35,7 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "1.99",
+      "displayPrice" : "3.99",
       "familyShareable" : false,
       "internalID" : "6446510127",
       "localizations" : [
@@ -53,13 +53,127 @@
   "settings" : {
     "_applicationInternalID" : "6446443887",
     "_developerTeamID" : "L9DB7QA9DE",
-    "_lastSynchronizedDate" : 701056151.72209203
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 711271064.13617897,
+    "_locale" : "en_US",
+    "_storefront" : "NZL",
+    "_storeKitErrors" : [
+      {
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : {
+          "index" : 1,
+          "type" : "purchase"
+        },
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
   },
   "subscriptionGroups" : [
+    {
+      "id" : "21363609",
+      "localizations" : [
 
+      ],
+      "name" : "ShiftTracker Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "6451375196",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited Jobs, Auto Breaks, Themes & more!",
+              "displayName" : "ShiftTracker PRO (Monthly)",
+              "locale" : "en_AU"
+            }
+          ],
+          "productID" : "pro_month",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "ShiftTracker Pro Monthly",
+          "subscriptionGroupID" : "21363609",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "24.99",
+          "familyShareable" : true,
+          "groupNumber" : 2,
+          "internalID" : "6451376215",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited Jobs, Auto Breaks, Themes & more!",
+              "displayName" : "ShiftTracker PRO Yearly",
+              "locale" : "en_AU"
+            }
+          ],
+          "productID" : "pro_yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "ShiftTracker Pro Yearly",
+          "subscriptionGroupID" : "21363609",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
   ],
   "version" : {
-    "major" : 2,
+    "major" : 3,
     "minor" : 0
   }
 }

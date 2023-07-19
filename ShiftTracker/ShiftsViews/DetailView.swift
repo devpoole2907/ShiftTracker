@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 import Foundation
 import Charts
+import StoreKit
 
 struct DetailView: View {
     
@@ -18,11 +19,13 @@ struct DetailView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @Environment(\.requestReview) var requestReview
+    
     @EnvironmentObject var themeManager: ThemeDataManager
     
-    @StateObject var temporaryViewModel = ContentViewModel()
-    
     let breakManager = BreaksManager()
+    
+    @AppStorage("displayedCount") private var displayedCount: Int = 0
     
     var presentedAsSheet: Bool
     @Binding var activeSheet: ActiveSheet?
@@ -37,6 +40,10 @@ struct DetailView: View {
     @State private var showingDeleteAlert = false
     
     @FocusState private var focusedField: Field?
+    
+    @State private var selectedTags: Set<Tag> = []
+    
+    @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -55,11 +62,6 @@ struct DetailView: View {
     @State private var selectedTotalTips: String = ""
     @State private var addTipsToTotal: Bool = false
     
-    //tags stuff
-    
-    @AppStorage("tagList") private var tagsList: Data = Data()
-    @State private var tags: [Tag] = []
-    @State private var selectedTag: Tag? = nil
     
     @AppStorage("TipsEnabled") private var tipsEnabled: Bool = true
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
@@ -86,6 +88,7 @@ struct DetailView: View {
         self.presentedAsSheet = presentedAsSheet
         _activeSheet = activeSheet ?? Binding.constant(nil)
         _navPath = navPath
+        _selectedTags = State(wrappedValue: shift.tags as! Set<Tag>)
         
         // adds clear text button to text fields
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -240,17 +243,29 @@ struct DetailView: View {
                 
                 // WIP
                 
-                TagButtonView().environmentObject(temporaryViewModel)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top)
-                
-                    .onAppear {
-                        
-                        
-                        temporaryViewModel.selectedTags = Set(shift.tags?.compactMap { ($0 as? Tag)?.tagID } ?? [])
-                        
-                        
-                    }
+                VStack(alignment: .center) {
+                                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]) {
+                                        ForEach(tags, id: \.self) { tag in
+                                            Button(action: {
+                                                if selectedTags.contains(tag) {
+                                                    selectedTags.remove(tag)
+                                                } else {
+                                                    selectedTags.insert(tag)
+                                                }
+                                            }) {
+                                                Text("#\(tag.name ?? "")")
+                                                    .bold()
+                                            }
+                                            .buttonStyle(.bordered)
+                                            .tint(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue, opacity: selectedTags.contains(tag) ? 1.0 : 0.5))
+                                            
+                                        }
+                                    }
+                                    .padding(10)
+                                    .background(Color("SquaresColor"))
+                                    .cornerRadius(12)
+                                    .haptics(onChangeOf: selectedTags, type: .soft)
+                                }.allowsHitTesting(isEditing)
                 
             }.listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
@@ -439,6 +454,27 @@ struct DetailView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
             
+        }.onAppear{
+            
+            if presentedAsSheet {
+                
+                displayedCount += 1
+                
+                print("displayed count is: \(displayedCount)")
+                if displayedCount == 2 {
+                    
+                    
+                    requestReview()
+                    
+                    print("requested review")
+                    
+                    
+                }
+                
+                
+            }
+            
+            
         }
         
         .toolbar{
@@ -528,9 +564,13 @@ struct DetailView: View {
                         shift.totalPay = (paidDuration / 3600.0) * shift.hourlyPay
                         shift.shiftNote = notes
                         
+                        shift.tags = NSSet(array: Array(selectedTags))
+                        
                         shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
                         saveContext()
                         breakManager.saveChanges(in: context)
+                        
+                       
                         
                     }
                     else {

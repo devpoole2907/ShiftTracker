@@ -266,10 +266,10 @@ struct RepeatEndPicker: View {
 }
 
 enum ReminderTime: String, CaseIterable, Identifiable {
-    case oneMinute = "1 minute before"
-    case fifteenMinutes = "15 minutes before"
-    case thirtyMinutes = "30 minutes before"
-    case oneHour = "1 hour before"
+    case oneMinute = "1m before"
+    case fifteenMinutes = "15m before"
+    case thirtyMinutes = "30m before"
+    case oneHour = "1hr before"
     
     var id: String { self.rawValue }
     var timeInterval: TimeInterval {

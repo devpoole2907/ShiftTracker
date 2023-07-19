@@ -167,68 +167,100 @@ struct CreateShiftForm: View {
         
         let iconColor: Color = colorScheme == .dark ? .orange : .cyan
         NavigationStack {
-            List{
-                Section{
-                    HStack(spacing: 25){
-                        VStack(alignment: .center, spacing: 5){
-                            
-                            
-                            
-                            HStack{
-                                Image(systemName: "figure.walk.arrival")
-                                    .foregroundColor(iconColor)
-                                Text("Start")
-                                    .bold()
-                            }
-                            .font(.callout)
-                            Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
-                                .font(.title2.bold())
-                            
-                            Text(getTime(angle: startAngle).formatted(date: .abbreviated, time: .omitted))
-                                .font(.caption2)
-                                .foregroundColor(.gray)
+            ScrollView{
+                
+                VStack(spacing: 18){
+                HStack(spacing: 25){
+                    VStack(alignment: .center, spacing: 5){
+                        
+                        
+                        
+                        HStack{
+                            Image(systemName: "figure.walk.arrival")
+                                .foregroundColor(iconColor)
+                            Text("Start")
                                 .bold()
-                            
-                            
                         }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        VStack(alignment: .center, spacing: 5){
-                            HStack{
-                                Image(systemName: "figure.walk.departure")
-                                    .foregroundColor(iconColor)
-                                Text("End")
-                                    .bold()
-                            }
-                            .font(.callout)
-                            
-                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .omitted, time: .shortened))
-                                .font(.title2.bold())
-                            
-                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .abbreviated, time: .omitted))
-                                .font(.caption2)
-                                .foregroundColor(.gray)
-                                .bold()
-                            
-                            
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        //.padding(.horizontal)
-                    }.listRowSeparator(.hidden)
-                        .padding(.top, 10)
-                    VStack{
-                        scheduleSlider()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding(.top, 30)
-                        Spacer()
+                        .font(.callout)
+                        Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
+                            .font(.title2.bold())
+                        
+                        Text(getTime(angle: startAngle).formatted(date: .abbreviated, time: .omitted))
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                            .bold()
+                        
+                        
                     }
-                    .frame(minHeight: screenBounds().height / 3)
-                }.listRowBackground(Color.clear)
-                Section {
-                    VStack(spacing: 18){
-                        Toggle(isOn: $enableRepeat){
-                            Text("Repeat")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    VStack(alignment: .center, spacing: 5){
+                        HStack{
+                            Image(systemName: "figure.walk.departure")
+                                .foregroundColor(iconColor)
+                            Text("End")
                                 .bold()
-                        }.toggleStyle(CustomToggleStyle())
+                        }
+                        .font(.callout)
+                        
+                        Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .omitted, time: .shortened))
+                            .font(.title2.bold())
+                        
+                        Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .abbreviated, time: .omitted))
+                            .font(.caption2)
+                            .foregroundColor(.gray)
+                            .bold()
+                        
+                        
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    //.padding(.horizontal)
+                }.listRowSeparator(.hidden)
+                    .padding(.top, 10)
+                
+                
+            }
+                   // VStack{
+                        scheduleSlider()
+                          //  .frame(maxWidth: .infinity, alignment: .center)
+                           .frame(minHeight: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? screenBounds().height / 2 : screenBounds().height / 3)
+                           // .frame(minWidth: screenBounds().width - 40)
+                           .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 20 : 30)
+                            .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? -85 : -10)
+                       //Spacer()
+                  //  }
+                   
+              
+               
+                    VStack(spacing: 10){
+                        
+                        HStack{
+                            
+                            Toggle(isOn: $enableRepeat){
+                                Text("Repeat")
+                                    .bold()
+                            }.toggleStyle(CustomToggleStyle())
+                                .frame(height: 40)
+                                .padding(.vertical)
+                                .padding(.horizontal)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("SquaresColor"))
+                                .cornerRadius(12)
+                              //  .padding()
+                                
+                            
+                            RepeatEndPicker(dateSelected: $dateSelected, selectedRepeatEnd: $selectedRepeatEnd)
+                                .frame(height: 40)
+                                .padding(.vertical)
+                                .padding(.horizontal)
+                                .frame(maxWidth: .infinity)
+                                .disabled(!enableRepeat)
+                            
+                                .background(Color("SquaresColor"))
+                                .cornerRadius(12)
+                               
+                               // .padding()
+                        }.padding(.horizontal)
+                           
                         
                         HStack {
                             ForEach(0..<7) { i in
@@ -239,7 +271,7 @@ struct CreateShiftForm: View {
                                     selectedDays[i].toggle()
                                 }) {
                                     Text(getDayShortName(day: i))
-                                        .font(.system(size: 14))
+                                        .font((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? .caption : .callout)
                                         .bold()
                                 }
                                 //  .padding()
@@ -248,36 +280,61 @@ struct CreateShiftForm: View {
                                 .cornerRadius(8)
                                 .buttonStyle(.bordered)
                                 .frame(height: 15)
+                                .frame(maxWidth: .infinity)
                                 .disabled(!enableRepeat)
                             }
-                        }.onAppear {
+                        }
+                        
+                        .padding()
+                           
+                            .background(Color("SquaresColor"))
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                        
+                        .onAppear {
                             selectedDays[getDayOfWeek(date: (dateSelected?.date ?? Date())) - 1] = true
                             
                             print("start date is : \(startDate)")
                         }
                         .haptics(onChangeOf: selectedDays, type: .light)
                         
+                        HStack{
+                            
+                            Toggle(isOn: $notifyMe){
+                                Text("Reminder")
+                                    .bold()
+                            }.toggleStyle(CustomToggleStyle())
+                                .frame(height: 40)
+                                .padding(.vertical)
+                                .padding(.horizontal)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("SquaresColor"))
+                                .cornerRadius(12)
+                            
+                            
+                            
+                            Picker("When", selection: $selectedReminderTime) {
+                                ForEach(ReminderTime.allCases) { reminderTime in
+                                    Text(reminderTime.rawValue).tag(reminderTime)
+                                }
+                            }.disabled(!notifyMe)
+                            
+                                .frame(height: 40)
+                                .padding(.vertical)
+                                .padding(.horizontal)
+                                .frame(maxWidth: .infinity)
+                      
+                            
+                                .background(Color("SquaresColor"))
+                                .cornerRadius(12)
+                            
+                        }.padding(.horizontal)
                         
-                        RepeatEndPicker(dateSelected: $dateSelected, selectedRepeatEnd: $selectedRepeatEnd)
-                            .disabled(!enableRepeat)
                     }
-                }.listRowBackground(Color("SquaresColor"))
-                Section {
-                    VStack{
-                        
-                        Toggle(isOn: $notifyMe){
-                            Text("Remind Me")
-                                .bold()
-                        }.toggleStyle(CustomToggleStyle())
-                        
-                        Picker("When", selection: $selectedReminderTime) {
-                            ForEach(ReminderTime.allCases) { reminderTime in
-                                Text(reminderTime.rawValue).tag(reminderTime)
-                            }
-                        }.disabled(!notifyMe)
-                        
-                    }
-                }.listRowBackground(Color("SquaresColor"))
+                
+             
+               
+          
             }.scrollContentBackground(.hidden)
             
                 .toolbar{
@@ -292,7 +349,7 @@ struct CreateShiftForm: View {
                             
                            
                         } label: {
-                            Text("Save")
+                            Image(systemName: "folder.badge.plus")
                                 .bold()
                             
                         }.padding()
@@ -409,6 +466,7 @@ struct CreateShiftForm: View {
             }
         }
         .frame(width: screenBounds().width / 1.7)
+
     }
     
     func onDrag(value: DragGesture.Value, fromSlider: Bool = false) {

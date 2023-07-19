@@ -12,8 +12,6 @@ import CoreData
 
 struct JobView: View {
     
-    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
-    
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -25,6 +23,7 @@ struct JobView: View {
     @EnvironmentObject private var locationManager: LocationDataManager
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     private let addressManager = AddressManager()
     private let notificationManager = ShiftNotificationManager.shared
     
@@ -264,7 +263,7 @@ struct JobView: View {
                                 .disabled(clockInReminder)
                                 .onChange(of: autoClockIn) { value in
                                     if value {
-                                        if !isProVersion {
+                                        if !purchaseManager.hasUnlockedPro {
                                             
                                             activeSheet = .proSheet
                                             autoClockIn = false
@@ -283,7 +282,7 @@ struct JobView: View {
                                 .disabled(clockOutReminder)
                                 .onChange(of: autoClockOut) { value in
                                     if value {
-                                        if !isProVersion {
+                                        if !purchaseManager.hasUnlockedPro {
                                             
                                             activeSheet = .proSheet
                                             autoClockOut = false

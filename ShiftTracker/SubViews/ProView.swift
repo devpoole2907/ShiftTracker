@@ -6,15 +6,16 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct ProView: View {
-    
-    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion: Bool = false
 
     @Environment(\.dismiss) var dismiss
     
     
     @Environment(\.colorScheme) var colorScheme
+    
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     
     var body: some View {
@@ -145,9 +146,17 @@ struct ProView: View {
                 
                 HStack(spacing: 10){
                     Button(action: {
-                        isProVersion = true
-                        setUserSubscribed(true)
-                        dismiss()
+                        
+                        Task {
+                                            do {
+                                                try await purchaseManager.purchase(purchaseManager.products[0])
+                                            } catch {
+                                                print("Purchase failed with error: \(error)")
+                                            }
+                                        }
+                        
+
+                       // dismiss()
                     }) {
                         VStack{
                             Text("MONTHLY")
@@ -157,8 +166,10 @@ struct ProView: View {
                                 .lineLimit(1)
                                 .allowsTightening(true)
                                 
-                            Text("$2.49")
-                                .foregroundColor(proButtonColor)
+                         
+                                Text(purchaseManager.products[0] .displayPrice)
+                                                .foregroundColor(proButtonColor)
+                                        
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 60)
@@ -167,11 +178,21 @@ struct ProView: View {
                         .background(Color("SquaresColor"),in:
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
+                  
+                    
+                    
                     Button(action: {
-                        isProVersion = true
-                        setUserSubscribed(true)
-                        print("setting user subscribed to true")
-                        dismiss()
+                        
+                        Task {
+                                            do {
+                                                try await purchaseManager.purchase(purchaseManager.products[1])
+                                            } catch {
+                                                print("Purchase failed with error: \(error)")
+                                            }
+                                        }
+                        
+                        print("product count is: \(purchaseManager.products.count)")
+                        //dismiss()
                     }) {
                         VStack{
                             Text("YEARLY")
@@ -181,8 +202,10 @@ struct ProView: View {
                                 .lineLimit(1)
                                 .allowsTightening(true)
                                 
-                            Text("$21.49")
-                                .foregroundColor(proButtonColor)
+                            Text(purchaseManager.products[1] .displayPrice)
+                                            .foregroundColor(proButtonColor)
+                            
+                               
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 60)
@@ -195,6 +218,17 @@ struct ProView: View {
                 }.padding(.horizontal, 30)
                 
                 Button(action: {
+                    
+                    Task {
+                        
+                        do {
+                            try await AppStore.sync()
+                        } catch {
+                            print(error)
+                        }
+                        
+                        
+                    }
                     
                 }) {
                     Text("Restore")

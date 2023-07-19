@@ -16,26 +16,6 @@ import Haptics
 import UserNotifications
 
 
-
-
-func isSubscriptionActive() -> Bool {
-    
-    let subscriptionStatus = UserDefaults.standard.bool(forKey: "subscriptionStatus")
-    return subscriptionStatus
-}
-
-func setUserSubscribed(_ subscribed: Bool) {
-    
-    let userDefaults = UserDefaults.standard
-    userDefaults.set(subscribed, forKey: "subscriptionStatus")
-    if subscribed{
-        print("set subscription to true ")
-    }
-    else {
-        print("subscription is false")
-    }
-}
-
 extension UIColor {
     var rgbComponents: (Float, Float, Float) {
         var r: CGFloat = 0
@@ -333,7 +313,7 @@ func getDayShortName(day: Int) -> String {
     let formatter = DateFormatter()
     let symbols = formatter.shortWeekdaySymbols
     let symbol = symbols?[day % 7] ?? ""
-    return String(symbol.prefix(2))
+    return String(symbol.prefix(1))
 }
 
 // for calculating a week ahead

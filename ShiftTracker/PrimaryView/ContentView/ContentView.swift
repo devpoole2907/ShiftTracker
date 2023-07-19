@@ -49,8 +49,6 @@ struct ContentView: View {
     @AppStorage("clockOutReminder") private var clockOutReminder: Bool = false
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
-    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
-    
     @State var isAnimating = false
     
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!

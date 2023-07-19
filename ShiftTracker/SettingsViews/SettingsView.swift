@@ -13,7 +13,6 @@ import LocalAuthentication
 struct SettingsView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
-    @AppStorage("isProVersion", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isProVersion = false
     @State private var showingProView = false
     @AppStorage("iCloudEnabled") private var iCloudSyncOn: Bool = false
     @AppStorage("AuthEnabled") private var authEnabled: Bool = false
@@ -29,10 +28,12 @@ struct SettingsView: View {
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.scenePhase) var scenePhase
     
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var locationManager: LocationDataManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     @StateObject var notificationManager = NotificationManager()
     
@@ -64,7 +65,7 @@ struct SettingsView: View {
                      }
                      }*/
                     
-                    if !isProVersion{
+                    if !purchaseManager.hasUnlockedPro{
                         Group{
                             Button(action: {
                                 showingProView = true
@@ -121,6 +122,7 @@ struct SettingsView: View {
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
+ 
                     
                     NavigationLink(value: 2){
                         
@@ -138,11 +140,12 @@ struct SettingsView: View {
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                        .onReceive(notificationManager.$authorizationStatus) { _ in
-                            
-                            notificationManager.checkNotificationStatus()
-                            
-                        }
+                        .onAppear(perform: notificationManager.checkNotificationStatus)
+                                .onChange(of: scenePhase) { newPhase in
+                                    if newPhase == .active {
+                                        notificationManager.checkNotificationStatus()
+                                    }
+                                }
                     
                     
                     NavigationLink(value: 3){
@@ -235,7 +238,7 @@ struct SettingsView: View {
                 
                 
                 VStack(spacing: 10){
-                    if isSubscriptionActive(){
+                    if purchaseManager.hasUnlockedPro {
                         Text("Thank you for purchasing ShiftTracker Pro!")
                             .foregroundColor(.gray.opacity(0.3))
                             .font(.caption)
@@ -292,11 +295,9 @@ struct SettingsView: View {
         
                     
                     
-                }
+               }
                 
                 .navigationTitle("Settings")
-            // .toolbarRole(.editor)
-            //.scrollIndicators(.hidden)
             
                 .fullScreenCover(isPresented: $showingProView) {
                     NavigationStack{
@@ -373,7 +374,7 @@ struct ProSettingsView: View{
                     Button(action: {
                         isProVersion.toggle()
 
-                        setUserSubscribed(isProVersion)
+                        //setUserSubscribed(isProVersion)
                     }) {
                         Text(isProVersion ? "Unsubscribe" : "Upgrade now")
                             .foregroundColor(.white)
@@ -443,16 +444,18 @@ struct SettingsRow: View {
 struct NotificationView: View{
     
     @StateObject var notificationManager = NotificationManager()
+    @Environment(\.scenePhase) var scenePhase
     
     var body: some View{
                 ScrollView{
                         
                     SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
-                    .onReceive(notificationManager.$authorizationStatus) { _ in
-                        
-                        notificationManager.checkNotificationStatus()
-                        
-                    }
+                        .onAppear(perform: notificationManager.checkNotificationStatus)
+                                .onChange(of: scenePhase) { newPhase in
+                                    if newPhase == .active {
+                                        notificationManager.checkNotificationStatus()
+                                    }
+                                }
                     
                     Button("Request notification access"){
                         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
