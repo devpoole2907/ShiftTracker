@@ -69,12 +69,12 @@ struct ExportSquare: View {
                     }
                     .bold()
                     .foregroundStyle(colorScheme == .dark ? .black : .white)
-                    .font(.title3)
+                    .font(.subheadline)
                 }
                 .padding(.horizontal, 26)
                     .padding(.vertical, 10)
                 .background(colorScheme == .dark ? .white : .black)
-                    .cornerRadius(20)
+                    .cornerRadius(16)
                     .buttonStyle(.plain)
                     .contentShape(Rectangle())
             }

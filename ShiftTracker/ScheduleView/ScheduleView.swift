@@ -100,6 +100,10 @@ struct ScheduleView: View {
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                         
                 }
+            }.onAppear {
+                
+                navigationState.gestureEnabled = true
+                
             }
             
             

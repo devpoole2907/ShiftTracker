@@ -185,6 +185,7 @@ struct ShiftsList: View {
                             CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
                         }) {
                             Image(systemName: "trash")
+                                .bold()
                         }.disabled(selection.isEmpty)
                         
                     }
@@ -196,7 +197,7 @@ struct ShiftsList: View {
                 ToolbarItem(placement: .navigationBarTrailing){
                     
                     EditButton()
-                    
+                        .bold()
                     
                 }
                 
@@ -213,7 +214,7 @@ struct ShiftsList: View {
                         } label: {
                             Label(
                                 "Sort",
-                                systemImage: "line.horizontal.3.decrease.circle")
+                                systemImage: "line.horizontal.3.decrease.circle").bold()
                         }
                         .disabled(!selection.isEmpty)
                         .onChange(of: selectedSort) { _ in
@@ -250,7 +251,7 @@ struct ShiftsList: View {
                         } label: {
                             Label(
                                 "Tag",
-                                systemImage: "number.circle")
+                                systemImage: "number.circle").bold()
                         }
                         .disabled(!selection.isEmpty)
                         
@@ -273,7 +274,7 @@ struct ShiftsList: View {
                         
                         
                         
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: "ellipsis.circle").bold()
                         
                     }
                 }

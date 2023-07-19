@@ -267,6 +267,12 @@ struct SettingsView: View {
                 
             }.scrollContentBackground(.hidden)
             
+                .onAppear {
+                    
+                    navigationState.gestureEnabled = true
+                    
+                }
+            
                 .navigationDestination(for: Int.self) { i in
                     
                     if i == 0 {
@@ -457,20 +463,7 @@ struct NotificationView: View{
                                     }
                                 }
                     
-                    Button("Request notification access"){
-                        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                            if success {
-                                print("All set!")
-                            } else if let error = error {
-                                print(error.localizedDescription)
-                            }
-                        }
-                        
-                    }
-                    .bold()
-                    .padding()
-                        .buttonStyle(.bordered)
-                        .padding()
+                    
                    /* Button("Test notification"){
                         let content = UNMutableNotificationContent()
                         content.title = "ShiftTracker"
