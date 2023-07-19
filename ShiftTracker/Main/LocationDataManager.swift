@@ -12,6 +12,9 @@ import UserNotifications
 import CoreData
 
 class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegate {
+    
+    static let shared = LocationDataManager()
+    
     var locationManager = CLLocationManager()
     
     private let notificationManager = ShiftNotificationManager.shared
