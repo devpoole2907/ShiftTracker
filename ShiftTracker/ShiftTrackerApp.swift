@@ -19,6 +19,7 @@ struct ShiftTrackerApp: App {
     @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
     
     @StateObject private var purchaseManager = PurchaseManager()
+   // @StateObject var navigationState = NavigationState()
     //@StateObject var locationManager = LocationDataManager()
     @StateObject var themeManager = ThemeDataManager()
 
@@ -43,6 +44,8 @@ struct ShiftTrackerApp: App {
                 .environmentObject(themeManager)
                 .environmentObject(LocationDataManager.shared)
                 .environmentObject(purchaseManager)
+                .environmentObject(NavigationState.shared)
+            
             
                 .task{
                     

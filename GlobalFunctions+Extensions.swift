@@ -402,6 +402,8 @@ struct RollingDigit: View {
 }
 
 class NavigationState: ObservableObject {
+    static let shared = NavigationState()
+    
     @Published var gestureEnabled: Bool = true
     @Published var showMenu: Bool = false
 }
