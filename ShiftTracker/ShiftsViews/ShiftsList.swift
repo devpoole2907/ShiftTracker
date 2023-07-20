@@ -65,7 +65,7 @@ struct ShiftsList: View {
     
     @FetchRequest(
         sortDescriptors: ShiftSort.default.descriptors,
-        animation: .bouncy)
+        animation: .default)
     private var shifts: FetchedResults<OldShift>
     
     @FetchRequest(
