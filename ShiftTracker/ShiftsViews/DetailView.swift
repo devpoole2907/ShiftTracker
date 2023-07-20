@@ -523,9 +523,7 @@ struct DetailView: View {
         .scrollContentBackground(.hidden)
         .listStyle(.inset)
         
-        .onAppear {
-            navigationState.gestureEnabled = false
-        }
+       
         
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
