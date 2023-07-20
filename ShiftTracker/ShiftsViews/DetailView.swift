@@ -17,7 +17,12 @@ struct DetailView: View {
     
     @Environment(\.managedObjectContext) private var context
     
+    // we need to fire this when we save a shift, as that will tell shiftslist to update sorts when a shift is saved
+    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
+    
     @Environment(\.dismiss) private var dismiss
+    
+    @State private var savedShift = false
     
     @Environment(\.requestReview) var requestReview
     
@@ -477,6 +482,16 @@ struct DetailView: View {
             
         }
         
+        .onDisappear {
+            
+            if savedShift && !presentedAsSheet {
+                
+                savedPublisher.changedShift()
+                
+            }
+            
+        }
+        
         .toolbar{
             ToolbarItemGroup(placement: .keyboard){
                 Button(action: {
@@ -568,7 +583,7 @@ struct DetailView: View {
                         saveContext()
                         breakManager.saveChanges(in: context)
                         
-                       
+                       savedShift = true
                         
                     }
                     else {

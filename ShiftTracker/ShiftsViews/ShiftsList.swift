@@ -8,16 +8,21 @@
 import SwiftUI
 import CoreData
 import Foundation
+import Combine
 
 struct ShiftsList: View {
     
     // @StateObject var temporaryViewModel = ContentViewModel()
+    
+    
     
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var shiftManager: ShiftDataManager
+    
+    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     
     @State var selectedSort = ShiftSort.default
     
@@ -159,32 +164,39 @@ struct ShiftsList: View {
             
             
             
+            
         }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             .tint(Color.gray)
             .scrollContentBackground(.hidden)
         
         
-       
+        // detailview must have changed a shift because event fired, resort list
+            .onReceive(savedPublisher.shiftChanged, perform: {
+                applySortAndFilters()
+                           
+                        })
         
-        /*    .onAppear {
+            .onAppear {
                 
                 // duct tape fix for sorting not persisting state
                
                 
                 print("on appear the sort is: \(selectedSort)")
                 
-                navigationState.gestureEnabled = false
+                if navigationState.gestureEnabled {
+                    
+                    // the gesture will only be enabled if theyve navigated to another tab from here. if they nav to detailview and back, nav wont be enabled so dont resort the shifts for now...
+                    navigationState.gestureEnabled = false
+                    applySortAndFilters()
+                    
+                }
                 
-               applySortAndFilters()
+               
                 
             }
         
-            .onDisappear {
-                
-                applySortAndFilters()
-                
-            }
-        */
+          
+        
         
         
         
@@ -543,4 +555,12 @@ struct HighlightedText: View {
     
     
     
+}
+
+class ShiftSavedPublisher: ObservableObject {
+    let shiftChanged = PassthroughSubject<Void, Never>()
+
+    func changedShift() {
+        shiftChanged.send()
+    }
 }

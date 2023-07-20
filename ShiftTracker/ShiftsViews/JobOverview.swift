@@ -21,6 +21,8 @@ struct JobOverview: View {
     
     @State private var isChartViewPrimary: Bool = false
     
+    @StateObject var savedPublisher = ShiftSavedPublisher()
+    
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
@@ -119,7 +121,7 @@ struct JobOverview: View {
                     .navigationDestination(for: OldShift.self) { shift in
                         
                         // it was not the worlds greatest workaround ... lets do things properly!
-                            DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details")
+                            DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details").environmentObject(savedPublisher)
 
                             
                         }
@@ -158,7 +160,7 @@ struct JobOverview: View {
                 }
                 .navigationDestination(for: Int.self) { _ in
                        
-                       ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState)
+                       ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(savedPublisher)
                        
                    }
                 
