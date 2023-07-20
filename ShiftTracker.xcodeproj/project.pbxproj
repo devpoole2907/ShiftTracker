@@ -149,6 +149,8 @@
 		BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191452A5A73190079E449 /* ThemeColorPicker.swift */; };
 		BF8191482A5A73620079E449 /* CustomThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191472A5A73620079E449 /* CustomThemePicker.swift */; };
 		BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191492A5A752F0079E449 /* ThemesGuideView.swift */; };
+		BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFEF1F72A69186200E3F406 /* AppIconManager.swift */; };
+		BFFEF1FA2A691C3D00E3F406 /* ChangeAppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFEF1F92A691C3D00E3F406 /* ChangeAppIconView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -288,6 +290,8 @@
 		BF8191452A5A73190079E449 /* ThemeColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeColorPicker.swift; sourceTree = "<group>"; };
 		BF8191472A5A73620079E449 /* CustomThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThemePicker.swift; sourceTree = "<group>"; };
 		BF8191492A5A752F0079E449 /* ThemesGuideView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemesGuideView.swift; sourceTree = "<group>"; };
+		BFFEF1F72A69186200E3F406 /* AppIconManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconManager.swift; sourceTree = "<group>"; };
+		BFFEF1F92A691C3D00E3F406 /* ChangeAppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeAppIconView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -610,6 +614,7 @@
 		1AECCC4B29DBFCD700D879FE /* SettingsViews */ = {
 			isa = PBXGroup;
 			children = (
+				BFFEF1F62A6917EF00E3F406 /* AppIconViews */,
 				BF8191402A5A70E70079E449 /* ThemeViews */,
 				1A22EFFE29C6559100A23F33 /* SettingsView.swift */,
 			);
@@ -644,6 +649,15 @@
 				BF8191412A5A70FB0079E449 /* Tempgraph.swift */,
 			);
 			path = ThemeViews;
+			sourceTree = "<group>";
+		};
+		BFFEF1F62A6917EF00E3F406 /* AppIconViews */ = {
+			isa = PBXGroup;
+			children = (
+				BFFEF1F72A69186200E3F406 /* AppIconManager.swift */,
+				BFFEF1F92A691C3D00E3F406 /* ChangeAppIconView.swift */,
+			);
+			path = AppIconViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -849,6 +863,7 @@
 				7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */,
 				1A8D4AD62A4EDE0D00EEB334 /* AnimatedButton.swift in Sources */,
 				1A9855D629C55F8A003F512C /* ContentView.swift in Sources */,
+				BFFEF1FA2A691C3D00E3F406 /* ChangeAppIconView.swift in Sources */,
 				1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */,
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
@@ -918,6 +933,7 @@
 				1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */,
 				7C8CEA982A5D3836006C833F /* AddTagView.swift in Sources */,
 				1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */,
+				BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */,
 				1AE3845B29D444800002378F /* TabBottomView.swift in Sources */,
 				BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */,
 				BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */,
@@ -1136,6 +1152,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Light AppIcon AlphaIcon2 AlphaIcon BetaIcon";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ShiftTracker/ShiftTracker.entitlements;
@@ -1175,6 +1192,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Light AppIcon AlphaIcon2 AlphaIcon BetaIcon";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ShiftTracker/ShiftTracker.entitlements;

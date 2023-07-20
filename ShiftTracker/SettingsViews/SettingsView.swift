@@ -99,6 +99,8 @@ struct SettingsView: View {
                             }
                         }
                     }
+                    
+                    
 
                     
                     NavigationLink(value: 0){
@@ -106,6 +108,14 @@ struct SettingsView: View {
                         SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
                         
                     
+                    }.padding()
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
+                    
+                    NavigationLink(value: 5){
+                        
+                        SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
+                        
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
@@ -292,10 +302,14 @@ struct SettingsView: View {
                         
                         AppearanceView()
                         
-                    } else {
+                    } else if i == 4 {
                         
                         TipView()
                         
+                        
+                    } else {
+                        
+                        ChangeAppIconView()
                         
                     }
         
