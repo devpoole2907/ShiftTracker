@@ -19,7 +19,10 @@ struct ShiftsList: View {
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var shiftManager: ShiftDataManager
     
+    @State var selectedSort = ShiftSort.default
     
+    @EnvironmentObject var sortSelection: SortSelection
+
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.editMode) private var editMode
@@ -57,8 +60,7 @@ struct ShiftsList: View {
     
     @FetchRequest(
         sortDescriptors: ShiftSort.default.descriptors,
-        predicate: nil,
-        animation: .default)
+        animation: .bouncy)
     private var shifts: FetchedResults<OldShift>
     
     @FetchRequest(
@@ -70,7 +72,7 @@ struct ShiftsList: View {
     private var tags: FetchedResults<Tag>
     
     
-    @State private var selectedSort = ShiftSort.default
+    //@State private var selectedSort = ShiftSort.default
     @State private var selectedFilters: Set<TagFilter> = [TagFilter(id: 0, name: "All", predicate: nil)]
     
     @Binding var navPath: NavigationPath
@@ -79,11 +81,13 @@ struct ShiftsList: View {
     
     
     
+    
     var body: some View {
         
         
         
         List(selection: $selection){
+            
             
             ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 
@@ -127,12 +131,7 @@ struct ShiftsList: View {
                 }
                 
                 
-                
-                
-             /*   .navigationDestination(for: OldShift.self) { shift in
-                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details")
-                    
-                } */
+
                 
                 .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                 .listRowBackground(Color("SquaresColor"))
@@ -154,18 +153,38 @@ struct ShiftsList: View {
                 
                 
                 
-            }
+            }.onReceive(selectedFilters.publisher, perform: { value in
+                print("selectedFilters changed to \(value)")
+            })
+            
+            
             
         }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             .tint(Color.gray)
             .scrollContentBackground(.hidden)
         
         
-            .onAppear {
+       
+        
+        /*    .onAppear {
+                
+                // duct tape fix for sorting not persisting state
+               
+                
+                print("on appear the sort is: \(selectedSort)")
+                
                 navigationState.gestureEnabled = false
+                
+               applySortAndFilters()
                 
             }
         
+            .onDisappear {
+                
+                applySortAndFilters()
+                
+            }
+        */
         
         
         
@@ -174,10 +193,18 @@ struct ShiftsList: View {
         
             .toolbar{
                 
-                
-                
-                ToolbarItem(placement: .navigationBarTrailing){
+                ToolbarItemGroup(placement: .keyboard){
                     
+                    Spacer()
+                    
+                    Button("Done"){
+                        
+                        hideKeyboard()
+                        
+                    }
+                }
+                
+                ToolbarItemGroup(placement: .navigationBarTrailing){
                     
                     if editMode?.wrappedValue.isEditing == true {
                         
@@ -185,75 +212,27 @@ struct ShiftsList: View {
                             CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
                         }) {
                             Image(systemName: "trash")
+                            // .bold()
                         }.disabled(selection.isEmpty)
                         
                     }
                     
-                    
-                }
-                
-                
-                ToolbarItem(placement: .navigationBarTrailing){
-                    
                     EditButton()
                     
+                     Menu {
                     
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing){
-                    
-                    Menu {
-                        
-                        Menu {
-                            Picker("Sort By", selection: $selectedSort) {
-                                ForEach(ShiftSort.sorts, id: \.self) { sort in
-                                    Text("\(sort.name)")
-                                }
-                            }
-                        } label: {
-                            Label(
-                                "Sort",
-                                systemImage: "line.horizontal.3.decrease.circle")
-                        }
-                        .disabled(!selection.isEmpty)
-                        .onChange(of: selectedSort) { _ in
+                    SortSelectionView(selectedSortItem: $selectedSort, sorts: ShiftSort.sorts)
+                    // .disabled(!selection.isEmpty)
+                        .onChange(of: selectedSort) { newValue in
                             let request = shifts
-                            request.sortDescriptors = selectedSort.descriptors
+                            request.sortDescriptors = newValue.descriptors
+                            
+                            print("\(newValue)")
+                            
                         }
-                        
-                        Menu {
-                            ForEach(TagFilter.filters(from: Array(tags)), id: \.self) { filter in
-                                Toggle(isOn: Binding(
-                                    get: {
-                                        if filter.name == "All" {
-                                            return self.selectedFilters.count == 1 && self.selectedFilters.contains(filter)
-                                        } else {
-                                            return self.selectedFilters.contains(filter)
-                                        }
-                                    },
-                                    set: { _ in
-                                        if filter.name == "All" {
-                                            self.selectedFilters = [filter]
-                                        } else {
-                                            if self.selectedFilters.contains(filter) {
-                                                self.selectedFilters.remove(filter)
-                                            } else {
-                                                self.selectedFilters.insert(filter)
-                                                // If "All" is in the set, remove it when another filter is added
-                                                self.selectedFilters.remove(TagFilter(id: 0, name: "All", predicate: nil))
-                                            }
-                                        }
-                                    })) {
-                                        Text("\(filter.name)")
-                                    }
-                            }
-                        } label: {
-                            Label(
-                                "Tag",
-                                systemImage: "number.circle")
-                        }
-                        .disabled(!selection.isEmpty)
-                        
+                    
+                    TagSortView(selectedFilters: $selectedFilters, filters: TagFilter.filters(from: Array(tags)))
+                    
                         .onChange(of: selectedFilters) { newValue in
                             let predicates = newValue.compactMap { $0.predicate } // 1. filter out `nil` predicates
                             if predicates.isEmpty {
@@ -265,22 +244,32 @@ struct ShiftsList: View {
                                 request.nsPredicate = compoundPredicate
                             }
                         }
-                        
-                        
-                        
-                        
-                    } label: {
-                        
-                        
-                        
-                        Image(systemName: "ellipsis.circle")
-                        
-                    }
+                    
+                     } label: {
+                         
+                         Image(systemName: "ellipsis.circle")
+                         
+                         
+                     }
                 }
                 
                 
             }
         
+    }
+    
+    private func applySortAndFilters() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
+            let request = shifts
+            request.sortDescriptors = selectedSort.descriptors
+            let predicates = selectedFilters.compactMap { $0.predicate }
+            if predicates.isEmpty {
+                request.nsPredicate = nil
+            } else {
+                let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+                request.nsPredicate = compoundPredicate
+            }
+        }
     }
     
     private func deleteItems() {
@@ -304,6 +293,101 @@ struct ShiftsList: View {
     
     
 }
+
+
+
+
+struct SortSelectionView: View {
+    
+    @Binding var selectedSortItem: ShiftSort
+    let sorts: [ShiftSort]
+    
+    var body: some View {
+        Menu {
+            
+            Picker("Sort", selection: $selectedSortItem){
+                ForEach(sorts, id: \.self) { sort in
+                    
+                    Text("\(sort.name)")
+                    
+                }
+            }
+            
+            
+        } label: {
+            
+            Label("Sort", systemImage: "line.horizontal.3.decrease.circle")
+            
+        }
+    }
+}
+
+struct TagSortView: View {
+    
+    @Binding var selectedFilters: Set<TagFilter>
+    let filters: [TagFilter]
+    
+    var body: some View {
+        
+        Menu {
+            
+            ForEach(filters, id: \.self) { filter in
+                Toggle(isOn: Binding(get: {
+                    
+                    if filter.name == "All" {
+                        return self.selectedFilters.count == 1 && self.selectedFilters.contains(filter)
+                    } else {
+                        return self.selectedFilters.contains(filter)
+                    }
+                    
+                    
+                }, set: { _ in
+                    
+                    
+                    if filter.name == "All" {
+                        self.selectedFilters = [filter]
+                    } else {
+                        if self.selectedFilters.contains(filter) {
+                            self.selectedFilters.remove(filter)
+                        } else {
+                            self.selectedFilters.insert(filter)
+                            self.selectedFilters.remove(TagFilter(id: 0, name: "All", predicate: nil))
+                        }
+                    }
+                    
+                    
+                    
+                    
+                })) {
+                    
+                    Text("\(filter.name)")
+                    
+                }
+                
+                
+                
+            }
+            
+            
+            
+            
+        } label: {
+            
+            Label("Tag", systemImage: "number.circle")
+            
+        }
+        
+        
+    }
+    
+    
+    
+}
+
+class SortSelection: ObservableObject {
+    @Published var selectedSort: ShiftSort = .default
+}
+
 
 struct ShiftSort: Hashable, Identifiable {
     let id: Int

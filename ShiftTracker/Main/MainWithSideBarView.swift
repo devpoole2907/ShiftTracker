@@ -37,7 +37,7 @@ struct MainWithSideBarView: View {
     @StateObject var scheduleModel = SchedulingViewModel()
     
     @EnvironmentObject var themeManager: ThemeDataManager
-    @EnvironmentObject var locationManager: LocationDataManager
+   // @EnvironmentObject var locationManager: LocationDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
     
@@ -190,7 +190,10 @@ struct MainWithSideBarView: View {
                     VStack {
                         Spacer()
                     }
-                    .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 150 : 200)
+                    .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 175 : 200)
+                    .frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? UIScreen.main.bounds.height - 150 : UIScreen.main.bounds.height - 200)
+                   
+                    
                     .contentShape(Rectangle())
                     .onTapGesture {
                         withAnimation{

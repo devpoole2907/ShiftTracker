@@ -19,7 +19,7 @@ struct ShiftTrackerApp: App {
     @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
     
     @StateObject private var purchaseManager = PurchaseManager()
-    @StateObject var locationManager = LocationDataManager()
+    //@StateObject var locationManager = LocationDataManager()
     @StateObject var themeManager = ThemeDataManager()
 
     @AppStorage("colorScheme") var userColorScheme: String = "system"
@@ -41,7 +41,7 @@ struct ShiftTrackerApp: App {
                 .preferredColorScheme(getPreferredColorScheme())
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(themeManager)
-                .environmentObject(locationManager)
+                .environmentObject(LocationDataManager.shared)
                 .environmentObject(purchaseManager)
             
                 .task{
@@ -59,7 +59,7 @@ struct ShiftTrackerApp: App {
                     }
                 }
                 .onAppear {
-                    locationManager.startMonitoringAllLocations()
+              //      locationManager.startMonitoringAllLocations()
                 }
                 
 
