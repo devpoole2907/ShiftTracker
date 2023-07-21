@@ -8,24 +8,25 @@
 import SwiftUI
 import UIKit
 
-struct ChangeAppIconView: View {
-    @StateObject var viewModel = ChangeAppIconViewModel()
+struct AppIconView: View {
+    @EnvironmentObject var iconManager: AppIconManager
 
     var body: some View {
             ScrollView {
                 VStack(spacing: 11) {
-                    ForEach(ChangeAppIconViewModel.AppIcon.allCases) { appIcon in
+                    ForEach(AppIconManager.AppIcon.allCases) { appIcon in
                         HStack(spacing: 16) {
-                            Image(uiImage: appIcon.preview)
+                            Image(appIcon.preview)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 60, height: 60)
                                 .cornerRadius(12)
+
                             Text(appIcon.description)
                                 //.font(.body17Medium)
                             Spacer()
                             
-                            if appIcon == viewModel.selectedAppIcon {
+                            if appIcon == iconManager.selectedAppIcon {
                                 
                                 Image(systemName: "checkmark")
                                 
@@ -34,11 +35,11 @@ struct ChangeAppIconView: View {
                             
                         }
                         .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
-                        .background(Color.gray)
-                        .cornerRadius(20)
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
                         .onTapGesture {
                             withAnimation {
-                                viewModel.updateAppIcon(to: appIcon)
+                                iconManager.changeIcon(to: appIcon)
                             }
                         }
                     }
@@ -52,7 +53,7 @@ struct ChangeAppIconView: View {
 
 struct ChangeAppIconView_Previews: PreviewProvider {
     static var previews: some View {
-        ChangeAppIconView()
+        AppIconView()
     }
 }
 

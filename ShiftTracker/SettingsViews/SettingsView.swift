@@ -36,6 +36,7 @@ struct SettingsView: View {
     @EnvironmentObject var purchaseManager: PurchaseManager
     
     @StateObject var notificationManager = NotificationManager()
+    @StateObject var iconManager = AppIconManager()
     
     @Binding var navPath: [Int]
     
@@ -309,7 +310,7 @@ struct SettingsView: View {
                         
                     } else {
                         
-                        ChangeAppIconView()
+                        AppIconView().environmentObject(iconManager)
                         
                     }
         

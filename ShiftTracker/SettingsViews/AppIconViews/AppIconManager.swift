@@ -8,11 +8,11 @@ import UIKit
 
 
 
-final class ChangeAppIconViewModel: ObservableObject {
+final class AppIconManager: ObservableObject {
     
     enum AppIcon: String, CaseIterable, Identifiable {
         case primary = "AppIcon"
-        case lightMode = "AppIcon-Light"
+        case lightMode = "AppIcon-light"
         case alphaIcon = "AlphaIcon"
         case alphaIcon2 = "AlphaIcon2"
         case betaIcon = "BetaIcon"
@@ -32,19 +32,20 @@ final class ChangeAppIconViewModel: ObservableObject {
             case .primary:
                 return "Default"
             case .lightMode:
-                return "Light Mode"
+                return "Light"
             case .alphaIcon:
-                return "Alpha Icon"
+                return "Alpha"
             case .alphaIcon2:
-                return "Alpha Icon 2"
+                return "Alpha 2"
             case .betaIcon:
-                return "Beta Icon"
+                return "Beta"
             }
         }
         
-        var preview: UIImage {
-            UIImage(named: rawValue + "-Preview") ?? UIImage()
+        var preview: String {
+            return rawValue + "-Preview"
         }
+
     }
     
     @Published private(set) var selectedAppIcon: AppIcon
@@ -57,24 +58,21 @@ final class ChangeAppIconViewModel: ObservableObject {
         }
     }
     
-    func updateAppIcon(to icon: AppIcon) {
+    func changeIcon(to icon: AppIcon) {
         let previousAppIcon = selectedAppIcon
         selectedAppIcon = icon
         
         Task { @MainActor in
             guard UIApplication.shared.alternateIconName != icon.iconName else {
-                /// No need to update since we're already using this icon.
                 return
             }
             
             do {
                 try await UIApplication.shared.setAlternateIconName(icon.iconName)
             } catch {
-                /// We're only logging the error here and not actively handling the app icon failure
-                /// since it's very unlikely to fail.
+
                 print("Updating icon to \(String(describing: icon.iconName)) failed.")
-                
-                /// Restore previous app icon
+            
                 selectedAppIcon = previousAppIcon
             }
         }

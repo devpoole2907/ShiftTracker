@@ -32,7 +32,7 @@ struct MainWithSideBarView: View {
     
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionManager()
-    @StateObject var navigationState = NavigationState()
+    @EnvironmentObject var navigationState: NavigationState
     @StateObject var shiftStore = ScheduledShiftStore()
     @StateObject var scheduleModel = SchedulingViewModel()
     
