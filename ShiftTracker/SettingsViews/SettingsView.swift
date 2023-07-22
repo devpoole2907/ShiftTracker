@@ -113,13 +113,13 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
-                    NavigationLink(value: 5){
+               /*     NavigationLink(value: 5){
                         
                         SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
                         
                     }.padding()
                         .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .cornerRadius(12)*/
                     
                     NavigationLink(value: 1){
                         
