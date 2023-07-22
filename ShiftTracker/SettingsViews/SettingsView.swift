@@ -113,13 +113,13 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
-                    NavigationLink(value: 5){
+                /*    NavigationLink(value: 5){
                         
                         SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
                         
                     }.padding()
                         .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .cornerRadius(12) */
                     
                     NavigationLink(value: 1){
                         
@@ -579,7 +579,7 @@ struct AppearanceView: View {
     
     var body: some View {
         ScrollView {
-           /* VStack(spacing: 20){
+            VStack(spacing: 20){
                 ForEach(colorSchemes, id: \.1) { (name, value) in
                     
                     HStack(spacing: 16){
@@ -589,7 +589,7 @@ struct AppearanceView: View {
                             .bold()
                         Spacer()
                         if userColorScheme == value {
-                           // CustomCheckbox().environmentObject(themeManager)
+                            CustomCheckbox().environmentObject(themeManager)
                         } else {
                             RoundedRectangle(cornerRadius: 6)
                                 .stroke(Color.white, lineWidth: 5)
@@ -608,7 +608,7 @@ struct AppearanceView: View {
                         }
                     
                 }
-            }*/
+            }
         }.scrollContentBackground(.hidden)
             .padding(.horizontal)
             .navigationTitle("Appearance")
