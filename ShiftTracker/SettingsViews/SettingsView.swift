@@ -579,7 +579,7 @@ struct AppearanceView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20){
+           /* VStack(spacing: 20){
                 ForEach(colorSchemes, id: \.1) { (name, value) in
                     
                     HStack(spacing: 16){
@@ -608,7 +608,7 @@ struct AppearanceView: View {
                         }
                     
                 }
-            }
+            }*/
         }.scrollContentBackground(.hidden)
             .padding(.horizontal)
             .navigationTitle("Appearance")
