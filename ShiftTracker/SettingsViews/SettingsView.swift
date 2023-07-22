@@ -104,14 +104,14 @@ struct SettingsView: View {
                     
                     
                     
-                 /*   NavigationLink(value: 0){
+                    NavigationLink(value: 0){
                         
                         SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
                         
                         
                     }.padding()
                         .background(Color("SquaresColor"))
-                        .cornerRadius(12)*/
+                        .cornerRadius(12)
                     
                     NavigationLink(value: 5){
                         
