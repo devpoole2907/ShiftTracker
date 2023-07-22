@@ -104,22 +104,22 @@ struct SettingsView: View {
                     
                     
                     
-                    NavigationLink(value: 0){
+                 /*   NavigationLink(value: 0){
                         
                         SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
                         
                         
                     }.padding()
                         .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .cornerRadius(12)*/
                     
-                /*    NavigationLink(value: 5){
+                    NavigationLink(value: 5){
                         
                         SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
                         
                     }.padding()
                         .background(Color("SquaresColor"))
-                        .cornerRadius(12)*/
+                        .cornerRadius(12)
                     
                     NavigationLink(value: 1){
                         
@@ -159,14 +159,14 @@ struct SettingsView: View {
                         }
                     
                     
-                /*    NavigationLink(value: 3){
+                    NavigationLink(value: 3){
                         
                         SettingsRow(icon: "circle.lefthalf.filled", title: "Appearance", secondaryInfo: "\(userColorScheme)".capitalized)
                         
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
-                    */
+                    
                     
                     
                     
@@ -587,7 +587,7 @@ struct AppearanceView: View {
                             .bold()
                         Spacer()
                         if userColorScheme == value {
-                            CustomCheckbox()
+                          //  CustomCheckbox()
                         } else {
                             RoundedRectangle(cornerRadius: 6)
                                 .stroke(Color.white, lineWidth: 5)
