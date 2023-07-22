@@ -589,7 +589,7 @@ struct AppearanceView: View {
                             .bold()
                         Spacer()
                         if userColorScheme == value {
-                            CustomCheckbox().environmentObject(themeManager)
+                           // CustomCheckbox().environmentObject(themeManager)
                         } else {
                             RoundedRectangle(cornerRadius: 6)
                                 .stroke(Color.white, lineWidth: 5)
