@@ -55,7 +55,7 @@ struct SettingsView: View {
         
         NavigationStack(path: $navPath){
             ScrollView{
-                VStack(spacing: 20){
+                VStack{
                     /*   if isSubscriptionActive(){
                      NavigationLink(destination: ProSettingsView()){
                      HStack {
@@ -101,82 +101,82 @@ struct SettingsView: View {
                         }
                     }
                     
-                    
-                    
-                    
-                    NavigationLink(value: 0){
-                        
-                        SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
+                    VStack{
                         
                         
-                    }.padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
-                    
-               
-                    
-                    NavigationLink(value: 1){
-                        
-                        if locationManager.authorizationStatus != .authorizedAlways {
-                            SettingsRow(icon: "location", title: "Location", secondaryImage: "exclamationmark.triangle.fill")
-                        } else {
-                            SettingsRow(icon: "location", title: "Location", secondaryInfo: "Always")
+                        NavigationLink(value: 0){
                             
-                        }
-                        
-                    }.padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
-                    
-                    
-                    NavigationLink(value: 2){
-                        
-                        if notificationManager.authorizationStatus != .authorized  {
-                            SettingsRow(icon: "bell", title: "Notifications", secondaryImage: "exclamationmark.triangle.fill")
+                            SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
                             
-                        } else {
-                            SettingsRow(icon: "bell", title: "Notifications", secondaryInfo: "Enabled")
                             
-                        }
+                        }.padding()
+                            .background(Color("SquaresColor"))
+                            .cornerRadius(12)
                         
                         
                         
-                        
-                    }.padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
-                        .onAppear(perform: notificationManager.checkNotificationStatus)
-                        .onChange(of: scenePhase) { newPhase in
-                            if newPhase == .active {
-                                notificationManager.checkNotificationStatus()
+                        NavigationLink(value: 1){
+                            
+                            if locationManager.authorizationStatus != .authorizedAlways {
+                                SettingsRow(icon: "location", title: "Location", secondaryImage: "exclamationmark.triangle.fill")
+                            } else {
+                                SettingsRow(icon: "location", title: "Location", secondaryInfo: "Always")
+                                
                             }
-                        }
-                    
-                    
-             /*       NavigationLink(value: 3){
+                            
+                        }.padding()
+                            .background(Color("SquaresColor"))
+                            .cornerRadius(12)
                         
-                        SettingsRow(icon: "circle.lefthalf.filled", title: "Appearance", secondaryInfo: "\(userColorScheme)".capitalized)
                         
-                    }.padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
-                    */
-                    
-                    
-                    
-                       NavigationLink(value: 5){
+                        NavigationLink(value: 2){
+                            
+                            if notificationManager.authorizationStatus != .authorized  {
+                                SettingsRow(icon: "bell", title: "Notifications", secondaryImage: "exclamationmark.triangle.fill")
+                                
+                            } else {
+                                SettingsRow(icon: "bell", title: "Notifications", secondaryInfo: "Enabled")
+                                
+                            }
+                            
+                            
+                            
+                            
+                        }.padding()
+                            .background(Color("SquaresColor"))
+                            .cornerRadius(12)
+                            .onAppear(perform: notificationManager.checkNotificationStatus)
+                            .onChange(of: scenePhase) { newPhase in
+                                if newPhase == .active {
+                                    notificationManager.checkNotificationStatus()
+                                }
+                            }
+                        
+                        
+                        NavigationLink(value: 3){
+                            
+                            SettingsRow(icon: "circle.lefthalf.filled", title: "Appearance", secondaryInfo: "\(userColorScheme)".capitalized)
+                            
+                        }.padding()
+                            .background(Color("SquaresColor"))
+                            .cornerRadius(12)
+                        
+                        
+                        
+                        
+                        NavigationLink(value: 5){
                             
                             SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
                             
                         }.padding()
                             .background(Color("SquaresColor"))
                             .cornerRadius(12)
+                        
+                        
+                        
+                    }
                     
-                    
-                    
-             
-                    
-                    
+                    VStack{
                     
                     Toggle(isOn: $authEnabled){
                         
@@ -238,6 +238,8 @@ struct SettingsView: View {
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
+                    
+                }
                     
                 }.padding(.horizontal)
                 
