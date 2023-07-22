@@ -15,7 +15,7 @@ struct AppIconView: View {
 
     var body: some View {
             ScrollView {
-                VStack(spacing: 11) {
+              /*  VStack(spacing: 11) {
                     ForEach(AppIconManager.AppIcon.allCases) { appIcon in
                         HStack(spacing: 16) {
                             Image(appIcon.preview)
@@ -54,7 +54,7 @@ struct AppIconView: View {
                         }
                     }
                 }.padding(.horizontal)
-                    .padding(.vertical, 40)
+                    .padding(.vertical, 40) */
             }.scrollContentBackground(.hidden)
             .navigationTitle("App Icon")
         
