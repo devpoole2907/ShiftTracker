@@ -81,6 +81,7 @@ struct ExportSquare: View {
             .frame(maxWidth: .infinity)
             .scaleEffect(isTapped ? 1.35 : 1)
             .animation(.easeInOut(duration: 0.5))
+            .buttonStyle(.plain)
             .haptics(onChangeOf: isTapped, type: .light)
             
         }.padding()

@@ -99,14 +99,14 @@ struct MainWithSideBarView: View {
                                     .navigationBarTitleDisplayMode(.inline)
                                     .navigationBarHidden(true)
                                     .tag(Tab.home)
-
-
+                                
+                                
                                 JobOverview(navPath: $path)
-                                            .environment(\.managedObjectContext, context)
-                                            .environmentObject(jobSelectionModel)
-                                            .environmentObject(navigationState)
-                                            .tag(Tab.timesheets)
-                                   
+                                    .environment(\.managedObjectContext, context)
+                                    .environmentObject(jobSelectionModel)
+                                    .environmentObject(navigationState)
+                                    .tag(Tab.timesheets)
+                                
                                 
                                 ScheduleView()
                                     .environment(\.managedObjectContext, context)
@@ -115,14 +115,14 @@ struct MainWithSideBarView: View {
                                     .environmentObject(shiftStore)
                                     .environmentObject(scheduleModel)
                                     .navigationBarTitleDisplayMode(.inline)
-                         
+                                
                                     .tag(Tab.schedule)
                                 
                                 SettingsView(navPath: $settingsPath)
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(navigationState)
                                     .navigationBarTitleDisplayMode(.inline)
-                         
+                                
                                     .tag(Tab.settings)
                                 
                                 
@@ -183,40 +183,49 @@ struct MainWithSideBarView: View {
                     .frame(width: getRect().width + sideBarWidth)
                     .offset(x: -sideBarWidth / 2)
                     .offset(x: offset > 0 ? offset : 0)
+                    
+                    if (currentTab == .settings && settingsPath.isEmpty) || (currentTab == .home || currentTab == .schedule) || (currentTab == .timesheets && navPath.isEmpty) {
+                    
                     HStack {
                         if navigationState.showMenu {
                             Spacer()
                         }
-                    VStack {
-                        Spacer()
-                    }
-                    .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 175 : 200)
-                    .frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? UIScreen.main.bounds.height - 150 : UIScreen.main.bounds.height - 200)
-                   
-                    
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation{
-                            if navigationState.showMenu {
-                                navigationState.showMenu = false
+                        VStack {
+                            Spacer()
+                        }
+                        .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 175 : 200)
+                        .frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? UIScreen.main.bounds.height - 150 : UIScreen.main.bounds.height - 200)
+                        
+                        
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation{
+                                if navigationState.showMenu {
+                                    navigationState.showMenu = false
+                                }
                             }
                         }
-                    }
-                    .gesture(
-                        navigationState.gestureEnabled ? DragGesture()
-                            .updating($gestureOffset, body: { value, out, _ in
-                                
-                                out = value.translation.width
-                                
-                            })
-                            .onEnded(onEnd(value:)) : nil
-                    )
+                        .gesture(
+                            navigationState.gestureEnabled ? DragGesture()
+                                .updating($gestureOffset, body: { value, out, _ in
+                                    
+                                    out = value.translation.width
+                                    
+                                })
+                                .onEnded(onEnd(value:)) : nil
+                        )
                         if !navigationState.showMenu{
                             Spacer()
                         }
                         
-                            
+                        
+                    }
+                    
+                    
+                    
                 }
+                    
+                    
             }
 
                 
