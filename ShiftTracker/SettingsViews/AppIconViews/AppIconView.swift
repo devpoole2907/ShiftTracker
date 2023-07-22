@@ -31,7 +31,7 @@ struct AppIconView: View {
                             
                             if appIcon == iconManager.selectedAppIcon {
                                 
-                                CustomCheckbox()
+                              //  CustomCheckbox()
                                     
                                 
                             } else {
