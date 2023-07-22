@@ -113,13 +113,7 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
-                /*    NavigationLink(value: 5){
-                        
-                        SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
-                        
-                    }.padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12) */
+               
                     
                     NavigationLink(value: 1){
                         
@@ -159,26 +153,28 @@ struct SettingsView: View {
                         }
                     
                     
-                    NavigationLink(value: 3){
+             /*       NavigationLink(value: 3){
                         
                         SettingsRow(icon: "circle.lefthalf.filled", title: "Appearance", secondaryInfo: "\(userColorScheme)".capitalized)
                         
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
+                    */
                     
                     
                     
+                       NavigationLink(value: 5){
+                            
+                            SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
+                            
+                        }.padding()
+                            .background(Color("SquaresColor"))
+                            .cornerRadius(12)
                     
                     
                     
-                    
-                    
-                    
-                    
-                    /*    NavigationLink(destination: AppearanceView()) {
-                     
-                     } */
+             
                     
                     
                     
