@@ -38,6 +38,7 @@ struct CustomTextField: View {
                 SecureField(hint, text: $text)
             } else {
                 TextField(hint, text: $text)
+                    .padding(.leading, -15)
             }
             
         }.padding(.horizontal)

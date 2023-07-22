@@ -102,24 +102,24 @@ struct SettingsView: View {
                     }
                     
                     
-
+                    
                     
                     NavigationLink(value: 0){
                         
                         SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
                         
-                    
+                        
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                     
-                    NavigationLink(value: 5){
+                /*    NavigationLink(value: 5){
                         
                         SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
                         
                     }.padding()
                         .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .cornerRadius(12)*/
                     
                     NavigationLink(value: 1){
                         
@@ -133,18 +133,18 @@ struct SettingsView: View {
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
- 
+                    
                     
                     NavigationLink(value: 2){
                         
                         if notificationManager.authorizationStatus != .authorized  {
                             SettingsRow(icon: "bell", title: "Notifications", secondaryImage: "exclamationmark.triangle.fill")
-                               
+                            
                         } else {
                             SettingsRow(icon: "bell", title: "Notifications", secondaryInfo: "Enabled")
-                                
-                        }
                             
+                        }
+                        
                         
                         
                         
@@ -152,40 +152,40 @@ struct SettingsView: View {
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
                         .onAppear(perform: notificationManager.checkNotificationStatus)
-                                .onChange(of: scenePhase) { newPhase in
-                                    if newPhase == .active {
-                                        notificationManager.checkNotificationStatus()
-                                    }
-                                }
+                        .onChange(of: scenePhase) { newPhase in
+                            if newPhase == .active {
+                                notificationManager.checkNotificationStatus()
+                            }
+                        }
                     
                     
-                    NavigationLink(value: 3){
+                /*    NavigationLink(value: 3){
                         
                         SettingsRow(icon: "circle.lefthalf.filled", title: "Appearance", secondaryInfo: "\(userColorScheme)".capitalized)
                         
                     }.padding()
                         .background(Color("SquaresColor"))
                         .cornerRadius(12)
+                    */
                     
                     
                     
-                        
-                        
-                        
-                        
                     
                     
                     
-                /*    NavigationLink(destination: AppearanceView()) {
-                        
-                    } */
                     
-                        
+                    
+                    
+                    /*    NavigationLink(destination: AppearanceView()) {
+                     
+                     } */
+                    
+                    
                     
                     Toggle(isOn: $authEnabled){
                         
                         SettingsRow(icon: "faceid", title: "App Lock")
-                      
+                        
                     }.toggleStyle(CustomToggleStyle())
                         .onChange(of: authEnabled) { newValue in
                             if newValue {
@@ -206,7 +206,7 @@ struct SettingsView: View {
                     Toggle(isOn: $iCloudSyncOn) {
                         
                         SettingsRow(icon: "icloud", title: "iCloud Sync")
-                    
+                        
                     }.toggleStyle(CustomToggleStyle())
                         .onChange(of: iCloudSyncOn) { value in
                             PersistenceController.shared.updateCloudKitSyncStatus()
@@ -313,11 +313,11 @@ struct SettingsView: View {
                         AppIconView().environmentObject(iconManager)
                         
                     }
-        
                     
                     
-               }
-                
+                    
+                }
+            
                 .navigationTitle("Settings")
             
                 .fullScreenCover(isPresented: $showingProView) {
@@ -334,19 +334,19 @@ struct SettingsView: View {
                     
                 }
                 .toolbar{
-            ToolbarItem(placement: .navigationBarLeading){
-                Button{
-                    withAnimation{
-                        navigationState.showMenu.toggle()
+                    ToolbarItem(placement: .navigationBarLeading){
+                        Button{
+                            withAnimation{
+                                navigationState.showMenu.toggle()
+                            }
+                        } label: {
+                            Image(systemName: "line.3.horizontal")
+                                .bold()
+                            
+                        }
                     }
-                } label: {
-                    Image(systemName: "line.3.horizontal")
-                        .bold()
-                    
                 }
-            }
-        }
-        
+            
         }
     }
     
@@ -394,7 +394,7 @@ struct ProSettingsView: View{
                 Form {
                     Button(action: {
                         isProVersion.toggle()
-
+                        
                         //setUserSubscribed(isProVersion)
                     }) {
                         Text(isProVersion ? "Unsubscribe" : "Upgrade now")
@@ -426,8 +426,8 @@ struct SettingsRow: View {
     
     var body: some View{
         HStack {
-         
-                Image(systemName: icon)
+            
+            Image(systemName: icon)
                 .frame(width: 25, alignment: .center)
             Text(title)
                 .font(.title2)
@@ -468,41 +468,41 @@ struct NotificationView: View{
     @Environment(\.scenePhase) var scenePhase
     
     var body: some View{
-                ScrollView{
-                        
-                    SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
-                        .onAppear(perform: notificationManager.checkNotificationStatus)
-                                .onChange(of: scenePhase) { newPhase in
-                                    if newPhase == .active {
-                                        notificationManager.checkNotificationStatus()
-                                    }
-                                }
-                    
-                    
-                   /* Button("Test notification"){
-                        let content = UNMutableNotificationContent()
-                        content.title = "ShiftTracker"
-                        content.subtitle = "Ready to take a break? You've been working for __ hours and made $___ so far!"
-                        content.sound = UNNotificationSound.default
-                        
-                        // show this notification five seconds from now
-                        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
-                        
-                        // choose a random identifier
-                        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-                        
-                        // add our notification request
-                        UNUserNotificationCenter.current().add(request)
-                    }.bold()
-                        .padding()
-                            .buttonStyle(.bordered)
-                            .padding()*/
-                }
-                
-                .scrollContentBackground(.hidden)
+        ScrollView{
             
-            .navigationTitle("Notifications")
-      
+            SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
+                .onAppear(perform: notificationManager.checkNotificationStatus)
+                .onChange(of: scenePhase) { newPhase in
+                    if newPhase == .active {
+                        notificationManager.checkNotificationStatus()
+                    }
+                }
+            
+            
+            /* Button("Test notification"){
+             let content = UNMutableNotificationContent()
+             content.title = "ShiftTracker"
+             content.subtitle = "Ready to take a break? You've been working for __ hours and made $___ so far!"
+             content.sound = UNNotificationSound.default
+             
+             // show this notification five seconds from now
+             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
+             
+             // choose a random identifier
+             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+             
+             // add our notification request
+             UNUserNotificationCenter.current().add(request)
+             }.bold()
+             .padding()
+             .buttonStyle(.bordered)
+             .padding()*/
+        }
+        
+        .scrollContentBackground(.hidden)
+        
+        .navigationTitle("Notifications")
+        
     }
     
 }
@@ -520,23 +520,23 @@ struct SettingsCheckView: View {
         
         VStack(alignment: .center, spacing: 10){
             Image(systemName: image)
-                                           .resizable()
-                                           .aspectRatio(contentMode: .fit)
-                                           .frame(maxWidth: 50)
-                                           .bold().foregroundStyle(checkmarkColor)
-                                           .padding(.top)
-                                           
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: 50)
+                .bold().foregroundStyle(checkmarkColor)
+                .padding(.top)
+            
             Text(headline)
-                                           .bold()
-                                           .font(.title3)
-                                           .padding(.bottom)
+                .bold()
+                .font(.title3)
+                .padding(.bottom)
             Text(subheadline)
-                                           .font(.callout)
-                                           .padding()
-                                   }.padding()
-                                       .background(Color("SquaresColor"))
-                                       .cornerRadius(12)
-                                       .padding()
+                .font(.callout)
+                .padding()
+        }.padding()
+            .background(Color("SquaresColor"))
+            .cornerRadius(12)
+            .padding()
         
         
     }
@@ -549,18 +549,18 @@ struct LocationView: View{
     @EnvironmentObject private var locationManager: LocationDataManager
     
     var body: some View{
-                ScrollView{
-                    
-                    
-                    
-                    SettingsCheckView(image: locationManager.authorizationStatus != .authorizedAlways ? "exclamationmark.triangle" : "checkmark.circle", headline: locationManager.authorizationStatus != .authorizedAlways ? "Location settings are not set to always." : "You're all set.", subheadline: locationManager.authorizationStatus != .authorizedAlways ? "Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker." : "Location settings are set to always.", checkmarkColor: locationManager.authorizationStatus != .authorizedAlways ? .orange : .green)
-                    
-                    
-                 
-                    
-                  
-                }.scrollContentBackground(.hidden)
+        ScrollView{
             
+            
+            
+            SettingsCheckView(image: locationManager.authorizationStatus != .authorizedAlways ? "exclamationmark.triangle" : "checkmark.circle", headline: locationManager.authorizationStatus != .authorizedAlways ? "Location settings are not set to always." : "You're all set.", subheadline: locationManager.authorizationStatus != .authorizedAlways ? "Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker." : "Location settings are set to always.", checkmarkColor: locationManager.authorizationStatus != .authorizedAlways ? .orange : .green)
+            
+            
+            
+            
+            
+        }.scrollContentBackground(.hidden)
+        
             .navigationTitle("Location")
         
     }
@@ -578,39 +578,39 @@ struct AppearanceView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20){
-            ForEach(colorSchemes, id: \.1) { (name, value) in
-                
-                HStack(spacing: 16){
+                ForEach(colorSchemes, id: \.1) { (name, value) in
                     
-                    Text(name)
-                        .font(.title2)
-                        .bold()
-                    Spacer()
-                    if userColorScheme == value {
-                        CustomCheckbox()
-                    } else {
-                        RoundedRectangle(cornerRadius: 6)
-                           // .stroke(Color.white, lineWidth: 5)
-                            .frame(maxWidth: 25, maxHeight: 25)
-                    }
-                    
-                    
-                    
-                }.padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
-                    .background(Color("SquaresColor"))
-                    .cornerRadius(12)
-                    .onTapGesture {
-                        withAnimation {
-                            userColorScheme = value
+                    HStack(spacing: 16){
+                        
+                        Text(name)
+                            .font(.title2)
+                            .bold()
+                        Spacer()
+                        if userColorScheme == value {
+                            CustomCheckbox()
+                        } else {
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.white, lineWidth: 5)
+                                .frame(maxWidth: 25, maxHeight: 25)
                         }
-                    }
-               
+                        
+                        
+                        
+                    }.padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(12)
+                        .onTapGesture {
+                            withAnimation {
+                                userColorScheme = value
+                            }
+                        }
+                    
+                }
             }
-        }
         }.scrollContentBackground(.hidden)
             .padding(.horizontal)
             .navigationTitle("Appearance")
-  
+        
     }
 }
 
