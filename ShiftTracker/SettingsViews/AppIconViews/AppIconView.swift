@@ -36,7 +36,7 @@ struct AppIconView: View {
                                 
                             } else {
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(Color.white, lineWidth: 5)
+                                    //.stroke(Color.white, lineWidth: 5)
                                     //.foregroundStyle(Color("SquaresColor"))
                                     .frame(maxWidth: 25, maxHeight: 25)
                                    // .cornerRadius(12)

@@ -590,7 +590,7 @@ struct AppearanceView: View {
                         CustomCheckbox()
                     } else {
                         RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.white, lineWidth: 5)
+                           // .stroke(Color.white, lineWidth: 5)
                             .frame(maxWidth: 25, maxHeight: 25)
                     }
                     

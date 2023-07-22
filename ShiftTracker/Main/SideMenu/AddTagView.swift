@@ -17,6 +17,8 @@ struct AddTagView: View {
     @State private var tagColor = Color.purple
     @State private var tagAdded = false
     
+    @State private var tagShakeTimes: CGFloat = 0
+    
     @State private var buttonScale: CGFloat = 1.0
     
     @State private var selectedTag: Tag? = nil
@@ -32,30 +34,21 @@ struct AddTagView: View {
     }
     
     var body: some View {
+        
+        let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+        
         NavigationStack {
             ScrollView {
                 
                 VStack(alignment: .center) {
                     
-                    
-                    
-                    // for each tag, display tag button, make only one selectable at a time
-                    
-                    // display in a 3 column grid, use swiftui grid built in
-                    
-                    //when tag is selected, it can be deleted
-                    // when tag is selected, set tagName to the tags .name property
-                    // tag buttons should also be able to be deleted
-                    
-                    
-                    //TagButtonView()
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]) {
+                    LazyVGrid(columns: columns) {
                         ForEach(tags, id: \.self) { tag in
                             Button(action: {
                                 if selectedTag == tag {
                                     selectedTag = nil
                                     tagName = ""
-                                    //tagColor = .white
+                          
                                     
                                     
                                 } else {
@@ -74,8 +67,7 @@ struct AddTagView: View {
                         
                     }
                     .padding(10)
-                    .background(Color("SquaresColor"))
-                    .cornerRadius(12)
+                    
                     .haptics(onChangeOf: selectedTag, type: .soft)
              
                     
@@ -84,7 +76,9 @@ struct AddTagView: View {
                     
                     
                     
-                }.padding()
+                }.background(Color("SquaresColor"))
+                .cornerRadius(12)
+                .padding()
                 
                 
                 
@@ -96,7 +90,7 @@ struct AddTagView: View {
                     
                     CustomTextField(text: $tagName, hint: "Add Tag", leadingIcon: Image(systemName: "number"))
                         .frame(maxHeight: 40)
-                    
+                        .shake(times: tagShakeTimes)
                     
                     ZStack{
                         Circle()
@@ -126,13 +120,13 @@ struct AddTagView: View {
                             Image(systemName: "trash")
                             Text("Delete")
                                 .bold()
-                        }
+                        } .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(20)
                     }.listRowSeparator(.hidden)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(20)
+                       
                 }
                 
                 
@@ -163,7 +157,9 @@ struct AddTagView: View {
                         
                         // make the button do haptic feedback .error type & jiggle side to side like jobview
                         
-                        
+                        withAnimation(.linear(duration: 0.4)) {
+                            tagShakeTimes += 2
+                        }
                         
                     }
                     
@@ -177,17 +173,21 @@ struct AddTagView: View {
                 }) {
                     Text(buttonTitle)
                         .bold()
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(colorScheme == .dark ? .white : .black)
+                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                        .cornerRadius(20)
+                        .contentShape(Rectangle())
                 }.listRowSeparator(.hidden)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(colorScheme == .dark ? .white : .black)
-                    .foregroundColor(colorScheme == .dark ? .black : .white)
-                    .cornerRadius(20)
+                    
+                    
+                    
                     .scaleEffect(buttonScale)
                     .buttonStyle(.plain)
-                    .contentShape(Rectangle())
+                    
                     .haptics(onChangeOf: tagAdded, type: .success)
-                
+                    .haptics(onChangeOf: tagShakeTimes, type: .error)
                 
             }
             
@@ -275,7 +275,7 @@ struct AddTagView: View {
     private func clearSelection() {
         selectedTag = nil
         tagName = ""
-        tagColor = Color.white
+        tagColor = Color.purple
     }
 }
 
