@@ -569,6 +569,8 @@ struct LocationView: View{
 struct AppearanceView: View {
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     var colorSchemes: [(String, String)] = [
         ("Light", "light"),
         ("Dark", "dark"),
@@ -577,7 +579,7 @@ struct AppearanceView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20){
+           /* VStack(spacing: 20){
                 ForEach(colorSchemes, id: \.1) { (name, value) in
                     
                     HStack(spacing: 16){
@@ -587,7 +589,7 @@ struct AppearanceView: View {
                             .bold()
                         Spacer()
                         if userColorScheme == value {
-                          //  CustomCheckbox()
+                            CustomCheckbox().environmentObject(themeManager)
                         } else {
                             RoundedRectangle(cornerRadius: 6)
                                 .stroke(Color.white, lineWidth: 5)
@@ -606,7 +608,7 @@ struct AppearanceView: View {
                         }
                     
                 }
-            }
+            }*/
         }.scrollContentBackground(.hidden)
             .padding(.horizontal)
             .navigationTitle("Appearance")
