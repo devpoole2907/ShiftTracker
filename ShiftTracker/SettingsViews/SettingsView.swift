@@ -579,23 +579,32 @@ struct AppearanceView: View {
         ScrollView {
             VStack(spacing: 20){
             ForEach(colorSchemes, id: \.1) { (name, value) in
-                Button(action: {
-                    userColorScheme = value
-                }) {
-                    HStack {
-                        Text(name)
-                        Spacer()
-                        if userColorScheme == value {
-                            Image(systemName: "checkmark")
-                                .foregroundColor(.orange)
-                        }
-                    }.font(.title2)
-                        .bold()
-              
+                
+                HStack(spacing: 16){
                     
-                }.padding()
+                    Text(name)
+                        .font(.title2)
+                        .bold()
+                    Spacer()
+                    if userColorScheme == value {
+                        CustomCheckbox()
+                    } else {
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.white, lineWidth: 5)
+                            .frame(maxWidth: 25, maxHeight: 25)
+                    }
+                    
+                    
+                    
+                }.padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
                     .background(Color("SquaresColor"))
                     .cornerRadius(12)
+                    .onTapGesture {
+                        withAnimation {
+                            userColorScheme = value
+                        }
+                    }
+               
             }
         }
         }.scrollContentBackground(.hidden)

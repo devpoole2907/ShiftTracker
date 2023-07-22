@@ -149,6 +149,7 @@
 		BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191452A5A73190079E449 /* ThemeColorPicker.swift */; };
 		BF8191482A5A73620079E449 /* CustomThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191472A5A73620079E449 /* CustomThemePicker.swift */; };
 		BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191492A5A752F0079E449 /* ThemesGuideView.swift */; };
+		BF857D972A6A21EE00D02C5C /* CustomCheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF857D962A6A21EE00D02C5C /* CustomCheckbox.swift */; };
 		BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFEF1F72A69186200E3F406 /* AppIconManager.swift */; };
 		BFFEF1FA2A691C3D00E3F406 /* AppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFEF1F92A691C3D00E3F406 /* AppIconView.swift */; };
 /* End PBXBuildFile section */
@@ -290,6 +291,7 @@
 		BF8191452A5A73190079E449 /* ThemeColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeColorPicker.swift; sourceTree = "<group>"; };
 		BF8191472A5A73620079E449 /* CustomThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThemePicker.swift; sourceTree = "<group>"; };
 		BF8191492A5A752F0079E449 /* ThemesGuideView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemesGuideView.swift; sourceTree = "<group>"; };
+		BF857D962A6A21EE00D02C5C /* CustomCheckbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCheckbox.swift; sourceTree = "<group>"; };
 		BFFEF1F72A69186200E3F406 /* AppIconManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconManager.swift; sourceTree = "<group>"; };
 		BFFEF1F92A691C3D00E3F406 /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -584,6 +586,7 @@
 				1A5B0BAA2A5503510021572B /* ShakeModifier.swift */,
 				1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */,
 				BF81913C2A5A6FF80079E449 /* SelectableButton.swift */,
+				BF857D962A6A21EE00D02C5C /* CustomCheckbox.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -865,6 +868,7 @@
 				1A9855D629C55F8A003F512C /* ContentView.swift in Sources */,
 				BFFEF1FA2A691C3D00E3F406 /* AppIconView.swift in Sources */,
 				1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */,
+				BF857D972A6A21EE00D02C5C /* CustomCheckbox.swift in Sources */,
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,

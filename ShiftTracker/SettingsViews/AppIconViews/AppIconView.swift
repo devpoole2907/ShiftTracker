@@ -10,6 +10,8 @@ import UIKit
 
 struct AppIconView: View {
     @EnvironmentObject var iconManager: AppIconManager
+    
+   
 
     var body: some View {
             ScrollView {
@@ -24,12 +26,20 @@ struct AppIconView: View {
 
                             Text(appIcon.description)
                                 //.font(.body17Medium)
+                                
                             Spacer()
                             
                             if appIcon == iconManager.selectedAppIcon {
                                 
-                                Image(systemName: "checkmark")
+                                CustomCheckbox()
+                                    
                                 
+                            } else {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.white, lineWidth: 5)
+                                    //.foregroundStyle(Color("SquaresColor"))
+                                    .frame(maxWidth: 25, maxHeight: 25)
+                                   // .cornerRadius(12)
                             }
                             
                             
@@ -53,7 +63,8 @@ struct AppIconView: View {
 
 struct ChangeAppIconView_Previews: PreviewProvider {
     static var previews: some View {
-        AppIconView()
+        AppIconView().environmentObject(AppIconManager())
+        
     }
 }
 
