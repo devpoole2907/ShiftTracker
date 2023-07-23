@@ -15,105 +15,55 @@ struct ThemeView: View {
     
     @AppStorage("isFirstAppear") var isFirstAppear = true
     
-    
-    @State private var sampleToggle = true
+    @Environment(\.colorScheme) var colorScheme
     
     @State private var showThemeInfoSheet = false
-    //needs to return to false when done
+
     
     
     var body: some View {
-        
-        
-        
-            
             ZStack{
                 ScrollView{
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     VStack{
                         PreviewTimerView()
                             .environmentObject(themeManager)
                         
                         // CustomThemePicker()
                         
-                        HStack{
-                            TempGraph()
-                                .padding()
-                                .frame(width: 200, height: 300)
+                        HStack(alignment: .top){
+                           /* TempGraph()
+                               // .padding()
+                               // .frame(width: 200, height: 300)
                                 .background(Color("SquaresColor"))
-                                .cornerRadius(12)
+                                .cornerRadius(12) */
                             
-                            VStack{
-                                Button(action: {
-                                    themeManager.selectedColorToChange = .customTextColorPicker
-                                }){
-                                    Text("Test Text")
-                                        .padding()
-                                        .frame(maxWidth: 150, maxHeight: 140)
-                                        .background(Color("SquaresColor"))
-                                        .cornerRadius(12)
-                                        .foregroundStyle(themeManager.customTextColor)
-                                        .font(.title)
-                                        .bold()
-                                }
-                                ZStack{
+                           
+                                
                                     
-                                    
-                                    Toggle("", isOn: $sampleToggle)
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                        .labelsHidden()
-                                    
-                                        .padding()
-                                        .toggleStyle(CustomToggleStyle())
-                                        .tint(themeManager.customUIColor)
-                                        .foregroundStyle(themeManager.customTextColor)
-                                        .bold()
-                                        .font(.title2)
-                                        .frame(maxWidth: 150, maxHeight: 150)
-                                    
-                                        .background(Color("SquaresColor"))
-                                        .cornerRadius(12)
-                                    
-                                    
+                                     
+
                                     SelectableButton(id: 6, selectedButton: $themeManager.selectedButton, content: {
-                                        // Spacer()
-                                 
-                                      
-                                         
+                                        Toggle("Toggles", isOn: .constant(true))
+                                            .foregroundStyle(colorScheme == .dark ? .white : .black)
+                                            .bold()
+                                        
+                                   
+                                            .toggleStyle(CustomToggleStyle())
+                                            .tint(themeManager.customUIColor)
+                                            .padding(.horizontal)
                                             
-                                        
-                                        
-                                        
                                     }, action: {themeManager.selectedColorToChange = .customUIColorPicker})
                                     
                                     
-                                }
                                 
-                                
-                                
-                                
-                                
-                            }
+         
+                            
                         }
-                        Spacer()
+                        .padding(.horizontal)
+                       
                         
                     }
-                    
-                    
-                    
+
                 }
                 
                 VStack{
@@ -137,7 +87,7 @@ struct ThemeView: View {
                         .bold()
                         
                 }
-                    .tint(Color.black)
+                   
                 
                 Button(action: {
                     showThemeInfoSheet.toggle()
@@ -147,7 +97,7 @@ struct ThemeView: View {
                         .bold()
                         
                 }
-                    .tint(Color.black)
+                   
                 
             }
         }
@@ -168,7 +118,7 @@ struct ThemeView: View {
         
             ThemesGuideView()
 
-            
+                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
             .presentationCornerRadius(25)
         }
     

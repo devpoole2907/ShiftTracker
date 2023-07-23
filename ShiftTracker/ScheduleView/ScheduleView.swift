@@ -127,14 +127,27 @@ struct ScheduleView: View {
                 ToolbarItem(placement: .navigationBarTrailing){
                         Button(action: {
                             
+                            
+                               
+                            
+                            if jobSelectionViewModel.selectedJobUUID == nil {
+                                
+                                
+                                OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
+                               
+                                
+                            } else {
+                                
                                 showCreateShiftSheet = true
+                                
+                            }
                             
                         }) {
                             Image(systemName: "plus")
                                 .bold()
                         }.padding()
-                        //.disabled(dateSelected == nil)
-                        .disabled(jobSelectionViewModel.selectedJobUUID == nil || showAllScheduledShiftsView)
+              
+                        .disabled(showAllScheduledShiftsView)
                     }
                 ToolbarItem(placement: .navigationBarLeading){
                     Button{

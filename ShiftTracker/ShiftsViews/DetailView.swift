@@ -260,6 +260,7 @@ struct DetailView: View {
                                             }) {
                                                 Text("#\(tag.name ?? "")")
                                                     .bold()
+                                                    .frame(maxWidth: .infinity)
                                             }
                                             .buttonStyle(.bordered)
                                             .tint(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue, opacity: selectedTags.contains(tag) ? 1.0 : 0.5))

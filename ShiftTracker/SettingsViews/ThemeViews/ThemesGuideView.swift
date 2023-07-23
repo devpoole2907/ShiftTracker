@@ -24,65 +24,53 @@ struct ThemesGuideView: View {
         NavigationStack {
             VStack{
                 
-                ZStack{
-                    
-                    Rectangle()
-                        .frame(maxWidth: 350, maxHeight: 125)
-                        .foregroundStyle(Color("SquaresColor"))
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
-                        
+            
                     
                     
-                    VStack{
+                    
+                VStack(alignment: .leading, spacing: 20){
                         
                     HStack{
                         Image(systemName: "paintpalette.fill")
                             .resizable()
                             .frame(maxWidth: 18, maxHeight: 18)
-                            /*.foregroundStyle(LinearGradient(
-                                colors: [.blue, .teal, .orange],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            ))*/
-                            .foregroundStyle(.orange)
-                            .padding(.bottom, 4)
+                         
+                            .foregroundStyle(colorScheme == .dark ? .orange : .cyan)
+                      
                         
                         
                         Text("Creating Your Own Theme")
-                            .font(.system(size: 15)) // Set the desired font size
-                            .bold() // Apply the bold style
-                            .kerning(-1)
-                            .foregroundStyle(LinearGradient(
-                                colors: [.orange, .teal, .blue ],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            ))
-                        //.font(.system(size: 15))
+                            .font(.headline)
+                            .fontDesign(.rounded)
+                            .bold()
+                            
+                   
+                            
+                   
+                    }
                         
-                    }//.padding(.bottom, 65)
-                        
-                        .padding(.trailing, 124)
+                   
                     
-                        Text("Easily transform your ShiftTracker app's look and feel! Just tap any UI element, preview it, and use the color picker at the bottom to instantly change its hue. Effortlessly customize headers, buttons, and backgrounds for a personalized and visually appealing experience.")
-                            .font(.system(size: 13))
-                            .bold() // Apply the bold style
-                            .kerning(-1)
-                            //.padding(40)
-                            .frame(width: 313, height: 78, alignment: .center)
+                        Text("Select the UI element you wish to change the color of, then select a color from the picker below.")
+                            .font(.caption2)
+                            .bold()
+                           
                             
                     
-                }
-            }
+                    }.padding()
+                    .background(Color("SquaresColor"))
+                    .cornerRadius(12)
+            
                 .padding()
             ZStack{
                 
                 Rectangle()
                 
-                    .frame(maxWidth: 350, maxHeight: 250)
+                    .frame(maxHeight: 250)
                     .background(Color("SquaresColor"))
                     .foregroundStyle(Color("SquaresColor"))
                     .cornerRadius(12)
+                    .padding(.horizontal)
                 
                 
                 

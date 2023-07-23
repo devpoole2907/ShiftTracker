@@ -56,16 +56,6 @@ struct SettingsView: View {
         NavigationStack(path: $navPath){
             ScrollView{
                 VStack{
-                    /*   if isSubscriptionActive(){
-                     NavigationLink(destination: ProSettingsView()){
-                     HStack {
-                     Image(systemName: "briefcase")
-                     Spacer().frame(width: 10)
-                     Text("ShiftTracker Pro")
-                     }
-                     }
-                     }*/
-                    
                     if !purchaseManager.hasUnlockedPro{
                         Group{
                             Button(action: {
@@ -166,7 +156,7 @@ struct SettingsView: View {
                         
                         NavigationLink(value: 5){
                             
-                            SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: "Default")
+                            SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: iconManager.selectedAppIcon != .primary ? "Custom" : "Default")
                             
                         }.padding()
                             .background(Color("SquaresColor"))
@@ -319,16 +309,9 @@ struct SettingsView: View {
                 .navigationTitle("Settings")
             
                 .fullScreenCover(isPresented: $showingProView) {
-                    NavigationStack{
+                    
                         ProView()
-                            .toolbar{
-                                ToolbarItem(placement: .navigationBarLeading){
-                                    CloseButton{
-                                        self.showingProView = false
-                                    }
-                                }
-                            }
-                    }
+                    
                     
                 }
                 .toolbar{
@@ -469,32 +452,14 @@ struct NotificationView: View{
         ScrollView{
             
             SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
+          
                 .onAppear(perform: notificationManager.checkNotificationStatus)
                 .onChange(of: scenePhase) { newPhase in
                     if newPhase == .active {
                         notificationManager.checkNotificationStatus()
                     }
                 }
-            
-            
-            /* Button("Test notification"){
-             let content = UNMutableNotificationContent()
-             content.title = "ShiftTracker"
-             content.subtitle = "Ready to take a break? You've been working for __ hours and made $___ so far!"
-             content.sound = UNNotificationSound.default
-             
-             // show this notification five seconds from now
-             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
-             
-             // choose a random identifier
-             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-             
-             // add our notification request
-             UNUserNotificationCenter.current().add(request)
-             }.bold()
-             .padding()
-             .buttonStyle(.bordered)
-             .padding()*/
+
         }
         
         .scrollContentBackground(.hidden)
@@ -532,11 +497,12 @@ struct SettingsCheckView: View {
                 .font(.callout)
                 .padding()
         }.padding()
+            .frame(minWidth: UIScreen.main.bounds.width - 80)
             .background(Color("SquaresColor"))
             .cornerRadius(12)
             .padding()
-        
-        
+           
+           
     }
     
     
@@ -553,7 +519,7 @@ struct LocationView: View{
             
             SettingsCheckView(image: locationManager.authorizationStatus != .authorizedAlways ? "exclamationmark.triangle" : "checkmark.circle", headline: locationManager.authorizationStatus != .authorizedAlways ? "Location settings are not set to always." : "You're all set.", subheadline: locationManager.authorizationStatus != .authorizedAlways ? "Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker." : "Location settings are set to always.", checkmarkColor: locationManager.authorizationStatus != .authorizedAlways ? .orange : .green)
             
-            
+                
             
             
             
@@ -577,7 +543,7 @@ struct AppearanceView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20){
+            VStack(spacing: 10){
                 ForEach(colorSchemes, id: \.1) { (name, value) in
                     
                     HStack(spacing: 16){
@@ -590,7 +556,7 @@ struct AppearanceView: View {
                             CustomCheckbox().environmentObject(themeManager)
                         } else {
                             RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.white, lineWidth: 5)
+                                .stroke(Color.white, lineWidth: 3)
                                 .frame(maxWidth: 25, maxHeight: 25)
                         }
                         
@@ -606,9 +572,9 @@ struct AppearanceView: View {
                         }
                     
                 }
-            }
+            }.padding(.horizontal)
         }.scrollContentBackground(.hidden)
-            .padding(.horizontal)
+            
             .navigationTitle("Appearance")
         
     }

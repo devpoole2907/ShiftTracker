@@ -82,7 +82,7 @@ struct PreviewTimerView: View {
                 
                 SelectableButton(id: 3, selectedButton: $themeColors.selectedButton, content: {
                     HStack {
-                        Text("01:24:11")
+                        Text("09:41:00")
                             .font(.system(size: 30, weight: .bold).monospacedDigit())
                         
                     } .foregroundColor(themeColors.timerColor)
@@ -90,7 +90,7 @@ struct PreviewTimerView: View {
                 
                 SelectableButton(id: 4, selectedButton: $themeColors.selectedButton, content: {
                     HStack(spacing: 0) {
-                        Text("00:30:00")
+                        Text("00:10:09")
                             .font(.system(size: 12, weight: .bold).monospacedDigit())
                         
                     }.foregroundColor(themeColors.breaksColor)
@@ -99,7 +99,7 @@ struct PreviewTimerView: View {
             }.frame(maxWidth: .infinity)
         }
         .padding(.bottom)
-        .background(.thinMaterial)
+        .background(Color("SquaresColor"))
         .cornerRadius(12, antialiased: true)
         .frame(maxWidth: 358)
     }

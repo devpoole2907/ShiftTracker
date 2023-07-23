@@ -23,6 +23,10 @@ struct CalendarView: UIViewRepresentable {
         let dateSelection = UICalendarSelectionSingleDate(delegate: context.coordinator)
         view.selectionBehavior = dateSelection
         
+        let visibleDate = view.visibleDateComponents
+        
+        print("visible date is \(visibleDate.date)")
+        
         let startDateComponents = view.calendar.dateComponents([.year, .month, .day], from: interval.start)
             dateSelection.setSelected(startDateComponents, animated: true)
         
@@ -43,53 +47,44 @@ struct CalendarView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        
         print("I have updated the calendar UI.")
-        
-        
-        
-   
-            for shift in shiftStore.previousSelectedShifts {
-                print("updating decorations for previous selection")
-                uiView.reloadDecorations(forDateComponents: [shift.dateComponents], animated: true)
-            }
-            
-            print("shift count is: \(shiftStore.previousSelectedShifts.count)")
-            
-        
-        
-        
-        for shift in shiftStore.shifts.prefix(60) {
-   
-                uiView.reloadDecorations(forDateComponents: [shift.dateComponents], animated: true)
-            
+
+        let calendar = Calendar.current
+        let visibleDate = uiView.visibleDateComponents.date!
+        let futureDate = calendar.date(byAdding: .day, value: 31, to: visibleDate)!
+
+        let relevantShifts = shiftStore.shifts.filter { shift in
+            let shiftDate = shift.dateComponents.date!
+            return shiftDate >= visibleDate && shiftDate <= futureDate
         }
-        
+
+        for shift in relevantShifts {
+            uiView.reloadDecorations(forDateComponents: [shift.dateComponents], animated: true)
+        }
+
         if let changedEvent = shiftStore.changedShift {
-            print("an event was changed.")
-   
+            let changedEventDate = changedEvent.dateComponents.date!
+
+            if changedEventDate >= visibleDate && changedEventDate <= futureDate {
+                print("an event was changed.")
                 uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
                 shiftStore.changedShift = nil
-            
-                }
-        
-        if let changedEvents = shiftStore.batchDeletedShifts {
-            
-            
-            for changedEvent in changedEvents {
-                uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
-                shiftStore.batchDeletedShifts = nil
             }
-            
-           
-            
-            
         }
-        
-        
-        
-        
+
+        if let changedEvents = shiftStore.batchDeletedShifts {
+            for changedEvent in changedEvents {
+                let changedEventDate = changedEvent.dateComponents.date!
+
+                if changedEventDate >= visibleDate && changedEventDate <= futureDate {
+                    uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
+                    shiftStore.batchDeletedShifts = nil
+                }
+            }
+        }
     }
+
+
     
     class Coordinator: NSObject, UICalendarViewDelegate, UICalendarSelectionSingleDateDelegate {
         var parent: CalendarView

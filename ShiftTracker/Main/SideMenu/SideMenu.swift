@@ -17,6 +17,8 @@ struct SideMenu: View {
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [])
     private var jobs: FetchedResults<Job>
+    @FetchRequest(entity: Tag.entity(), sortDescriptors: [])
+    private var tags: FetchedResults<Tag>
     
     @State private var showJobs: Bool = false
     @EnvironmentObject var viewModel: ContentViewModel
@@ -150,27 +152,11 @@ struct SideMenu: View {
                                         }
                                 }
                                 
-                                Button(action: {
-                                    
-                                    showingTagSheet = true
-                                    
-                                }){
-                                    
-                                    Image(systemName: "plus")
-                                    
-                                }
-                                .haptics(onChangeOf: showingTagSheet, type: .light)
+                                
                                 
                                 .haptics(onChangeOf: selectedJobForEditing, type: .light)
                                 
-                                .sheet(isPresented: $showingTagSheet){
-                                    
-                                    AddTagView()
-                                        .presentationDetents([.medium])
-                                        .presentationCornerRadius(35)
-                                        .presentationBackground(colorScheme == .dark ? .black : .white)
-                                    
-                                }
+                                
                                 
                             }
                             
@@ -189,6 +175,47 @@ struct SideMenu: View {
                     
                 }
             }
+            
+            VStack{
+                HStack(spacing: 8){
+                    Image(systemName: "tag.fill")
+                        .resizable()
+                        .renderingMode(.template)
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 20, height: 20)
+                    
+                    
+                    Text("Tags")
+                        .font(.title2)
+                        .bold()
+                   
+                    
+                    Button(action: {
+                        
+                        showingTagSheet = true
+                        
+                    }){
+                        
+                        Image(systemName: "plus")
+                            .bold()
+                        
+                    }.padding(.top, 1)
+                    .haptics(onChangeOf: showingTagSheet, type: .light)
+                    Spacer()
+                }
+                
+            }.padding()
+            
+                .sheet(isPresented: $showingTagSheet){
+                    
+                    AddTagView()
+                        .presentationDetents([.medium])
+                        .presentationCornerRadius(35)
+                        .presentationBackground(colorScheme == .dark ? .black : .white)
+                    
+                }
+            
+            
             VStack{
                 
                 if !purchaseManager.hasUnlockedPro{
@@ -244,16 +271,10 @@ struct SideMenu: View {
         }
         
         .fullScreenCover(isPresented: $showUpgradeScreen){
-            NavigationStack{
+      
             ProView()
-                .toolbar{
-                    ToolbarItem(placement: .navigationBarLeading){
-                        CloseButton{
-                            self.showUpgradeScreen = false
-                        }
-                    }
-                }
-        }
+               
+        
         }
         
     }

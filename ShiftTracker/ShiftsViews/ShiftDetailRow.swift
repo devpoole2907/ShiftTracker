@@ -51,13 +51,26 @@ struct ShiftDetailRow: View {
         if jobSelectionViewModel.fetchJob(in: viewContext) != nil {
             
             
-            HStack{
+          
                 
                 VStack(alignment: .leading, spacing: 5){
-                    Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
-                        .foregroundColor(textColor)
-                        .font(.title)
-                        .bold()
+                    HStack{
+                        Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
+                            .foregroundColor(textColor)
+                            .font(.title)
+                            .bold()
+                        
+                        HStack(spacing: 5){
+                            
+                            ForEach(Array(shift.tags as! Set<Tag>), id: \.self) { tag in
+                                
+                                Circle()
+                                    .foregroundStyle(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
+                                    .frame(width: 8, height: 8)
+                            }
+                        }
+                        
+                    }
                     Text(shiftManager.formatTime(timeInHours: duration))
                         .foregroundStyle(themeManager.timerColor)
                         .font(.subheadline)
@@ -68,29 +81,44 @@ struct ShiftDetailRow: View {
                         .bold()
                 }
                 
-            }
+                
+                
+            
             
         } else {
             
             
             HStack{
-                HStack{
-                Image(systemName: job?.icon ?? "briefcase.fill")
-                    .font(.title3)
-                    .foregroundStyle(.white)
                 
-            }
+                VStack(spacing: 3){
+                    HStack{
+                        Image(systemName: job?.icon ?? "briefcase.fill")
+                            .font(.title3)
+                            .foregroundStyle(.white)
+                        
+                    }
                     .padding(12)
                     .background {
                         
                         Circle()
                             .foregroundStyle(Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0)))
-                            .frame(width: 50, height: 50)
+                            .frame(width: 40, height: 40)
                         
                     }
-                    .frame(width: 50, alignment: .center)
+                    
+                    
+                    HStack(spacing: 5){
+                        
+                        ForEach(Array(shift.tags as! Set<Tag>), id: \.self) { tag in
+                            
+                            Circle()
+                                .foregroundStyle(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
+                                .frame(width: 8, height: 8)
+                        }
+                    }
+                    
+                }.frame(width: 40, alignment: .center)
                     .padding(10)
-                
                 VStack(alignment: .leading, spacing: 3){
                     
                     Text(job?.name ?? "Unknown")

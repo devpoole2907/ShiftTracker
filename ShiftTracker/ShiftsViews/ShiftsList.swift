@@ -78,7 +78,7 @@ struct ShiftsList: View {
     
     
     //@State private var selectedSort = ShiftSort.default
-    @State private var selectedFilters: Set<TagFilter> = [TagFilter(id: 0, name: "All", predicate: nil)]
+    @State private var selectedFilters: Set<TagFilter> = []
     
     @Binding var navPath: NavigationPath
     
@@ -89,7 +89,7 @@ struct ShiftsList: View {
     
     var body: some View {
         
-        
+        ZStack(alignment: .bottom){
         
         List(selection: $selection){
             
@@ -136,7 +136,7 @@ struct ShiftsList: View {
                 }
                 
                 
-
+                
                 
                 .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                 .listRowBackground(Color("SquaresColor"))
@@ -173,13 +173,13 @@ struct ShiftsList: View {
         // detailview must have changed a shift because event fired, resort list
             .onReceive(savedPublisher.shiftChanged, perform: {
                 applySortAndFilters()
-                           
-                        })
+                
+            })
         
             .onAppear {
                 
                 // duct tape fix for sorting not persisting state
-               
+                
                 
                 print("on appear the sort is: \(selectedSort)")
                 
@@ -191,11 +191,39 @@ struct ShiftsList: View {
                     
                 }
                 
-               
+                
                 
             }
+            
+            /*  Rectangle()
+                .foregroundStyle(.white)
+                .frame(width: UIScreen.main.bounds.width)
+                .frame(maxHeight: 50) */
+            
+            TagSortView(selectedFilters: $selectedFilters, filters: TagFilter.filters(from: Array(tags)))
+                .padding(.bottom)
+                .background {
+                    
+                    colorScheme == .dark ? Color.black : Color.white
+                        
+                    
+                } //.padding(.top)
+                .frame(width: UIScreen.main.bounds.width)
+                .frame(maxHeight: 30)
+            
+                .onChange(of: selectedFilters) { newValue in
+                    let predicates = newValue.compactMap { $0.predicate } // 1. filter out `nil` predicates
+                    if predicates.isEmpty {
+                        let request = shifts
+                        request.nsPredicate = nil // reset predicate if no filters are selected
+                    } else {
+                        let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates) // 2. use `.and` instead of `.or`
+                        let request = shifts
+                        request.nsPredicate = compoundPredicate
+                    }
+                }
         
-          
+    }
         
         
         
@@ -231,7 +259,7 @@ struct ShiftsList: View {
                     
                     EditButton()
                     
-                     Menu {
+              
                     
                     SortSelectionView(selectedSortItem: $selectedSort, sorts: ShiftSort.sorts)
                     // .disabled(!selection.isEmpty)
@@ -243,26 +271,11 @@ struct ShiftsList: View {
                             
                         }
                     
-                    TagSortView(selectedFilters: $selectedFilters, filters: TagFilter.filters(from: Array(tags)))
+                
                     
-                        .onChange(of: selectedFilters) { newValue in
-                            let predicates = newValue.compactMap { $0.predicate } // 1. filter out `nil` predicates
-                            if predicates.isEmpty {
-                                let request = shifts
-                                request.nsPredicate = nil // reset predicate if no filters are selected
-                            } else {
-                                let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates) // 2. use `.and` instead of `.or`
-                                let request = shifts
-                                request.nsPredicate = compoundPredicate
-                            }
-                        }
+                        
                     
-                     } label: {
-                         
-                         Image(systemName: "ellipsis.circle")
-                         
-                         
-                     }
+                     
                 }
                 
                 
@@ -335,66 +348,36 @@ struct SortSelectionView: View {
 }
 
 struct TagSortView: View {
-    
     @Binding var selectedFilters: Set<TagFilter>
     let filters: [TagFilter]
-    
+
     var body: some View {
-        
-        Menu {
-            
-            ForEach(filters, id: \.self) { filter in
-                Toggle(isOn: Binding(get: {
-                    
-                    if filter.name == "All" {
-                        return self.selectedFilters.count == 1 && self.selectedFilters.contains(filter)
-                    } else {
-                        return self.selectedFilters.contains(filter)
-                    }
-                    
-                    
-                }, set: { _ in
-                    
-                    
-                    if filter.name == "All" {
-                        self.selectedFilters = [filter]
-                    } else {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                ForEach(filters, id: \.self) { filter in
+                    Button(action: {
                         if self.selectedFilters.contains(filter) {
                             self.selectedFilters.remove(filter)
                         } else {
                             self.selectedFilters.insert(filter)
-                            self.selectedFilters.remove(TagFilter(id: 0, name: "All", predicate: nil))
                         }
+                    }) {
+                        Text("\(filter.name)")
+                            .bold()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+
+                       
                     }
-                    
-                    
-                    
-                    
-                })) {
-                    
-                    Text("\(filter.name)")
-                    
+                    .buttonStyle(.bordered)
+                    .tint(filter.color)
+                    .opacity(selectedFilters.contains(filter) ? 1.0 : 0.5)
                 }
-                
-                
-                
             }
-            
-            
-            
-            
-        } label: {
-            
-            Label("Tag", systemImage: "number.circle")
-            
+            .padding()
         }
-        
-        
     }
-    
-    
-    
 }
+
 
 class SortSelection: ObservableObject {
     @Published var selectedSort: ShiftSort = .default
@@ -456,17 +439,18 @@ struct TagFilter: Hashable, Identifiable, Equatable {
     let id: Int
     let name: String
     let predicate: NSPredicate?
+    let color: Color
     
     static func filters(from tags: [Tag]) -> [TagFilter] {
-        let allFilter = TagFilter(id: 0, name: "All", predicate: nil)
         let tagFilters = tags.enumerated().map { (index: Int, tag: Tag) -> TagFilter in
             TagFilter(id: index + 1,
                       name: "#\(tag.name ?? "Unknown")",
-                      predicate: NSPredicate(format: "ANY tags.tagID == %@", tag.tagID! as CVarArg))
+                      predicate: NSPredicate(format: "ANY tags.tagID == %@", tag.tagID! as CVarArg), color: Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
         }
-        return [allFilter] + tagFilters
+        return tagFilters
     }
 }
+
 
 
 struct HighlightedText: View {

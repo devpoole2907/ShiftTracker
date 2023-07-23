@@ -88,7 +88,7 @@ struct ExportSquare: View {
         .background(Color("SquaresColor"))
             .cornerRadius(12)
 
-            .sheet(isPresented: $showingProView) {
+            .fullScreenCover(isPresented: $showingProView) {
                 
                 ProView()
                     .environmentObject(purchaseManager)

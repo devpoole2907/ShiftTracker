@@ -33,6 +33,10 @@ struct AddTagView: View {
         isEditing ? "Update Tag" : "Add Tag"
     }
     
+    private func isTagNameDuplicate() -> Bool {
+        return tags.contains(where: { $0.name?.lowercased() == tagName.lowercased() })
+        }
+    
     var body: some View {
         
         let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
@@ -89,7 +93,7 @@ struct AddTagView: View {
                 HStack{
                     
                     
-                    CustomTextField(text: $tagName, hint: "Add Tag", leadingIcon: Image(systemName: "number"))
+                    CustomTextField(text: $tagName, hint: "Add Tag", leadingIcon: "number")
                         .frame(maxHeight: 40)
                         .shake(times: tagShakeTimes)
                     
@@ -139,8 +143,8 @@ struct AddTagView: View {
                     
                     
                     
-                    if tagName != "" { // prevents empty tags
-                        // !!!!!!!!!!!!!!!!! this also needs to check for duplicate names
+                    if tagName != "" && tagName.count <= 8 && !isTagNameDuplicate() { // prevents empty tags & long names, duplicate names
+                   
                         if let selectedTag = selectedTag {
                             
                             updateTag(selectedTag)

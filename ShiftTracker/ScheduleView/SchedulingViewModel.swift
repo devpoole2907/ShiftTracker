@@ -56,24 +56,44 @@ class SchedulingViewModel: ObservableObject {
         let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "newRepeatID == %@", repeatID as CVarArg),
-            NSPredicate(format: "startDate > %@", shiftDate as NSDate)
+            NSPredicate(format: "startDate >= %@", shiftDate as NSDate)
         ])
 
         var batchDeleted = [SingleScheduledShift]()
         
         do {
+            
+            
                 if let shiftsToDelete = try viewContext.fetch(request) as? [ScheduledShift] {
+                    print("Number of repeating shifts found: \(shiftsToDelete.count)")
                     for shiftToDelete in shiftsToDelete {
                         if let correspondingSingleShift = shiftStore.shifts.first(where: { $0.id == shiftToDelete.id }) {
                            
-                            
-                            
-                            shiftStore.delete(correspondingSingleShift)
-                            batchDeleted.append(correspondingSingleShift)
-                            viewContext.delete(shiftToDelete)
-                            cancelNotification(for: shiftToDelete)
-                           
-                            
+                            if shiftToDelete.startDate == shiftDate {
+                                
+                                shiftToDelete.isRepeating = false
+                                shiftStore.delete(correspondingSingleShift)
+                                shiftStore.add(SingleScheduledShift(
+                                    startDate: correspondingSingleShift.startDate,
+                                    endDate: correspondingSingleShift.endDate,
+                                    id: correspondingSingleShift.id,
+                                    job: correspondingSingleShift.job!,
+                                    isRepeating: false,
+                                    repeatID: repeatID,
+                                    reminderTime: correspondingSingleShift.reminderTime,
+                                    notifyMe: correspondingSingleShift.notifyMe))
+                                
+                                
+                                batchDeleted.append(correspondingSingleShift)
+                                
+                            } else {
+                                
+                                shiftStore.delete(correspondingSingleShift)
+                                batchDeleted.append(correspondingSingleShift)
+                                viewContext.delete(shiftToDelete)
+                                cancelNotification(for: shiftToDelete)
+                                
+                            }
                             
                         }
                     }

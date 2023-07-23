@@ -444,9 +444,9 @@ struct RegisterView: View {
             .contentShape(Circle())
         
         VStack(spacing: 10){
-            CustomTextField(text: $emailID, hint: "Email Address", leadingIcon: Image(systemName: "at.circle.fill"))
+            CustomTextField(text: $emailID, hint: "Email Address", leadingIcon: "at.circle.fill")
             
-            CustomTextField(text: $password, hint: "Password", leadingIcon: Image(systemName: "lock.fill"), isPassword: true)
+            CustomTextField(text: $password, hint: "Password", leadingIcon: "lock.fill", isPassword: true)
             
           //  Spacer(minLength: 10)
             

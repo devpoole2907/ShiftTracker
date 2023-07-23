@@ -22,11 +22,10 @@ struct ProView: View {
         
         let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
         let textColor: Color = colorScheme == .dark ? Color.white.opacity(0.9) : Color.white
-        let backgroundColor: Color = colorScheme == .dark ? .black : Color.white
         let upgradeButtonTextColor: Color = colorScheme == .dark ? .white : Color.black
         
         
-       // NavigationView {
+       NavigationStack {
 
             VStack{
                 HStack{
@@ -237,9 +236,21 @@ struct ProView: View {
                 
                // Spacer(minLength: 50)
             }
+        
+            .toolbar {
+                
+                ToolbarItem(placement: .navigationBarLeading) {
+                    
+                    CloseButton(action: {dismiss()})
+                    
+                    
+                }
+                
+                
+            }
             
     
-        //}.background(backgroundColor)
+        }
     }
 }
 

@@ -56,6 +56,8 @@ struct JobView: View {
     
     @State private var activeSheet: ActiveSheet?
     
+    @State private var showProSheet = false
+    
     @State private var selectedAddress: String?
     
     
@@ -66,7 +68,7 @@ struct JobView: View {
     @State private var miniMapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
     enum ActiveSheet: Identifiable {
-        case overtimeSheet, symbolSheet, proSheet
+        case overtimeSheet, symbolSheet
         
         var id: Int {
             hashValue
@@ -265,7 +267,7 @@ struct JobView: View {
                                     if value {
                                         if !purchaseManager.hasUnlockedPro {
                                             
-                                            activeSheet = .proSheet
+                                            showProSheet.toggle()
                                             autoClockIn = false
                                             
                                         } else {
@@ -284,7 +286,7 @@ struct JobView: View {
                                     if value {
                                         if !purchaseManager.hasUnlockedPro {
                                             
-                                            activeSheet = .proSheet
+                                            showProSheet.toggle()
                                             autoClockOut = false
                                             
                                         } else {
@@ -402,6 +404,19 @@ struct JobView: View {
                     .padding()
                     .navigationBarTitle(job != nil ? "Edit Job" : "Add Job", displayMode: .inline)
 
+                    .fullScreenCover(isPresented: $showProSheet){
+                        
+                
+                            ProView()
+                        
+                         
+                           
+               
+                            .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                   
+                        
+                        
+                    }
                     
                     .sheet(item: $activeSheet){ item in
                         
@@ -422,15 +437,8 @@ struct JobView: View {
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
                                 .presentationCornerRadius(35)
-                        case .proSheet:
-                            NavigationStack{
-                                ProView()
-                            }
-                                .environment(\.managedObjectContext, viewContext)
-                                .presentationDetents([ .large])
-                                .presentationDragIndicator(.visible)
-                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-                                .presentationCornerRadius(35)
+                       
+                            
                         }
                         
                     }

@@ -15,7 +15,7 @@ struct AppIconView: View {
 
     var body: some View {
             ScrollView {
-                VStack(spacing: 11) {
+                VStack(spacing: 10) {
                     ForEach(AppIconManager.AppIcon.allCases) { appIcon in
                         HStack(spacing: 16) {
                             Image(appIcon.preview)
@@ -36,10 +36,10 @@ struct AppIconView: View {
                                 
                             } else {
                                 RoundedRectangle(cornerRadius: 6)
-                                    .stroke(Color.white, lineWidth: 5)
-                                    //.foregroundStyle(Color("SquaresColor"))
+                                    .stroke(Color.white, lineWidth: 3)
+                                   
                                     .frame(maxWidth: 25, maxHeight: 25)
-                                   // .cornerRadius(12)
+                                   
                             }
                             
                             
@@ -54,7 +54,7 @@ struct AppIconView: View {
                         }
                     }
                 }.padding(.horizontal)
-                    .padding(.vertical, 40) 
+                   
             }.scrollContentBackground(.hidden)
             .navigationTitle("App Icon")
         

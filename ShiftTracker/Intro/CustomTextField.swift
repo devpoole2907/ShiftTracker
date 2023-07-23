@@ -11,10 +11,12 @@ struct CustomTextField: View {
     
     @Binding var text: String
     var hint: String
-    var leadingIcon: Image
+    var leadingIcon: String
     var isPassword: Bool = false
     
-    init(text: Binding<String>, hint: String, leadingIcon: Image, isPassword: Bool = false) {
+    private var charLimit = 8
+    
+    init(text: Binding<String>, hint: String, leadingIcon: String, isPassword: Bool = false) {
         _text = text
         self.hint = hint
         self.leadingIcon = leadingIcon
@@ -28,9 +30,10 @@ struct CustomTextField: View {
     
     var body: some View {
         HStack(spacing: 0){
-            leadingIcon
+            
+            Image(systemName: text.count <= charLimit ? leadingIcon : "exclamationmark.triangle.fill")
                 .font(.callout)
-                .foregroundStyle(.gray)
+                .foregroundStyle(text.count <= charLimit ? .gray : .orange)
                 .frame(width: 40, alignment: .leading)
             
             
