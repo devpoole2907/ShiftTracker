@@ -15,7 +15,7 @@ import UserNotifications
 struct ScheduledShiftsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    @EnvironmentObject var shiftStore: ScheduledShiftStore
+    @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     
     @Environment(\.colorScheme) var colorScheme
@@ -100,7 +100,7 @@ struct ListViewRow: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var shiftStore: ScheduledShiftStore
+    @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     
     let shift: SingleScheduledShift

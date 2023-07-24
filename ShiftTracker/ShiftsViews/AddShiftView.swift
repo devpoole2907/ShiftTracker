@@ -84,6 +84,8 @@ struct AddShiftView: View {
         
         newShift.job = job
         
+        newShift.shiftID = UUID()
+        
         for tempBreak in tempBreaks {
             if let breakEndDate = tempBreak.endDate {
                 breaksManager.createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)

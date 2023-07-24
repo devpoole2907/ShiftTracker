@@ -459,6 +459,8 @@ class ContentViewModel: ObservableObject {
             latestShift!.overtimeDuration = overtimeDuration
             latestShift!.overtimeRate = overtimeRate
             
+            latestShift!.shiftID = UUID()
+            
             latestShift!.job = job
             
             let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()

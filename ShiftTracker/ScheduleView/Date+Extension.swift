@@ -16,6 +16,11 @@ extension Date {
         Calendar.current.startOfDay(for: self)
     }
     
+    var endOfDay: Date {
+            let startOfNextDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+            return startOfNextDay.addingTimeInterval(-1)
+        }
+    
     var dateComponents: DateComponents {
             let calendar = Calendar.current
             return calendar.dateComponents([.year, .month, .day], from: self)

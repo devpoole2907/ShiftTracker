@@ -23,17 +23,15 @@ struct MainWithSideBarView: View {
     
     @State private var jobId: NSManagedObjectID? = nil
     
-    @State private var navPath: [OldShift] = []
-    
     @State private var settingsPath: [Int] = []
     
     @State private var path = NavigationPath()
+    @State private var schedulePath = NavigationPath()
     
     
     @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionManager()
     @EnvironmentObject var navigationState: NavigationState
-    @StateObject var shiftStore = ScheduledShiftStore()
     @StateObject var scheduleModel = SchedulingViewModel()
     
     @EnvironmentObject var themeManager: ThemeDataManager
@@ -108,11 +106,10 @@ struct MainWithSideBarView: View {
                                     .tag(Tab.timesheets)
                                 
                                 
-                                ScheduleView()
+                                ScheduleView(navPath: $schedulePath)
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(navigationState)
                                     .environmentObject(jobSelectionModel)
-                                    .environmentObject(shiftStore)
                                     .environmentObject(scheduleModel)
                                     .navigationBarTitleDisplayMode(.inline)
                                 
@@ -145,7 +142,16 @@ struct MainWithSideBarView: View {
                                         
                                         
                                     })
-                                    TabButton(tab: .schedule, useSystemImage: true)
+                                    TabButton(tab: .schedule, useSystemImage: true, action: {
+                                        
+                                        if schedulePath.isEmpty {
+                                            navigationState.showMenu.toggle()
+                                        } else {
+                                            schedulePath = NavigationPath()
+                                        }
+                                        
+                                        
+                                    })
                                     TabButton(tab: .settings, useSystemImage: true, action: {
                                         
                                         if settingsPath.isEmpty {
@@ -184,7 +190,7 @@ struct MainWithSideBarView: View {
                     .offset(x: -sideBarWidth / 2)
                     .offset(x: offset > 0 ? offset : 0)
                     
-                    if (currentTab == .settings && settingsPath.isEmpty) || (currentTab == .home || currentTab == .schedule) || (currentTab == .timesheets && navPath.isEmpty) {
+                    if (currentTab == .settings && settingsPath.isEmpty) || (currentTab == .home || currentTab == .schedule) || (currentTab == .timesheets && path.isEmpty) {
                     
                     HStack {
                         if navigationState.showMenu {

@@ -45,6 +45,7 @@ struct ShiftTrackerApp: App {
                 .environmentObject(LocationDataManager.shared)
                 .environmentObject(purchaseManager)
                 .environmentObject(NavigationState.shared)
+                .environmentObject(ShiftStore.shared)
             
             
                 .task{

@@ -21,6 +21,7 @@ struct ShiftsList: View {
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var shiftManager: ShiftDataManager
+    @EnvironmentObject var shiftStore: ShiftStore
     
     @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     
@@ -143,7 +144,7 @@ struct ShiftsList: View {
                 
                 .swipeActions {
                     Button(role: .destructive) {
-                        shiftManager.deleteShift(shift, in: viewContext)
+                        shiftStore.deleteOldShift(shift, in: viewContext)
                         
                         if shifts.isEmpty {
                             // navigates back if all shifts are deleted

@@ -48,6 +48,23 @@ struct SingleScheduledShift: Hashable, Identifiable {
         
     }
     
+    init(oldShift: OldShift){
+        
+        self.startDate = oldShift.shiftStartDate!
+        self.endDate = oldShift.shiftEndDate!
+        
+        self.id = oldShift.shiftID ?? UUID()
+        
+        self.job = oldShift.job ?? nil
+        self.isRepeating = false
+        self.repeatID = UUID()
+        self.reminderTime = 0
+        self.notifyMe = false
+        
+        
+        
+    }
+    
     
     var dateComponents: DateComponents {
             var dateComponents = Calendar.current.dateComponents(

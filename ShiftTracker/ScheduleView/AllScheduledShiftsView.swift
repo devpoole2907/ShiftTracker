@@ -10,7 +10,7 @@ import CoreData
 
 struct AllScheduledShiftsView: View {
     
-    @EnvironmentObject var shiftStore: ScheduledShiftStore
+    @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -141,7 +141,7 @@ extension Date {
 
 struct ScheduledShiftRow: View {
     
-    @EnvironmentObject var shiftStore: ScheduledShiftStore
+    @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     
     @Environment(\.managedObjectContext) private var viewContext

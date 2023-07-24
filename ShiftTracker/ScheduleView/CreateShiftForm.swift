@@ -11,7 +11,7 @@ struct CreateShiftForm: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
     
-    @EnvironmentObject var shiftStore: ScheduledShiftStore
+    @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     @Environment(\.colorScheme) var colorScheme

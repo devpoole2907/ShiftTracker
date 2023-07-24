@@ -20,6 +20,8 @@ struct DetailView: View {
     // we need to fire this when we save a shift, as that will tell shiftslist to update sorts when a shift is saved
     @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     
+    @EnvironmentObject var shiftStore: ShiftStore
+    
     @Environment(\.dismiss) private var dismiss
     
     @State private var savedShift = false
@@ -41,6 +43,8 @@ struct DetailView: View {
     @State var isEditing: Bool = false
     @State private var isAddingBreak: Bool = false
     @State private var isUnpaid: Bool = false
+    
+    var shiftID: UUID
     
     @State private var showingDeleteAlert = false
     
@@ -94,6 +98,7 @@ struct DetailView: View {
         _activeSheet = activeSheet ?? Binding.constant(nil)
         _navPath = navPath
         _selectedTags = State(wrappedValue: shift.tags as! Set<Tag>)
+        self.shiftID = shift.shiftID ?? UUID()
         
         // adds clear text button to text fields
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -489,6 +494,8 @@ struct DetailView: View {
                 
                 savedPublisher.changedShift()
                 
+                shiftStore.updateOldShift(shift)
+                
             }
             
         }
@@ -556,7 +563,7 @@ struct DetailView: View {
                         shift.shiftStartDate = selectedStartDate
                         shift.shiftEndDate = selectedEndDate
                         
-                        
+                        shift.shiftID = self.shiftID
                         // ignore this block its old
                         shift.breakStartDate = selectedBreakStartDate
                         shift.breakEndDate = selectedBreakEndDate
@@ -586,6 +593,9 @@ struct DetailView: View {
                         
                        savedShift = true
                         
+                        
+                        
+                        
                     }
                     else {
                         
@@ -604,12 +614,14 @@ struct DetailView: View {
                     if presentedAsSheet{
                         dismiss()
                         
-                        CustomConfirmationAlert(action: deleteShift, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").showAndStack()
+                        CustomConfirmationAlert(action: {
+                            shiftStore.deleteOldShift(shift, in: context)
+                        }, cancelAction: { activeSheet = .detailSheet}, title: "Are you sure you want to delete this shift?").showAndStack()
                         
                     }
                     else {
                         CustomConfirmationAlert(action: {
-                            deleteShift()
+                            shiftStore.deleteOldShift(shift, in: context)
                             dismiss()
                         }, cancelAction: nil, title: "Are you sure you want to delete this shift?").showAndStack()
                     }
@@ -630,12 +642,6 @@ struct DetailView: View {
         }
         
         
-        
-    }
-    
-    private func deleteShift() {
-        context.delete(shift)
-        saveContext()
         
     }
     

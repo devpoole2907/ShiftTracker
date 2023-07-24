@@ -17,7 +17,7 @@ struct UpcomingShiftView: View {
     @FetchRequest(
         entity: ScheduledShift.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)],
-        predicate: NSPredicate(format: "startDate > %@", Date() as NSDate),
+        predicate: NSPredicate(format: "endDate > %@", Date() as NSDate),
         animation: .default)
     private var scheduledShifts: FetchedResults<ScheduledShift>
     
@@ -26,11 +26,17 @@ struct UpcomingShiftView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Job.uuid, ascending: true)],
         animation: .default)
     private var jobs: FetchedResults<Job>
-
+    
     
     static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, d MMMM 'at' h:mm a"
+        formatter.dateFormat = "EEEE, d MMMM"
+        return formatter
+    }()
+    
+    static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
         return formatter
     }()
     
@@ -39,15 +45,69 @@ struct UpcomingShiftView: View {
         if let upcomingShift = scheduledShifts.first {
             Button(action: {
                 if let upcomingShiftJob = upcomingShift.job {
-                    if upcomingShiftJob != jobSelectionViewModel.fetchJob(in: viewContext){
+                    
                     CustomConfirmationAlert(action: {
-                        jobSelectionViewModel.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
+                        if upcomingShiftJob != jobSelectionViewModel.fetchJob(in: viewContext){
+                            jobSelectionViewModel.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
+                        }
+                        let startDate = max(Date(), upcomingShift.startDate ?? Date())
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
+                        }
                         
-                    }, cancelAction: nil, title: "Switch to this job?").showAndStack()
+                    }, cancelAction: nil, title: "Load this shift?").showAndStack()
+                    
                     
                 }
-            }
             }){
+                VStack(alignment: .leading) {
+                    
+                    Text("Upcoming Shift")
+                        .font(.title3)
+                        .bold()
+                        .padding(.bottom, -1)
+                    Divider().frame(maxWidth: 200)
+                    HStack{
+                        Image(systemName: upcomingShift.job?.icon ?? "")
+                            .foregroundStyle(.white)
+                            .font(.callout)
+                            .padding(10)
+                            .background {
+                                
+                                Circle()
+                                    .foregroundStyle(Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient)
+                                
+                            }
+                        
+                        
+                        VStack(alignment: .leading, spacing: 5){
+                            Text("\(upcomingShift.job?.name ?? "")")
+                                .bold()
+                            HStack(alignment: .lastTextBaseline, spacing: 0) {
+                                Text(
+                                    Calendar.current.isDateInToday(upcomingShift.startDate ?? Date()) ?
+                                    "Today at " :
+                                        "\(upcomingShift.startDate ?? Date(), formatter: Self.dateFormatter) at "
+                                )
+                                .foregroundColor(.gray)
+                                .bold()
+                                .font(.footnote)
+                                
+                                Text("\(upcomingShift.startDate ?? Date(), formatter: Self.timeFormatter)")
+                                    .foregroundColor(
+                                        Date() > upcomingShift.startDate ?? Date() ? .red :
+                                            Calendar.current.date(byAdding: .hour, value: 1, to: Date())! > upcomingShift.startDate ?? Date() ? .orange :
+                                                .gray
+                                    )
+                                    .bold()
+                                    .font(.footnote)
+                            }
+                        }
+                    }.padding(.vertical, 3)
+                    
+                }
+            }.buttonStyle(.plain)
+        } else {
             VStack(alignment: .leading) {
                 
                 Text("Upcoming Shift")
@@ -56,50 +116,16 @@ struct UpcomingShiftView: View {
                     .padding(.bottom, -1)
                 Divider().frame(maxWidth: 200)
                 HStack{
-                    Image(systemName: upcomingShift.job?.icon ?? "")
-                        .foregroundStyle(.white)
-                        .font(.callout)
-                        .padding(10)
-                        .background {
-                            
-                            Circle()
-                                .foregroundStyle(Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient)
-                            
-                        }
-                        
-                        
-                    VStack(alignment: .leading, spacing: 5){
-                        Text("\(upcomingShift.job?.name ?? "")")
-                            .bold()
-                        Text("\(upcomingShift.startDate ?? Date(),formatter: Self.dateFormatter)")
-                            .foregroundColor(.gray)
-                            .bold()
-                            .font(.footnote)
-                            .padding(.leading, 1.4)
-                    }
-                }.padding(.vertical, 3)
+                    Image(systemName: "briefcase.fill")
+                    Text("No Upcoming Shifts")
+                    
+                }.foregroundColor(.gray)
+                    .font(.footnote)
+                    .bold()
+                    .padding(.vertical, 2)
                 
             }
-            }.buttonStyle(.plain)
-    } else {
-        VStack(alignment: .leading) {
-            
-            Text("Upcoming Shift")
-                .font(.title3)
-                .bold()
-                .padding(.bottom, -1)
-            Divider().frame(maxWidth: 200)
-            HStack{
-                Image(systemName: "briefcase.fill")
-                Text("No Upcoming Shifts")
-                
-            }.foregroundColor(.gray)
-                .font(.footnote)
-                .bold()
-                .padding(.vertical, 2)
-            
         }
-    }
     }
 }
 

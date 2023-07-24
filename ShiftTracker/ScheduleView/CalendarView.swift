@@ -10,7 +10,7 @@ import CoreData
 
 struct CalendarView: UIViewRepresentable {
     let interval: DateInterval
-    @ObservedObject var shiftStore: ScheduledShiftStore
+    @ObservedObject var shiftStore: ShiftStore
     @Binding var dateSelected: DateComponents?
     @Binding var displayEvents: Bool
     
@@ -32,7 +32,9 @@ struct CalendarView: UIViewRepresentable {
         
         context.coordinator.dateSelection = dateSelection
         
-        dateSelection.setSelected(interval.start.dateComponents, animated: true)
+       
+        
+        dateSelection.setSelected(Date().dateComponents, animated: true)
         print("date is set to \(startDateComponents)")
         
         //view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -82,6 +84,15 @@ struct CalendarView: UIViewRepresentable {
                 }
             }
         }
+        
+        
+        if let selectedDate = dateSelected?.date {
+                if selectedDate >= visibleDate && selectedDate <= futureDate {
+                    uiView.reloadDecorations(forDateComponents: [dateSelected!], animated: true)
+                }
+            }
+        
+        
     }
 
 
@@ -90,9 +101,9 @@ struct CalendarView: UIViewRepresentable {
         var parent: CalendarView
         var dateSelection: UICalendarSelectionSingleDate?
         
-        @ObservedObject var shiftStore: ScheduledShiftStore
+        @ObservedObject var shiftStore: ShiftStore
         
-        init(parent: CalendarView, shiftStore: ObservedObject<ScheduledShiftStore>) {
+        init(parent: CalendarView, shiftStore: ObservedObject<ShiftStore>) {
             self.parent = parent
             self._shiftStore = shiftStore
         }
@@ -117,11 +128,14 @@ struct CalendarView: UIViewRepresentable {
             
             
             let job = singleShift.job
+            
+            
+            let isBeforeToday = isBeforeToday(singleShift.startDate)
                             
             let color = UIColor(red: CGFloat(job?.colorRed ?? 0.0 ),
                                 green: CGFloat(job?.colorGreen ?? 0.0 ),
                                 blue: CGFloat(job?.colorBlue ?? 0.0 ),
-                                                alpha: 1)
+                                alpha: isBeforeToday ? 0.5 : 1)
                             
             return .image(UIImage(systemName: job?.icon ?? "briefcase.fill"),
                           color: color,

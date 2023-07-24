@@ -61,12 +61,12 @@ struct ShiftDetailRow: View {
                             .bold()
                         
                         HStack(spacing: 5){
-                            
-                            ForEach(Array(shift.tags as! Set<Tag>), id: \.self) { tag in
-                                
-                                Circle()
-                                    .foregroundStyle(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
-                                    .frame(width: 8, height: 8)
+                            if let tagSet = shift.tags as? Set<Tag> {
+                                ForEach(Array(tagSet), id: \.self) { tag in
+                                    Circle()
+                                        .foregroundStyle(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
+                                        .frame(width: 8, height: 8)
+                                }
                             }
                         }
                         
@@ -108,14 +108,15 @@ struct ShiftDetailRow: View {
                     
                     
                     HStack(spacing: 5){
-                        
-                        ForEach(Array(shift.tags as! Set<Tag>), id: \.self) { tag in
-                            
-                            Circle()
-                                .foregroundStyle(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
-                                .frame(width: 8, height: 8)
+                        if let tagSet = shift.tags as? Set<Tag> {
+                            ForEach(Array(tagSet), id: \.self) { tag in
+                                Circle()
+                                    .foregroundStyle(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
+                                    .frame(width: 8, height: 8)
+                            }
                         }
                     }
+
                     
                 }.frame(width: 40, alignment: .center)
                     .padding(10)

@@ -13,7 +13,41 @@ import CoreData
 class SchedulingViewModel: ObservableObject {
     
 
-    func deleteShift(_ shift: SingleScheduledShift, with shiftStore: ScheduledShiftStore, using viewContext: NSManagedObjectContext){
+    func deleteShift(_ shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext){
+        
+        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", shift.id as CVarArg)
+        request.fetchLimit = 1
+        
+        do {
+            let results = try viewContext.fetch(request)
+            
+            if let shiftToDelete = results.first as? ScheduledShift {
+                shiftStore.delete(shift)
+                viewContext.delete(shiftToDelete)
+                cancelNotification(for: shiftToDelete)
+                
+                do {
+                    print("Successfully deleted the scheduled shift.")
+                    try viewContext.save()
+                    
+                    
+                } catch {
+                    print("Failed to delete the corresponding shift.")
+                    
+                }
+                
+            }
+        } catch {
+            
+            print("Failed to fetch the corresponding shift to delete.")
+            
+        }
+        
+        
+    }
+    
+    func deleteOldShift(_ shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext){
         
         let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", shift.id as CVarArg)
@@ -49,7 +83,9 @@ class SchedulingViewModel: ObservableObject {
     
     
     
-    func cancelRepeatingShiftSeries(shift: SingleScheduledShift, with shiftStore: ScheduledShiftStore, using viewContext: NSManagedObjectContext) {
+    
+    
+    func cancelRepeatingShiftSeries(shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
         guard let repeatID = shift.repeatID else { return }
         let shiftDate = shift.startDate
         

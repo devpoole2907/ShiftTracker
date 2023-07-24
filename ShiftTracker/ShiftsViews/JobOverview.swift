@@ -30,6 +30,7 @@ struct JobOverview: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var shiftStore: ShiftStore
     
     @FetchRequest var shifts: FetchedResults<OldShift>
     
@@ -134,7 +135,8 @@ struct JobOverview: View {
                     .swipeActions {
                  
                             Button(role: .destructive) {
-                                shiftManager.deleteShift(shift, in: viewContext)
+                                shiftStore.deleteOldShift(shift, in: viewContext)
+                                
                             } label: {
                                 Image(systemName: "trash")
                             }
