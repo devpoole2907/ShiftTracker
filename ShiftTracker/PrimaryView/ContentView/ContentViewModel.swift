@@ -17,6 +17,8 @@ import CoreData
 
 class ContentViewModel: ObservableObject {
     
+    static let shared = ContentViewModel()
+    
     
     @Published var shiftState: ShiftState = .notStarted
     

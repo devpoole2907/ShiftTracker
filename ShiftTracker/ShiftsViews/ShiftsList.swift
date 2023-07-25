@@ -11,11 +11,6 @@ import Foundation
 import Combine
 
 struct ShiftsList: View {
-    
-    // @StateObject var temporaryViewModel = ContentViewModel()
-    
-    
-    
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
@@ -25,49 +20,17 @@ struct ShiftsList: View {
     
     @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     
-    @State var selectedSort = ShiftSort.default
-    
     @EnvironmentObject var sortSelection: SortSelection
 
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.editMode) private var editMode
+    @Environment(\.dismissSearch) private var dismissSearch
     
     @State private var isShareSheetShowing = false
     
-    @State private var searchTerm = ""
     
     @State private var showingAddShiftSheet: Bool = false
-    
-    var searchQuery: Binding<String> {
-        Binding {
-            searchTerm
-        } set: { newValue in
-            searchTerm = newValue
-            
-            var predicates = Array(selectedFilters.compactMap { $0.predicate })
-            
-            if !newValue.isEmpty {
-                let searchPredicate = NSPredicate(
-                    format: "shiftNote contains[cd] %@",
-                    newValue)
-                predicates.append(searchPredicate)
-            }
-            
-            if predicates.isEmpty {
-                shifts.nsPredicate = nil
-            } else {
-                shifts.nsPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
-            }
-        }
-    }
-    
-    
-    
-    @FetchRequest(
-        sortDescriptors: ShiftSort.default.descriptors,
-        animation: .default)
-    private var shifts: FetchedResults<OldShift>
     
     @FetchRequest(
         entity: Tag.entity(),
@@ -76,10 +39,6 @@ struct ShiftsList: View {
         ]
     )
     private var tags: FetchedResults<Tag>
-    
-    
-    //@State private var selectedSort = ShiftSort.default
-    @State private var selectedFilters: Set<TagFilter> = []
     
     @Binding var navPath: NavigationPath
     
@@ -91,54 +50,35 @@ struct ShiftsList: View {
     var body: some View {
         
         ZStack(alignment: .bottom){
-        
         List(selection: $selection){
-            
-            
-            ForEach(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
-                
+            ForEach(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 ZStack {
                     NavigationLink(value: shift) {
                         ShiftDetailRow(shift: shift)
                     }
-                    
-                    if !searchTerm.isEmpty {
-                        
+                    if !sortSelection.searchTerm.isEmpty {
                         HStack {
                             Spacer()
                             VStack(alignment: .trailing){
-                                
                                 if jobSelectionViewModel.fetchJob(in: viewContext) == nil {
                                     Spacer()
                                     
                                 }
-                                
-                                
                                 HStack{
                                     Spacer()
                                     
-                                    HighlightedText(text: shift.shiftNote ?? "", highlight: searchTerm)
+                                    HighlightedText(text: shift.shiftNote ?? "", highlight: sortSelection.searchTerm)
                                         .padding(.vertical, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 2 : 5)
                                         .background(Color.gray.opacity(0.1))
                                         .cornerRadius(6)
                                         .padding(.bottom, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 5 : 0)
                                         .padding(.trailing, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 0 : 12)
                                 }
-                                
-                                
-                                
-                                
                             }.frame(maxWidth: 180)
                                 .frame(alignment: .trailing)
-                            
-                            
                         }
                     }
                 }
-                
-                
-                
-                
                 .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                 .listRowBackground(Color("SquaresColor"))
                 
@@ -146,7 +86,7 @@ struct ShiftsList: View {
                     Button(role: .destructive) {
                         shiftStore.deleteOldShift(shift, in: viewContext)
                         
-                        if shifts.isEmpty {
+                        if sortSelection.oldShifts.isEmpty {
                             // navigates back if all shifts are deleted
                             navPath.removeLast()
                             
@@ -156,52 +96,23 @@ struct ShiftsList: View {
                         Image(systemName: "trash")
                     }
                 }
-                
-                
-                
-            }.onReceive(selectedFilters.publisher, perform: { value in
-                print("selectedFilters changed to \(value)")
-            })
+
+            }
+
+        }.searchable(text: $sortSelection.searchTerm, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             
-            
-            
-            
-        }.searchable(text: searchQuery, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
+                .onSubmit(of: .search, sortSelection.fetchShifts)
+               
             .tint(Color.gray)
             .scrollContentBackground(.hidden)
-        
-        
-        // detailview must have changed a shift because event fired, resort list
-            .onReceive(savedPublisher.shiftChanged, perform: {
-                applySortAndFilters()
-                
-            })
-        
+
             .onAppear {
-                
-                // duct tape fix for sorting not persisting state
-                
-                
-                print("on appear the sort is: \(selectedSort)")
-                
-                if navigationState.gestureEnabled {
-                    
-                    // the gesture will only be enabled if theyve navigated to another tab from here. if they nav to detailview and back, nav wont be enabled so dont resort the shifts for now...
+
                     navigationState.gestureEnabled = false
-                    applySortAndFilters()
-                    
-                }
-                
-                
-                
+                sortSelection.fetchShifts()
             }
-            
-            /*  Rectangle()
-                .foregroundStyle(.white)
-                .frame(width: UIScreen.main.bounds.width)
-                .frame(maxHeight: 50) */
-            
-            TagSortView(selectedFilters: $selectedFilters, filters: TagFilter.filters(from: Array(tags)))
+
+            TagSortView(selectedFilters: $sortSelection.selectedFilters, filters: TagFilter.filters(from: Array(tags)))
                 .padding(.bottom)
                 .background {
                     
@@ -212,16 +123,10 @@ struct ShiftsList: View {
                 .frame(width: UIScreen.main.bounds.width)
                 .frame(maxHeight: 30)
             
-                .onChange(of: selectedFilters) { newValue in
-                    let predicates = newValue.compactMap { $0.predicate } // 1. filter out `nil` predicates
-                    if predicates.isEmpty {
-                        let request = shifts
-                        request.nsPredicate = nil // reset predicate if no filters are selected
-                    } else {
-                        let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates) // 2. use `.and` instead of `.or`
-                        let request = shifts
-                        request.nsPredicate = compoundPredicate
-                    }
+                .onChange(of: sortSelection.selectedFilters) { _ in
+                    
+                    sortSelection.fetchShifts()
+                    
                 }
         
     }
@@ -229,7 +134,7 @@ struct ShiftsList: View {
         
         
         
-            .navigationBarTitle(selectedSort.name)
+        .navigationBarTitle(sortSelection.selectedSort.name)
         
         
             .toolbar{
@@ -247,55 +152,33 @@ struct ShiftsList: View {
                 
                 ToolbarItemGroup(placement: .navigationBarTrailing){
                     
+                   
+                    
+                    EditButton()
+                    
                     if editMode?.wrappedValue.isEditing == true {
                         
                         Button(action: {
                             CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
                         }) {
                             Image(systemName: "trash")
-                            // .bold()
                         }.disabled(selection.isEmpty)
+                        
+                    } else {
+                        
+                        SortSelectionView(selectedSortItem: $sortSelection.selectedSort, sorts: ShiftNSSort.sorts)
+                            .onChange(of: sortSelection.selectedSort) { _ in
+                                sortSelection.fetchShifts()
+                            }
                         
                     }
                     
-                    EditButton()
                     
-              
-                    
-                    SortSelectionView(selectedSortItem: $selectedSort, sorts: ShiftSort.sorts)
-                    // .disabled(!selection.isEmpty)
-                        .onChange(of: selectedSort) { newValue in
-                            let request = shifts
-                            request.sortDescriptors = newValue.descriptors
-                            
-                            print("\(newValue)")
-                            
-                        }
-                    
-                
-                    
-                        
-                    
-                     
                 }
                 
                 
             }
         
-    }
-    
-    private func applySortAndFilters() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
-            let request = shifts
-            request.sortDescriptors = selectedSort.descriptors
-            let predicates = selectedFilters.compactMap { $0.predicate }
-            if predicates.isEmpty {
-                request.nsPredicate = nil
-            } else {
-                let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
-                request.nsPredicate = compoundPredicate
-            }
-        }
     }
     
     private func deleteItems() {
@@ -318,34 +201,6 @@ struct ShiftsList: View {
     
     
     
-}
-
-
-
-
-struct SortSelectionView: View {
-    
-    @Binding var selectedSortItem: ShiftSort
-    let sorts: [ShiftSort]
-    
-    var body: some View {
-        Menu {
-            
-            Picker("Sort", selection: $selectedSortItem){
-                ForEach(sorts, id: \.self) { sort in
-                    
-                    Text("\(sort.name)")
-                    
-                }
-            }
-            
-            
-        } label: {
-            
-            Label("Sort", systemImage: "line.horizontal.3.decrease.circle")
-            
-        }
-    }
 }
 
 struct TagSortView: View {
@@ -381,8 +236,147 @@ struct TagSortView: View {
 
 
 class SortSelection: ObservableObject {
-    @Published var selectedSort: ShiftSort = .default
+    @Published var selectedSort: ShiftNSSort = .default
+    
+    @Published var selectedFilters: Set<TagFilter> = []
+    
+    @Published var oldShifts: [OldShift] = []
+    @Published var filteredShifts: [OldShift] = []
+    
+    @Published var searchTerm: String = "" {
+        didSet {
+            if searchTerm.isEmpty {
+                if oldShifts.isEmpty {
+                    fetchShifts()
+                }
+                filteredShifts = oldShifts
+            } else {
+                filteredShifts = oldShifts.filter {
+                    $0.shiftNote?.lowercased().contains(searchTerm.lowercased()) ?? false
+                }
+            }
+        }
+    }
+    
+
+    private var viewContext: NSManagedObjectContext
+
+    init(in context: NSManagedObjectContext) {
+        self.viewContext = context
+        fetchShifts()
+    }
+
+    
+     func fetchShifts() {
+        let request = NSFetchRequest<OldShift>(entityName: "OldShift")
+        request.sortDescriptors = selectedSort.descriptors
+         
+         var predicates = selectedFilters.compactMap { $0.predicate }
+         
+         if !searchTerm.isEmpty {
+                 let searchPredicate = NSPredicate(
+                     format: "shiftNote contains[cd] %@", searchTerm)
+                 predicates.append(searchPredicate)
+             }
+         
+         if !predicates.isEmpty {
+             
+             request.predicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+         }
+
+        do {
+            try withAnimation{
+                oldShifts = try viewContext.fetch(request)
+                filteredShifts = oldShifts
+            }
+        } catch {
+            print("Failed to fetch shifts: \(error)")
+        }
+    }
+    
+    func commitSearch() {
+            fetchShifts() // we only commit full fetch when searching if they submit the search to be more efficient
+        }
+    
 }
+
+
+struct SortSelectionView: View {
+    
+    @Binding var selectedSortItem: ShiftNSSort
+    let sorts: [ShiftNSSort]
+    
+    var body: some View {
+        Menu {
+            
+            Picker("Sort", selection: $selectedSortItem){
+                ForEach(sorts, id: \.self) { sort in
+                    
+                    Text("\(sort.name)")
+                    
+                }
+            }
+            
+            
+        } label: {
+            
+            Label("Sort", systemImage: "line.horizontal.3.decrease.circle")
+            
+        }
+    }
+}
+
+
+struct ShiftNSSort: Hashable, Identifiable {
+    let id: Int
+    let name: String
+    let descriptors: [NSSortDescriptor]
+
+    static let sorts: [ShiftNSSort] = [
+        ShiftNSSort(
+            id: 0,
+            name: "Latest",
+            descriptors: [
+                NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)
+            ]),
+        ShiftNSSort(
+            id: 1,
+            name: "Oldest",
+            descriptors: [
+                NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)
+            ]),
+        ShiftNSSort(
+            id: 2,
+            name: "Pay | Ascending",
+            descriptors: [
+                NSSortDescriptor(keyPath: \OldShift.taxedPay, ascending: false)
+            ]),
+        ShiftNSSort(
+            id: 3,
+            name: "Pay | Descending",
+            descriptors: [
+                NSSortDescriptor(keyPath: \OldShift.taxedPay, ascending: true)
+            ]),
+        ShiftNSSort(
+            id: 4,
+            name: "Longest",
+            descriptors: [
+                NSSortDescriptor(keyPath: \OldShift.duration, ascending: false)
+            ]),
+        ShiftNSSort(
+            id: 5,
+            name: "Shortest",
+            descriptors: [
+                NSSortDescriptor(keyPath: \OldShift.duration, ascending: true)
+            ])
+    ]
+
+    static var `default`: ShiftNSSort { sorts[0] }
+}
+
+
+
+
 
 
 struct ShiftSort: Hashable, Identifiable {

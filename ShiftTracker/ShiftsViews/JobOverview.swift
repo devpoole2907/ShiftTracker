@@ -13,6 +13,8 @@ import Haptics
 
 struct JobOverview: View {
     
+    @EnvironmentObject var sortSelection: SortSelection
+    
     @StateObject var shiftManager = ShiftDataManager()
     
     @State private var showingAddShiftSheet = false
@@ -162,7 +164,7 @@ struct JobOverview: View {
                 }
                 .navigationDestination(for: Int.self) { _ in
                        
-                       ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(savedPublisher)
+                    ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(savedPublisher).environmentObject(sortSelection)
                        
                    }
                 

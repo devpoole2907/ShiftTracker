@@ -46,6 +46,7 @@ struct ShiftTrackerApp: App {
                 .environmentObject(purchaseManager)
                 .environmentObject(NavigationState.shared)
                 .environmentObject(ShiftStore.shared)
+                .environmentObject(SortSelection(in: persistenceController.container.viewContext))
             
             
                 .task{

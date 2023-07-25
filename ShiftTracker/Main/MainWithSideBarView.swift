@@ -29,7 +29,7 @@ struct MainWithSideBarView: View {
     @State private var schedulePath = NavigationPath()
     
     
-    @StateObject var viewModel = ContentViewModel()
+   // @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionManager()
     @EnvironmentObject var navigationState: NavigationState
     @StateObject var scheduleModel = SchedulingViewModel()
@@ -37,7 +37,7 @@ struct MainWithSideBarView: View {
     @EnvironmentObject var themeManager: ThemeDataManager
    // @EnvironmentObject var locationManager: LocationDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
-    
+    @EnvironmentObject var sortSelection: SortSelection
     
     private let notificationManager = ShiftNotificationManager.shared
     
@@ -81,7 +81,7 @@ struct MainWithSideBarView: View {
                         SideMenu(currentTab: $currentTab)
                             .disabled(!navigationState.showMenu)
                             .environmentObject(navigationState)
-                            .environmentObject(viewModel)
+                            .environmentObject(ContentViewModel.shared)
                             .environmentObject(jobSelectionModel)
                             .environmentObject(themeManager)
                         
@@ -90,7 +90,7 @@ struct MainWithSideBarView: View {
                             TabView(selection: $currentTab) {
                                 ContentView()
                                     .environment(\.managedObjectContext, context)
-                                    .environmentObject(viewModel)
+                                    .environmentObject(ContentViewModel.shared)
                                     .environmentObject(jobSelectionModel)
                                     .environmentObject(navigationState)
                                 
@@ -309,7 +309,7 @@ struct MainWithSideBarView: View {
              } */
             
         } else {
-            IntroMainView(isFirstLaunch: $isFirstLaunch).environmentObject(viewModel).environmentObject(jobSelectionModel)
+            IntroMainView(isFirstLaunch: $isFirstLaunch).environmentObject(ContentViewModel.shared).environmentObject(jobSelectionModel)
                 .onAppear {
                     
                     themeManager.resetColorsToDefaults()
