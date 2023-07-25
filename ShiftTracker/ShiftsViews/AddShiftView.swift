@@ -44,6 +44,8 @@ struct AddShiftView: View {
     @State private var newBreakEndDate = Date().addingTimeInterval(10 * 60)
     @State private var isUnpaid = false
     
+    @State private var selectedTags: Set<Tag> = []
+    
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -72,7 +74,7 @@ struct AddShiftView: View {
         newShift.tax = taxPercentage
         newShift.totalTips = Double(totalTips) ?? 0.0
         newShift.shiftNote = notes
-        
+        newShift.tags = NSSet(array: Array(selectedTags))
         
         newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
         
@@ -267,6 +269,10 @@ struct AddShiftView: View {
                                 
                             }
                         }
+                        
+                        TagPicker($selectedTags)
+                        
+                        
                     }.listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                     

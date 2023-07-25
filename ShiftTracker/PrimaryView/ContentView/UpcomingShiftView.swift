@@ -53,6 +53,7 @@ struct UpcomingShiftView: View {
                         let startDate = max(Date(), upcomingShift.startDate ?? Date())
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
+                            
                         }
                         
                     }, cancelAction: nil, title: "Load this shift?").showAndStack()

@@ -52,8 +52,6 @@ struct DetailView: View {
     
     @State private var selectedTags: Set<Tag> = []
     
-    @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
-    
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -251,32 +249,7 @@ struct DetailView: View {
                     }
                 }
                 
-                // WIP
-                
-                VStack(alignment: .center) {
-                                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]) {
-                                        ForEach(tags, id: \.self) { tag in
-                                            Button(action: {
-                                                if selectedTags.contains(tag) {
-                                                    selectedTags.remove(tag)
-                                                } else {
-                                                    selectedTags.insert(tag)
-                                                }
-                                            }) {
-                                                Text("#\(tag.name ?? "")")
-                                                    .bold()
-                                                    .frame(maxWidth: .infinity)
-                                            }
-                                            .buttonStyle(.bordered)
-                                            .tint(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue, opacity: selectedTags.contains(tag) ? 1.0 : 0.5))
-                                            
-                                        }
-                                    }
-                                    .padding(10)
-                                    .background(Color("SquaresColor"))
-                                    .cornerRadius(12)
-                                    .haptics(onChangeOf: selectedTags, type: .soft)
-                                }.allowsHitTesting(isEditing)
+                TagPicker($selectedTags).allowsHitTesting(isEditing)
                 
             }.listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)

@@ -32,6 +32,8 @@ struct CreateShiftForm: View {
     
     @State private var selectedIndex: Int = 0
     
+    @State private var selectedTags: Set<Tag> = []
+    
     // for notifications
     @State private var notifyMe = true
     @State private var selectedReminderTime: ReminderTime = .fifteenMinutes
@@ -65,7 +67,8 @@ struct CreateShiftForm: View {
             isRepeating: enableRepeat,
             repeatID: repeatID,
             reminderTime: selectedReminderTime.timeInterval,
-            notifyMe: notifyMe)
+            notifyMe: notifyMe,
+            tags: selectedTags)
         
         
         
@@ -78,7 +81,7 @@ struct CreateShiftForm: View {
         newShift.reminderTime = selectedReminderTime.timeInterval
         newShift.notifyMe = notifyMe
         newShift.job = jobSelectionViewModel.fetchJob(in: viewContext)
-        
+        newShift.tags = NSSet(array: Array(selectedTags))
         
         do {
             try viewContext.save()
@@ -132,7 +135,8 @@ struct CreateShiftForm: View {
                     isRepeating: enableRepeat,
                     repeatID: repeatID,
                     reminderTime: selectedReminderTime.timeInterval,
-                    notifyMe: notifyMe)
+                    notifyMe: notifyMe,
+                    tags: selectedTags)
                 
                 shiftStore.add(shiftToAdd)
                 
@@ -335,7 +339,6 @@ struct CreateShiftForm: View {
                                     .bold()
                             }.toggleStyle(CustomToggleStyle())
                                 .frame(height: 40)
-                               // .padding(.vertical)
                                 .padding(.horizontal)
                                 .frame(maxWidth: .infinity)
                                 .background(Color("SquaresColor"))
@@ -350,7 +353,6 @@ struct CreateShiftForm: View {
                             }.disabled(!notifyMe)
                             
                                 .frame(height: 40)
-                               // .padding(.vertical)
                                 .padding(.horizontal)
                                 .frame(maxWidth: .infinity)
                       
@@ -360,23 +362,14 @@ struct CreateShiftForm: View {
                             
                         }.padding(.horizontal)
                         
+                        HStack{
+                            TagPicker($selectedTags)
+                        }.padding(.horizontal)
+                           
+                        
                     }
                     
-                }//.padding(.top, 50)
-                   // VStack{
-                       
-                           
-                           
-                
-                       //Spacer()
-                  //  }
-                   
-              
-               
-                   
-                
-             
-               
+                }
           
             }.scrollContentBackground(.hidden)
             

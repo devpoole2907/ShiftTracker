@@ -110,13 +110,12 @@ struct AddTagView: View {
             
             HStack{
                 
-                if selectedTag != nil {
+                if let selectedTag = selectedTag {
                     Button(action: {
-                        guard let selectedTag = selectedTag else { return }
                         
                         deleteTag(selectedTag)
                         clearSelection()
-                        
+                        hideKeyboard()
                         
                     }) {
                         
@@ -127,10 +126,14 @@ struct AddTagView: View {
                                 .bold()
                         } .padding()
                             .frame(maxWidth: .infinity)
-                            .background(.red)
+                            .background((selectedTag.name?.lowercased() == "late" || selectedTag.name?.lowercased() == "overtime" || selectedTag.name?.lowercased() == "night") ? .gray : .red)
+                        
                             .foregroundColor(.white)
                             .cornerRadius(20)
+                            .opacity((selectedTag.name?.lowercased() == "late" || selectedTag.name?.lowercased() == "overtime" || selectedTag.name?.lowercased() == "night") ? 0.5 : 1.0)
                     }.listRowSeparator(.hidden)
+                    
+                        .disabled(selectedTag.name?.lowercased() == "late" || selectedTag.name?.lowercased() == "overtime" || selectedTag.name?.lowercased() == "night")
                        
                 }
                 

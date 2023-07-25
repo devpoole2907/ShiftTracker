@@ -40,6 +40,7 @@ struct JobView: View {
     
     @State private var payShakeTimes: CGFloat = 0
     @State private var nameShakeTimes: CGFloat = 0
+    @State private var titleShakeTimes: CGFloat = 0
     
     @State private var showOvertimeTimeView = false
     @State private var overtimeRate = 1.25
@@ -186,7 +187,7 @@ struct JobView: View {
                                 .padding(.vertical, 10)
                                 .background(Color("SquaresColor"),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
-                            
+                                .shake(times: titleShakeTimes)
                             
                             CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
                                 .padding(.horizontal)
@@ -198,6 +199,7 @@ struct JobView: View {
                        // }
                             .haptics(onChangeOf: payShakeTimes, type: .error)
                             .haptics(onChangeOf: nameShakeTimes, type: .error)
+                            .haptics(onChangeOf: titleShakeTimes, type: .error)
                         
                         HStack(spacing: 0){
                             ForEach(1...6, id: \.self) { index in
@@ -466,6 +468,12 @@ struct JobView: View {
                                 withAnimation(.linear(duration: 0.4)) {
                                     payShakeTimes += 2
                                 }
+                            } else if title.isEmpty {
+                                withAnimation(.linear(duration: 0.4)) {
+                                    titleShakeTimes += 2
+                                }
+                                
+                                
                             }
                             else {
                                 saveJob()

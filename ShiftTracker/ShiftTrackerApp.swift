@@ -13,7 +13,7 @@ import PopupView
 @main
 struct ShiftTrackerApp: App {
     
-    @State private var selectedTab: Tab = .home
+    //@State private var selectedTab: Tab = .home
         private let defaults = UserDefaults.standard
     
     @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
@@ -37,7 +37,8 @@ struct ShiftTrackerApp: App {
     let persistenceController = PersistenceController.shared
     var body: some Scene {
         WindowGroup {
-            MainWithSideBarView(currentTab: $selectedTab)
+            //MainWithSideBarView(currentTab: $selectedTab)
+            MainWithSideBarView()
                 .implementPopupView()
                 .preferredColorScheme(getPreferredColorScheme())
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
@@ -60,7 +61,7 @@ struct ShiftTrackerApp: App {
                     print("got a URL boss man")
                     print(url.path)
                     if url.scheme == "shifttrackerapp" && url.path == "/schedule" {
-                        selectedTab = .schedule
+                       // selectedTab = .schedule
                     }
                 }
                 .onAppear {

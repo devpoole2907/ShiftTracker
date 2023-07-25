@@ -81,7 +81,8 @@ struct IntroMainView: View {
 
 struct IntroMainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainWithSideBarView(currentTab: .constant(.home))
+        //MainWithSideBarView(currentTab: .constant(.home))
+        MainWithSideBarView()
     }
 }
 

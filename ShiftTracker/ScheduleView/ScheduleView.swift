@@ -177,7 +177,7 @@ struct ScheduleView: View {
                                     .fill(showAllScheduledShiftsView ? (colorScheme == .dark ? .white : .black) : .clear)
                                     .padding(-5)
                             )
-                    }
+                    }     .disabled(true)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
                         Button(action: {
@@ -203,7 +203,7 @@ struct ScheduleView: View {
                         }.padding()
               
                         .disabled(showAllScheduledShiftsView || isBeforeToday(dateSelected!.date ?? Date()))
-                        
+                   
                     }
                 ToolbarItem(placement: .navigationBarLeading){
                     Button{
@@ -214,7 +214,7 @@ struct ScheduleView: View {
                         Image(systemName: "line.3.horizontal")
                             .bold()
                      
-                    }.disabled(true)
+                    }
                 }
             }.haptics(onChangeOf: showAllScheduledShiftsView, type: .light)
             

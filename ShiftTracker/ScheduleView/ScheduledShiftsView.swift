@@ -126,17 +126,38 @@ struct ListViewRow: View {
                 
                 ZStack{
                     VStack(alignment: .leading){
+                        
                         HStack(spacing : 10){
-                            Image(systemName: shift.job?.icon ?? "briefcase.fill")
-                                .padding(12)
-                                .foregroundStyle(.white)
-                                .font(.title2)
-                                .background {
-                                    
-                                    Circle()
-                                        .foregroundStyle(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)).gradient)
+                            
+                            VStack(spacing: 3){
+                                
+                                HStack{
+                                    Image(systemName: shift.job?.icon ?? "briefcase.fill")
+                                        .font(.title3)
+                                        .foregroundStyle(.white)
                                     
                                 }
+                                .padding(12)
+                                .background {
+                                        
+                                        Circle()
+                                            .foregroundStyle(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)).gradient)
+                                            .frame(width: 40, height: 40)
+                                        
+                                    }
+                                
+                                HStack(spacing: 5){
+                                    
+                                    ForEach(Array(shift.tags), id: \.self) { tag in
+                                            Circle()
+                                                .foregroundStyle(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue))
+                                                .frame(width: 8, height: 8)
+                                        }
+                                    
+                                }
+                                
+                                
+                            }
                                 
                                
                                 .frame(width: UIScreen.main.bounds.width / 7)

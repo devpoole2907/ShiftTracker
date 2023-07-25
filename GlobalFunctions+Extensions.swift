@@ -419,6 +419,9 @@ class NavigationState: ObservableObject {
     
     @Published var gestureEnabled: Bool = true
     @Published var showMenu: Bool = false
+    
+    @Published var currentTab: Tab = .home
+    
 }
 
 

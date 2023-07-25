@@ -43,12 +43,12 @@ struct MainWithSideBarView: View {
     
     @Environment(\.managedObjectContext) private var context
     
-    init(currentTab: Binding<Tab>) {
-         self._currentTab = currentTab
+    init(/*currentTab: Binding<Tab>*/) {
+        // self._currentTab = currentTab
          UITabBar.appearance().isHidden = true
      }
     
-    @Binding var currentTab: Tab
+    //@Binding var currentTab: Tab
     
     @State var offset: CGFloat = 0
     @State var lastStoredOffset: CGFloat = 0
@@ -78,7 +78,7 @@ struct MainWithSideBarView: View {
                 ZStack{
                     
                     HStack(spacing: 0){
-                        SideMenu(currentTab: $currentTab)
+                        SideMenu(currentTab: $navigationState.currentTab)
                             .disabled(!navigationState.showMenu)
                             .environmentObject(navigationState)
                             .environmentObject(ContentViewModel.shared)
@@ -87,7 +87,7 @@ struct MainWithSideBarView: View {
                         
                         VStack(spacing: 0){
                             
-                            TabView(selection: $currentTab) {
+                            TabView(selection: $navigationState.currentTab) {
                                 ContentView()
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(ContentViewModel.shared)
@@ -190,7 +190,7 @@ struct MainWithSideBarView: View {
                     .offset(x: -sideBarWidth / 2)
                     .offset(x: offset > 0 ? offset : 0)
                     
-                    if (currentTab == .settings && settingsPath.isEmpty) || (currentTab == .home || currentTab == .schedule) || (currentTab == .timesheets && path.isEmpty) {
+                    if (navigationState.currentTab == .settings && settingsPath.isEmpty) || (navigationState.currentTab == .home || navigationState.currentTab == .schedule) || (navigationState.currentTab == .timesheets && path.isEmpty) {
                     
                     HStack {
                         if navigationState.showMenu {
@@ -352,9 +352,9 @@ func onEnd(value: DragGesture.Value) {
     func TabButton(tab: Tab, useSystemImage: Bool = false, action: (() -> Void)? = nil) -> some View {
         Button {
             
-            if currentTab != tab {
+            if navigationState.currentTab != tab {
                 withAnimation {
-                    currentTab = tab
+                    navigationState.currentTab = tab
                 }
                 
             } else if let action {
@@ -385,7 +385,7 @@ func onEnd(value: DragGesture.Value) {
                     .renderingMode(.template)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 30, height: 30)
-                    .foregroundColor(currentTab == tab ? .primary : .gray)
+                    .foregroundColor(navigationState.currentTab == tab ? .primary : .gray)
                     .frame(maxWidth: .infinity)
             } else if let image = tab.image {
                 Image(image)
@@ -393,7 +393,7 @@ func onEnd(value: DragGesture.Value) {
                     .renderingMode(.template)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 23, height: 22)
-                    .foregroundColor(currentTab == tab ? .primary : .gray)
+                    .foregroundColor(navigationState.currentTab == tab ? .primary : .gray)
                     .frame(maxWidth: .infinity)
             }
             
@@ -408,7 +408,8 @@ func onEnd(value: DragGesture.Value) {
 
 struct MainWithSideBarView_Previews: PreviewProvider {
     static var previews: some View {
-        MainWithSideBarView(currentTab: .constant(.home))
+        //MainWithSideBarView(currentTab: .constant(.home))
+        MainWithSideBarView()
     }
 }
 

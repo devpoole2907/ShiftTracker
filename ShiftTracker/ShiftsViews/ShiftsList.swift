@@ -32,13 +32,7 @@ struct ShiftsList: View {
     
     @State private var showingAddShiftSheet: Bool = false
     
-    @FetchRequest(
-        entity: Tag.entity(),
-        sortDescriptors: [
-            NSSortDescriptor(keyPath: \Tag.tagID, ascending: true)
-        ]
-    )
-    private var tags: FetchedResults<Tag>
+    
     
     @Binding var navPath: NavigationPath
     
@@ -107,12 +101,13 @@ struct ShiftsList: View {
             .scrollContentBackground(.hidden)
 
             .onAppear {
-
+                if navigationState.gestureEnabled || sortSelection.oldShifts.isEmpty {
                     navigationState.gestureEnabled = false
-                sortSelection.fetchShifts()
+                    sortSelection.fetchShifts()
+                }
             }
 
-            TagSortView(selectedFilters: $sortSelection.selectedFilters, filters: TagFilter.filters(from: Array(tags)))
+            TagSortView(selectedFilters: $sortSelection.selectedFilters)
                 .padding(.bottom)
                 .background {
                     
@@ -204,10 +199,22 @@ struct ShiftsList: View {
 }
 
 struct TagSortView: View {
+    
+    @FetchRequest(
+        entity: Tag.entity(),
+        sortDescriptors: [
+            NSSortDescriptor(keyPath: \Tag.tagID, ascending: true)
+        ]
+    )
+    private var tags: FetchedResults<Tag>
+    
     @Binding var selectedFilters: Set<TagFilter>
-    let filters: [TagFilter]
+    
 
     var body: some View {
+        
+        let filters = TagFilter.filters(from: Array(tags))
+        
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 ForEach(filters, id: \.self) { filter in
