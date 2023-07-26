@@ -76,6 +76,7 @@
         <attribute name="colorBlue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="colorGreen" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="colorRed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="editable" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="tagID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="oldShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="tags" inverseEntity="OldShift"/>

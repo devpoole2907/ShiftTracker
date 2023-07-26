@@ -15,7 +15,7 @@ struct JobOverview: View {
     
     @EnvironmentObject var sortSelection: SortSelection
     
-    @StateObject var shiftManager = ShiftDataManager()
+    @EnvironmentObject var shiftManager: ShiftDataManager
     
     @State private var showingAddShiftSheet = false
     
@@ -183,7 +183,7 @@ struct JobOverview: View {
             if let job = jobSelectionViewModel.fetchJob(in: viewContext){
                 AddShiftView(job: job).environment(\.managedObjectContext, viewContext).environmentObject(shiftManager)
                     .presentationDetents([.large])
-                    .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                    .presentationBackground(colorScheme == .dark ? .black : .white)
             } else {
                 Text("Error")
             }

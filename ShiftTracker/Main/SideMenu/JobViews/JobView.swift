@@ -410,11 +410,7 @@ struct JobView: View {
                         
                 
                             ProView()
-                        
-                         
-                           
-               
-                            .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                     
                    
                         
                         
@@ -427,7 +423,7 @@ struct JobView: View {
                             OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .fraction(0.4)])
-                            .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                                .presentationBackground(colorScheme == .dark ? .black : .white)
                                 .presentationDragIndicator(.visible)
                                 .presentationCornerRadius(35)
                             
@@ -437,7 +433,7 @@ struct JobView: View {
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .medium, .large])
                                 .presentationDragIndicator(.visible)
-                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                                .presentationBackground(colorScheme == .dark ? .black : .white)
                                 .presentationCornerRadius(35)
                        
                             
@@ -464,7 +460,7 @@ struct JobView: View {
                                     nameShakeTimes += 2
                                 }
                             }
-                            else if hourlyPay.isEmpty {
+                            else if hourlyPay.isEmpty || hourlyPay == "0.0" {
                                 withAnimation(.linear(duration: 0.4)) {
                                     payShakeTimes += 2
                                 }

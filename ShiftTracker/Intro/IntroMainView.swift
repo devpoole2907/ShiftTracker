@@ -20,6 +20,7 @@ struct IntroMainView: View {
     
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.managedObjectContext) var context
     
     @State private var keyboardHeight: CGFloat = 0
     
@@ -67,6 +68,7 @@ struct IntroMainView: View {
                     .environmentObject(jobSelectionViewModel)
                     .onDisappear{
                         isFirstLaunch = false
+                        createTags(in: context)
                     }
             }
             

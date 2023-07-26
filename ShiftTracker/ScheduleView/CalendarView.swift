@@ -145,7 +145,9 @@ struct CalendarView: UIViewRepresentable {
         }
     
         func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-              parent.dateSelected = dateComponents
+            withAnimation{
+                parent.dateSelected = dateComponents
+            }
             
          //   print("setting date selected to \(dateComponents?.date)")
             
@@ -162,7 +164,9 @@ struct CalendarView: UIViewRepresentable {
             let foundEvents = shiftStore.shifts
                 .filter {$0.startDate.startOfDay == dateComponents.date?.startOfDay}
             if !foundEvents.isEmpty {
-                  parent.displayEvents.toggle()
+     
+                    parent.displayEvents.toggle()
+                
             }
             
           //  print("the tapped date is : \(dateComponents.date)")

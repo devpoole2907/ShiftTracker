@@ -51,7 +51,7 @@ struct ThemesGuideView: View {
                         
                    
                     
-                        Text("Select the UI element you wish to change the color of, then select a color from the picker below.")
+                        Text("Select the UI element you wish to change the color of, then select a color from the picker.")
                             .font(.caption2)
                             .bold()
                            
@@ -260,7 +260,8 @@ struct ThemesGuideView: View {
         }
             
             
-        .navigationTitle("How to use themes")
+        .navigationTitle("Themes Info")
+        .navigationBarTitleDisplayMode(.inline)
             
             
         .toolbar{

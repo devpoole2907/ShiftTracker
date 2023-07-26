@@ -13,12 +13,13 @@ struct AddShiftView: View {
     let breaksManager = BreaksManager()
     
     @EnvironmentObject var shiftManager: ShiftDataManager
+    @EnvironmentObject var shiftStore: ShiftStore
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     
-    @State private var shiftStartDate = Date()
-    @State private var shiftEndDate = Date()
+    @State private var shiftStartDate: Date
+    @State private var shiftEndDate: Date
     @State private var breakStartDate = Date()
     @State private var breakEndDate = Date()
     @State private var hourlyPay: String
@@ -30,6 +31,7 @@ struct AddShiftView: View {
     @State private var isAddingBreak = false
     
     var job: Job
+    var dateSelected: DateComponents?
     
     @FocusState private var payIsFocused: Bool
     @FocusState private var tipIsFocused: Bool
@@ -66,58 +68,30 @@ struct AddShiftView: View {
         return totalPay - (totalPay * taxPercentage / 100.0)
     }
     
-    private func saveShift(job: Job) {
-        let newShift = OldShift(context: viewContext)
-        newShift.shiftStartDate = shiftStartDate
-        newShift.shiftEndDate = shiftEndDate
-        newShift.hourlyPay = Double(hourlyPay) ?? 0.0
-        newShift.tax = taxPercentage
-        newShift.totalTips = Double(totalTips) ?? 0.0
-        newShift.shiftNote = notes
-        newShift.tags = NSSet(array: Array(selectedTags))
-        
-        newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
-        
-        let unpaidBreaks = (tempBreaks).filter { $0.isUnpaid == true }
-        let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate) }
-        let paidDuration = newShift.duration - totalBreakDuration
-        newShift.totalPay = (paidDuration / 3600.0) * newShift.hourlyPay
-        newShift.taxedPay = newShift.totalPay - (newShift.totalPay * newShift.tax / 100.0)
-        
-        newShift.job = job
-        
-        newShift.shiftID = UUID()
-        
-        for tempBreak in tempBreaks {
-            if let breakEndDate = tempBreak.endDate {
-                breaksManager.createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
-            }
-        }
-        
-        do {
-            try viewContext.save()
-            dismiss()
-        } catch {
-            print("Error saving new shift: \(error)")
-        }
-    }
+
     
-    private func digitsFromTimeString(timeString: String) -> [Int] {
-        return timeString.flatMap { char in
-            if let digit = Int(String(char)) {
-                return [digit]
-            } else {
-                return []
-            }
-        }
-    }
+
     
     
-    init(job: Job){
+    init(job: Job, dateSelected: DateComponents? = nil) {
         _hourlyPay = State(initialValue: "\(job.hourlyPay)")
         _taxPercentage = State(initialValue: job.tax)
         self.job = job
+        self.dateSelected = dateSelected
         
+        if let dateSelected = dateSelected {
+            let calendar = Calendar.current
+            self._shiftStartDate = State(initialValue: dateSelected.date ?? Date())
+                        self._shiftEndDate = State(initialValue: calendar.date(byAdding: .hour, value: 8, to: calendar.date(from: dateSelected)!) ?? Date())
+            
+            
+        } else {
+            
+            self._shiftStartDate = State(initialValue: Date())
+                        self._shiftEndDate = State(initialValue: Date())
+            
+            
+        }
         
         // adds clear text button to text fields
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -133,6 +107,16 @@ struct AddShiftView: View {
         return totalDuration
     }
     
+    private func digitsFromTimeString(timeString: String) -> [Int] {
+        return timeString.flatMap { char in
+            if let digit = Int(String(char)) {
+                return [digit]
+            } else {
+                return []
+            }
+        }
+    }
+    
     
     
     var body: some View {
@@ -142,12 +126,12 @@ struct AddShiftView: View {
         
         NavigationStack {
             ZStack{
-                Color(.systemBackground).edgesIgnoringSafeArea(.all)
+               // Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 Form {
                     
                     Section{
                         //  HStack{
-                        
+                        VStack{
                         ZStack{
                             RoundedRectangle(cornerRadius: 12)
                                 .foregroundColor(Color("SquaresColor"))
@@ -271,14 +255,11 @@ struct AddShiftView: View {
                         }
                         
                         TagPicker($selectedTags)
+                                .padding(.horizontal, 10)
+                                .padding(.top, 5)
                         
+                    }
                         
-                    }.listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                    
-                    
-                    
-                    Section{
                         VStack{
                             VStack(alignment: .leading){
                                 Text("Start:")
@@ -327,57 +308,10 @@ struct AddShiftView: View {
                                 
                                 
                             }
-                        }
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                    
-                    
-                    
-                    Section{
-                        VStack(alignment: .leading) {
                             
-                            Text("Hourly pay:")
-                                .bold()
-                            
-                                .padding(.vertical, 5)
-                            
-                                .cornerRadius(20)
-                            
-                            
-                            AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Hourly Pay", text: $hourlyPay)
-                                .keyboardType(.decimalPad)
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
-                            
-                            
-                            
-                            
-                            
-                            
-                        }
-                        if taxEnabled {
-                            
-                            VStack(alignment: .leading){
-                                Text("Estimated Tax")
-                                    .bold()
-                                    .padding(.vertical, 5)
-                                    .padding(.leading, -2)
-                                Picker("Estimated tax:", selection: $taxPercentage) {
-                                    ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
-                                        Text(index / 100, format: .percent)
-                                    }
-                                }.pickerStyle(.wheel)
-                                    .frame(maxHeight: 100)
-                            }
-                            .padding(.horizontal, 5)
-                        }
-                        
-                        if tipsEnabled {
                             VStack(alignment: .leading) {
                                 
-                                Text("Total tips:")
+                                Text("Hourly pay:")
                                     .bold()
                                 
                                     .padding(.vertical, 5)
@@ -385,9 +319,8 @@ struct AddShiftView: View {
                                     .cornerRadius(20)
                                 
                                 
-                                AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Total tips", text: $totalTips)
+                                AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Hourly Pay", text: $hourlyPay)
                                     .keyboardType(.decimalPad)
-                                    .focused($payIsFocused)
                                     .padding(.horizontal)
                                     .padding(.vertical, 10)
                                     .background(Color("SquaresColor"),in:
@@ -395,39 +328,89 @@ struct AddShiftView: View {
                                 
                                 
                                 
+                                
+                                
+                                
                             }
-                            /*  Toggle(isOn: $addTipsToTotal) {
-                             HStack {
-                             Image(systemName: "chart.line.downtrend.xyaxis")
-                             Spacer().frame(width: 10)
-                             Text("Add tips to total pay")
-                             }
-                             }.toggleStyle(OrangeToggleStyle()) */
+                            if taxEnabled {
+                                
+                                VStack(alignment: .leading){
+                                    Text("Estimated Tax")
+                                        .bold()
+                                        .padding(.vertical, 5)
+                                        .padding(.leading, -2)
+                                    Picker("Estimated tax:", selection: $taxPercentage) {
+                                        ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
+                                            Text(index / 100, format: .percent)
+                                        }
+                                    }.pickerStyle(.wheel)
+                                        .frame(maxHeight: 100)
+                                }
+                                .padding(.horizontal, 5)
+                            }
+                            
+                            if tipsEnabled {
+                                VStack(alignment: .leading) {
+                                    
+                                    Text("Total tips:")
+                                        .bold()
+                                    
+                                        .padding(.vertical, 5)
+                                    
+                                        .cornerRadius(20)
+                                    
+                                    
+                                    AFuckingCurrencyTextFieldBecauseLetsJustDuplicateBloodyCode(placeholder: "Total tips", text: $totalTips)
+                                        .keyboardType(.decimalPad)
+                                        .focused($payIsFocused)
+                                        .padding(.horizontal)
+                                        .padding(.vertical, 10)
+                                        .background(Color("SquaresColor"),in:
+                                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    
+                                    
+                                    
+                                }
+                                /*  Toggle(isOn: $addTipsToTotal) {
+                                 HStack {
+                                 Image(systemName: "chart.line.downtrend.xyaxis")
+                                 Spacer().frame(width: 10)
+                                 Text("Add tips to total pay")
+                                 }
+                                 }.toggleStyle(OrangeToggleStyle()) */
+                                
+                            }
+                            VStack(alignment: .leading){
+                                Text("Notes:")
+                                    .bold()
+                                //.padding(.horizontal, 15)
+                                    .padding(.vertical, 5)
+                                //.background(Color.primary.opacity(0.04))
+                                    .cornerRadius(20)
+                                
+                                TextEditor(text: $notes)
+                       
+                 
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 10)
+                                    .background(Color("SquaresColor"),in:
+                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                
+                                
+                                
+                                    .frame(minHeight: 200, maxHeight: .infinity)
+                            }
+                            
+                            
                             
                         }
-                        VStack(alignment: .leading){
-                            Text("Notes:")
-                                .bold()
-                            //.padding(.horizontal, 15)
-                                .padding(.vertical, 5)
-                            //.background(Color.primary.opacity(0.04))
-                                .cornerRadius(20)
-                            
-                            TextEditor(text: $notes)
-                   
-             
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
-                            
-                            
-                            
-                                .frame(minHeight: 200, maxHeight: .infinity)
-                        }
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
+                        
+                    }.listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
                     
+                    
+           
                         
                     
                     HStack{
@@ -446,6 +429,7 @@ struct AddShiftView: View {
                         .padding(.horizontal, 5)
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
+                        .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
                         .sheet(isPresented: $isAddingBreak){
                             
                             BreakInputView(newBreakStartDate: $newBreakStartDate, newBreakEndDate: $newBreakEndDate, isUnpaid: $isUnpaid, startDate: shiftStartDate, endDate: shiftEndDate, buttonAction: {
@@ -454,10 +438,11 @@ struct AddShiftView: View {
                                 isAddingBreak = false
                             })
                                 .presentationDetents([ .fraction(0.4)])
-                                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                                .presentationBackground(colorScheme == .dark ? .black : .white)
                                 .presentationCornerRadius(35)
                         }
                     TempBreaksListView(breaks: $tempBreaks)
+                        .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
                     /*   if let breaks = shift.breaks as? Set<Break> {
                      let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
                      BreaksListView(breaks: sortedBreaks, isEditing: $isEditing, shift: shift)
@@ -467,7 +452,7 @@ struct AddShiftView: View {
                         .listRowBackground(Color.clear)
 
                 }.scrollContentBackground(.hidden)
-                    .listStyle(.inset)
+                   // .listStyle(.inset)
                 
                 
                     .toolbar{
@@ -494,8 +479,15 @@ struct AddShiftView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        saveShift(job: job)
+                        
+                        saveShift()
+                        
+                        
+                        
                         shiftManager.shiftAdded.toggle()
+                        
+                        
+                        
                         dismiss()
                     }) {
                         Image(systemName: "folder.badge.plus")
@@ -510,6 +502,46 @@ struct AddShiftView: View {
             
             
             
+        }
+    }
+    
+    func saveShift() {
+        let newShift = OldShift(context: viewContext)
+        newShift.shiftStartDate = shiftStartDate
+        newShift.shiftEndDate = shiftEndDate
+        newShift.hourlyPay = Double(hourlyPay) ?? 0.0
+        newShift.tax = taxPercentage
+        newShift.totalTips = Double(totalTips) ?? 0.0
+        newShift.shiftNote = notes
+        newShift.tags = NSSet(array: Array(selectedTags))
+        
+        newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
+        
+        let unpaidBreaks = (tempBreaks).filter { $0.isUnpaid == true }
+        let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate) }
+        let paidDuration = newShift.duration - totalBreakDuration
+        newShift.totalPay = (paidDuration / 3600.0) * newShift.hourlyPay
+        newShift.taxedPay = newShift.totalPay - (newShift.totalPay * newShift.tax / 100.0)
+        
+        newShift.job = job
+        
+        newShift.shiftID = UUID()
+        
+        for tempBreak in tempBreaks {
+            if let breakEndDate = tempBreak.endDate {
+                breaksManager.createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
+            }
+        }
+        
+        shiftStore.add(SingleScheduledShift(oldShift: newShift))
+        
+        
+        
+        do {
+            try viewContext.save()
+           
+        } catch {
+            print("Error saving new shift: \(error)")
         }
     }
     

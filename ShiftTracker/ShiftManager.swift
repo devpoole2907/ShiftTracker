@@ -12,6 +12,8 @@ import Combine
 
 class ShiftDataManager: ObservableObject {
     
+    static let shared = ShiftDataManager()
+    
     @Published var recentShifts: [singleShift] = []
     @Published var monthlyShifts: [singleShift] = []
     @Published var halfYearlyShifts: [singleShift] = []
@@ -290,6 +292,11 @@ class ShiftDataManager: ObservableObject {
     func getTotalHours<T: Payable>(from shifts: [T]) -> Double {
         return shifts.reduce(0, { $0 + $1.hoursCount })
     }
+    
+    
+   
+    
+    
     
     
 }

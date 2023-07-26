@@ -20,6 +20,8 @@ struct ScheduleView: View {
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
+    @EnvironmentObject var shiftManager: ShiftDataManager
+    
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var shiftStore: ShiftStore
     
@@ -74,8 +76,9 @@ struct ScheduleView: View {
         guard let date = dateSelected?.date else { displayedOldShifts = []; return }
         let startOfDay = Calendar.current.startOfDay(for: date)
         let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
-
-        displayedOldShifts = allShifts.filter { ($0.shiftStartDate! as Date) >= startOfDay && ($0.shiftStartDate! as Date) < endOfDay }
+        withAnimation {
+            displayedOldShifts = allShifts.filter { ($0.shiftStartDate! as Date) >= startOfDay && ($0.shiftStartDate! as Date) < endOfDay }
+        }
     }
 
     
@@ -100,7 +103,12 @@ struct ScheduleView: View {
                        //
                                 .onChange(of: dateSelected) { _ in
                                     
-                                fetchShifts()
+                                    
+                                   if isBeforeToday(dateSelected!.date ?? Date()) {
+                                    
+                                           fetchShifts()
+                                       
+                                    }
                                     
                                 }
                            
@@ -110,11 +118,11 @@ struct ScheduleView: View {
                            
                         
                             
-                            
+                        
                             
                         
                        // } else {
-                        if !isBeforeToday(dateSelected!.date ?? Date()) {
+                        if !isBeforeToday(dateSelected?.date ?? Date()) {
                             ScheduledShiftsView(dateSelected: $dateSelected)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)
@@ -202,7 +210,7 @@ struct ScheduleView: View {
                                 .bold()
                         }.padding()
               
-                        .disabled(showAllScheduledShiftsView || isBeforeToday(dateSelected!.date ?? Date()))
+                        .disabled(showAllScheduledShiftsView)
                    
                     }
                 ToolbarItem(placement: .navigationBarLeading){
@@ -221,14 +229,30 @@ struct ScheduleView: View {
             
                 .sheet(isPresented: $showCreateShiftSheet) {
                     
-                    
-                    CreateShiftForm(dateSelected: $dateSelected)
-                    .environmentObject(shiftStore)
-                    .environmentObject(jobSelectionViewModel)
-                    .environment(\.managedObjectContext, viewContext)
-                    .presentationDetents([.large])
-                    .presentationCornerRadius(35)
-                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                    if !isBeforeToday(dateSelected!.date ?? Date()) {
+                        CreateShiftForm(dateSelected: $dateSelected)
+                   
+                            .presentationDetents([.large])
+                            .presentationCornerRadius(35)
+                            .presentationBackground(colorScheme == .dark ? .black : .white)
+                    } else {
+                        
+                        AddShiftView(job: jobSelectionViewModel.fetchJob(in: viewContext)!, dateSelected: dateSelected)
+                            .environmentObject(shiftManager)
+                            .onDisappear {
+                                
+                                    fetchShifts()
+                                
+                            }
+                            
+                        .presentationDetents([.large])
+                        .presentationCornerRadius(35)
+                        .presentationBackground(colorScheme == .dark ? .black : .white)
+                        
+                    }
+                        
+                        
+                        
                 }
             
         }.onAppear{

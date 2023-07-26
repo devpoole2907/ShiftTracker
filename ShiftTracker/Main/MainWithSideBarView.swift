@@ -34,6 +34,8 @@ struct MainWithSideBarView: View {
     @EnvironmentObject var navigationState: NavigationState
     @StateObject var scheduleModel = SchedulingViewModel()
     
+    @StateObject var shiftManager = ShiftDataManager.shared
+    
     @EnvironmentObject var themeManager: ThemeDataManager
    // @EnvironmentObject var locationManager: LocationDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
@@ -103,6 +105,7 @@ struct MainWithSideBarView: View {
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(jobSelectionModel)
                                     .environmentObject(navigationState)
+                                    .environmentObject(shiftManager)
                                     .tag(Tab.timesheets)
                                 
                                 
@@ -111,6 +114,7 @@ struct MainWithSideBarView: View {
                                     .environmentObject(navigationState)
                                     .environmentObject(jobSelectionModel)
                                     .environmentObject(scheduleModel)
+                                    .environmentObject(shiftManager)
                                     .navigationBarTitleDisplayMode(.inline)
                                 
                                     .tag(Tab.schedule)
@@ -313,7 +317,7 @@ struct MainWithSideBarView: View {
                 .onAppear {
                     
                     themeManager.resetColorsToDefaults()
-                    createTags(in: context)
+                    
                     
                     
                 }

@@ -93,9 +93,11 @@ struct AddTagView: View {
                 HStack{
                     
                     
-                    CustomTextField(text: $tagName, hint: "Add Tag", leadingIcon: "number")
+                    CustomTextField(text: $tagName, hint: "Add Tag", leadingIcon: !(selectedTag?.editable ?? true) ? "exclamationmark.triangle.fill" : "number")
                         .frame(maxHeight: 40)
                         .shake(times: tagShakeTimes)
+                        .disabled((!(selectedTag?.editable ?? true)))
+                    
                     
                     ZStack{
                         Circle()
@@ -126,14 +128,14 @@ struct AddTagView: View {
                                 .bold()
                         } .padding()
                             .frame(maxWidth: .infinity)
-                            .background((selectedTag.name?.lowercased() == "late" || selectedTag.name?.lowercased() == "overtime" || selectedTag.name?.lowercased() == "night") ? .gray : .red)
+                            .background(!selectedTag.editable ? .gray : .red)
                         
                             .foregroundColor(.white)
                             .cornerRadius(20)
-                            .opacity((selectedTag.name?.lowercased() == "late" || selectedTag.name?.lowercased() == "overtime" || selectedTag.name?.lowercased() == "night") ? 0.5 : 1.0)
+                            .opacity(!selectedTag.editable ? 0.5 : 1.0)
                     }.listRowSeparator(.hidden)
                     
-                        .disabled(selectedTag.name?.lowercased() == "late" || selectedTag.name?.lowercased() == "overtime" || selectedTag.name?.lowercased() == "night")
+                        .disabled(!selectedTag.editable)
                        
                 }
                 
@@ -234,6 +236,7 @@ struct AddTagView: View {
     private func addTag() {
         let newTag = Tag(context: viewContext)
         newTag.name = tagName
+        newTag.editable = true
         newTag.tagID = UUID()
         let rgb = UIColor(tagColor).rgbComponents
         newTag.colorRed = Double(rgb.0)

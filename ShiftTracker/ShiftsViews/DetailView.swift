@@ -136,126 +136,128 @@ struct DetailView: View {
         var breakDigits = digitsFromTimeString(timeString: totalBreakDuration(for: (shift.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval())
         
         List{
-            
             Section{
                 
-                ZStack{
-                    RoundedRectangle(cornerRadius: 12)
-                        .foregroundColor(Color("SquaresColor"))
-                        .frame(width: UIScreen.main.bounds.width - 40)
-                        .shadow(radius: 5, x: 0, y: 4)
-                    VStack(alignment: .center, spacing: 5) {
-                        VStack {
-                            Text("\(currencyFormatter.string(from: NSNumber(value: shift.taxedPay)) ?? "")")
-                                .padding(.horizontal, 20)
-                                .font(.system(size: 60).monospacedDigit())
-                                .fontWeight(.bold)
-                                .lineLimit(1)
-                                .allowsTightening(true)
-                            
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.top)
-                        HStack(spacing: 10){
-                            if shift.tax > 0 {
-                                HStack(spacing: 2){
-                                    Image(systemName: "chart.line.downtrend.xyaxis")
-                                        .font(.system(size: 15).monospacedDigit())
-                                        .fontWeight(.light)
-                                    Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalPay)) ?? "")")
-                                        .font(.system(size: 20).monospacedDigit())
-                                        .bold()
-                                        .lineLimit(1)
-                                        .allowsTightening(true)
-                                }.foregroundStyle(themeManager.taxColor)
+                VStack{
+                    
+                    ZStack{
+                        RoundedRectangle(cornerRadius: 12)
+                            .foregroundColor(Color("SquaresColor"))
+                            .frame(width: UIScreen.main.bounds.width - 40)
+                            .shadow(radius: 5, x: 0, y: 4)
+                        VStack(alignment: .center, spacing: 5) {
+                            VStack {
+                                Text("\(currencyFormatter.string(from: NSNumber(value: shift.taxedPay)) ?? "")")
+                                    .padding(.horizontal, 20)
+                                    .font(.system(size: 60).monospacedDigit())
+                                    .fontWeight(.bold)
+                                    .lineLimit(1)
+                                    .allowsTightening(true)
+                                
                             }
-                            if shift.totalTips > 0 {
-                                HStack(spacing: 2){
-                                    Image(systemName: "chart.line.uptrend.xyaxis")
-                                        .font(.system(size: 15).monospacedDigit())
-                                        .fontWeight(.light)
-                                    Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalTips)) ?? "")")
-                                        .font(.system(size: 20).monospacedDigit())
-                                        .bold()
-                                        .lineLimit(1)
-                                }.foregroundStyle(themeManager.tipsColor)
-                            }
-                        }
-                        
-                        .padding(.horizontal, 20)
-                        
-                        
-                        .frame(maxWidth: .infinity)
-                        .padding(.bottom, 5)
-                        
-                        // }
-                        
-                        Divider().frame(maxWidth: 200)
-                        if let shiftsBreaks = shift.breaks, totalBreakDuration(for: shift.breaks as! Set<Break>) > 0 {
-                            HStack(spacing: 0) {
-                                ForEach(0..<timeDigits.count, id: \.self) { index in
-                                    RollingDigit(digit: timeDigits[index])
-                                        .frame(width: 20, height: 30)
-                                        .mask(FadeMask())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
-                                    }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top)
+                            HStack(spacing: 10){
+                                if shift.tax > 0 {
+                                    HStack(spacing: 2){
+                                        Image(systemName: "chart.line.downtrend.xyaxis")
+                                            .font(.system(size: 15).monospacedDigit())
+                                            .fontWeight(.light)
+                                        Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalPay)) ?? "")")
+                                            .font(.system(size: 20).monospacedDigit())
+                                            .bold()
+                                            .lineLimit(1)
+                                            .allowsTightening(true)
+                                    }.foregroundStyle(themeManager.taxColor)
+                                }
+                                if shift.totalTips > 0 {
+                                    HStack(spacing: 2){
+                                        Image(systemName: "chart.line.uptrend.xyaxis")
+                                            .font(.system(size: 15).monospacedDigit())
+                                            .fontWeight(.light)
+                                        Text("\(currencyFormatter.string(from: NSNumber(value: shift.totalTips)) ?? "")")
+                                            .font(.system(size: 20).monospacedDigit())
+                                            .bold()
+                                            .lineLimit(1)
+                                    }.foregroundStyle(themeManager.tipsColor)
                                 }
                             }
-                            .foregroundStyle(themeManager.timerColor)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
                             
-                            HStack(spacing: 0) {
-                                ForEach(0..<breakDigits.count, id: \.self) { index in
-                                    RollingDigit(digit: breakDigits[index])
-                                        .frame(width: 9, height: 14)
-                                        .mask(FadeMask())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 12, weight: .bold).monospacedDigit())
+                            .padding(.horizontal, 20)
+                            
+                            
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom, 5)
+                            
+                            // }
+                            
+                            Divider().frame(maxWidth: 200)
+                            if let shiftsBreaks = shift.breaks, totalBreakDuration(for: shift.breaks as! Set<Break>) > 0 {
+                                HStack(spacing: 0) {
+                                    ForEach(0..<timeDigits.count, id: \.self) { index in
+                                        RollingDigit(digit: timeDigits[index])
+                                            .frame(width: 20, height: 30)
+                                            .mask(FadeMask())
+                                        if index == 1 || index == 3 {
+                                            Text(":")
+                                                .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                        }
                                     }
                                 }
-                            }
-                            .foregroundStyle(themeManager.breaksColor)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom)
-                            
-                            
-                        } else {
-                            HStack(spacing: 0) {
-                                ForEach(0..<timeDigits.count, id: \.self) { index in
-                                    RollingDigit(digit: timeDigits[index])
-                                        .frame(width: 20, height: 30)
-                                        .mask(FadeMask())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                .foregroundStyle(themeManager.timerColor)
+                                //.frame(width: 250, height: 70)
+                                .frame(maxWidth: .infinity)
+                                
+                                HStack(spacing: 0) {
+                                    ForEach(0..<breakDigits.count, id: \.self) { index in
+                                        RollingDigit(digit: breakDigits[index])
+                                            .frame(width: 9, height: 14)
+                                            .mask(FadeMask())
+                                        if index == 1 || index == 3 {
+                                            Text(":")
+                                                .font(.system(size: 12, weight: .bold).monospacedDigit())
+                                        }
                                     }
                                 }
+                                .foregroundStyle(themeManager.breaksColor)
+                                //.frame(width: 250, height: 70)
+                                .frame(maxWidth: .infinity)
+                                .padding(.bottom)
+                                
+                                
+                            } else {
+                                HStack(spacing: 0) {
+                                    ForEach(0..<timeDigits.count, id: \.self) { index in
+                                        RollingDigit(digit: timeDigits[index])
+                                            .frame(width: 20, height: 30)
+                                            .mask(FadeMask())
+                                        if index == 1 || index == 3 {
+                                            Text(":")
+                                                .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                        }
+                                    }
+                                }
+                                .foregroundStyle(themeManager.timerColor)
+                                //.frame(width: 250, height: 70)
+                                .frame(maxWidth: .infinity)
+                                .padding(.bottom)
                             }
-                            .foregroundStyle(themeManager.timerColor)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom)
+                            
+                            
+                            
+                            
+                            
                         }
-                        
-                        
-                        
-                        
-                        
                     }
+                    
+                    TagPicker($selectedTags).allowsHitTesting(isEditing)
+                        .padding(.horizontal, 10)
+                        .padding(.top, 5)
+                    
                 }
                 
-                TagPicker($selectedTags).allowsHitTesting(isEditing)
                 
-            }.listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-            
-            
-            Section{
+                
                 VStack{
                     VStack(alignment: .leading){
                         Text("Start:")
@@ -306,51 +308,11 @@ struct DetailView: View {
                         
                     }
                 }
-            }.listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-            Section{
-                VStack(alignment: .leading) {
-                    
-                    Text("Hourly pay:")
-                        .bold()
-                    
-                        .padding(.vertical, 5)
-                    
-                        .cornerRadius(20)
-                    
-                    
-                    CurrencyTextField(placeholder: "Hourly Pay", text: $selectedHourlyPay)
-                        .disabled(!isEditing)
-                        .focused($focusedField, equals: .field1)
-                        .keyboardType(.decimalPad)
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(Color("SquaresColor"),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    
-                }
-                if shift.tax > 0 || taxEnabled {
-                    
-                    VStack(alignment: .leading){
-                        Text("Estimated Tax")
-                            .bold()
-                            .padding(.vertical, 5)
-                            .padding(.leading, -2)
-                        Picker("Estimated tax:", selection: $selectedTaxPercentage) {
-                            ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
-                                Text(index / 100, format: .percent)
-                            }
-                        }.pickerStyle(.wheel)
-                            .frame(maxHeight: 100)
-                            .disabled(!isEditing)
-                    }
-                    .padding(.horizontal, 5)
-                }
                 
-                if tipsEnabled || shift.totalTips > 0 {
+                VStack{
                     VStack(alignment: .leading) {
                         
-                        Text("Total tips:")
+                        Text("Hourly pay:")
                             .bold()
                         
                             .padding(.vertical, 5)
@@ -358,49 +320,94 @@ struct DetailView: View {
                             .cornerRadius(20)
                         
                         
-                        CurrencyTextField(placeholder: "Total tips", text: $selectedTotalTips)
+                        CurrencyTextField(placeholder: "Hourly Pay", text: $selectedHourlyPay)
                             .disabled(!isEditing)
-                            .focused($focusedField, equals: .field2)
+                            .focused($focusedField, equals: .field1)
                             .keyboardType(.decimalPad)
                             .padding(.horizontal)
                             .padding(.vertical, 10)
                             .background(Color("SquaresColor"),in:
                                             RoundedRectangle(cornerRadius: 12, style: .continuous))
                         
+                    }
+                    if shift.tax > 0 || taxEnabled {
                         
+                        VStack(alignment: .leading){
+                            Text("Estimated Tax")
+                                .bold()
+                                .padding(.vertical, 5)
+                                .padding(.leading, -3)
+                            Picker("Estimated tax:", selection: $selectedTaxPercentage) {
+                                ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
+                                    Text(index / 100, format: .percent)
+                                }
+                            }.pickerStyle(.wheel)
+                                .frame(maxHeight: 100)
+                                .disabled(!isEditing)
+                                .tint(Color("SquaresColor"))
+                        }
+                        .padding(.horizontal, 5)
+                    }
+                    
+                    if tipsEnabled || shift.totalTips > 0 {
+                        VStack(alignment: .leading) {
+                            
+                            Text("Total tips:")
+                                .bold()
+                            
+                                .padding(.vertical, 5)
+                            
+                                .cornerRadius(20)
+                            
+                            
+                            CurrencyTextField(placeholder: "Total tips", text: $selectedTotalTips)
+                                .disabled(!isEditing)
+                                .focused($focusedField, equals: .field2)
+                                .keyboardType(.decimalPad)
+                                .padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .background(Color("SquaresColor"),in:
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            
+                            
+                            
+                        }
+                        /*  Toggle(isOn: $addTipsToTotal) {
+                         HStack {
+                         Image(systemName: "chart.line.downtrend.xyaxis")
+                         Spacer().frame(width: 10)
+                         Text("Add tips to total pay")
+                         }
+                         }.toggleStyle(OrangeToggleStyle()) */
                         
                     }
-                    /*  Toggle(isOn: $addTipsToTotal) {
-                     HStack {
-                     Image(systemName: "chart.line.downtrend.xyaxis")
-                     Spacer().frame(width: 10)
-                     Text("Add tips to total pay")
-                     }
-                     }.toggleStyle(OrangeToggleStyle()) */
+                    VStack(alignment: .leading){
+                        Text("Notes:")
+                            .bold()
+                        
+                            .padding(.vertical, 5)
+                        
+                            .cornerRadius(20)
+                        
+                        TextEditor(text: $notes)
+                            .disabled(!isEditing)
+                            .focused($focusedField, equals: .field3)
+                        
+                        
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .background(Color("SquaresColor"),in:
+                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
+                            .frame(minHeight: 200, maxHeight: .infinity)
+                    }
                     
                 }
-                VStack(alignment: .leading){
-                    Text("Notes:")
-                        .bold()
-                    
-                        .padding(.vertical, 5)
-                    
-                        .cornerRadius(20)
-                    
-                    TextEditor(text: $notes)
-                        .disabled(!isEditing)
-                        .focused($focusedField, equals: .field3)
-                    
-                    
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(Color("SquaresColor"),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    
-                        .frame(minHeight: 200, maxHeight: .infinity)
-                }
+                
             }.listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
+                .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+
             
             
             HStack{
@@ -419,6 +426,9 @@ struct DetailView: View {
                 .padding(.horizontal, 5)
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
+                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            
+            
                 .sheet(isPresented: $isAddingBreak){
                     
                     BreakInputView(newBreakStartDate: $selectedBreakStartDate, newBreakEndDate: $selectedBreakEndDate, isUnpaid: $isUnpaid, startDate: selectedStartDate, endDate: selectedEndDate, buttonAction: { breakManager.addBreak(oldShift: shift, startDate: selectedBreakStartDate, endDate: selectedBreakEndDate, isUnpaid: isUnpaid, context: context)
@@ -426,19 +436,23 @@ struct DetailView: View {
                     
                     
                     .presentationDetents([ .fraction(0.45)])
-                    .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
+                    .presentationBackground(colorScheme == .dark ? .black : .white)
                     .presentationCornerRadius(35)
                 }
             if let breaks = shift.breaks as? Set<Break> {
                 let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
                 BreaksListView(breaks: sortedBreaks, isEditing: $isEditing, shift: shift)
+                    .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
             
             Spacer()
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
             
-        }.onAppear{
+        }
+        
+        .onAppear{
             
             if presentedAsSheet {
                 
@@ -517,9 +531,6 @@ struct DetailView: View {
         
         
         .scrollContentBackground(.hidden)
-        .listStyle(.inset)
-        
-       
         
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

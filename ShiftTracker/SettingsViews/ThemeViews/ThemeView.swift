@@ -117,9 +117,9 @@ struct ThemeView: View {
         .sheet(isPresented: $showThemeInfoSheet){
         
             ThemesGuideView()
-
-                .presentationBackground(opaqueVersion(of: .primary, withOpacity: 0.04, in: colorScheme))
-            .presentationCornerRadius(25)
+                .presentationDetents([.fraction(0.8)])
+                .presentationBackground(colorScheme == .dark ? .black : .white)
+            .presentationCornerRadius(35)
         }
     
         

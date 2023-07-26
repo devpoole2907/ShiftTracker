@@ -25,6 +25,7 @@ struct AppIconView: View {
                                 .cornerRadius(12)
 
                             Text(appIcon.description)
+                                .bold()
                                 //.font(.body17Medium)
                                 
                             Spacer()

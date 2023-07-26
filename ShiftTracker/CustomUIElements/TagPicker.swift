@@ -19,7 +19,7 @@ struct TagPicker: View {
     
     var body: some View {
         VStack(alignment: .center) {
-                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]) {
                                 ForEach(tags, id: \.self) { tag in
                                     Button(action: {
                                         if selectedTags.contains(tag) {
@@ -30,18 +30,18 @@ struct TagPicker: View {
                                     }) {
                                         Text("#\(tag.name ?? "")")
                                             .bold()
+                                            .font(.system(size: 16))
                                             .frame(maxWidth: .infinity)
+                                        
                                     }
                                     .buttonStyle(.bordered)
                                     .tint(Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue, opacity: selectedTags.contains(tag) ? 1.0 : 0.5))
                                     
                                 }
                             }
-                            .padding(10)
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                     
                             .haptics(onChangeOf: selectedTags, type: .soft)
-                        }
+        }
     }
 }
 
