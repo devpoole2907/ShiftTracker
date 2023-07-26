@@ -17,69 +17,125 @@ struct ScheduledShiftsView: View {
     
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
+    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    
+    let shiftManager = ShiftDataManager()
     
     @Environment(\.colorScheme) var colorScheme
     
     @Binding var dateSelected: DateComponents?
+    @Binding var navPath: NavigationPath
+    @Binding var displayedOldShifts: [OldShift]
     
     
     var body: some View {
         Group {
             let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == dateSelected?.date?.startOfDay ?? Date().startOfDay}
+            
+            if !displayedOldShifts.isEmpty {
+                ForEach(displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }), id: \.objectID) { shift in
+                    
+                    NavigationLink(value: shift) {
+                        
+                        ShiftDetailRow(shift: shift)
+                        
+                        
+                    }
+                   
+                    
+                    .navigationDestination(for: OldShift.self) { shift in
+                        
+                        
+                        DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
+                        
+                        
+                    }
+                    
+                    .listRowBackground(Color("SquaresColor"))
+                    
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            shiftStore.deleteOldShift(shift, in: viewContext)
+                            
+                        } label: {
+                            Image(systemName: "trash")
+                        }
+                    }
+                    
+                    
+                    
+                }
+                
+                
+            }
+            
+            
                 if !foundShifts.isEmpty {
                     ForEach(foundShifts) { shift in
-                        ListViewRow(shift: shift)
-                            .environmentObject(shiftStore)
-                            .environmentObject(scheduleModel)
-                            .swipeActions {
-                                Button(role: .destructive) {
-                                    
-                                    scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
-                                    
-                                    
-                                    
-                                    
-                                } label: {
-                                    Image(systemName: "trash")
-                                }
-                                
-                                Button(role: .none){
-                                    
-                                    // edit scheduled shift to go here
-                                    
-                                    
-                                } label: {
-                                    
-                                    Image(systemName: "pencil")
+                        if shift.endDate > Date() {
+                            ListViewRow(shift: shift)
+                                .environmentObject(shiftStore)
+                                .environmentObject(scheduleModel)
+                                .swipeActions {
+                                    Button(role: .destructive) {
                                         
+                                        scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
+                                        
+                                        
+                                        
+                                        
+                                    } label: {
+                                        Image(systemName: "trash")
+                                    }
                                     
-                                }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
-                                
-                                Button(role: .cancel) {
-
+                                    Button(role: .none){
+                                        
+                                        // edit scheduled shift to go here
+                                        
+                                        
+                                    } label: {
+                                        
+                                        Image(systemName: "pencil")
+                                        
+                                        
+                                    }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
+                                    
+                                    Button(role: .cancel) {
+                                        
                                         CustomConfirmationAlert(action: {
                                             scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
                                         }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
+                                        
+                                        
+                                        
+                                    } label: {
+                                        Image(systemName: "clock.arrow.2.circlepath")
+                                    }.disabled(!shift.isRepeating)
                                     
                                     
                                     
-                                } label: {
-                                    Image(systemName: "clock.arrow.2.circlepath")
-                                }.disabled(!shift.isRepeating)
-                                
-                                
-                                
-                            }
-                            .listRowBackground(Color("SquaresColor"))
+                                }
+                                .listRowBackground(Color("SquaresColor"))
+                        }
                     }
                 
-                } else {
+                } else if isBeforeEndOfToday(dateSelected!.date ?? Date()) && displayedOldShifts.isEmpty {
+                    
+                    Text("No previous shifts found for this date.")
+                        .bold()
+                        .padding()
+                    
+                }
+            else if ((Calendar.current.isDateInToday(dateSelected!.date ?? Date()) || !isBeforeEndOfToday(dateSelected!.date ?? Date())) && displayedOldShifts.isEmpty) {
                     Section{
                         Text("You have no shifts scheduled on this date.")
                             .bold()
                             .padding()
                     }.listRowBackground(Color("SquaresColor"))
                 }
+            
+             
             
         }
 
@@ -227,7 +283,7 @@ struct ListViewRow: View {
         
     }
 }
-
+/*
 struct ScheduledShiftView_Previews: PreviewProvider {
     static var dateComponents: DateComponents {
         var dateComponents = Calendar.current.dateComponents(
@@ -245,7 +301,7 @@ struct ScheduledShiftView_Previews: PreviewProvider {
         ScheduledShiftsView(dateSelected: .constant(dateComponents))
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
-}
+}*/
 
 struct RepeatEndPicker: View {
     

@@ -130,7 +130,7 @@ struct CalendarView: UIViewRepresentable {
             let job = singleShift.job
             
             
-            let isBeforeToday = isBeforeToday(singleShift.startDate)
+            let isBeforeToday = isBeforeEndOfToday(singleShift.startDate)
                             
             let color = UIColor(red: CGFloat(job?.colorRed ?? 0.0 ),
                                 green: CGFloat(job?.colorGreen ?? 0.0 ),

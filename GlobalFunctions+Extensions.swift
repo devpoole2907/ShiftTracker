@@ -26,13 +26,13 @@ extension UIColor {
     }
 }
 
-func isBeforeToday(_ date: Date) -> Bool {
+func isBeforeEndOfToday(_ date: Date) -> Bool {
     let calendar = Calendar.current
     let todayComponents = calendar.dateComponents([.year, .month, .day], from: Date())
     let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
     
     if let date = calendar.date(from: dateComponents), let today = calendar.date(from: todayComponents) {
-        return date < today
+        return date <= today
     }
         return false
     

@@ -130,7 +130,6 @@
 		1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = 1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
-		7C72D9BF2A6E299D00FADDFD /* CalendarPreviousShiftsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9BE2A6E299D00FADDFD /* CalendarPreviousShiftsList.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
 		7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C82D8CB2A6222FF004DF369 /* JobRow.swift */; };
 		7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */; };
@@ -274,7 +273,6 @@
 		1AE3845C29D447DE0002378F /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		1AEBFE002A5132B900884DBF /* StatsSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsSquare.swift; sourceTree = "<group>"; };
 		1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreak.swift; sourceTree = "<group>"; };
-		7C72D9BE2A6E299D00FADDFD /* CalendarPreviousShiftsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarPreviousShiftsList.swift; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
 		7C82D8CB2A6222FF004DF369 /* JobRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobRow.swift; sourceTree = "<group>"; };
 		7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentBreaksListView.swift; sourceTree = "<group>"; };
@@ -398,7 +396,6 @@
 				7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */,
 				7CAB87192A59762D00A08219 /* SchedulingViewModel.swift */,
 				7CAB871B2A59892D00A08219 /* CreateShiftForm.swift */,
-				7C72D9BE2A6E299D00FADDFD /* CalendarPreviousShiftsList.swift */,
 			);
 			path = ScheduleView;
 			sourceTree = "<group>";
@@ -903,7 +900,6 @@
 				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
-				7C72D9BF2A6E299D00FADDFD /* CalendarPreviousShiftsList.swift in Sources */,
 				7C8CEA9A2A5D3B2E006C833F /* TagButtonView.swift in Sources */,
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,

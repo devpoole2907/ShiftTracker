@@ -44,6 +44,16 @@ struct ScheduleView: View {
     @State private var deleteJobAlert = false
     @State private var jobToDelete: Job?
     
+    @State private var activeSheet: ActiveSheet?
+    
+    enum ActiveSheet: Identifiable {
+        case pastShiftSheet, scheduleSheet
+        
+        var id: Int {
+            hashValue
+        }
+    }
+    
     @State private var showAllScheduledShiftsView = false
     
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
@@ -65,6 +75,8 @@ struct ScheduleView: View {
         
        _dateSelected = State(initialValue: Date().dateComponents)
         
+        
+      
       
             let appearance = UINavigationBarAppearance()
             appearance.shadowColor = .clear
@@ -75,13 +87,14 @@ struct ScheduleView: View {
     }
     
     func fetchShifts() {
-        guard let date = dateSelected?.date else { displayedOldShifts = []; return }
-        let startOfDay = Calendar.current.startOfDay(for: date)
+        let selectedDate = dateSelected?.date ?? Date()
+        let startOfDay = Calendar.current.startOfDay(for: selectedDate)
         let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
         withAnimation {
             displayedOldShifts = allShifts.filter { ($0.shiftStartDate! as Date) >= startOfDay && ($0.shiftStartDate! as Date) < endOfDay }
         }
     }
+
 
     
     
@@ -106,15 +119,26 @@ struct ScheduleView: View {
                                 .onChange(of: dateSelected) { _ in
                                     
                                     
-                                   if isBeforeToday(dateSelected!.date ?? Date()) {
+                                
                                     
                                            fetchShifts()
                                        
-                                    }
+                                    
                                     
                                 }
                            
-                        
+                                .onAppear {
+                                    
+                                    if dateSelected == nil {
+                                        print("Its nil")
+                                    }
+
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                                        print("heres the fucking date before passing to create shift \(dateSelected?.date)")
+                                        
+                                    }
+                                }
                        
                          //   .background(.red)
                            
@@ -124,28 +148,19 @@ struct ScheduleView: View {
                             
                         
                        // } else {
-                        if !isBeforeToday(dateSelected?.date ?? Date()) {
-                            ScheduledShiftsView(dateSelected: $dateSelected)
+                       // if !isBeforeToday(dateSelected?.date ?? Date()) {
+                            ScheduledShiftsView(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts).environmentObject(savedPublisher)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)
                             
-                                .onAppear {
-                                    
-                                    print("heres the fucking date before passing to create shift \(dateSelected?.date)")
-                                    
-                                    
-                                }
-                            
-                            
-                        } else {
-                            
-                            CalendarPreviousShiftsList(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts).environmentObject(savedPublisher)
                                
                             
+                            
+                      
                                 
                             
-                                .listRowBackground(isBeforeToday(dateSelected!.date ?? Date()) ? Color("SquaresColor") : Color.clear)
-                        }
+                            //    .listRowBackground(isBeforeToday(dateSelected!.date ?? Date()) ? Color("SquaresColor") : Color.clear)
+                        
                     }.opacity(showAllScheduledShiftsView ? 0 : 1)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                         .scrollContentBackground(.hidden)
@@ -190,29 +205,138 @@ struct ScheduleView: View {
                     }    // .disabled(true)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
-                        Button(action: {
+                    
+                    let dateSelectedDate = dateSelected?.date ?? Date()
+                    
+                    if isBeforeEndOfToday(dateSelectedDate) && !Calendar.current.isDateInToday(dateSelectedDate) {
                             
+                            // button to add previous shift
                             
-                               
+                            Button(action: {
                             
                             if jobSelectionViewModel.selectedJobUUID == nil {
                                 
                                 
-                                OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
-                               
+                                OkButtonPopup(title: "Select a job before adding a past shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
+                                
                                 
                             } else {
                                 
-                                showCreateShiftSheet = true
+                                activeSheet = .pastShiftSheet
                                 
                             }
                             
+                            
+                            
+                            
                         }) {
+                            
                             Image(systemName: "plus")
                                 .bold()
-                        }.padding()
+                            
+                        }
+                        
+                    }
+                    else if Calendar.current.isDateInToday(dateSelectedDate) {
+                        
+                        
+                        Menu {
+                            Button(action: {
+                                
+                                
+                                
+                                
+                                if jobSelectionViewModel.selectedJobUUID == nil {
+                                    
+                                    
+                                    OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
+                                    
+                                    
+                                } else {
+                                    
+                                    activeSheet = .scheduleSheet
+                                    
+                                }
+                                
+                            }) {
+                                Text("Schedule Shift")
+                                    .bold()
+                            }
+                            
+                            Button(action: {
+                                
+                                
+                                
+                                
+                                if jobSelectionViewModel.selectedJobUUID == nil {
+                                    
+                                    
+                                    OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
+                                    
+                                    
+                                } else {
+                                    
+                                    activeSheet = .pastShiftSheet
+                                    
+                                }
+                                
+                            }) {
+                                Text("Add Past Shift")
+                                    .bold()
+                            }
+                            
+                            
+                            
+                            
+                            
+                            
+                        } label: {
+                            
+                            Image(systemName: "plus")
+                                .bold()
+                            
+                            
+                        }.disabled(showAllScheduledShiftsView)
+                        
+                        
+                        
+                        
+                        
+                    }
+                            
+                            
+                            else {
+                        
+                                // button to add future shift
+                                
+                                Button(action: {
+                                    
+                                    
+                                    
+                                    
+                                    if jobSelectionViewModel.selectedJobUUID == nil {
+                                        
+                                        
+                                        OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
+                                        
+                                        
+                                    } else {
+                                        
+                                        activeSheet = .scheduleSheet
+                                        
+                                    }
+                                    
+                                }) {
+                                    Image(systemName: "plus")
+                                        .bold()
+                                }
+                                    .disabled(showAllScheduledShiftsView)
+                        
+                        
+                        
+                    }
               
-                        .disabled(showAllScheduledShiftsView)
+                        
                    
                     }
                 ToolbarItem(placement: .navigationBarLeading){
@@ -229,15 +353,19 @@ struct ScheduleView: View {
             }.haptics(onChangeOf: showAllScheduledShiftsView, type: .light)
             
             
-                .sheet(isPresented: $showCreateShiftSheet) {
+                .sheet(item: $activeSheet){ item in
                     
-                    if !isBeforeToday(dateSelected!.date ?? Date()) {
+                    switch item {
+                    case .scheduleSheet:
+                        
                         CreateShiftForm(dateSelected: $dateSelected)
                    
                             .presentationDetents([.large])
                             .presentationCornerRadius(35)
                             .presentationBackground(colorScheme == .dark ? .black : .white)
-                    } else {
+                        
+                        
+                    case .pastShiftSheet:
                         
                         AddShiftView(job: jobSelectionViewModel.fetchJob(in: viewContext)!, dateSelected: dateSelected)
                             .environmentObject(shiftManager)
@@ -251,11 +379,10 @@ struct ScheduleView: View {
                         .presentationCornerRadius(35)
                         .presentationBackground(colorScheme == .dark ? .black : .white)
                         
+                        
                     }
-                        
-                        
-                        
                 }
+
             
         }.onAppear{
             
