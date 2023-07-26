@@ -25,6 +25,8 @@ struct ScheduleView: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var shiftStore: ShiftStore
     
+    @StateObject var savedPublisher = ShiftSavedPublisher() // need to look at this
+    
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
     
@@ -137,7 +139,7 @@ struct ScheduleView: View {
                             
                         } else {
                             
-                            CalendarPreviousShiftsList(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts)
+                            CalendarPreviousShiftsList(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts).environmentObject(savedPublisher)
                                
                             
                                 
@@ -149,7 +151,7 @@ struct ScheduleView: View {
                         .scrollContentBackground(.hidden)
                     
                 } else {
-                    AllScheduledShiftsView()
+                    AllScheduledShiftsView(navPath: $navPath).environmentObject(savedPublisher)
                         .opacity(showAllScheduledShiftsView ? 1 : 0)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                         .onDisappear{
@@ -185,7 +187,7 @@ struct ScheduleView: View {
                                     .fill(showAllScheduledShiftsView ? (colorScheme == .dark ? .white : .black) : .clear)
                                     .padding(-5)
                             )
-                    }     .disabled(true)
+                    }    // .disabled(true)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
                         Button(action: {

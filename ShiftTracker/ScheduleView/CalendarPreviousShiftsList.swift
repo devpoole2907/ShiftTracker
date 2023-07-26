@@ -16,7 +16,9 @@ struct CalendarPreviousShiftsList: View {
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var shiftStore: ShiftStore
     
-    @StateObject var savedPublisher = ShiftSavedPublisher() // need to look at this
+    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
+    
+
 
     
     let shiftManager = ShiftDataManager()

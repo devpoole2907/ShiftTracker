@@ -13,7 +13,11 @@ struct AllScheduledShiftsView: View {
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     
+    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
+    
     @Environment(\.managedObjectContext) private var viewContext
+    
+    @Binding var navPath: NavigationPath
     
     var groupedShifts: [Date: [SingleScheduledShift]] {
         Dictionary(grouping: shiftStore.shifts, by: { $0.startDate.startOfTheDay() })
@@ -34,6 +38,11 @@ struct AllScheduledShiftsView: View {
             .filter { $0 >= currentDate.startOfTheDay() }
             .min()
     }
+    
+    @FetchRequest(
+                sortDescriptors: ShiftSort.default.descriptors,
+                animation: .default)
+            private var allShifts: FetchedResults<OldShift>
 
     
     
@@ -46,69 +55,115 @@ struct AllScheduledShiftsView: View {
             ScrollViewReader { scrollProxy in
                 List {
                     ForEach(groupedShifts.keys.sorted(by: <), id: \.self) { date in
-                        Section(header: Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(textColor)) {
+                        Section(header: Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? (colorScheme == .dark ? .orange : .cyan) : textColor)) {
                             ForEach(groupedShifts[date] ?? [], id: \.self) { shift in
-                                ScheduledShiftRow(shift: shift)
-                                    .environmentObject(shiftStore)
-                                    .environmentObject(scheduleModel)
                                 
-                                    .swipeActions {
-                                        Button(role: .destructive) {
-                                            
-                                            scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
-                                            
-                                            
-                                            
-                                            
-                                        } label: {
-                                            Image(systemName: "trash")
-                                        }
+                                if let oldShift = allShifts.first(where: { $0.shiftID == shift.id }) {
+                                    NavigationLink(value: oldShift) {
+                                        ScheduledShiftRow(shift: shift)
+                                            .environmentObject(shiftStore)
+                                            .environmentObject(scheduleModel)
                                         
-                                        Button(role: .none){
-                                            
-                                            // edit scheduled shift to go here
-                                            
-                                            
-                                        } label: {
-                                            
-                                            Image(systemName: "pencil")
-                                                
-                                            
-                                        }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
-                                        
-                                        Button(role: .cancel) {
-                                            
-                                           // scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
-                                            
-                                            
-                                                //dismiss()
-                                                CustomConfirmationAlert(action: {
-                                                    scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
-                                                }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
-                                            
-                                            
-                                            
-                                        } label: {
-                                            Image(systemName: "clock.arrow.2.circlepath")
-                                        }.disabled(!shift.isRepeating)
                                         
                                         
                                         
                                     }
+                                    
+                                    
+                                    .swipeActions {
+                                        Button(role: .destructive) {
+                                            //scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
+                                            
+                                            shiftStore.deleteOldShift(oldShift, in: viewContext)
+                                            
+                                        } label: {
+                                            Image(systemName: "trash")
+                                        }
+                                    }
+                                    
+                                }
+                                                      else {
+                                                               ScheduledShiftRow(shift: shift)
+                                                                    .environmentObject(shiftStore)
+                                                                    .environmentObject(scheduleModel)
+                                                                    .padding(.trailing)
+                                                          
+                                                          
+                                                                    .swipeActions {
+                                                                        Button(role: .destructive) {
+                                                                            scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
+                                                                        } label: {
+                                                                            Image(systemName: "trash")
+                                                                        }
+                                                                        
+                                                                        Button(role: .none){
+                                                                            
+                                                                            // edit scheduled shift to go here
+                                                                            
+                                                                            
+                                                                        } label: {
+                                                                            
+                                                                            Image(systemName: "pencil")
+                                                                                
+                                                                            
+                                                                        }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
+                                                                        
+                                                                        Button(role: .cancel) {
+                                                                            
+                                                                           // scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
+                                                                            
+                                                                            
+                                                                                //dismiss()
+                                                                                CustomConfirmationAlert(action: {
+                                                                                    scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
+                                                                                }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
+                                                                            
+                                                                            
+                                                                            
+                                                                        } label: {
+                                                                            Image(systemName: "clock.arrow.2.circlepath")
+                                                                        }.disabled(!shift.isRepeating)
+                                                                        
+                                                                        
+                                                                        
+                                                                    }
+                                                          
+                                                            }
+                                
+                                
+                                
+                          
+                                
+                                   
                                 
                             }
-                        }//.id(date.startOfTheDay())
+                            
+                            
+                           
+                            
+                        }
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                             .foregroundColor(date < Date() ? .gray : textColor)
-                    }//.id(UUID())
+                    }
                 }
                 .onAppear {
+                    
+                    // !!!!!!!!!!!!!!!!!!! this shouldn't scroll every appear, it should only on its first appearance/when toggling this view
+                    
                     if let nextShiftDate = nextShiftDate {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             scrollProxy.scrollTo(nextShiftDate, anchor: .top)
                         }
                     }
+                }
+                
+                .navigationDestination(for: OldShift.self) { shift in
+                    
+                    
+                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
+                    
+                    
                 }
                 
                 .listStyle(PlainListStyle())
