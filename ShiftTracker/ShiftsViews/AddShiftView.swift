@@ -135,7 +135,7 @@ struct AddShiftView: View {
                         ZStack{
                             RoundedRectangle(cornerRadius: 12)
                                 .foregroundColor(Color("SquaresColor"))
-                                .frame(width: UIScreen.main.bounds.width - 40)
+                                .frame(width: UIScreen.main.bounds.width - 60)
                                 .shadow(radius: 5, x: 0, y: 4)
                             VStack(alignment: .center, spacing: 5) {
                                 VStack {
@@ -255,7 +255,7 @@ struct AddShiftView: View {
                         }
                         
                         TagPicker($selectedTags)
-                                .padding(.horizontal, 10)
+                                .padding(.horizontal, 15)
                                 .padding(.top, 5)
                         
                     }

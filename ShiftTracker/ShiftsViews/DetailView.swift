@@ -143,7 +143,7 @@ struct DetailView: View {
                     ZStack{
                         RoundedRectangle(cornerRadius: 12)
                             .foregroundColor(Color("SquaresColor"))
-                            .frame(width: UIScreen.main.bounds.width - 40)
+                            .frame(width: UIScreen.main.bounds.width - 60)
                             .shadow(radius: 5, x: 0, y: 4)
                         VStack(alignment: .center, spacing: 5) {
                             VStack {
@@ -251,7 +251,7 @@ struct DetailView: View {
                     }
                     
                     TagPicker($selectedTags).allowsHitTesting(isEditing)
-                        .padding(.horizontal, 10)
+                        .padding(.horizontal, 15)
                         .padding(.top, 5)
                     
                 }
@@ -453,6 +453,8 @@ struct DetailView: View {
         }
         
         .onAppear{
+            
+        
             
             if presentedAsSheet {
                 

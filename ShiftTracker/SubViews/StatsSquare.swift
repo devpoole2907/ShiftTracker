@@ -44,12 +44,14 @@ struct StatsSquare: View {
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
+                        .fontDesign(.rounded)
                 } else {
 
                     Text("\(shiftManager.formatTime(timeInHours: shiftManager.totalHours)) Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
+                        .fontDesign(.rounded)
                 }
                 
             }

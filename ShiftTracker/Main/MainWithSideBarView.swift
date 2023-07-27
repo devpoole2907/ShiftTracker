@@ -140,7 +140,19 @@ struct MainWithSideBarView: View {
                                             navigationState.showMenu.toggle()
                                             
                                         } else {
-                                            path = NavigationPath()
+                                            // broken ios 17 beta 4
+                                            
+                                          
+                                                
+                                                 //path = NavigationPath()
+                                                
+                                            if path.count == 2 {
+                                                
+                                                path.removeLast()
+                                                path.removeLast()
+                                                
+                                            }
+                                             
                                             
                                         }
                                         

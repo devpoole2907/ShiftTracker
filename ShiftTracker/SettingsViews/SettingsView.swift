@@ -421,12 +421,13 @@ struct SettingsRow: View {
                     Text(secondInfo)
                         .foregroundStyle(.gray)
                         .bold()
+                    
                     Image(systemName: "chevron.right")
                         .foregroundStyle(.gray)
                         .bold()
                         .font(.caption)
                         .padding(.top, 1)
-                }
+                }.fontDesign(.rounded)
                 
             } else if let secondImage = secondaryImage {
                 
@@ -494,6 +495,7 @@ struct SettingsCheckView: View {
                 .font(.title3)
                 .padding(.bottom)
             Text(subheadline)
+                .fontDesign(.rounded)
                 .font(.callout)
                 .padding()
         }.padding()

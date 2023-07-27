@@ -34,6 +34,7 @@ struct CurrentShiftView: View {
                         Text("Starting Soon")
                             .font(.subheadline)
                             .foregroundColor(.gray)
+                            .fontDesign(.rounded)
                             .bold()
                             .padding(.bottom, -1)
                     }
@@ -63,8 +64,10 @@ struct CurrentShiftView: View {
                     VStack(alignment: .leading, spacing: 5){
                         Text(job.name ?? "No Job Found")
                             .bold()
+                        
                         Text("\(startDate,formatter: Self.dateFormatter)")
                             .foregroundColor(.gray)
+                            .fontDesign(.rounded)
                             .bold()
                             .font(.footnote)
                             .padding(.leading, 1.4)

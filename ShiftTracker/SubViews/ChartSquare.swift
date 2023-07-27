@@ -100,6 +100,7 @@ struct ChartSquare: View {
                             Text("Total")
                                 .font(.headline)
                                 .bold()
+                                .fontDesign(.rounded)
                                 .foregroundColor(.gray)
 
                             Text(shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.getTotalPay(from: shiftManager.recentShifts))) ?? "0")" : shiftManager.formatTime(timeInHours: shiftManager.getTotalHours(from: shiftManager.recentShifts)))
@@ -560,7 +561,7 @@ struct ChartSquare: View {
                     
                     Picker(selection: $shiftManager.dateRange, label: Text("Duration")) {
                         ForEach(DateRange.allCases, id: \.self) { dateRange in
-                            Text(dateRange.shortDescription).bold().tag(dateRange)
+                            Text(dateRange.shortDescription).bold().tag(dateRange).fontDesign(.rounded)
                         }
                     }.padding(.horizontal)
                        // .disabled(!isPickerEnabled) temp crash fix when changing picker too fast ...
@@ -683,6 +684,7 @@ struct ChartAnnotation: View {
                 .font(.footnote)
                 .bold()
                 .foregroundStyle(.gray)
+                .fontDesign(.rounded)
             
             Text(value)
                 .font(.title)
@@ -692,6 +694,7 @@ struct ChartAnnotation: View {
                 .font(.headline)
                 .bold()
                 .foregroundColor(.gray)
+                .fontDesign(.rounded)
         
                 
            

@@ -31,6 +31,7 @@ struct TagPicker: View {
                                         Text("#\(tag.name ?? "")")
                                             .bold()
                                             .font(.system(size: 16))
+                                            .fontDesign(.rounded)
                                             .frame(maxWidth: .infinity)
                                         
                                     }

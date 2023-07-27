@@ -100,6 +100,7 @@ struct TimerView: View {
                     .fontWeight(.bold)
                     .lineLimit(1)
                     .allowsTightening(true)
+               
                 
             }
             .frame(maxWidth: .infinity)
@@ -133,7 +134,7 @@ struct TimerView: View {
                         .mask(FadeMask())
                     if index == 1 || index == 3 {
                         Text(":")
-                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                            .font(.system(size: 30, weight: .bold).monospacedDigit()).fontDesign(.rounded)
                     }
                 }
             }

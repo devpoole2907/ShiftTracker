@@ -28,12 +28,19 @@ struct ScheduledShiftsView: View {
     @Binding var navPath: NavigationPath
     @Binding var displayedOldShifts: [OldShift]
     
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d, YYYY"
+        return formatter
+    }
+    
     
     var body: some View {
         Group {
             let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == dateSelected?.date?.startOfDay ?? Date().startOfDay}
             
             if !displayedOldShifts.isEmpty {
+                Section{
                 ForEach(displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }), id: \.objectID) { shift in
                     
                     NavigationLink(value: shift) {
@@ -42,17 +49,12 @@ struct ScheduledShiftsView: View {
                         
                         
                     }
+                    
+                    
                    
                     
-                    .navigationDestination(for: OldShift.self) { shift in
-                        
-                        
-                        DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
-                        
-                        
-                    }
-                    
                     .listRowBackground(Color("SquaresColor"))
+                    .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                     
                     .swipeActions {
                         Button(role: .destructive) {
@@ -65,8 +67,22 @@ struct ScheduledShiftsView: View {
                     
                     
                     
+                } .navigationDestination(for: OldShift.self) { shift in
+                    
+                    
+                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
+                    
+                    
                 }
-                
+            } header: {
+                if let dateSelected = dateSelected{
+                    if let selectedDate = dateSelected.date {
+                        Text(dateFormatter.string(from: selectedDate)).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
+                        
+                    }
+                    
+                }
+            }.listRowInsets(.init(top: 0, leading: 20, bottom: 5, trailing: 0))
                 
             }
             
@@ -117,23 +133,27 @@ struct ScheduledShiftsView: View {
                                     
                                 }
                                 .listRowBackground(Color("SquaresColor"))
+                                .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 20))
                         }
                     }
                 
-                } else if isBeforeEndOfToday(dateSelected!.date ?? Date()) && displayedOldShifts.isEmpty {
-                    
-                    Text("No previous shifts found for this date.")
-                        .bold()
-                        .padding()
-                    
                 }
-            else if ((Calendar.current.isDateInToday(dateSelected!.date ?? Date()) || !isBeforeEndOfToday(dateSelected!.date ?? Date())) && displayedOldShifts.isEmpty) {
+            else if ((Calendar.current.isDateInToday(dateSelected?.date ?? Date()) || !isBeforeEndOfToday(dateSelected!.date ?? Date())) && displayedOldShifts.isEmpty) {
                     Section{
                         Text("You have no shifts scheduled on this date.")
                             .bold()
                             .padding()
                     }.listRowBackground(Color("SquaresColor"))
                 }
+            
+            else if isBeforeEndOfToday(dateSelected?.date ?? Date()) && displayedOldShifts.isEmpty {
+                    
+                    Text("No previous shifts found for this date.")
+                        .bold()
+                        .padding()
+                        .listRowBackground(Color("SquaresColor"))
+                }
+            
             
              
             
@@ -239,18 +259,19 @@ struct ListViewRow: View {
                         HStack{
                             Spacer()
                             Menu{
-                                Button(action:{
-                                    CustomConfirmationAlert(action: {
-                                        scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
-                                    }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
-                                }){
-                                    HStack{
-                                        Image(systemName: "clock.arrow.2.circlepath")
-                                        Spacer()
-                                        Text("End Repeat")
+                                if shift.isRepeating {
+                                    Button(action:{
+                                        CustomConfirmationAlert(action: {
+                                            scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
+                                        }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
+                                    }){
+                                        HStack{
+                                            Image(systemName: "clock.arrow.2.circlepath")
+                                            Spacer()
+                                            Text("End Repeat")
+                                        }
                                     }
-                                }.disabled(!shift.isRepeating)
-                                
+                                }
                                 Button(action:{
                                   
                                     

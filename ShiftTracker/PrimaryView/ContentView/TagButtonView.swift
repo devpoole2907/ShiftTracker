@@ -31,6 +31,7 @@ struct TagButtonView: View {
                         }) {
                             Text("#\(tag.name ?? "")")
                                 .bold()
+                                .fontDesign(.rounded)
                                 
                         }
                         .buttonStyle(.bordered)

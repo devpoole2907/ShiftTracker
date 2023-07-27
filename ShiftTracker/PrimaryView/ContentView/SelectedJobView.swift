@@ -39,6 +39,7 @@ struct SelectedJobView: View {
                             .bold()
                         Text(job.title ?? "")
                             .foregroundColor(.gray)
+                            .fontDesign(.rounded)
                             .bold()
                             .font(.caption)
                     }
@@ -50,6 +51,7 @@ struct SelectedJobView: View {
                     Text("None")
                         
                 }.foregroundColor(.gray)
+                .fontDesign(.rounded)
                     .font(.caption)
                     .bold()
                     .padding(.vertical, 2)

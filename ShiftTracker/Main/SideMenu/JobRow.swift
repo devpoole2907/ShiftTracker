@@ -39,6 +39,7 @@ struct JobRow: View {
             Text(job.name ?? "")
                 .bold()
                 .foregroundColor(isSelected ? .white : textColor)
+                .fontDesign(.rounded)
                 .lineLimit(1)
                 .allowsTightening(true)
             Spacer()

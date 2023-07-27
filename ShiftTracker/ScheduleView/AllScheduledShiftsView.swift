@@ -55,7 +55,7 @@ struct AllScheduledShiftsView: View {
             ScrollViewReader { scrollProxy in
                 List {
                     ForEach(groupedShifts.keys.sorted(by: <), id: \.self) { date in
-                        Section(header: Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? (colorScheme == .dark ? .orange : .cyan) : textColor)) {
+                        Section {
                             ForEach(groupedShifts[date] ?? [], id: \.self) { shift in
                                 
                                 if let oldShift = allShifts.first(where: { $0.shiftID == shift.id }) {
@@ -141,11 +141,18 @@ struct AllScheduledShiftsView: View {
                             
                            
                             
-                        }
+                        } header: { Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? (colorScheme == .dark ? .orange : .cyan) : textColor)
+                          
+                          }
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                             .foregroundColor(date < Date() ? .gray : textColor)
                     }
+                    
+                    Spacer(minLength: 100)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    
                 }
                 .onAppear {
                     
@@ -219,8 +226,10 @@ struct ScheduledShiftRow: View {
             VStack(alignment: .leading) {
                 Text(shift.job?.name ?? "")
                     .bold()
+                    .fontDesign(.rounded)
                 Text(shift.job?.title ?? "")
                     .foregroundStyle(.gray)
+                    .fontDesign(.rounded)
                     .bold()
             }
             Spacer()
@@ -230,11 +239,13 @@ struct ScheduledShiftRow: View {
                     Text(timeFormatter.string(from: shift.startDate))
                         .font(.subheadline)
                         .bold()
+                        .fontDesign(.rounded)
                 
               
                 Text(timeFormatter.string(from: shift.endDate))
                         .font(.subheadline)
                         .bold()
+                        .fontDesign(.rounded)
                         .foregroundStyle(.gray)
                 
             }

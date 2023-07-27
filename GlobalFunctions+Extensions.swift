@@ -375,6 +375,7 @@ struct RollingDigit: View {
                     Text(index == 10 ? "0" : "\(index)")
                         .font(.system(size: geometry.size.height).monospacedDigit())
                         .bold()
+                        .fontDesign(.rounded)
                         .frame(width: geometry.size.width, height: geometry.size.height)
                 }
             }

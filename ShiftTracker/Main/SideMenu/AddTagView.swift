@@ -63,6 +63,7 @@ struct AddTagView: View {
                             }) {
                                 Text("#\(tag.name ?? "")")
                                     .bold()
+                                    .fontDesign(.rounded)
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.bordered)

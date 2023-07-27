@@ -73,9 +73,11 @@ struct ShiftDetailRow: View {
                     }
                     Text(shiftManager.formatTime(timeInHours: duration))
                         .foregroundStyle(themeManager.timerColor)
+                        .fontDesign(.rounded)
                         .font(.subheadline)
                         .bold()
                     Text(dateString)
+                        .fontDesign(.rounded)
                         .foregroundColor(.gray)
                         .font(.footnote)
                         .bold()
@@ -101,7 +103,7 @@ struct ShiftDetailRow: View {
                     .background {
                         
                         Circle()
-                            .foregroundStyle(Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0)))
+                            .foregroundStyle(Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0)).gradient)
                             .frame(width: 40, height: 40)
                         
                     }
@@ -128,10 +130,12 @@ struct ShiftDetailRow: View {
                     
                     Text(shiftManager.formatTime(timeInHours: duration))
                         .foregroundStyle(.gray)
+                        .fontDesign(.rounded)
                         .font(.subheadline)
                         .bold()
                     Text(dateString)
                         .foregroundColor(.gray)
+                        .fontDesign(.rounded)
                         .font(.footnote)
                         .bold()
                 }
@@ -143,6 +147,7 @@ struct ShiftDetailRow: View {
                         .foregroundColor(textColor)
                         .font(.title3)
                         .bold()
+                        .fontDesign(.rounded)
                         //.padding(.ver)
                     
                  
