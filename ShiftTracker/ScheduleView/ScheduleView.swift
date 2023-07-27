@@ -248,8 +248,10 @@ struct ScheduleView: View {
                                 }
                                 
                             }) {
+                                
                                 Text("Schedule Shift")
                                     .bold()
+                                Image(systemName: "calendar.badge.clock")
                             }
                             
                             Button(action: {
@@ -270,8 +272,10 @@ struct ScheduleView: View {
                                 }
                                 
                             }) {
+                               
                                 Text("Add Past Shift")
                                     .bold()
+                                Image(systemName: "clock.arrow.circlepath")
                             }
                             
                             

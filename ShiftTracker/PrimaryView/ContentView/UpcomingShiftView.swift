@@ -44,22 +44,29 @@ struct UpcomingShiftView: View {
         
         if let upcomingShift = scheduledShifts.first {
             Button(action: {
-                if let upcomingShiftJob = upcomingShift.job {
-                    
-                    CustomConfirmationAlert(action: {
-                        if upcomingShiftJob != jobSelectionViewModel.fetchJob(in: viewContext){
-                            jobSelectionViewModel.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
-                        }
-                        let startDate = max(Date(), upcomingShift.startDate ?? Date())
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
-                            
-                        }
+                
+                let next24Hours = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+                
+                if upcomingShift.startDate ?? Date() < next24Hours {
+                    if let upcomingShiftJob = upcomingShift.job {
                         
-                    }, cancelAction: nil, title: "Load this shift?").showAndStack()
-                    
-                    
+                        CustomConfirmationAlert(action: {
+                            if upcomingShiftJob != jobSelectionViewModel.fetchJob(in: viewContext){
+                                jobSelectionViewModel.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
+                            }
+                            let startDate = max(Date(), upcomingShift.startDate ?? Date())
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
+                                
+                            }
+                            
+                        }, cancelAction: nil, title: "Load this shift?").showAndStack()
+                        
+                        
+                    }
                 }
+                
+                
             }){
                 VStack(alignment: .leading) {
                     

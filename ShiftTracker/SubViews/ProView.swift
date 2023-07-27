@@ -236,6 +236,15 @@ struct ProView: View {
                 
                // Spacer(minLength: 50)
             }
+           
+            .sheet(isPresented: $purchaseManager.showSuccessSheet, onDismiss: {dismiss()}) {
+                 
+                        PurchaseSuccessView()
+                
+                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                    .presentationCornerRadius(25)
+                  
+                    }
         
             .toolbar {
                 

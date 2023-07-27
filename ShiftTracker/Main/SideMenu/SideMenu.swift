@@ -56,7 +56,7 @@ struct SideMenu: View {
                             .bold()
                         Text("PRO")
                             .font(.largeTitle)
-                            .foregroundColor(proColor)
+                            .foregroundStyle(proColor.gradient)
                             .bold()
                     } else {
                         Text("ShiftTracker")
@@ -72,10 +72,6 @@ struct SideMenu: View {
             
             ScrollView(.vertical, showsIndicators: false){
                 VStack{
-               /*     if viewModel.shift != nil{
-                        TimerView(timeElapsed: $viewModel.timeElapsed)
-                            .scaleEffect(0.8)
-                    } */
                     VStack(alignment: .leading, spacing: 30) {
                         
                             HStack(spacing: 25) {
@@ -178,26 +174,30 @@ struct SideMenu: View {
             
             VStack{
                 HStack(spacing: 8){
-                    Image(systemName: "tag.fill")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 20, height: 20)
-                    
-                    
-                    Text("Tags")
-                        .font(.title2)
-                        .bold()
-                   
-                    
+
                     Button(action: {
                         
                         showingTagSheet = true
                         
                     }){
-                        
-                        Image(systemName: "plus")
-                            .bold()
+                        HStack(spacing: 8){
+                            Image(systemName: "tag.fill")
+                                .resizable()
+                                .renderingMode(.template)
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 20, height: 20)
+                            
+                            
+                            Text("Tags")
+                                .font(.title2)
+                                .bold()
+                            
+                            
+                            Image(systemName: "plus")
+                                .bold()
+                            
+                            
+                        }
                         
                     }.padding(.top, 1)
                     .haptics(onChangeOf: showingTagSheet, type: .light)

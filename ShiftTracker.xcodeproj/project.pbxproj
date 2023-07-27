@@ -151,7 +151,7 @@
 		BF8191482A5A73620079E449 /* CustomThemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191472A5A73620079E449 /* CustomThemePicker.swift */; };
 		BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8191492A5A752F0079E449 /* ThemesGuideView.swift */; };
 		BF857D972A6A21EE00D02C5C /* CustomCheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF857D962A6A21EE00D02C5C /* CustomCheckbox.swift */; };
-		BFB683572A7255A100A2A54B /* ProPurchaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB683562A7255A100A2A54B /* ProPurchaseView.swift */; };
+		BFB683572A7255A100A2A54B /* PurchaseSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB683562A7255A100A2A54B /* PurchaseSuccessView.swift */; };
 		BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFEF1F72A69186200E3F406 /* AppIconManager.swift */; };
 		BFFEF1FA2A691C3D00E3F406 /* AppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFEF1F92A691C3D00E3F406 /* AppIconView.swift */; };
 /* End PBXBuildFile section */
@@ -295,7 +295,7 @@
 		BF8191472A5A73620079E449 /* CustomThemePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomThemePicker.swift; sourceTree = "<group>"; };
 		BF8191492A5A752F0079E449 /* ThemesGuideView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemesGuideView.swift; sourceTree = "<group>"; };
 		BF857D962A6A21EE00D02C5C /* CustomCheckbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCheckbox.swift; sourceTree = "<group>"; };
-		BFB683562A7255A100A2A54B /* ProPurchaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProPurchaseView.swift; sourceTree = "<group>"; };
+		BFB683562A7255A100A2A54B /* PurchaseSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseSuccessView.swift; sourceTree = "<group>"; };
 		BFFEF1F72A69186200E3F406 /* AppIconManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconManager.swift; sourceTree = "<group>"; };
 		BFFEF1F92A691C3D00E3F406 /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -625,7 +625,7 @@
 				BFFEF1F62A6917EF00E3F406 /* AppIconViews */,
 				BF8191402A5A70E70079E449 /* ThemeViews */,
 				1A22EFFE29C6559100A23F33 /* SettingsView.swift */,
-				BFB683562A7255A100A2A54B /* ProPurchaseView.swift */,
+				BFB683562A7255A100A2A54B /* PurchaseSuccessView.swift */,
 			);
 			path = SettingsViews;
 			sourceTree = "<group>";
@@ -904,7 +904,7 @@
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
 				7C8CEA9A2A5D3B2E006C833F /* TagButtonView.swift in Sources */,
-				BFB683572A7255A100A2A54B /* ProPurchaseView.swift in Sources */,
+				BFB683572A7255A100A2A54B /* PurchaseSuccessView.swift in Sources */,
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
 				1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,

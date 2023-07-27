@@ -20,6 +20,8 @@ class PurchaseManager: ObservableObject {
     
     @Published private(set) var purchasedProductIDs = Set<String>()
     
+    @Published var showSuccessSheet = false
+    
     private var updates: Task<Void, Never>? = nil
     
     var hasUnlockedPro: Bool {
@@ -105,6 +107,10 @@ class PurchaseManager: ObservableObject {
             
             await transaction.finish()
             await self.updatePurchasedProducts()
+            
+            DispatchQueue.main.async {
+                            self.showSuccessSheet = true
+                        }
             
         case let .success(.unverified(_, error)):
             

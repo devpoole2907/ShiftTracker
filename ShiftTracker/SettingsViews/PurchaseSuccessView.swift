@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct ProPurchaseView: View {
+struct PurchaseSuccessView: View {
     
     @Environment(\.colorScheme) var colorScheme
+    
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationStack {
@@ -21,21 +23,31 @@ struct ProPurchaseView: View {
                 Group {
                     Text("Thanks for going")
                     
-                 //   Text("going")
+         
                 }    .fontDesign(.rounded)
                     .font(.title).bold()
                 
                     
                     Text("PRO")
                         .font(.system(size: 80))
-                    /// .font(.largeTitle)
                         .fontWeight(.heavy)
-                        .foregroundStyle(colorScheme == .dark ? .orange : .cyan)
+                        .foregroundStyle(colorScheme == .dark ? Color.orange.gradient : Color.cyan.gradient)
                     
                 
                 
             }
             
+            .toolbar {
+                
+                ToolbarItem(placement: .navigationBarLeading) {
+                    
+                    CloseButton(action: {dismiss()})
+                    
+                    
+                }
+                
+                
+            }
             
         }
     }
@@ -43,7 +55,7 @@ struct ProPurchaseView: View {
 
 struct ProPurchaseView_Previews: PreviewProvider {
     static var previews: some View {
-        ProPurchaseView()
+        PurchaseSuccessView()
     }
 }
 
