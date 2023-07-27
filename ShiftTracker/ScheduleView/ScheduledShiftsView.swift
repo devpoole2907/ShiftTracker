@@ -50,6 +50,14 @@ struct ScheduledShiftsView: View {
                         
                     }
                     
+                    .navigationDestination(for: OldShift.self) { shift in
+                       
+                       
+                       DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
+                       
+                       
+                   }
+                    
                     
                    
                     
@@ -65,12 +73,6 @@ struct ScheduledShiftsView: View {
                         }
                     }
                     
-                    
-                    
-                } .navigationDestination(for: OldShift.self) { shift in
-                    
-                    
-                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
                     
                     
                 }
