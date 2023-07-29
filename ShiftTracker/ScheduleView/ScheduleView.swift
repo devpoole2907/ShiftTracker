@@ -381,8 +381,9 @@ struct ScheduleView: View {
             
             shiftStore.deleteOldScheduledShifts(in: viewContext)
             
-            shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
-            
+            DispatchQueue.main.async{
+                shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
+            }
             
         }
         

@@ -23,9 +23,11 @@ class SchedulingViewModel: ObservableObject {
             let results = try viewContext.fetch(request)
             
             if let shiftToDelete = results.first as? ScheduledShift {
-                shiftStore.delete(shift)
-                viewContext.delete(shiftToDelete)
                 cancelNotification(for: shiftToDelete)
+                viewContext.delete(shiftToDelete)
+                shiftStore.delete(shift)
+                
+                
                 
                 do {
                     print("Successfully deleted the scheduled shift.")
@@ -86,12 +88,12 @@ class SchedulingViewModel: ObservableObject {
     
     
     func cancelRepeatingShiftSeries(shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
-        guard let repeatID = shift.repeatID else { return }
+        let repeatID = shift.repeatID
         let shiftDate = shift.startDate
         
         let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
-            NSPredicate(format: "newRepeatID == %@", repeatID as CVarArg),
+            NSPredicate(format: "repeatIdString == %@", repeatID),
             NSPredicate(format: "startDate >= %@", shiftDate as NSDate)
         ])
 

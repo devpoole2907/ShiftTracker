@@ -57,7 +57,7 @@ struct CreateShiftForm: View {
     private func createShift() {
         
         let shiftID = UUID()
-        let repeatID = UUID()
+        let repeatID = UUID().uuidString
         
         let shiftToAdd = SingleScheduledShift(
             startDate: startDate,
@@ -76,7 +76,7 @@ struct CreateShiftForm: View {
         newShift.startDate = startDate
         newShift.endDate = endDate
         newShift.id = shiftID
-        newShift.newRepeatID = repeatID
+        newShift.repeatIdString = repeatID
         newShift.isRepeating = enableRepeat
         newShift.reminderTime = selectedReminderTime.timeInterval
         newShift.notifyMe = notifyMe
@@ -104,7 +104,7 @@ struct CreateShiftForm: View {
     
     
     
-    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: UUID) {
+    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: String) {
         
         let calendar = Calendar.current
         var currentStartDate = calendar.date(byAdding: .day, value: 1, to: startDate)!
@@ -123,7 +123,7 @@ struct CreateShiftForm: View {
                 shift.job = jobSelectionViewModel.fetchJob(in: viewContext)
                 shift.id = shiftID
                 shift.isRepeating = repeatEveryWeek
-                shift.newRepeatID = repeatEveryWeek ? repeatID : UUID() //  check this code
+                shift.repeatIdString = repeatEveryWeek ? repeatID : UUID().uuidString //  check this code
                 shift.notifyMe = notifyMe
                 shift.reminderTime = selectedReminderTime.timeInterval
                 

@@ -13,14 +13,14 @@ struct SingleScheduledShift: Hashable, Identifiable {
     var endDate: Date
     var id: UUID
     var isRepeating: Bool
-    var repeatID: UUID?
+    var repeatID: String
     var reminderTime: Double
     var notifyMe: Bool
     var job: Job?
     var tags: Set<Tag> = []
     
     
-    init(startDate: Date, endDate: Date, id: UUID, job: Job, isRepeating: Bool, repeatID: UUID, reminderTime: Double, notifyMe: Bool, tags: Set<Tag>) {
+    init(startDate: Date, endDate: Date, id: UUID, job: Job, isRepeating: Bool, repeatID: String, reminderTime: Double, notifyMe: Bool, tags: Set<Tag>) {
         self.startDate = startDate
         self.endDate = endDate
         self.id = id
@@ -41,7 +41,9 @@ struct SingleScheduledShift: Hashable, Identifiable {
         self.isRepeating = shift.isRepeating
         
         
-        self.repeatID = UUID() // why is this fucked shift.newRepeatID ?? nil
+
+        
+        self.repeatID = shift.repeatIdString ?? UUID().uuidString // why is this fucked shift.newRepeatID ?? nil
         self.reminderTime = shift.reminderTime
         self.notifyMe = shift.notifyMe
         
@@ -63,7 +65,7 @@ struct SingleScheduledShift: Hashable, Identifiable {
         
         self.job = oldShift.job ?? nil
         self.isRepeating = false
-        self.repeatID = UUID()
+        self.repeatID = UUID().uuidString
         self.reminderTime = 0
         self.notifyMe = false
         if let tagsSet = oldShift.tags as? Set<Tag> {
