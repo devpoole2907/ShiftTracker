@@ -68,7 +68,6 @@ struct IntroMainView: View {
                     .environmentObject(jobSelectionViewModel)
                     .onDisappear{
                         isFirstLaunch = false
-                        createTags(in: context)
                     }
             }
             

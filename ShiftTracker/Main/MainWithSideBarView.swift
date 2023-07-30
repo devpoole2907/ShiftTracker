@@ -290,6 +290,11 @@ struct MainWithSideBarView: View {
                 notificationManager.updateRosterNotifications(viewContext: context) // cancels and reschedules any roster reminders
                 
                 checkIfLocked()
+                
+                createTags(in: context)
+                
+                
+                
             })
             
             .onAppear {

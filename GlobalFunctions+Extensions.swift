@@ -466,24 +466,32 @@ func createTags(in viewContext: NSManagedObjectContext) {
         let tagNames = ["Night", "Overtime", "Late"]
         let tagColors = [UIColor(.indigo), UIColor(.orange), UIColor(.pink)]
 
-        for index in tagNames.indices {
-            let tag = Tag(context: viewContext)
-            tag.name = tagNames[index]
-            
-            let (r, g, b) = tagColors[index].rgbComponents
-            tag.colorRed = Double(r)
-            tag.colorGreen = Double(g)
-            tag.colorBlue = Double(b)
-            tag.tagID = UUID()
-            tag.editable = false
-        }
-
+    for index in tagNames.indices {
+        
+        let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", tagNames[index])
+        
         do {
-            try viewContext.save()
+            let existingTags = try viewContext.fetch(fetchRequest)
+            
+            if existingTags.isEmpty {
+                let tag = Tag(context: viewContext)
+                tag.name = tagNames[index]
+                
+                let (r, g, b) = tagColors[index].rgbComponents
+                tag.colorRed = Double(r)
+                tag.colorGreen = Double(g)
+                tag.colorBlue = Double(b)
+                tag.tagID = UUID()
+                tag.editable = false
+                
+                try viewContext.save()
+            }
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
+    }
     }
 class NotificationManager: ObservableObject {
     @Published var authorizationStatus: UNAuthorizationStatus?
