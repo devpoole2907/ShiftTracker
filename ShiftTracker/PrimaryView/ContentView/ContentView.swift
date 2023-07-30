@@ -193,6 +193,9 @@ struct ContentView: View {
                     
                     if let jobSelected = jobSelectionViewModel.fetchJob(in: context) {
                         viewModel.startShift(using: context, startDate: shiftStartDate, job: jobSelectionViewModel.fetchJob(in: context)!)
+                        
+                        viewModel.loadSelectedTags()
+                        
                         print("Resuming app with saved shift start date")
                         
                        // viewModel.loadTempBreaksFromUserDefaults()

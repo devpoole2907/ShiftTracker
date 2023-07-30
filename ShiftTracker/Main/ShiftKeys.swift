@@ -28,4 +28,5 @@ struct ShiftKeys {
     let overtimeEnabledKey = "overtimeEnabled"
     let timeElapsedBeforeBreakKey = "timeElapsedBeforeBreak"
     let tempBreaksKey = "tempBreaks"
+    let selectedTags = "selectedTags"
 }

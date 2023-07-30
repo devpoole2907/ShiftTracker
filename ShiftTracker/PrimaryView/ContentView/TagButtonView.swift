@@ -14,6 +14,10 @@ struct TagButtonView: View {
     @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
     
     @State private var isEditing = false
+    
+    @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
+    
+    private let shiftKeys = ShiftKeys()
 
     var body: some View {
         VStack(alignment: .center) {
@@ -28,6 +32,7 @@ struct TagButtonView: View {
                                     viewModel.selectedTags.insert(tagId)
                                 }
                             }
+                            saveSelectedTags()
                         }) {
                             Text("#\(tag.name ?? "")")
                                 .bold()
@@ -51,7 +56,11 @@ struct TagButtonView: View {
             }
         }
     
-    
+    private func saveSelectedTags() {
+        let tagsData = try? JSONEncoder().encode(viewModel.selectedTags)
+        sharedUserDefaults.set(tagsData, forKey: shiftKeys.selectedTags)
+    }
+
     
     
 }

@@ -344,6 +344,17 @@ class ContentViewModel: ObservableObject {
             sharedUserDefaults.set(overtimeMultiplier, forKey: shiftKeys.overtimeMultiplierKey)
             //saved tax percentage to userdefaults
         }
+    
+    func loadSelectedTags() {
+        guard let tagsData = sharedUserDefaults.data(forKey: shiftKeys.selectedTags) else { return }
+        selectedTags = (try? JSONDecoder().decode(Set<UUID>.self, from: tagsData)) ?? []
+    }
+    
+    func removeSelectedTags() {
+        sharedUserDefaults.removeObject(forKey: shiftKeys.selectedTags)
+    }
+
+
         
         func saveTempBreaksToUserDefaults() {
             let tempBreaksDictionaries = tempBreaksToDictionaries(tempBreaks: tempBreaks)
@@ -497,6 +508,7 @@ class ContentViewModel: ObservableObject {
             
             // empty the selected tags
             selectedTags = Set<UUID>()
+            removeSelectedTags()
             
             
             for tempBreak in tempBreaks {
