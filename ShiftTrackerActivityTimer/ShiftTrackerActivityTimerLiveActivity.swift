@@ -257,7 +257,7 @@ struct ShiftActivityView: View{
 
 
 struct ShiftTrackerActivityTimerLiveActivity_Previews: PreviewProvider {
-    static let attributes = LiveActivityAttributes(name: "Me", hourlyPay: 24)
+    static let attributes = LiveActivityAttributes(jobName: "Apple", jobTitle: "CEO", jobIcon: "briefcase.circle", jobColorRed: 1.0, jobColorGreen: 1.0, jobColorBlue: 1.0, hourlyPay: 0)
     static let contentState = LiveActivityAttributes.ContentState(startTime: Date(), totalPay: 220, isOnBreak: true)
 
     static var previews: some View {

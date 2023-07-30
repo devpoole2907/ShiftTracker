@@ -15,11 +15,20 @@ struct LiveActivityAttributes: ActivityAttributes {
         var startTime: Date
         var totalPay: Double
         var isOnBreak: Bool
+
     }
 
     // Fixed non-changing properties about your activity go here!
-    var name: String
+    var jobName: String
+    var jobTitle: String
+    var jobIcon: String
+    var jobColorRed: Double
+    var jobColorGreen: Double
+    var jobColorBlue: Double
     var hourlyPay: Double
+    
+    
+    
 }
 
 

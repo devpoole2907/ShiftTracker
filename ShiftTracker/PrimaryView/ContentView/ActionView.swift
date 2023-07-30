@@ -185,7 +185,7 @@ struct ActionView: View {
                         }
                     case .endBreak:
                         ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 80) {
-                            viewModel.endBreak(endDate: actionDate)
+                            viewModel.endBreak(endDate: actionDate, viewContext: context)
                             dismiss()
                         }
                     default:

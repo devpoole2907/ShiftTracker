@@ -295,6 +295,8 @@ struct MainWithSideBarView: View {
                 
                 
                 
+                
+                
             })
             
             .onAppear {

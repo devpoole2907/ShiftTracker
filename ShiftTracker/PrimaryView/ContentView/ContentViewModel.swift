@@ -21,6 +21,7 @@ class ContentViewModel: ObservableObject {
     static let shared = ContentViewModel()
     
     
+    
     @Published var shiftState: ShiftState = .notStarted
     
     // for new tag system
@@ -103,6 +104,25 @@ class ContentViewModel: ObservableObject {
     @Published private var overtimeDuration: TimeInterval = 0
     
     private let shiftKeys = ShiftKeys()
+    
+    
+    // seperated from job manager due to live activity & widgets
+    
+    func fetchJob(with uuid: UUID? = nil, in context: NSManagedObjectContext) -> Job? {
+        let id = uuid ?? selectedJobUUID
+        guard let uuidToFetch = id else { return nil }
+        let request: NSFetchRequest<Job> = Job.fetchRequest()
+        request.predicate = NSPredicate(format: "uuid == %@", uuidToFetch as CVarArg)
+        request.fetchLimit = 1
+
+        do {
+            let results = try context.fetch(request)
+            return results.first
+        } catch {
+            print("Error fetching job: \(error)")
+            return nil
+        }
+    }
     
     
     // breaks stuff:
@@ -515,7 +535,7 @@ class ContentViewModel: ObservableObject {
         return latestShift
         }
         
-        func endBreak(endDate: Date? = nil) {
+    func endBreak(endDate: Date? = nil, viewContext: NSManagedObjectContext) {
             
             tempBreaks[tempBreaks.count - 1].endDate = endDate ?? Date()
             
@@ -562,11 +582,11 @@ class ContentViewModel: ObservableObject {
             // print(lastBreakElapsed)
             
             if tempBreaks[tempBreaks.count - 1].isUnpaid{
-                startTimer(startDate: Date())
+                startTimer(startDate: Date(), viewContext: viewContext)
             }
         }
         
-        func startTimer(startDate: Date) {
+    func startTimer(startDate: Date, viewContext: NSManagedObjectContext) {
             
             if shift != nil{
                 let adjustedStartDate = shift!.startDate
@@ -581,7 +601,7 @@ class ContentViewModel: ObservableObject {
                     self.checkOvertime()
                 }
                 #if os(iOS)
-                   startActivity(startDate: adjustedStartDate.addingTimeInterval(breakElapsed), hourlyPay: hourlyPay)
+                startActivity(startDate: adjustedStartDate.addingTimeInterval(breakElapsed), hourlyPay: hourlyPay, viewContext: viewContext)
                 #endif
             }
             else {
@@ -595,14 +615,19 @@ class ContentViewModel: ObservableObject {
                     self.checkOvertime()
                 }
                 #if os(iOS)
-                  startActivity(startDate: startDate, hourlyPay: hourlyPay)
+                startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
                 #endif
             }
             
         }
     #if os(iOS)
-        func startActivity(startDate: Date, hourlyPay: Double){
-            let attributes = LiveActivityAttributes(name: "Shift started", hourlyPay: hourlyPay)
+    func startActivity(startDate: Date, hourlyPay: Double, viewContext: NSManagedObjectContext){
+            
+        guard let job = fetchJob(with: self.selectedJobUUID, in: viewContext) else { return }
+            
+            
+            
+        let attributes = LiveActivityAttributes(jobName: job.name ?? "Unnamed", jobTitle: job.title ?? "No Title", jobIcon: job.icon ?? "briefcase.circle", jobColorRed: Double(job.colorRed), jobColorGreen: Double(job.colorGreen), jobColorBlue: Double(job.colorBlue), hourlyPay: hourlyPay)
             let state = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
             
             let activityContent = ActivityContent(state: state, staleDate: nil)
@@ -695,7 +720,7 @@ class ContentViewModel: ObservableObject {
                         timeElapsed = savedTimeElapsed
                     }
                     
-                    startTimer(startDate: startDate)
+                    startTimer(startDate: startDate, viewContext: viewContext)
                     
                     shiftsTracked += 1
                 }

@@ -157,6 +157,7 @@
 		7CAC9B532A7516830048F818 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		7CAC9B542A7516890048F818 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
 		7CAC9B552A75169D0048F818 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		7CAC9B572A75EF3D0048F818 /* JobSelectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -316,6 +317,7 @@
 		7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleScheduledShift.swift; sourceTree = "<group>"; };
 		7CAB87192A59762D00A08219 /* SchedulingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulingViewModel.swift; sourceTree = "<group>"; };
 		7CAB871B2A59892D00A08219 /* CreateShiftForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateShiftForm.swift; sourceTree = "<group>"; };
+		7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSelectionManager.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -474,6 +476,7 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */,
 				7C1AA46A2A7514EB00330A54 /* ShiftTrackerActivityTimerExtension.entitlements */,
 				7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */,
 				7C934D392A6522F9004F2622 /* PurchaseManager.swift */,
@@ -987,6 +990,7 @@
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
 				7C8CEA9A2A5D3B2E006C833F /* TagButtonView.swift in Sources */,
+				7CAC9B572A75EF3D0048F818 /* JobSelectionManager.swift in Sources */,
 				BFB683572A7255A100A2A54B /* PurchaseSuccessView.swift in Sources */,
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
