@@ -92,7 +92,7 @@ struct ActionView: View {
                         
                         .onAppear {
                             
-                            if purchaseManager.hasUnlockedPro {
+                            if purchaseManager.hasUnlockedPro || shiftsTracked < 1 {
                                 
                                 viewModel.activityEnabled = true
                                 
