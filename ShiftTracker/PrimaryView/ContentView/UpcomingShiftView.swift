@@ -56,14 +56,39 @@ struct UpcomingShiftView: View {
                             }
                             let startDate = max(Date(), upcomingShift.startDate ?? Date())
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
                                 
                                 
-
+                                
                                 let associatedTags = upcomingShift.tags as? Set<Tag> ?? []
                                 let associatedTagIds = associatedTags.compactMap { $0.tagID }
                                                     viewModel.selectedTags = Set(associatedTagIds)
                                 
+                                
+                                let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+                                   fetchRequest.predicate = NSPredicate(format: "name == %@", "Late")
+                                
+                                var lateTag: Tag?
+                                
+                                do {
+                                        let matchingTags = try viewContext.fetch(fetchRequest)
+                                    lateTag = matchingTags.first
+                                    } catch {
+                                        print("Failed to fetch late tag: \(error)")
+                                        
+                                    }
+                                
+                                if let lateTag = lateTag,
+                                           let lateTagId = lateTag.tagID {
+                                            // if the shift is late, select the late tag
+                                            if Date() > upcomingShift.startDate ?? Date() {
+                                                viewModel.selectedTags.insert(lateTagId)
+                                            }
+                                        }
+
+                                
+                                viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
+                                
+
                             }
                             
                             

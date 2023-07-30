@@ -32,7 +32,7 @@ struct TagButtonView: View {
                                     viewModel.selectedTags.insert(tagId)
                                 }
                             }
-                            saveSelectedTags()
+                        
                         }) {
                             Text("#\(tag.name ?? "")")
                                 .bold()
@@ -56,10 +56,7 @@ struct TagButtonView: View {
             }
         }
     
-    private func saveSelectedTags() {
-        let tagsData = try? JSONEncoder().encode(viewModel.selectedTags)
-        sharedUserDefaults.set(tagsData, forKey: shiftKeys.selectedTags)
-    }
+
 
     
     

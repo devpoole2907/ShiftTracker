@@ -25,7 +25,15 @@ class ContentViewModel: ObservableObject {
     @Published var shiftState: ShiftState = .notStarted
     
     // for new tag system
-    @Published var selectedTags = Set<UUID>()
+    @Published var selectedTags = Set<UUID>() {
+        
+        didSet {
+            
+            saveSelectedTags()
+            
+        }
+        
+    }
     
     let breaksManager = BreaksManager()
     
@@ -344,6 +352,11 @@ class ContentViewModel: ObservableObject {
             sharedUserDefaults.set(overtimeMultiplier, forKey: shiftKeys.overtimeMultiplierKey)
             //saved tax percentage to userdefaults
         }
+    
+     func saveSelectedTags() {
+        let tagsData = try? JSONEncoder().encode(selectedTags)
+        sharedUserDefaults.set(tagsData, forKey: shiftKeys.selectedTags)
+    }
     
     func loadSelectedTags() {
         guard let tagsData = sharedUserDefaults.data(forKey: shiftKeys.selectedTags) else { return }
