@@ -84,13 +84,29 @@ struct ActionView: View {
                             }
                         
                     .padding(.horizontal)
-                        .frame(maxWidth: UIScreen.main.bounds.width - 100)
+                        .frame(maxWidth: UIScreen.main.bounds.width - 80)
                         .padding(.vertical, 10)
                         .background(Color("SquaresColor"),in:
                                         RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
+                        Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
+                            Text("Pay Multiplier: x\(viewModel.payMultiplier, specifier: "%.2f")").bold()
+                                        }
+                                        .onChange(of: viewModel.payMultiplier) { newMultiplier in
+                                            viewModel.isMultiplierEnabled = newMultiplier > 1.0
+                                            viewModel.savePayMultiplier()
+                                        }
+                                        .padding(.horizontal)
+                                            .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                                            .padding(.vertical, 10)
+                                            .background(Color("SquaresColor"),in:
+                                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
 
                         
                         .onAppear {
+                            
+                            viewModel.payMultiplier = 1.0
                             
                             if purchaseManager.hasUnlockedPro || shiftsTracked < 1 {
                                 
@@ -143,7 +159,7 @@ struct ActionView: View {
                         }
                     }
             .padding(.horizontal)
-                .frame(maxWidth: UIScreen.main.bounds.width - 100)
+                .frame(maxWidth: UIScreen.main.bounds.width - 80)
                 .padding(.vertical, 10)
                 .background(Color("SquaresColor"),in:
                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -168,12 +184,12 @@ struct ActionView: View {
                     
                     switch actionType {
                     case .startShift:
-                        ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 80) {
+                        ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
                             viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                             dismiss()
                         }
                     case .endShift:
-                        ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 80) {
+                        ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 60) {
                             
                             self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                             dismiss()
@@ -184,7 +200,7 @@ struct ActionView: View {
                             
                         }
                     case .endBreak:
-                        ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 80) {
+                        ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
                             viewModel.endBreak(endDate: actionDate, viewContext: context)
                             dismiss()
                         }

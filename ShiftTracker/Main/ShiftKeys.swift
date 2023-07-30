@@ -29,4 +29,6 @@ struct ShiftKeys {
     let timeElapsedBeforeBreakKey = "timeElapsedBeforeBreak"
     let tempBreaksKey = "tempBreaks"
     let selectedTags = "selectedTags"
+    let payMultiplierKey = "payMultiplierKey"
+    let multiplierEnabledKey = "multiplierEnabledKey"
 }

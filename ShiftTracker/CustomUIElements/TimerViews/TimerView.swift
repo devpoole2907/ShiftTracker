@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct TimerView: View {
-    @Binding var timeElapsed: TimeInterval
     
     @EnvironmentObject var themeManager: ThemeDataManager
+    @EnvironmentObject var viewModel: ContentViewModel
 
     @Environment(\.colorScheme) var colorScheme
     
@@ -28,31 +28,37 @@ struct TimerView: View {
     }
    private var isOvertime: Bool {
        let overtimeEnabled = sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey)
-       return overtimeEnabled && timeElapsed > sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey)
+       return overtimeEnabled && viewModel.timeElapsed > sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey)
     }
     
+    
+    // using the viewmodels variables directly causes a black screen/freeze
     
     private var totalPay: Double {
             let hourlyPay = sharedUserDefaults.double(forKey: shiftKeys.hourlyPayKey)
         let overtimeRate = sharedUserDefaults.double(forKey: shiftKeys.overtimeMultiplierKey)
         let overtimeAppliedAfter = sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey)
         let overtimeEnabled = sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey)
+        let payMultiplier = sharedUserDefaults.double(forKey: shiftKeys.payMultiplierKey)
+           let isMultiplierEnabled = sharedUserDefaults.bool(forKey: shiftKeys.multiplierEnabledKey)
         
 
+        let rawPay: Double
             if !isOvertime {
-                let pay = (timeElapsed / 3600.0) * hourlyPay
-                if pay < 0 {
-                    return 0
-                }
-                return pay
+                rawPay = (viewModel.timeElapsed / 3600.0) * hourlyPay
             } else {
                 let regularTime = overtimeAppliedAfter //* 3600.0
-                print("regular time " + String(regularTime))
-                let overtime = timeElapsed - regularTime
+                let overtime = viewModel.timeElapsed - regularTime
                 let regularPay = (regularTime / 3600.0) * hourlyPay
                 let overtimePay = (overtime / 3600.0) * hourlyPay * overtimeRate
-                return regularPay + overtimePay
+                rawPay = regularPay + overtimePay
             }
+        
+        let totalPay = isMultiplierEnabled ? rawPay * payMultiplier : rawPay
+            return totalPay < 0 ? 0 : totalPay
+        
+        
+        
         }
 
         private var taxedPay: Double {
@@ -65,7 +71,7 @@ struct TimerView: View {
     
     var body: some View {
         
-        var timeDigits = digitsFromTimeString(timeString: timeElapsed.stringFromTimeInterval())
+        var timeDigits = digitsFromTimeString(timeString: viewModel.timeElapsed.stringFromTimeInterval())
         
         
         ZStack{
@@ -94,17 +100,29 @@ struct TimerView: View {
                     .fixedSize()
             } */
             ZStack {
+                // This is the center aligned text
                 Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
                     .padding(.horizontal, 20)
                     .font(.system(size: 60).monospacedDigit())
                     .fontWeight(.bold)
                     .lineLimit(1)
                     .allowsTightening(true)
-               
+                    .frame(maxWidth: .infinity, alignment: .center) // added this
                 
+                // This is the conditionally displayed multiplier text
+                if viewModel.isMultiplierEnabled {
+                    HStack {
+                        Spacer()
+                        Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                            .bold()
+                    }.frame(maxWidth: UIScreen.main.bounds.width / 1.5 )
+                }
             }
             .frame(maxWidth: .infinity)
             .padding(.top)
+
             
             if sharedUserDefaults.double(forKey: shiftKeys.taxPercentageKey) > 0 {
                 HStack(spacing: 2){
@@ -164,7 +182,7 @@ private func secondsToHoursMinutesSeconds (seconds : Int) -> String {
 
 struct TimerView_Previews: PreviewProvider {
     static var previews: some View {
-        TimerView(timeElapsed: .constant(3600))
+        TimerView()
     }
 }
 

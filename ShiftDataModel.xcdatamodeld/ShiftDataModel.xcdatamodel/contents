@@ -43,8 +43,10 @@
         <attribute name="breakStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="hourlyPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="multiplierEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="overtimeDuration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="overtimeRate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="payMultiplier" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="shiftEndDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="shiftID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="shiftNote" optional="YES" attributeType="String"/>
@@ -63,8 +65,10 @@
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isRepeating" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="multiplierEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="newRepeatID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="notifyMe" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="payMultiplier" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="reminderTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="repeatID" optional="YES" attributeType="String"/>
         <attribute name="repeatIdString" optional="YES" attributeType="String"/>

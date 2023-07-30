@@ -20,7 +20,18 @@ class ContentViewModel: ObservableObject {
     
     static let shared = ContentViewModel()
     
-    
+    @Published var payMultiplier: Double = 1.0 {
+        didSet {
+            savePayMultiplier()
+        }
+    }
+
+    @Published var isMultiplierEnabled: Bool = false {
+        didSet {
+            saveIsMultiplierEnabled()
+        }
+    }
+
     
     @Published var shiftState: ShiftState = .notStarted
     
@@ -185,6 +196,11 @@ class ContentViewModel: ObservableObject {
         self._overtimeRate = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.overtimeMultiplierKey))
         self._overtimeAppliedAfter = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey))
         
+        // multiplier stuff
+        
+        self._payMultiplier = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.payMultiplierKey))
+        self._isMultiplierEnabled = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.multiplierEnabledKey))
+        
         
         // i dont know if ill use this, its old:
         self._overtimeMultiplier = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.overtimeMultiplierKey))
@@ -233,7 +249,7 @@ class ContentViewModel: ObservableObject {
         if elapsed <= overtimeAppliedAfter || !sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey){
             let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
             overtimeDuration = 0
-            return pay
+            return isMultiplierEnabled ? pay * payMultiplier : pay
         }
         else {
             print("OVERTIME!!!!")
@@ -246,7 +262,8 @@ class ContentViewModel: ObservableObject {
             overtimeDuration = overtime
             
             
-            return regularPay + overtimePay
+            let totalPay = regularPay + overtimePay
+            return isMultiplierEnabled ? totalPay * payMultiplier : totalPay
         }
     }
     
@@ -263,7 +280,7 @@ class ContentViewModel: ObservableObject {
         let elapsed = endDate.timeIntervalSince(shift.startDate) - totalBreakDuration()
         if elapsed <= overtimeAppliedAfter || !sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey) {
             let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
-            return pay
+            return isMultiplierEnabled ? pay * payMultiplier : pay
         }
         else {
             print("OVERTIME!!!!")
@@ -273,7 +290,8 @@ class ContentViewModel: ObservableObject {
             let regularPay = (regularTime / 3600.0) * Double(shift.hourlyPay)
             let overtimePay = (overtime / 3600.0) * Double(shift.hourlyPay) * overtimeRate // Multiply by overtimeRate
 
-            return regularPay + overtimePay
+            let totalPay = regularPay + overtimePay
+                    return isMultiplierEnabled ? totalPay * payMultiplier : totalPay
         }
     }
 
@@ -352,6 +370,15 @@ class ContentViewModel: ObservableObject {
             sharedUserDefaults.set(overtimeMultiplier, forKey: shiftKeys.overtimeMultiplierKey)
             //saved tax percentage to userdefaults
         }
+    
+    func savePayMultiplier() {
+        sharedUserDefaults.set(payMultiplier, forKey: shiftKeys.payMultiplierKey)
+    }
+
+    func saveIsMultiplierEnabled() {
+        sharedUserDefaults.set(isMultiplierEnabled, forKey: shiftKeys.multiplierEnabledKey)
+    }
+
     
      func saveSelectedTags() {
         let tagsData = try? JSONEncoder().encode(selectedTags)
@@ -508,6 +535,8 @@ class ContentViewModel: ObservableObject {
             latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
             latestShift!.overtimeDuration = overtimeDuration
             latestShift!.overtimeRate = overtimeRate
+            latestShift!.multiplierEnabled = isMultiplierEnabled
+            latestShift!.payMultiplier = payMultiplier
             
             latestShift!.shiftID = UUID()
             
@@ -556,6 +585,8 @@ class ContentViewModel: ObservableObject {
             
             tempBreaks.removeAll()
             clearTempBreaksFromUserDefaults()
+            isMultiplierEnabled = false
+            payMultiplier = 1.0
             
         return latestShift
         }
@@ -748,6 +779,14 @@ class ContentViewModel: ObservableObject {
                     startTimer(startDate: startDate, viewContext: viewContext)
                     
                     shiftsTracked += 1
+                }
+                
+                if isMultiplierEnabled {
+                    print("multiplier is enabled")
+                    
+                    print("multiplier rate is: \(payMultiplier)")
+                    
+                    
                 }
                 
                 loadTempBreaksFromUserDefaults()

@@ -30,6 +30,9 @@ struct AddShiftView: View {
     @State private var autoCalcPay: Bool = true
     @State private var isAddingBreak = false
     
+    @State private var payMultiplier = 1.0
+    @State private var multiplierEnabled = false
+    
     var job: Job
     var dateSelected: DateComponents?
     
@@ -380,6 +383,31 @@ struct AddShiftView: View {
                                  }.toggleStyle(OrangeToggleStyle()) */
                                 
                             }
+                            
+                            VStack(alignment: .leading){
+                                
+                                Text("Pay multiplier:")
+                                    .bold()
+                                
+                                    .padding(.vertical, 5)
+                                
+                                    .cornerRadius(20)
+                                
+                                Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
+                                    Text("x\(payMultiplier, specifier: "%.2f")")
+                                                }
+                                                .onChange(of: payMultiplier) { newMultiplier in
+                                                    multiplierEnabled = newMultiplier > 1.0
+                                                }
+                                
+                                                .padding(.horizontal)
+                                                .padding(.vertical, 10)
+                                                .padding(.horizontal)
+                                                    .background(Color("SquaresColor"),in:
+                                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                
+                            }
+                            
                             VStack(alignment: .leading){
                                 Text("Notes:")
                                     .bold()
@@ -514,14 +542,22 @@ struct AddShiftView: View {
         newShift.totalTips = Double(totalTips) ?? 0.0
         newShift.shiftNote = notes
         newShift.tags = NSSet(array: Array(selectedTags))
+        newShift.payMultiplier = payMultiplier
+        newShift.multiplierEnabled = multiplierEnabled
         
         newShift.duration = (newShift.shiftEndDate?.timeIntervalSince(newShift.shiftStartDate ?? Date()) ?? 0.0)
         
         let unpaidBreaks = (tempBreaks).filter { $0.isUnpaid == true }
         let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate) }
         let paidDuration = newShift.duration - totalBreakDuration
-        newShift.totalPay = (paidDuration / 3600.0) * newShift.hourlyPay
+        
+        newShift.totalPay = ((paidDuration / 3600.0) * newShift.hourlyPay) * (newShift.multiplierEnabled ? newShift.payMultiplier : 1.0)
+
+        
+        
         newShift.taxedPay = newShift.totalPay - (newShift.totalPay * newShift.tax / 100.0)
+        
+       
         
         newShift.job = job
         

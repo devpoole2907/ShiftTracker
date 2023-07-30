@@ -68,6 +68,8 @@ struct DetailView: View {
     @State private var shiftDuration: TimeInterval
     @State private var selectedTotalTips: String = ""
     @State private var addTipsToTotal: Bool = false
+    @State private var payMultiplier = 1.0
+    @State private var multiplierEnabled = false
     
     
     @AppStorage("TipsEnabled") private var tipsEnabled: Bool = true
@@ -96,6 +98,10 @@ struct DetailView: View {
         _activeSheet = activeSheet ?? Binding.constant(nil)
         _navPath = navPath
         _selectedTags = State(wrappedValue: shift.tags as! Set<Tag>)
+        _multiplierEnabled = State(wrappedValue: shift.multiplierEnabled )
+        _payMultiplier = State(wrappedValue: shift.payMultiplier )
+        
+        
         self.shiftID = shift.shiftID ?? UUID()
         
         // adds clear text button to text fields
@@ -381,6 +387,31 @@ struct DetailView: View {
                          }.toggleStyle(OrangeToggleStyle()) */
                         
                     }
+                    
+                    VStack(alignment: .leading){
+                        
+                        Text("Pay multiplier:")
+                            .bold()
+                        
+                            .padding(.vertical, 5)
+                        
+                            .cornerRadius(20)
+                        
+                        Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
+                            Text("x\(payMultiplier, specifier: "%.2f")")
+                                        }
+                                        .onChange(of: payMultiplier) { newMultiplier in
+                                            multiplierEnabled = newMultiplier > 1.0
+                                        }
+                        
+                                        .padding(.horizontal)
+                                        .padding(.vertical, 10)
+                                        .padding(.horizontal)
+                                            .background(Color("SquaresColor"),in:
+                                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
+                    }
+                    
                     VStack(alignment: .leading){
                         Text("Notes:")
                             .bold()
@@ -564,11 +595,14 @@ struct DetailView: View {
                         
                         shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
                         
+                        shift.payMultiplier = payMultiplier
+                        shift.multiplierEnabled = multiplierEnabled
+                        
                         
                         let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
                         let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
                         let paidDuration = shift.duration - totalBreakDuration
-                        shift.totalPay = (paidDuration / 3600.0) * shift.hourlyPay
+                        shift.totalPay = ((paidDuration / 3600.0) * shift.hourlyPay) * (shift.multiplierEnabled ? shift.payMultiplier : 1.0)
                         shift.shiftNote = notes
                         
                         shift.tags = NSSet(array: Array(selectedTags))

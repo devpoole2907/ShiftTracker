@@ -75,7 +75,7 @@ struct ContentView: View {
                     }.frame(maxWidth: UIScreen.main.bounds.width - 40, alignment: .leading)
                     
                     
-                    TimerView(timeElapsed: $viewModel.timeElapsed)
+                    TimerView()
                     
                     TagButtonView()
                         .frame(maxWidth: .infinity)
@@ -168,7 +168,7 @@ struct ContentView: View {
             case .startShiftSheet:
                 ActionView(navTitle: "Start Shift", actionType: .startShift)
                     .environment(\.managedObjectContext, context)
-                    .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.75 : 0.6)])
+                    .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.85 : 0.7)])
                     .presentationCornerRadius(35)
                     .presentationBackground(colorScheme == .dark ? .black : .white)
             }

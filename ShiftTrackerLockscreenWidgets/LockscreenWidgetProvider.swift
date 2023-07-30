@@ -45,15 +45,19 @@ struct LockscreenWidgetProvider: TimelineProvider {
         completion(timeline)
     }
     
-    // these need to factor in breaks
     
     func calculateTotalPay(sharedUserDefaults: UserDefaults, hourlyPay: Double, tempBreaks: [TempBreak]) -> Double {
         guard let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date else { return 0 }
         
+        let payMultiplier = sharedUserDefaults.double(forKey: shiftKeys.payMultiplierKey)
+        let multiplierEnabled = sharedUserDefaults.bool(forKey: shiftKeys.multiplierEnabledKey)
+
         let totalTimeWorked = Date().timeIntervalSince(shiftStartDate) - totalBreakDuration(tempBreaks: tempBreaks)
-        let pay = (totalTimeWorked / 3600.0) * hourlyPay
+        
+        let pay = (totalTimeWorked / 3600.0) * hourlyPay * (multiplierEnabled ? payMultiplier : 1.0)
         return pay
     }
+
     
     func calculateTaxedPay(sharedUserDefaults: UserDefaults, totalPay: Double) -> Double {
         guard let taxPercentage = sharedUserDefaults.object(forKey: shiftKeys.taxPercentageKey) as? Double else { return 0 }
