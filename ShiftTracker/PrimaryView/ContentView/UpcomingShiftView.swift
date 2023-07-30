@@ -58,9 +58,19 @@ struct UpcomingShiftView: View {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
                                 
+                                
+
+                                let associatedTags = upcomingShift.tags as? Set<Tag> ?? []
+                                let associatedTagIds = associatedTags.compactMap { $0.tagID }
+                                                    viewModel.selectedTags = Set(associatedTagIds)
+                                
                             }
                             
-                        }, cancelAction: nil, title: "Load this shift?").showAndStack()
+                            
+                            
+                            
+                            
+                        }, cancelAction: nil, title: "Load this shift and associated tags?").showAndStack()
                         
                         
                     }
