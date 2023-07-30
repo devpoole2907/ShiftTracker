@@ -132,7 +132,6 @@
 		7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */; };
 		7C1AA4592A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */; };
-		7C1AA45B2A75106700330A54 /* ShiftTrackerActivityTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA45A2A75106700330A54 /* ShiftTrackerActivityTimer.swift */; };
 		7C1AA45D2A75106A00330A54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C1AA45C2A75106A00330A54 /* Assets.xcassets */; };
 		7C1AA4612A75106A00330A54 /* ShiftTrackerActivityTimerExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7C1AA4662A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */; };
@@ -300,7 +299,6 @@
 		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerBundle.swift; sourceTree = "<group>"; };
 		7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerLiveActivity.swift; sourceTree = "<group>"; };
-		7C1AA45A2A75106700330A54 /* ShiftTrackerActivityTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimer.swift; sourceTree = "<group>"; };
 		7C1AA45C2A75106A00330A54 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C1AA45E2A75106A00330A54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityAttributes.swift; sourceTree = "<group>"; };
@@ -690,7 +688,6 @@
 			children = (
 				7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */,
 				7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */,
-				7C1AA45A2A75106700330A54 /* ShiftTrackerActivityTimer.swift */,
 				7C1AA45C2A75106A00330A54 /* Assets.xcassets */,
 				7C1AA45E2A75106A00330A54 /* Info.plist */,
 			);
@@ -1064,7 +1061,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C1AA45B2A75106700330A54 /* ShiftTrackerActivityTimer.swift in Sources */,
 				7CAC9B4F2A75159B0048F818 /* TempBreak.swift in Sources */,
 				7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */,
 				7CAC9B552A75169D0048F818 /* PersistenceController.swift in Sources */,
