@@ -15,11 +15,15 @@ struct ActionView: View {
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     
     @Environment(\.dismiss) var dismiss
     @State private var actionDate = Date()
     @State private var isRounded = false
+    @State private var showProSheet = false
+    
+    @AppStorage("shiftsTracked") var shiftsTracked = 0
     
     @Environment(\.managedObjectContext) private var context
     let navTitle: String
@@ -54,6 +58,53 @@ struct ActionView: View {
                             .labelsHidden()
                             .frame(maxWidth: .infinity, alignment: .center)
                             .disabled(isRounded)
+                        
+                        Toggle(isOn: $viewModel.activityEnabled){
+                            Text("Live Activity")
+                                .bold()
+                        }.toggleStyle(CustomToggleStyle())
+                        
+                            .onChange(of: viewModel.activityEnabled) { value in
+                                if value {
+                                    
+                                    if !(shiftsTracked >= 1) {
+                                        
+                                        
+                                        //viewModel.activityEnabled = true
+                                        
+                                    }
+                                    
+                                    else if !purchaseManager.hasUnlockedPro {
+                                        
+                                        showProSheet.toggle()
+                                        viewModel.activityEnabled = false
+                                        
+                                    }
+                                }
+                            }
+                        
+                    .padding(.horizontal)
+                        .frame(maxWidth: UIScreen.main.bounds.width - 100)
+                        .padding(.vertical, 10)
+                        .background(Color("SquaresColor"),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                        
+                        .onAppear {
+                            
+                            if purchaseManager.hasUnlockedPro {
+                                
+                                viewModel.activityEnabled = true
+                                
+                            } else {
+                                
+                                viewModel.activityEnabled = false
+                                
+                            }
+                            
+                        }
+                        
+                        
                     case .endShift:
                         if let limitStartDate = pickerStartDate {
                             DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
@@ -99,6 +150,9 @@ struct ActionView: View {
                 .padding(.bottom, 10)
                 
                 
+               
+                
+                
                 if actionType == .startBreak {
                     HStack {
                         ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
@@ -141,6 +195,17 @@ struct ActionView: View {
                 }
                 
             }
+            .fullScreenCover(isPresented: $showProSheet){
+                
+        
+                    ProView()
+             
+           
+                
+                
+            }
+            
+            
             .navigationBarTitle(navTitle, displayMode: .inline)
             .toolbar{
                 ToolbarItem(placement: .navigationBarTrailing) {

@@ -13,6 +13,7 @@ import CoreHaptics
 import UserNotifications
 #endif
 import CoreData
+import SwiftUI
 
 
 class ContentViewModel: ObservableObject {
@@ -45,6 +46,7 @@ class ContentViewModel: ObservableObject {
     @Published  var isFirstLaunch = false
     @Published  var isPresented = false
     @Published var activeSheet: ActiveSheet?
+    @Published var activityEnabled = false
     
     @Published  var showEndAlert = false
     @Published  var showStartBreakAlert = false
@@ -67,6 +69,8 @@ class ContentViewModel: ObservableObject {
     #if os(iOS)
     @Published  var engine: CHHapticEngine?
     #endif
+    
+    @AppStorage("shiftsTracked") var shiftsTracked = 0
     
     @Published  var automaticBreak = false
     
@@ -603,7 +607,7 @@ class ContentViewModel: ObservableObject {
             
             let activityContent = ActivityContent(state: state, staleDate: nil)
             
-            if (self.currentActivity == nil){
+            if (self.currentActivity == nil && self.activityEnabled){
  
                 
                 self.currentActivity = try? Activity.request(attributes: attributes, content: activityContent, pushType: nil)
@@ -692,6 +696,8 @@ class ContentViewModel: ObservableObject {
                     }
                     
                     startTimer(startDate: startDate)
+                    
+                    shiftsTracked += 1
                 }
                 
                 loadTempBreaksFromUserDefaults()
