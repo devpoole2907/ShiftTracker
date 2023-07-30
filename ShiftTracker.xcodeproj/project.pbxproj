@@ -49,7 +49,6 @@
 		1A52AFA629C5616800415870 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		1A52AFA829C5616800415870 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A52AFAA29C5616800415870 /* ShiftTrackerWidgetBundle.swift */; };
-		1A52AFAD29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A52AFAC29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift */; };
 		1A52AFAF29C5616800415870 /* ShiftTrackerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A52AFAE29C5616800415870 /* ShiftTrackerWidget.swift */; };
 		1A52AFB129C5616A00415870 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A52AFB029C5616A00415870 /* Assets.xcassets */; };
 		1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -76,7 +75,6 @@
 		1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */; };
 		1AAC400429F2B09A00E204C8 /* OvertimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAC400329F2B09A00E204C8 /* OvertimeView.swift */; };
 		1AB7C88129FA3E110008B3B3 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
-		1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		1AB7C88329FA572E0008B3B3 /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1AB7C88429FA57580008B3B3 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
 		1AB7C88529FA575B0008B3B3 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
@@ -130,6 +128,16 @@
 		1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = 1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
+		7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
+		7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */; };
+		7C1AA4592A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */; };
+		7C1AA45B2A75106700330A54 /* ShiftTrackerActivityTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA45A2A75106700330A54 /* ShiftTrackerActivityTimer.swift */; };
+		7C1AA45D2A75106A00330A54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C1AA45C2A75106A00330A54 /* Assets.xcassets */; };
+		7C1AA4612A75106A00330A54 /* ShiftTrackerActivityTimerExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7C1AA4662A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */; };
+		7C1AA4672A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */; };
+		7C1AA4682A75137C00330A54 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
 		7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C82D8CB2A6222FF004DF369 /* JobRow.swift */; };
 		7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */; };
@@ -142,6 +150,13 @@
 		7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87172A587A9200A08219 /* SingleScheduledShift.swift */; };
 		7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB87192A59762D00A08219 /* SchedulingViewModel.swift */; };
 		7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAB871B2A59892D00A08219 /* CreateShiftForm.swift */; };
+		7CAC9B4F2A75159B0048F818 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7CAC9B502A7515C60048F818 /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
+		7CAC9B512A75163A0048F818 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
+		7CAC9B522A7516750048F818 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9329F100950002D9E4 /* Enums.swift */; };
+		7CAC9B532A7516830048F818 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
+		7CAC9B542A7516890048F818 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
+		7CAC9B552A75169D0048F818 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -164,6 +179,13 @@
 			remoteGlobalIDString = 1A52AFA229C5616800415870;
 			remoteInfo = ShiftTrackerWidgetExtension;
 		};
+		7C1AA45F2A75106A00330A54 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7C1AA4512A75106700330A54;
+			remoteInfo = ShiftTrackerActivityTimerExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -174,6 +196,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */,
+				7C1AA4612A75106A00330A54 /* ShiftTrackerActivityTimerExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,7 +241,6 @@
 		1A52AFA529C5616800415870 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1A52AFA729C5616800415870 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		1A52AFAA29C5616800415870 /* ShiftTrackerWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidgetBundle.swift; sourceTree = "<group>"; };
-		1A52AFAC29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidgetLiveActivity.swift; sourceTree = "<group>"; };
 		1A52AFAE29C5616800415870 /* ShiftTrackerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidget.swift; sourceTree = "<group>"; };
 		1A52AFB029C5616A00415870 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A52AFB229C5616A00415870 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -274,6 +296,14 @@
 		1AE3845C29D447DE0002378F /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		1AEBFE002A5132B900884DBF /* StatsSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsSquare.swift; sourceTree = "<group>"; };
 		1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreak.swift; sourceTree = "<group>"; };
+		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerBundle.swift; sourceTree = "<group>"; };
+		7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerLiveActivity.swift; sourceTree = "<group>"; };
+		7C1AA45A2A75106700330A54 /* ShiftTrackerActivityTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimer.swift; sourceTree = "<group>"; };
+		7C1AA45C2A75106A00330A54 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7C1AA45E2A75106A00330A54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityAttributes.swift; sourceTree = "<group>"; };
+		7C1AA46A2A7514EB00330A54 /* ShiftTrackerActivityTimerExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftTrackerActivityTimerExtension.entitlements; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
 		7C82D8CB2A6222FF004DF369 /* JobRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobRow.swift; sourceTree = "<group>"; };
 		7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentBreaksListView.swift; sourceTree = "<group>"; };
@@ -340,6 +370,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AB7C88829FA5B1E0008B3B3 /* WatchDatePicker in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7C1AA44F2A75106700330A54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */,
+				7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,7 +454,6 @@
 			isa = PBXGroup;
 			children = (
 				1A52AFAA29C5616800415870 /* ShiftTrackerWidgetBundle.swift */,
-				1A52AFAC29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift */,
 				1A52AFAE29C5616800415870 /* ShiftTrackerWidget.swift */,
 				1A52AFB029C5616A00415870 /* Assets.xcassets */,
 				1A52AFB229C5616A00415870 /* Info.plist */,
@@ -436,6 +474,8 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				7C1AA46A2A7514EB00330A54 /* ShiftTrackerActivityTimerExtension.entitlements */,
+				7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */,
 				7C934D392A6522F9004F2622 /* PurchaseManager.swift */,
 				1A4AB18A29FE1DB300AA62BC /* FirebaseJob.swift */,
 				1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */,
@@ -450,6 +490,7 @@
 				1A9855D229C55F8A003F512C /* ShiftTracker */,
 				1A52AFA929C5616800415870 /* ShiftTrackerWidget */,
 				1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */,
+				7C1AA4552A75106700330A54 /* ShiftTrackerActivityTimer */,
 				1A52AFA429C5616800415870 /* Frameworks */,
 				1A9855D129C55F8A003F512C /* Products */,
 			);
@@ -461,6 +502,7 @@
 				1A9855D029C55F8A003F512C /* ShiftTracker.app */,
 				1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */,
 				1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */,
+				7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -640,6 +682,18 @@
 			path = SummaryViews;
 			sourceTree = "<group>";
 		};
+		7C1AA4552A75106700330A54 /* ShiftTrackerActivityTimer */ = {
+			isa = PBXGroup;
+			children = (
+				7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */,
+				7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */,
+				7C1AA45A2A75106700330A54 /* ShiftTrackerActivityTimer.swift */,
+				7C1AA45C2A75106A00330A54 /* Assets.xcassets */,
+				7C1AA45E2A75106A00330A54 /* Info.plist */,
+			);
+			path = ShiftTrackerActivityTimer;
+			sourceTree = "<group>";
+		};
 		BF8191392A5A6E9E0079E449 /* ThemeManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -702,6 +756,7 @@
 			);
 			dependencies = (
 				1A52AFB429C5616A00415870 /* PBXTargetDependency */,
+				7C1AA4602A75106A00330A54 /* PBXTargetDependency */,
 			);
 			name = ShiftTracker;
 			packageProductDependencies = (
@@ -748,6 +803,23 @@
 			productReference = 1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7C1AA4642A75106A00330A54 /* Build configuration list for PBXNativeTarget "ShiftTrackerActivityTimerExtension" */;
+			buildPhases = (
+				7C1AA44E2A75106700330A54 /* Sources */,
+				7C1AA44F2A75106700330A54 /* Frameworks */,
+				7C1AA4502A75106700330A54 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShiftTrackerActivityTimerExtension;
+			productName = ShiftTrackerActivityTimerExtension;
+			productReference = 7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -755,7 +827,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					1A52AFA229C5616800415870 = {
@@ -766,6 +838,9 @@
 					};
 					1AD72AAF29F7809800534342 = {
 						CreatedOnToolsVersion = 14.3;
+					};
+					7C1AA4512A75106700330A54 = {
+						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
@@ -798,6 +873,7 @@
 				1A9855CF29C55F8A003F512C /* ShiftTracker */,
 				1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */,
 				1AD72AAF29F7809800534342 /* ShiftTracker Watch App */,
+				7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -830,6 +906,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7C1AA4502A75106700330A54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C1AA45D2A75106A00330A54 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -840,11 +924,9 @@
 				1A52AFAF29C5616800415870 /* ShiftTrackerWidget.swift in Sources */,
 				1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1AC048C129E0D50E00355767 /* Shift.swift in Sources */,
-				1AB7C88229FA56E10008B3B3 /* ContentViewModel.swift in Sources */,
 				1A5B0BA92A55030A0021572B /* Enums.swift in Sources */,
 				1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */,
 				1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */,
-				1A52AFAD29C5616800415870 /* ShiftTrackerWidgetLiveActivity.swift in Sources */,
 				1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */,
 				1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */,
@@ -880,6 +962,7 @@
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
 				7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */,
 				1AC9DDF829F7B28700C15008 /* JobData.swift in Sources */,
+				7C1AA4662A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */,
 				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
@@ -973,6 +1056,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7C1AA44E2A75106700330A54 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C1AA45B2A75106700330A54 /* ShiftTrackerActivityTimer.swift in Sources */,
+				7CAC9B4F2A75159B0048F818 /* TempBreak.swift in Sources */,
+				7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */,
+				7CAC9B552A75169D0048F818 /* PersistenceController.swift in Sources */,
+				7CAC9B542A7516890048F818 /* Shift.swift in Sources */,
+				7C1AA4592A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift in Sources */,
+				7CAC9B512A75163A0048F818 /* ShiftDataModel.xcdatamodeld in Sources */,
+				7C1AA4672A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */,
+				7C1AA4682A75137C00330A54 /* ContentViewModel.swift in Sources */,
+				7CAC9B532A7516830048F818 /* BreaksManager.swift in Sources */,
+				7CAC9B522A7516750048F818 /* Enums.swift in Sources */,
+				7CAC9B502A7515C60048F818 /* ShiftKeys.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -980,6 +1082,11 @@
 			isa = PBXTargetDependency;
 			target = 1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */;
 			targetProxy = 1A52AFB329C5616A00415870 /* PBXContainerItemProxy */;
+		};
+		7C1AA4602A75106A00330A54 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */;
+			targetProxy = 7C1AA45F2A75106A00330A54 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1308,6 +1415,73 @@
 			};
 			name = Release;
 		};
+		7C1AA4622A75106A00330A54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ShiftTrackerActivityTimerExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftTrackerActivityTimer/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerActivityTimer;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.ShiftTrackerActivityTimer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7C1AA4632A75106A00330A54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ShiftTrackerActivityTimerExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftTrackerActivityTimer/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerActivityTimer;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.ShiftTrackerActivityTimer;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1343,6 +1517,15 @@
 			buildConfigurations = (
 				1AD72ABF29F7809A00534342 /* Debug */,
 				1AD72AC029F7809A00534342 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7C1AA4642A75106A00330A54 /* Build configuration list for PBXNativeTarget "ShiftTrackerActivityTimerExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C1AA4622A75106A00330A54 /* Debug */,
+				7C1AA4632A75106A00330A54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

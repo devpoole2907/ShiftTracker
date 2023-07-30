@@ -89,7 +89,7 @@ class ContentViewModel: ObservableObject {
     //  @State private var activity: Activity<ShiftTrackerWidgetAttributes>? = nil
     #if os(iOS)
     @Published  var isActivityEnabled: Bool = true
-    @Published  var currentActivity: Activity<ShiftTrackerWidgetAttributes>?
+    @Published  var currentActivity: Activity<LiveActivityAttributes>?
     #endif
     
     @Published  var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
@@ -598,32 +598,52 @@ class ContentViewModel: ObservableObject {
         }
     #if os(iOS)
         func startActivity(startDate: Date, hourlyPay: Double){
-            let attributes = ShiftTrackerWidgetAttributes(name: "Shift started", hourlyPay: hourlyPay)
-            let state = ShiftTrackerWidgetAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
+            let attributes = LiveActivityAttributes(name: "Shift started", hourlyPay: hourlyPay)
+            let state = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
+            
+            let activityContent = ActivityContent(state: state, staleDate: nil)
             
             if (self.currentActivity == nil){
-                self.currentActivity = try? Activity<ShiftTrackerWidgetAttributes>.request(attributes: attributes, contentState: state, pushType: nil)
+ 
+                
+                self.currentActivity = try? Activity.request(attributes: attributes, content: activityContent, pushType: nil)
+                
                 print("Created activity")
             }
+            
+            
+            
+            
+            
         }
         
         func stopActivity(){
+            
+            let newState = LiveActivityAttributes.TimerStatus(startTime: Date(), totalPay: 0, isOnBreak: false)
+            let finalContent = ActivityContent(state: newState, staleDate: nil)
+            
             Task{
-                guard let currentActivity else { return }
                 
-                let newState = ShiftTrackerWidgetAttributes.TimerStatus(startTime: Date(), totalPay: 0, isOnBreak: false)
-                
-                await currentActivity.end(using: newState,dismissalPolicy: .immediate)
+                for activity in Activity<LiveActivityAttributes>.activities {
+                    
+                    await activity.end(finalContent, dismissalPolicy: .immediate)
+                    
+                }
             }
+            
+            self.currentActivity = nil
+            
         }
         
         func updateActivity(startDate: Date){
             Task{
-                guard let currentActivity else { return }
                 
-                let updatedState = ShiftTrackerWidgetAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak)
+                let updatedState = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak)
                 
-                await currentActivity.update(using: updatedState)
+                let updatedContent = ActivityContent(state: updatedState, staleDate: nil)
+                
+                await currentActivity?.update(updatedContent, alertConfiguration: nil)
+                
             }
         }
     #endif

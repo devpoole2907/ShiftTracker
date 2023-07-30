@@ -12,6 +12,5 @@ import SwiftUI
 struct ShiftTrackerWidgetBundle: WidgetBundle {
     var body: some Widget {
         ShiftTrackerWidget()
-        ShiftTrackerWidgetLiveActivity()
     }
 }

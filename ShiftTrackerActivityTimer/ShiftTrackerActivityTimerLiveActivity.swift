@@ -1,147 +1,25 @@
 //
-//  ShiftTrackerWidgetLiveActivity.swift
-//  ShiftTrackerWidget
+//  ShiftTrackerActivityTimerLiveActivity.swift
+//  ShiftTrackerActivityTimer
 //
-//  Created by James Poole on 18/03/23.
+//  Created by James Poole on 29/07/23.
 //
 
 import ActivityKit
 import WidgetKit
 import SwiftUI
 
-struct ShiftActivityView: View{
-    let context: ActivityViewContext<ShiftTrackerWidgetAttributes>
-    var body: some View{
-        
-        VStack(alignment: .leading){
-            HStack{
-                Text("ShiftTracker")
-                    .bold()
-                    .font(.title3)
-                    .foregroundColor(.white)
-                
-                Text("PRO")
-                    .bold()
-                    .font(.title)
-                    .fontWeight(.heavy)
-                    .foregroundColor(.orange)
-                
-                if context.state.isOnBreak{
-                    Text("On Break")
-                        .font(.caption)
-                        .bold()
-                        .frame(width: 80, height: 20)
-                        .background(.indigo)
-                        .cornerRadius(12)
-                        .foregroundColor(.white)
-                        .padding(.bottom, 1)
-                }
-            }.padding(.horizontal, 20)
-                .padding(.top, 15)
-        
-            HStack {
-               
-                    //.padding(.vertical, 10)
-                if context.state.isOnBreak{
-                    Text(context.state.startTime, style: .timer)
-                        .font(.system(size: 45))
-                        .foregroundColor(Color.indigo)
-                        .bold()
-                        .padding(.horizontal, 20)
-                    Button(action: {
-                        // Action to perform when button is tapped
-                    }) {
-                        Image(systemName: "play.circle")
-                            .font(.system(size: 45))
-                            .foregroundColor(.indigo.opacity(0.8))
-                    }
-                }
-                else {
-                    Text(context.state.startTime, style: .timer)
-                        .font(.system(size: 45))
-                        .foregroundColor(Color.orange)
-                        .bold()
-                        .padding(.horizontal, 20)
-                    Button(action: {
-                        // Action to perform when button is tapped
-                    }) {
-                        Image(systemName: "pause.circle")
-                            .font(.system(size: 45))
-                            .foregroundColor(.orange.opacity(0.8))
-                    }
-                }
-                    Button(action: {
-                        // Action to perform when button is tapped
-                    }) {
-                        Image(systemName: "xmark.circle")
-                            .font(.system(size: 45))
-                            .foregroundColor(.gray.opacity(0.6))
-                    }
 
-                
-            }
-            .padding()
-        }
-            .background(Color.black)
-    }
-}
 
-struct ExpandedIslandView: View{
-    let context: ActivityViewContext<ShiftTrackerWidgetAttributes>
-    var body: some View{
-        
-        VStack(alignment: .leading){
-            HStack{
-                Text("ShiftTracker")
-                    .bold()
-                    .font(.title3)
-                    .foregroundColor(.white)
-                
-                Text("PRO")
-                    .bold()
-                    .font(.title)
-                    .fontWeight(.heavy)
-                    .foregroundColor(.orange)
-                
-                    
-            }.padding()
-               // .padding(.bottom,15)
-        
-          /*  HStack {
-                Text(context.state.startTime, style: .timer)
-                    .font(.system(size: 45))
-                    .foregroundColor(Color.orange)
-                    .bold()
-                    .padding(.horizontal, 20)
-                    //.padding(.vertical, 10)
-                
-
-                
-            }
-            .padding() */
-        }
-            .background(Color.black)
-        
-            .privacySensitive(false)
-    }
-}
-
-struct IslandMinimalView: View {
-    let context: ActivityViewContext<ShiftTrackerWidgetAttributes>
-    var body: some View{
-        Text(context.state.startTime, style: .timer)
-    }
-}
-
-struct ShiftTrackerWidgetLiveActivity: Widget {
+struct ShiftTrackerActivityTimerLiveActivity: Widget {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: ShiftTrackerWidgetAttributes.self) { context in
+        ActivityConfiguration(for: LiveActivityAttributes.self) { context in
             // Lock screen/banner UI goes here
             VStack(alignment: .center){
                 ShiftActivityView(context: context)
-                    //.activityBackgroundTint(Color(red: 50/255, green: 50/255, blue: 50/255).opacity(0.4))
-                    .activitySystemActionForegroundColor(Color.black)
             }
+            .activityBackgroundTint(Color.cyan)
+            .activitySystemActionForegroundColor(Color.black)
 
         } dynamicIsland: { context in
             DynamicIsland {
@@ -150,7 +28,10 @@ struct ShiftTrackerWidgetLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.leading) {
                     VStack{
                         Spacer()
-                        HStack(spacing: 1){
+                        
+                        // buttons removed for iOS 17 button implementation later
+                        
+                     /*   HStack(spacing: 1){
                             if context.state.isOnBreak{
                                 Button(action: {
                                     // Action to perform when button is tapped
@@ -177,7 +58,7 @@ struct ShiftTrackerWidgetLiveActivity: Widget {
                                         .foregroundColor(.gray.opacity(0.6))
                                 }
                             
-                        }
+                        }*/
                     }//.padding(.top, 10)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
@@ -288,9 +169,96 @@ struct ShiftTrackerWidgetLiveActivity: Widget {
     }
 }
 
-struct ShiftTrackerWidgetLiveActivity_Previews: PreviewProvider {
-    static let attributes = ShiftTrackerWidgetAttributes(name: "Me", hourlyPay: 24)
-    static let contentState = ShiftTrackerWidgetAttributes.ContentState(startTime: Date(), totalPay: 220, isOnBreak: true)
+struct ShiftActivityView: View{
+    let context: ActivityViewContext<LiveActivityAttributes>
+    var body: some View{
+        
+        VStack(alignment: .leading){
+            HStack{
+                Text("ShiftTracker")
+                    .bold()
+                    .font(.title3)
+                    .foregroundColor(.white)
+                
+                Text("PRO")
+                    .bold()
+                    .font(.title)
+                    .fontWeight(.heavy)
+                    .foregroundColor(.orange)
+                
+                if context.state.isOnBreak{
+                    Text("On Break")
+                        .font(.caption)
+                        .bold()
+                        .frame(width: 80, height: 20)
+                        .background(.indigo)
+                        .cornerRadius(12)
+                        .foregroundColor(.white)
+                        .padding(.bottom, 1)
+                }
+            }.padding(.horizontal, 20)
+                .padding(.top, 15)
+        
+            HStack {
+               
+                    //.padding(.vertical, 10)
+                if context.state.isOnBreak{
+                    Text(context.state.startTime, style: .timer)
+                        .font(.system(size: 45))
+                        .foregroundColor(Color.indigo)
+                        .bold()
+                        .padding(.horizontal, 20)
+                    
+                    // buttons removed for iOS 17
+                    
+                  /*  Button(action: {
+                        // Action to perform when button is tapped
+                    }) {
+                        Image(systemName: "play.circle")
+                            .font(.system(size: 45))
+                            .foregroundColor(.indigo.opacity(0.8))
+                    }*/
+                }
+                else {
+                    Text(context.state.startTime, style: .timer)
+                        .font(.system(size: 45))
+                        .foregroundColor(Color.orange)
+                        .bold()
+                        .padding(.horizontal, 20)
+                    
+                }
+                    
+                    // buttons removed for iOS 17
+                    
+                  /*  Button(action: {
+                        // Action to perform when button is tapped
+                    }) {
+                        Image(systemName: "pause.circle")
+                            .font(.system(size: 45))
+                            .foregroundColor(.orange.opacity(0.8))
+                    }
+                }
+                    Button(action: {
+                        // Action to perform when button is tapped
+                    }) {
+                        Image(systemName: "xmark.circle")
+                            .font(.system(size: 45))
+                            .foregroundColor(.gray.opacity(0.6))
+                    } */
+
+                
+            }
+            .padding()
+        }
+            .background(Color.black)
+    }
+}
+
+
+
+struct ShiftTrackerActivityTimerLiveActivity_Previews: PreviewProvider {
+    static let attributes = LiveActivityAttributes(name: "Me", hourlyPay: 24)
+    static let contentState = LiveActivityAttributes.ContentState(startTime: Date(), totalPay: 220, isOnBreak: true)
 
     static var previews: some View {
         if #available(iOS 16.2, *) {
@@ -306,14 +274,6 @@ struct ShiftTrackerWidgetLiveActivity_Previews: PreviewProvider {
             attributes
                 .previewContext(contentState, viewKind: .content)
                 .previewDisplayName("Notification")
-        }
-    }
-}
-
-extension UIImage {
-    func imageResized(to size: CGSize) -> UIImage {
-        return UIGraphicsImageRenderer(size: size).image { _ in
-            draw(in: CGRect(origin: .zero, size: size))
         }
     }
 }
