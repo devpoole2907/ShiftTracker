@@ -29,7 +29,7 @@ struct ShiftTrackerLockscreenPayWidgetsView : View {
         case .accessoryRectangular:
             
             RectangularPayWidgetView(entry: entry)
-                .padding(10)
+                .padding(5)
                 .background()
                 .cornerRadius(6)
             
@@ -114,7 +114,7 @@ struct RectangularPayWidgetView: View {
                 } else {
                     
                     Text("Current pay: \(currencyFormatter.currencySymbol ?? "")\(entry.taxedPay, specifier: "%.2f")")
-                        .font(.system(size: 20, weight: .bold))
+                        .bold()
                     
                 }
                 

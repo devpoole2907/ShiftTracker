@@ -34,9 +34,9 @@ struct LockscreenWidgetProvider: TimelineProvider {
             let tempBreaks = loadTempBreaksFromUserDefaults()
             let totalPay = calculateTotalPay(sharedUserDefaults: sharedUserDefaults, hourlyPay: hourlyPay, tempBreaks: tempBreaks)
             let taxedPay = calculateTaxedPay(sharedUserDefaults: sharedUserDefaults, totalPay: totalPay)
+            let isOnBreak = sharedUserDefaults.bool(forKey: shiftKeys.isOnBreakKey)
             
-            
-            let entry = ShiftEntry(date: entryDate, shiftStartDate: shiftStartDate, totalPay: totalPay, taxedPay: taxedPay, isOnBreak: false)
+            let entry = ShiftEntry(date: entryDate, shiftStartDate: shiftStartDate, totalPay: totalPay, taxedPay: taxedPay, isOnBreak: isOnBreak)
             entries.append(entry)
             
         }
