@@ -260,13 +260,27 @@ struct CreateShiftForm: View {
                                 Text("START")
                                     .foregroundStyle(.gray)
                                     .bold()
+                               
+                                
+                                
                             }
                             .font(.system(.caption, design: .rounded))
-                            Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
-                              
                             
-                                .font(.system(.title3, design: .rounded))
-                                .bold()
+                            HStack{
+                                Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
+                                
+                                
+                                    .font(.system(.title3, design: .rounded))
+                                    .bold()
+                                
+                                if getTime(angle: startAngle) < Date() {
+                                    
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .foregroundStyle(.gray)
+                                    
+                                }
+                                
+                            }.padding(.leading, getTime(angle: startAngle) < Date() ? 28 : 0)
                             
                             Text(getTime(angle: startAngle).formatted(date: .abbreviated, time: .omitted))
                                 .font(.system(.caption2, design: .rounded))
@@ -380,8 +394,9 @@ struct CreateShiftForm: View {
                             endDate = getTime(angle: toAngle, isEndDate: true)
                             selectedJob = jobSelectionViewModel.fetchJob(in: viewContext)
                             
-                            
-                            createShift()
+                         
+                                
+                                createShift()
                             
                            
                         } label: {
@@ -389,6 +404,7 @@ struct CreateShiftForm: View {
                                 .bold()
                             
                         }.padding()
+                            .disabled(getTime(angle: startAngle) < Date())
                     }
                     ToolbarItem(placement: .navigationBarLeading){
                         CloseButton{
