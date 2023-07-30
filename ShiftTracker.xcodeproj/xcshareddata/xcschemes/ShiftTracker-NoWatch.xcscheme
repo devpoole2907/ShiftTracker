@@ -20,6 +20,20 @@
                ReferencedContainer = "container:ShiftTracker.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7CAC9B5D2A7604EB0048F818"
+               BuildableName = "ShiftTrackerLockscreenWidgetsExtension.appex"
+               BlueprintName = "ShiftTrackerLockscreenWidgetsExtension"
+               ReferencedContainer = "container:ShiftTracker.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

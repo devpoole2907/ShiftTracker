@@ -22,6 +22,8 @@ struct ShiftTrackerApp: App {
    // @StateObject var navigationState = NavigationState()
     //@StateObject var locationManager = LocationDataManager()
     @StateObject var themeManager = ThemeDataManager()
+    
+    @StateObject var navigationState = NavigationState.shared
 
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
@@ -45,7 +47,7 @@ struct ShiftTrackerApp: App {
                 .environmentObject(themeManager)
                 .environmentObject(LocationDataManager.shared)
                 .environmentObject(purchaseManager)
-                .environmentObject(NavigationState.shared)
+                .environmentObject(navigationState)
                 .environmentObject(ShiftStore.shared)
                 .environmentObject(SortSelection(in: persistenceController.container.viewContext))
             
@@ -59,9 +61,13 @@ struct ShiftTrackerApp: App {
             // deep link tests
                 .onOpenURL { url in
                     print("got a URL boss man")
-                    print(url.path)
-                    if url.scheme == "shifttrackerapp" && url.path == "/schedule" {
-                       // selectedTab = .schedule
+                    print("url is: \(url)")
+                    print("url path is: \(url.path)")
+                    print("url scheme is: \(url.scheme)")
+                    if url.scheme == "shifttrackerapp"  && url.host == "schedule" {
+                        
+                        navigationState.currentTab = .schedule
+                        
                     }
                 }
                 .onAppear {

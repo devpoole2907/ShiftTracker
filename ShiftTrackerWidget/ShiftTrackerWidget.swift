@@ -20,7 +20,7 @@ struct ShiftTrackerWidget: Widget {
         }
         .configurationDisplayName("ShiftTracker Widget")
         .description("Track your current shift earnings.")
-        .supportedFamilies([.systemSmall, .accessoryRectangular, .accessoryInline, .accessoryCircular, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
@@ -121,15 +121,8 @@ struct ShiftTrackerWidgetView: View {
     
     var body: some View {
         switch family {
-        case.accessoryRectangular:
-            RectangularWidgetView(entry: entry)
-                .privacySensitive(false)
-        case.accessoryInline:
-            InlineWidgetView(entry: entry)
-                .privacySensitive(false)
-        case.accessoryCircular:
-            CircularWidgetView(entry: entry)
-                .privacySensitive(false)
+
+
         case.systemMedium:
             MediumWidgetView(entry: entry)
                 .privacySensitive(false)
@@ -187,33 +180,6 @@ struct ShiftTrackerWidgetView: View {
     }
 }
 
-
-struct RectangularWidgetView: View {
-    
-    private var currencyFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale.current
-        return formatter
-    }
-    
-    var entry: ShiftTrackerProvider.Entry
-    var body: some View {
-        if entry.isOnBreak{
-            Text("On break")
-                .font(.system(size: 20, weight: .bold))
-        }
-        else if !entry.shiftEnded{
-            Text("Current pay: \(currencyFormatter.currencySymbol ?? "")\(entry.taxedPay, specifier: "%.2f")")
-                .font(.system(size: 20, weight: .bold))
-        }
-        else {
-            Text("No active shift")
-                .font(.system(size: 20, weight: .bold))
-                
-        }
-    }
-}
 
 struct MediumWidgetView: View {
     
@@ -315,41 +281,7 @@ struct MediumWidgetView: View {
 
 
 
-struct CircularWidgetView: View {
-    var entry: ShiftTrackerProvider.Entry
-    var body: some View {
-        if entry.isOnBreak{
-            Text("\(Image(systemName: "pause.circle.fill"))")
-        }
-        else if !entry.shiftEnded{
-            Text("$\(entry.taxedPay, specifier: "%.0f")")
-                .font(.system(size: 20, weight: .bold))
-        }
-        else {
-            Text("\(Image(systemName: "briefcase"))")
-        }
-    }
-}
 
-struct InlineWidgetView: View {
-    var entry: ShiftTrackerProvider.Entry
-    var body: some View {
-        if entry.isOnBreak{
-            Text("Break")
-                .bold()
-        }
-        else if !entry.shiftEnded{
-            Text("$\(entry.taxedPay, specifier: "%.2f")")
-                .bold()
-                
-        }
-        else {
-            Text("No shift")
-                .bold()
-        }
-        
-    }
-}
 
 
 struct ShiftTrackerWidget_Previews: PreviewProvider {

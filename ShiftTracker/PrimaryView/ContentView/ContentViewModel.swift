@@ -347,18 +347,18 @@ class ContentViewModel: ObservableObject {
         
         func saveTempBreaksToUserDefaults() {
             let tempBreaksDictionaries = tempBreaksToDictionaries(tempBreaks: tempBreaks)
-            UserDefaults.standard.set(tempBreaksDictionaries, forKey: "tempBreaks")
+            sharedUserDefaults.set(tempBreaksDictionaries, forKey: shiftKeys.tempBreaksKey)
             
             print("after saving breaks the count is: \(tempBreaksDictionaries.count)")
             
         }
         
         func clearTempBreaksFromUserDefaults() {
-            UserDefaults.standard.removeObject(forKey: "tempBreaks")
+            sharedUserDefaults.removeObject(forKey: shiftKeys.tempBreaksKey)
         }
         
         func loadTempBreaksFromUserDefaults() {
-            if let tempBreaksDictionaries = UserDefaults.standard.array(forKey: "tempBreaks") as? [[String: Any]] {
+            if let tempBreaksDictionaries = sharedUserDefaults.array(forKey: shiftKeys.tempBreaksKey) as? [[String: Any]] {
                 let loadedBreaks = dictionariesToTempBreaks(dictionaries: tempBreaksDictionaries)
                 
                 for tempBreak in loadedBreaks {
@@ -375,15 +375,15 @@ class ContentViewModel: ObservableObject {
         }
         
         func saveCurrentBreakIndexToUserDefaults() {
-            UserDefaults.standard.set(tempBreaks.count - 1, forKey: "currentBreakIndex")
+            sharedUserDefaults.set(tempBreaks.count - 1, forKey: "currentBreakIndex")
         }
         
         func loadCurrentBreakIndexFromUserDefaults() -> Int? {
-            return UserDefaults.standard.object(forKey: "currentBreakIndex") as? Int
+            return sharedUserDefaults.object(forKey: "currentBreakIndex") as? Int
         }
         
         func clearCurrentBreakIndexFromUserDefaults() {
-            UserDefaults.standard.removeObject(forKey: "currentBreakIndex")
+            sharedUserDefaults.removeObject(forKey: "currentBreakIndex")
         }
     
     func indexOfTempBreak(withId id: UUID) -> Int? {

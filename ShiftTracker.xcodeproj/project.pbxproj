@@ -157,6 +157,17 @@
 		7CAC9B542A7516890048F818 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
 		7CAC9B552A75169D0048F818 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		7CAC9B572A75EF3D0048F818 /* JobSelectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */; };
+		7CAC9B5F2A7604EB0048F818 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
+		7CAC9B602A7604EB0048F818 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
+		7CAC9B632A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B622A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsBundle.swift */; };
+		7CAC9B652A7604EB0048F818 /* ShiftTrackerLockscreenDurationWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B642A7604EB0048F818 /* ShiftTrackerLockscreenDurationWidgets.swift */; };
+		7CAC9B672A7604EE0048F818 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7CAC9B662A7604EE0048F818 /* Assets.xcassets */; };
+		7CAC9B6B2A7604EE0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7CAC9B5E2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7CAC9B702A760CF20048F818 /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
+		7CAC9B722A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B712A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift */; };
+		7CAC9B742A762AAC0048F818 /* LockscreenWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */; };
+		7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B752A762D410048F818 /* ShiftEntry.swift */; };
+		7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -186,6 +197,13 @@
 			remoteGlobalIDString = 7C1AA4512A75106700330A54;
 			remoteInfo = ShiftTrackerActivityTimerExtension;
 		};
+		7CAC9B692A7604EE0048F818 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7CAC9B5D2A7604EB0048F818;
+			remoteInfo = ShiftTrackerLockscreenWidgetsExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -197,6 +215,7 @@
 			files = (
 				1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */,
 				7C1AA4612A75106A00330A54 /* ShiftTrackerActivityTimerExtension.appex in Embed Foundation Extensions */,
+				7CAC9B6B2A7604EE0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -316,6 +335,15 @@
 		7CAB87192A59762D00A08219 /* SchedulingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulingViewModel.swift; sourceTree = "<group>"; };
 		7CAB871B2A59892D00A08219 /* CreateShiftForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateShiftForm.swift; sourceTree = "<group>"; };
 		7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobSelectionManager.swift; sourceTree = "<group>"; };
+		7CAC9B5E2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerLockscreenWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CAC9B622A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerLockscreenWidgetsBundle.swift; sourceTree = "<group>"; };
+		7CAC9B642A7604EB0048F818 /* ShiftTrackerLockscreenDurationWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerLockscreenDurationWidgets.swift; sourceTree = "<group>"; };
+		7CAC9B662A7604EE0048F818 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7CAC9B682A7604EE0048F818 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7CAC9B6F2A7607570048F818 /* ShiftTrackerLockscreenWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftTrackerLockscreenWidgetsExtension.entitlements; sourceTree = "<group>"; };
+		7CAC9B712A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerLockscreenPayWidgets.swift; sourceTree = "<group>"; };
+		7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockscreenWidgetProvider.swift; sourceTree = "<group>"; };
+		7CAC9B752A762D410048F818 /* ShiftEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftEntry.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -379,6 +407,15 @@
 			files = (
 				7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */,
 				7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CAC9B5B2A7604EB0048F818 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CAC9B602A7604EB0048F818 /* SwiftUI.framework in Frameworks */,
+				7CAC9B5F2A7604EB0048F818 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,6 +511,7 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				7CAC9B6F2A7607570048F818 /* ShiftTrackerLockscreenWidgetsExtension.entitlements */,
 				7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */,
 				7C1AA46A2A7514EB00330A54 /* ShiftTrackerActivityTimerExtension.entitlements */,
 				7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */,
@@ -492,6 +530,7 @@
 				1A52AFA929C5616800415870 /* ShiftTrackerWidget */,
 				1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */,
 				7C1AA4552A75106700330A54 /* ShiftTrackerActivityTimer */,
+				7CAC9B612A7604EB0048F818 /* ShiftTrackerLockscreenWidgets */,
 				1A52AFA429C5616800415870 /* Frameworks */,
 				1A9855D129C55F8A003F512C /* Products */,
 			);
@@ -504,6 +543,7 @@
 				1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */,
 				1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */,
 				7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */,
+				7CAC9B5E2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -694,6 +734,20 @@
 			path = ShiftTrackerActivityTimer;
 			sourceTree = "<group>";
 		};
+		7CAC9B612A7604EB0048F818 /* ShiftTrackerLockscreenWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				7CAC9B622A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsBundle.swift */,
+				7CAC9B642A7604EB0048F818 /* ShiftTrackerLockscreenDurationWidgets.swift */,
+				7CAC9B662A7604EE0048F818 /* Assets.xcassets */,
+				7CAC9B682A7604EE0048F818 /* Info.plist */,
+				7CAC9B712A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift */,
+				7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */,
+				7CAC9B752A762D410048F818 /* ShiftEntry.swift */,
+			);
+			path = ShiftTrackerLockscreenWidgets;
+			sourceTree = "<group>";
+		};
 		BF8191392A5A6E9E0079E449 /* ThemeManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -757,6 +811,7 @@
 			dependencies = (
 				1A52AFB429C5616A00415870 /* PBXTargetDependency */,
 				7C1AA4602A75106A00330A54 /* PBXTargetDependency */,
+				7CAC9B6A2A7604EE0048F818 /* PBXTargetDependency */,
 			);
 			name = ShiftTracker;
 			packageProductDependencies = (
@@ -820,6 +875,23 @@
 			productReference = 7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		7CAC9B5D2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7CAC9B6C2A7604EE0048F818 /* Build configuration list for PBXNativeTarget "ShiftTrackerLockscreenWidgetsExtension" */;
+			buildPhases = (
+				7CAC9B5A2A7604EB0048F818 /* Sources */,
+				7CAC9B5B2A7604EB0048F818 /* Frameworks */,
+				7CAC9B5C2A7604EB0048F818 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ShiftTrackerLockscreenWidgetsExtension;
+			productName = ShiftTrackerLockscreenWidgetsExtension;
+			productReference = 7CAC9B5E2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -840,6 +912,9 @@
 						CreatedOnToolsVersion = 14.3;
 					};
 					7C1AA4512A75106700330A54 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					7CAC9B5D2A7604EB0048F818 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -874,6 +949,7 @@
 				1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */,
 				1AD72AAF29F7809800534342 /* ShiftTracker Watch App */,
 				7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */,
+				7CAC9B5D2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -911,6 +987,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C1AA45D2A75106A00330A54 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CAC9B5C2A7604EB0048F818 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CAC9B672A7604EE0048F818 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1075,6 +1159,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7CAC9B5A2A7604EB0048F818 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CAC9B652A7604EB0048F818 /* ShiftTrackerLockscreenDurationWidgets.swift in Sources */,
+				7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */,
+				7CAC9B742A762AAC0048F818 /* LockscreenWidgetProvider.swift in Sources */,
+				7CAC9B722A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift in Sources */,
+				7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */,
+				7CAC9B632A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsBundle.swift in Sources */,
+				7CAC9B702A760CF20048F818 /* ShiftKeys.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1087,6 +1185,11 @@
 			isa = PBXTargetDependency;
 			target = 7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */;
 			targetProxy = 7C1AA45F2A75106A00330A54 /* PBXContainerItemProxy */;
+		};
+		7CAC9B6A2A7604EE0048F818 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7CAC9B5D2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension */;
+			targetProxy = 7CAC9B692A7604EE0048F818 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1482,6 +1585,73 @@
 			};
 			name = Release;
 		};
+		7CAC9B6D2A7604EE0048F818 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ShiftTrackerLockscreenWidgetsExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftTrackerLockscreenWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerLockscreenWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.ShiftTrackerLockscreenDurationWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7CAC9B6E2A7604EE0048F818 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ShiftTrackerLockscreenWidgetsExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShiftTrackerLockscreenWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerLockscreenWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.ShiftTrackerLockscreenDurationWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1526,6 +1696,15 @@
 			buildConfigurations = (
 				7C1AA4622A75106A00330A54 /* Debug */,
 				7C1AA4632A75106A00330A54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7CAC9B6C2A7604EE0048F818 /* Build configuration list for PBXNativeTarget "ShiftTrackerLockscreenWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7CAC9B6D2A7604EE0048F818 /* Debug */,
+				7CAC9B6E2A7604EE0048F818 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

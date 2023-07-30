@@ -27,4 +27,5 @@ struct ShiftKeys {
     let overtimeAppliedAfterKey = "overtimeApplied"
     let overtimeEnabledKey = "overtimeEnabled"
     let timeElapsedBeforeBreakKey = "timeElapsedBeforeBreak"
+    let tempBreaksKey = "tempBreaks"
 }

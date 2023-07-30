@@ -159,12 +159,12 @@ class ShiftNotificationManager {
         do {
             let jobs = try viewContext.fetch(fetchRequest)
 
-            // Loop through the jobs and reschedule
+    
             for job in jobs {
                 if let time = job.rosterTime,
                    let nextDate = nextDate(dayOfWeek: Int(job.rosterDayOfWeek), time: time) {
                     
-                    // Schedule the notification
+  
                     
                     let content = UNMutableNotificationContent()
                     content.title = "Check your roster"
