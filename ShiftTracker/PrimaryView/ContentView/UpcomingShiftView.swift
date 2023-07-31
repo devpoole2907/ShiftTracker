@@ -13,6 +13,7 @@ struct UpcomingShiftView: View {
     
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     @FetchRequest(
         entity: ScheduledShift.entity(),
@@ -44,6 +45,8 @@ struct UpcomingShiftView: View {
         
         if let upcomingShift = scheduledShifts.first {
             Button(action: {
+                
+                // this should only start the shift if it is the selected job rather than switching it if subscription is expired
                 
                 let next24Hours = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
                 
