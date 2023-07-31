@@ -7,6 +7,7 @@
 
 import Foundation
 import StoreKit
+import CoreData
 
 @MainActor
 class PurchaseManager: ObservableObject {
@@ -24,9 +25,11 @@ class PurchaseManager: ObservableObject {
     
     private var updates: Task<Void, Never>? = nil
     
+    var subscriptionExpiryDate: Date?
+    
     var hasUnlockedPro: Bool {
         
-        return !self.purchasedProductIDs.isEmpty
+        return !self.purchasedProductIDs.isEmpty && (subscriptionExpiryDate ?? Date()) > Date()
         
     }
     
@@ -70,32 +73,45 @@ class PurchaseManager: ObservableObject {
     }
     
     func updatePurchasedProducts() async {
-        
-        
+        var latestTransaction: Transaction?
+
+        // loop through all transactions to get the latest one
         for await result in Transaction.currentEntitlements {
-            
             guard case .verified(let transaction) = result else {
-                
                 continue
-                
             }
-            
-            if transaction.revocationDate == nil {
-                
-                
-                self.purchasedProductIDs.insert(transaction.productID)
-                
-            } else {
-                
-                self.purchasedProductIDs.remove(transaction.productID)
-                
+
+  
+            if let latest = latestTransaction,
+               let transactionExpirationDate = transaction.expirationDate,
+               let latestExpirationDate = latest.expirationDate {
+                if transactionExpirationDate > latestExpirationDate {
+                    latestTransaction = transaction
+                }
+            } else if latestTransaction == nil {
+       
+                latestTransaction = transaction
             }
-            
-            
         }
-        
-        
+
+       
+        if let transaction = latestTransaction {
+            if transaction.revocationDate == nil {
+                self.purchasedProductIDs.insert(transaction.productID)
+                self.subscriptionExpiryDate = transaction.expirationDate
+            } else {
+                self.purchasedProductIDs.remove(transaction.productID)
+                self.subscriptionExpiryDate = nil
+
+                if let expirationDate = transaction.expirationDate, expirationDate < Date() {
+                   // handleSubscriptionExpiry()
+                }
+            }
+        }
     }
+
+
+
     
     func purchase(_ product: Product) async throws {
         
@@ -133,6 +149,24 @@ class PurchaseManager: ObservableObject {
         
         
     }
+    
+    func handleSubscriptionExpiry(in viewContext: NSManagedObjectContext) {
+        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "autoClockIn == YES || autoClockOut == YES")
+        
+        do {
+            let jobs = try viewContext.fetch(fetchRequest)
+            for job in jobs {
+                job.autoClockIn = false
+                job.autoClockOut = false
+            }
+            try viewContext.save()
+        } catch {
+            // Handle the error
+            print("Unable to fetch jobs: \(error)")
+        }
+    }
+
     
     
     

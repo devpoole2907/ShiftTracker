@@ -294,6 +294,12 @@ struct MainWithSideBarView: View {
                 createTags(in: context)
                 
                 
+                // sets all jobs with auto clock in & out to false if subscription gone
+                if !purchaseManager.hasUnlockedPro {
+                    
+                    purchaseManager.handleSubscriptionExpiry(in: context)
+                    
+                }
                 
                 
                 

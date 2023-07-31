@@ -28,6 +28,9 @@ struct SideMenu: View {
     @EnvironmentObject var purchaseManager: PurchaseManager
     
     @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
+    // used for sub expiry
+    @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
+
     
     @State private var selectedJobForEditing: Job?
     @State private var isEditJobPresented: Bool = false
@@ -113,27 +116,38 @@ struct SideMenu: View {
                                         }, showEdit: true)
                                         .contentShape(Rectangle())
                                         .onTapGesture {
-                                            
-                                            if !(jobSelectionViewModel.selectedJobUUID == job.uuid) {
-                                                jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
-                                                
+                                            if purchaseManager.hasUnlockedPro
+                                                || jobSelectionViewModel.selectedJobUUID == job.uuid
+                                                || (job.uuid?.uuidString == lastSelectedJobUUID)
+                                                || (lastSelectedJobUUID == nil) {
+                                                if !(jobSelectionViewModel.selectedJobUUID == job.uuid) {
+                                                    jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
+                                                    lastSelectedJobUUID = job.uuid?.uuidString
+                                                } else {
+                                                    jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
+                                                }
+
+                                                withAnimation(.easeInOut) {
+                                                    navigationState.showMenu = false
+                                                }
                                             } else {
-                                                jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
+                                  
+                                                showUpgradeScreen = true
                                             }
-                                            
-                                            withAnimation(.easeInOut) {
-                                                
-                                                navigationState.showMenu = false
-                                                
-                                            }
-                                            
                                         }
+
+
                                         
                                     }.padding(.horizontal, 8)
                                         .padding(.vertical, 10)
                                         .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
                                         .cornerRadius(50)
-                                    
+                                        .opacity(purchaseManager.hasUnlockedPro
+                                                 || jobSelectionViewModel.selectedJobUUID == job.uuid
+                                                 || (job.uuid?.uuidString == lastSelectedJobUUID)
+                                                 || (lastSelectedJobUUID == nil)
+                                            ? 1.0
+                                            : 0.5)
                                     
                                     
                                     
