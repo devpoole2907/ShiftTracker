@@ -33,19 +33,12 @@ struct ChartSquare: View {
     
     @State private var currentActiveShift: singleShift?
     @State private var plotWidth: CGFloat = 0
+    
+    @State private var timesSeen = 0
 
     
     @Environment(\.colorScheme) var colorScheme
-    
-    var data: [ChartTest] = [
-        .init(type: "M", count: 5),
-        .init(type: "T", count: 4),
-        .init(type: "W", count: 4),
-        .init(type: "Th", count: 0),
-        .init(type: "F", count: 6),
-        .init(type: "S", count: 5),
-        .init(type: "Su", count: 2)
-    ]
+
     
     var body: some View {
                         
@@ -130,22 +123,7 @@ struct ChartSquare: View {
                         ForEach(shiftManager.recentShifts) { shift in
                             
                             if let currentActiveShift, currentActiveShift.id == shift.id{
-                                /*   if #available(iOS 17, *){
-                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekday))
-                                 .foregroundStyle(Color(.systemGray6))
-                                 .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
-                                 if shiftManager.statsMode == .earnings {
-                                 
-                                 ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                 } else {
-                                 ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                 }
-                                 
-                                 }
-                                 
-                                 } else { */
+                       
                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekday))
                                     .foregroundStyle(Color(.systemGray6))
                                     .annotation(position: .top){
@@ -159,7 +137,7 @@ struct ChartSquare: View {
                                         }
                                         
                                     }
-                                // }
+                                
                             }
                             
                             
@@ -192,22 +170,7 @@ struct ChartSquare: View {
                         ForEach(shiftManager.monthlyShifts) { shift in
                             
                             if let currentActiveShift, currentActiveShift.id == shift.id{
-                                /*    if #available(iOS 17, *){
-                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .day))
-                                 .foregroundStyle(Color(.systemGray6))
-                                 .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
-                                 if shiftManager.statsMode == .earnings {
-                                 
-                                 ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                 } else {
-                                 ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                 }
-                                 
-                                 }
-                                 
-                                 } else { */
+                       
                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .day))
                                     .foregroundStyle(Color(.systemGray6))
                                     .annotation(position: .top){
@@ -221,7 +184,7 @@ struct ChartSquare: View {
                                         }
                                         
                                     }
-                                //}
+                                
                             }
                             
                             
@@ -255,22 +218,7 @@ struct ChartSquare: View {
                         ForEach(shiftManager.halfYearlyShifts) { shift in
                             
                             if let currentActiveShift, currentActiveShift.id == shift.id{
-                                /*   if #available(iOS 17, *){
-                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekOfYear))
-                                 .foregroundStyle(Color(.systemGray6))
-                                 .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
-                                 if shiftManager.statsMode == .earnings {
-                                 
-                                 ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                 } else {
-                                 ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                 }
-                                 
-                                 }
-                                 
-                                 } else { */
+                  
                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekOfYear))
                                     .foregroundStyle(Color(.systemGray6))
                                     .annotation(position: .top){
@@ -284,7 +232,7 @@ struct ChartSquare: View {
                                         }
                                         
                                     }
-                                //}
+                                
                             }
                             
                             
@@ -316,22 +264,7 @@ struct ChartSquare: View {
                         
                         ForEach(shiftManager.yearlyShifts) { shift in
                         if let currentActiveShift, currentActiveShift.id == shift.id{
-                            /*   if #available(iOS 17, *){
-                             RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
-                             .foregroundStyle(Color(.systemGray6))
-                             .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
-                             if shiftManager.statsMode == .earnings {
-                             
-                             ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                             .opacity(showSelectionBar ? 1.0 : 0.0)
-                             } else {
-                             ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                             .opacity(showSelectionBar ? 1.0 : 0.0)
-                             }
-                             
-                             }
-                             
-                             } else { */
+                 
                             RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
                                 .foregroundStyle(Color(.systemGray6))
                                 .annotation(position: .top){
@@ -345,7 +278,7 @@ struct ChartSquare: View {
                                     }
                                     
                                 }
-                            // }
+                            
                         }
                         
                         
@@ -380,18 +313,26 @@ struct ChartSquare: View {
                     
                 }
                 .onAppear {
-                    animateGraph()
+                    
+                
+                        
+                        //  animateGraph()
+                        
+                    
                 }
                 
                 .onReceive(shiftManager.$shiftAdded) { _ in
                     animateGraph()
+                    print("on recieve in chart called")
                         }
                 
                 .onReceive(shiftManager.$statsMode) { _ in
-                    animateGraph()
+                    
+                   // animateGraph()
                         }
                 .onReceive(shiftManager.shiftDataLoaded) { _ in
                     animateGraph()
+                    print("shift data loaded called")
                 }
 
 
@@ -575,9 +516,7 @@ struct ChartSquare: View {
                     }
                     
                 }
-            }//.padding(.horizontal, 10)
-            //.padding(.leading)
-           // Spacer()
+            }
         }
             .padding(.vertical, 8)
             .background(Color("SquaresColor"))
@@ -591,52 +530,52 @@ struct ChartSquare: View {
         case .week:
             for(index,_) in shiftManager.recentShifts.enumerated(){
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
+               // DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
                         shiftManager.recentShifts[index].animate = true
                         
                     }
                     
-                }
+               // }
 
             }
             
         case .month:
             for(index,_) in shiftManager.monthlyShifts.enumerated(){
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
+              //  DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
                         shiftManager.monthlyShifts[index].animate = true
                         
                     }
                     
-                }
+               // }
 
             }
             
         case .halfYear:
             for(index,_) in shiftManager.halfYearlyShifts.enumerated(){
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
+          //      DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
                         shiftManager.halfYearlyShifts[index].animate = true
                         
                     }
                     
-                }
+           //     }
 
             }
             
         case .year:
             for(index,_) in shiftManager.yearlyShifts.enumerated(){
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
+             //   DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
                         shiftManager.yearlyShifts[index].animate = true
                         
                     }
                     
-                }
+            //    }
 
             }
             

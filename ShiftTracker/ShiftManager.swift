@@ -141,104 +141,34 @@ class ShiftDataManager: ObservableObject {
     }
 
     func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager, dateRange: DateRange) -> [singleShift] {
-        var shiftsByDay: [String: [OldShift]] = [:]
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d/M/yyyy"
 
-        for shift in shifts {
-            if shouldIncludeShift(shift, jobModel: jobModel) {
-                let dateKey = formatter.string(from: shift.shiftStartDate!)
-                if shiftsByDay[dateKey] != nil {
-                    shiftsByDay[dateKey]!.append(shift)
-                } else {
-                    shiftsByDay[dateKey] = [shift]
-                }
+        // Group shifts by day/week/month/year
+        let shiftsGroupedByDate: [Date: [OldShift]] = Dictionary(grouping: shifts) { shift in
+            switch dateRange {
+            case .week:
+                return Calendar.current.startOfDay(for: shift.shiftStartDate!)
+            case .month:
+                return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: shift.shiftStartDate!))!
+            case .halfYear:
+                return Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: shift.shiftStartDate!))!
+            case .year:
+                return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: shift.shiftStartDate!))!
             }
         }
 
-        let calendar = Calendar.current
+        // Filter only the shifts in the desired range
         let today = Date()
-        let range = getRange(for: dateRange, using: calendar, and: today)
-        var periodShifts: [singleShift] = []
-        
-        if dateRange == .halfYear {
-            
-            var shiftsByWeek: [Int: [singleShift]] = [:]
-            let weeks = 26
-            for i in range {
-                let date = calendar.date(byAdding: .day, value: -i, to: today)!
-                let dateKey = formatter.string(from: date)
-                let shiftsForTheDay = shiftsByDay[dateKey]
-                
-                if let shifts = shiftsForTheDay {
-                    for shift in shifts {
-                        let dateComponents = calendar.dateComponents([.weekOfYear], from: shift.shiftStartDate!, to: today)
-                        let weekOfYear = dateComponents.weekOfYear!
-                        if weekOfYear < weeks {
-                            if shiftsByWeek[weekOfYear] != nil {
-                                shiftsByWeek[weekOfYear]!.append(singleShift(shift: shift))
-                            } else {
-                                shiftsByWeek[weekOfYear] = [singleShift(shift: shift)]
-                            }
-                        }
-                    }
-                }
-            }
-            
-            for week in 0..<weeks {
-                if let shiftsForWeek = shiftsByWeek[week] {
-          
-                    periodShifts.append(singleShift(shifts: shiftsForWeek))
-                }
-            }
+        let startDate = Calendar.current.date(byAdding: dateRange.dateComponent, value: -dateRange.length, to: today)!
+        let filteredShifts = shiftsGroupedByDate.filter { $0.key >= startDate && $0.key <= today }
 
-        } else if dateRange == .year {
-            var shiftsByMonth: [Int: [singleShift]] = [:]
-                    let months = 12
-                    for i in range {
-                        let date = calendar.date(byAdding: .day, value: -i, to: today)!
-                        let dateKey = formatter.string(from: date)
-                        let shiftsForTheDay = shiftsByDay[dateKey]
-                        
-                        if let shifts = shiftsForTheDay {
-                            for shift in shifts {
-                                let dateComponents = calendar.dateComponents([.month], from: shift.shiftStartDate!, to: today)
-                                let monthOfYear = dateComponents.month!
-                                if monthOfYear < months {
-                                    if shiftsByMonth[monthOfYear] != nil {
-                                        shiftsByMonth[monthOfYear]!.append(singleShift(shift: shift))
-                                    } else {
-                                        shiftsByMonth[monthOfYear] = [singleShift(shift: shift)]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    for month in 0..<months {
-                        if let shiftsForMonth = shiftsByMonth[month] {
-                            periodShifts.append(singleShift(shifts: shiftsForMonth))
-                        }
-                    }
-            
-        }
-            
-            else {
-            for i in range {
-                let date = calendar.date(byAdding: .day, value: -i, to: today)!
-                let dateKey = formatter.string(from: date)
-                let shiftsForTheDay = shiftsByDay[dateKey]
-                
-                if let shifts = shiftsForTheDay {
-                    for shift in shifts {
-                        periodShifts.append(singleShift(shift: shift))
-                    }
-                }
-            }
+        // Convert to singleShift
+        let periodShifts: [singleShift] = filteredShifts.flatMap { date, shifts in
+            shifts.map { singleShift(shift: $0) }
         }
 
-        return periodShifts.reversed()
+        return periodShifts
     }
+
 
 
 

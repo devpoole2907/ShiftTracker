@@ -30,6 +30,9 @@ struct CreateShiftForm: View {
     
     @State private var selectedRepeatEnd: Date
     
+    @State private var payMultiplier = 1.0
+    @State private var multiplierEnabled = false
+    
     @State private var selectedIndex: Int = 0
     
     @State private var selectedTags: Set<Tag> = []
@@ -51,27 +54,13 @@ struct CreateShiftForm: View {
         let defaultRepeatEnd = Calendar.current.date(byAdding: .month, value: 2, to: defaultDate)!
         _selectedRepeatEnd = State(initialValue: defaultRepeatEnd)
     }
+    
+    private func incrementDate(_ date: Date, by interval: Calendar.Component, value: Int) -> Date {
+        let calendar = Calendar.current
+        return calendar.date(byAdding: interval, value: value, to: date)!
+    }
 
-    
-    
-    private func createShift() {
-        
-        let shiftID = UUID()
-        let repeatID = UUID().uuidString
-        
-        let shiftToAdd = SingleScheduledShift(
-            startDate: startDate,
-            endDate: endDate,
-            id: shiftID,
-            job: jobSelectionViewModel.fetchJob(in: viewContext)!,
-            isRepeating: enableRepeat,
-            repeatID: repeatID,
-            reminderTime: selectedReminderTime.timeInterval,
-            notifyMe: notifyMe,
-            tags: selectedTags)
-        
-        
-        
+    private func createScheduledShift(startDate: Date, endDate: Date, shiftID: UUID, repeatID: String, job: Job, notifyMe: Bool, selectedTags: Set<Tag>) -> ScheduledShift {
         let newShift = ScheduledShift(context: viewContext)
         newShift.startDate = startDate
         newShift.endDate = endDate
@@ -80,84 +69,67 @@ struct CreateShiftForm: View {
         newShift.isRepeating = enableRepeat
         newShift.reminderTime = selectedReminderTime.timeInterval
         newShift.notifyMe = notifyMe
-        newShift.job = jobSelectionViewModel.fetchJob(in: viewContext)
+        newShift.job = job
         newShift.tags = NSSet(array: Array(selectedTags))
-        
+        newShift.payMultiplier = payMultiplier
+        newShift.multiplierEnabled = multiplierEnabled
+        return newShift
+    }
+    
+    private func saveShifts() {
         do {
             try viewContext.save()
             if notifyMe {
                 notificationManager.scheduleNotifications()
             }
-            
-            shiftStore.add(shiftToAdd)
-            
-            if newShift.isRepeating {
-                        saveRepeatingShiftSeries(startDate: startDate, endDate: endDate, repeatEveryWeek: enableRepeat, repeatID: repeatID)
-                    }
-            
-            //  onShiftCreated()
-            dismiss()
         } catch {
-            print("Error creating shift: \(error.localizedDescription)")
+            print("Error saving shifts: \(error.localizedDescription)")
         }
     }
     
-    
-    
-    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: String) {
+    private func createShift() {
+        let shiftID = UUID()
+        let repeatID = UUID().uuidString
+        let job = jobSelectionViewModel.fetchJob(in: viewContext)!
         
-        let calendar = Calendar.current
-        var currentStartDate = calendar.date(byAdding: .day, value: 1, to: startDate)!
-            var currentEndDate = calendar.date(byAdding: .day, value: 1, to: endDate)!
+        let newShift = createScheduledShift(startDate: startDate, endDate: endDate, shiftID: shiftID, repeatID: repeatID, job: job, notifyMe: notifyMe, selectedTags: selectedTags)
+        let singleShift = SingleScheduledShift(shift: newShift)
         
+        shiftStore.add(singleShift)
+        
+        if newShift.isRepeating {
+            saveRepeatingShiftSeries(startDate: startDate, endDate: endDate, repeatEveryWeek: enableRepeat, repeatID: repeatID, job: job)
+        }
+        
+        saveShifts()
+        
+        dismiss()
+    }
 
+    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: String, job: Job) {
+        var currentStartDate = incrementDate(startDate, by: .day, value: 1)
+        var currentEndDate = incrementDate(endDate, by: .day, value: 1)
+        
+        var repeatingShifts = [ScheduledShift]()
         
         while currentStartDate <= selectedRepeatEnd {
             if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
-                
                 let shiftID = UUID()
                 
-                let shift = ScheduledShift(context: viewContext)
-                shift.startDate = currentStartDate
-                shift.endDate = currentEndDate
-                shift.job = jobSelectionViewModel.fetchJob(in: viewContext)
-                shift.id = shiftID
-                shift.isRepeating = repeatEveryWeek
-                shift.repeatIdString = repeatEveryWeek ? repeatID : UUID().uuidString //  check this code
-                shift.notifyMe = notifyMe
-                shift.reminderTime = selectedReminderTime.timeInterval
+                let shift = createScheduledShift(startDate: currentStartDate, endDate: currentEndDate, shiftID: shiftID, repeatID: repeatEveryWeek ? repeatID : UUID().uuidString, job: job, notifyMe: notifyMe, selectedTags: selectedTags)
+                let singleShift = SingleScheduledShift(shift: shift)
                 
-                let shiftToAdd = SingleScheduledShift(
-                    startDate: currentStartDate,
-                    endDate: currentEndDate,
-                    id: shiftID,
-                    job: jobSelectionViewModel.fetchJob(in: viewContext)!,
-                    isRepeating: enableRepeat,
-                    repeatID: repeatID,
-                    reminderTime: selectedReminderTime.timeInterval,
-                    notifyMe: notifyMe,
-                    tags: selectedTags)
-                
-                shiftStore.add(shiftToAdd)
-                
+                repeatingShifts.append(shift)
+                shiftStore.add(singleShift)
             }
             
-            // Move to the next day, whether a shift was scheduled or not.
-            currentStartDate = calendar.date(byAdding: .day, value: 1, to: currentStartDate)!
-            currentEndDate = calendar.date(byAdding: .day, value: 1, to: currentEndDate)!
+            currentStartDate = incrementDate(currentStartDate, by: .day, value: 1)
+            currentEndDate = incrementDate(currentEndDate, by: .day, value: 1)
         }
         
-        // Save the context after creating all the shifts
-        do {
-            try viewContext.save()
-            notificationManager.scheduleNotifications()
-            //  onShiftCreated()
-            dismiss()
-        } catch {
-            print("Error saving repeating shift series: \(error)")
-        }
+        saveShifts()
     }
-    
+
     
     
     
@@ -375,6 +347,33 @@ struct CreateShiftForm: View {
                                 .cornerRadius(12)
                             
                         }.padding(.horizontal)
+                        
+                        HStack{
+                            Text("Pay Multiplier")
+                                .bold()
+                            
+                                .frame(height: 40)
+                                .padding(.horizontal)
+                              //
+                                
+                            Spacer(minLength: UIScreen.main.bounds.width / 3 - 100)
+                                
+                            Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
+                                Text("x\(payMultiplier, specifier: "%.2f")")
+                                            }
+                                            .onChange(of: payMultiplier) { newMultiplier in
+                                                multiplierEnabled = newMultiplier > 1.0
+                                            }
+                            
+                                            .frame(height: 40)
+                                            .padding(.horizontal)
+                                            
+                                           // .frame(maxWidth: .infinity)
+                                           
+                            
+                        } .background(Color("SquaresColor"))
+                            .cornerRadius(12)
+                        .padding(.horizontal)
                         
                         HStack{
                             TagPicker($selectedTags)

@@ -389,7 +389,11 @@ struct ScheduleView: View {
         
         .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
             
-            shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                withAnimation {
+                    shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
+                }
+            }
             
             print("Changed job")
             shiftStore.changedJob = jobSelectionViewModel.fetchJob(in: viewContext)

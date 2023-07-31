@@ -46,7 +46,6 @@ public enum DateRange: Int, CaseIterable {
         case .year:
             return "Y"
         }
-        
     }
     
     var description: String {
@@ -61,7 +60,34 @@ public enum DateRange: Int, CaseIterable {
             return "Yearly"
         }
     }
+
+    var dateComponent: Calendar.Component {
+        switch self {
+        case .week:
+            return .day
+        case .month:
+            return .month
+        case .halfYear:
+            return .weekOfYear
+        case .year:
+            return .month
+        }
+    }
+
+    var length: Int {
+        switch self {
+        case .week:
+            return 7
+        case .month:
+            return 1
+        case .halfYear:
+            return 26
+        case .year:
+            return 13
+        }
+    }
 }
+
 
 
 public enum ChartDataType {

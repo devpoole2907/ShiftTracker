@@ -85,6 +85,8 @@ struct UpcomingShiftView: View {
                                             }
                                         }
 
+                                viewModel.payMultiplier = upcomingShift.payMultiplier
+                                viewModel.isMultiplierEnabled = upcomingShift.multiplierEnabled
                                 
                                 viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
                                 

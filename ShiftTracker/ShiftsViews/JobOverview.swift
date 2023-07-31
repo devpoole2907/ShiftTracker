@@ -138,6 +138,7 @@ struct JobOverview: View {
                  
                             Button(role: .destructive) {
                                 shiftStore.deleteOldShift(shift, in: viewContext)
+                                shiftManager.shiftAdded.toggle()
                                 
                             } label: {
                                 Image(systemName: "trash")
@@ -193,19 +194,26 @@ struct JobOverview: View {
             
         .onAppear {
             navigationState.gestureEnabled = true
-            
-            loadShiftData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                loadShiftData()
+                print("on appear called")
+            }
             
         }
   
         .onReceive(shiftManager.$shiftAdded) { _ in
-            
-            loadShiftData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                loadShiftData()
+                print("shift recieved called")
+            }
         }
             
         .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
-            
-            loadShiftData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                
+                loadShiftData()
+                print("selected job called")
+            }
         }
             
             
@@ -319,21 +327,22 @@ struct JobOverview: View {
     
     
     private func loadShiftData() {
-     
-        shiftManager.recentShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week)
+        let weeklyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week)
+        shiftManager.recentShifts = weeklyShifts
+        shiftManager.weeklyTotalPay = shiftManager.getTotalPay(from: weeklyShifts)
+        shiftManager.weeklyTotalHours = shiftManager.getTotalHours(from: weeklyShifts)
+
         shiftManager.monthlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .month)
         shiftManager.halfYearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .halfYear)
         shiftManager.yearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .year)
-        shiftManager.weeklyTotalPay = shiftManager.getTotalPay(from: shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week))
-        shiftManager.weeklyTotalHours = shiftManager.getTotalHours(from: shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week))
+        
         shiftManager.totalPay = shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel)
         shiftManager.totalHours = shiftManager.addAllHours(shifts: shifts, jobModel: jobSelectionViewModel)
         shiftManager.totalShifts = shiftManager.getShiftCount(from: shifts, jobModel: jobSelectionViewModel)
         
         shiftManager.shiftDataLoaded.send(())
-        
-        
     }
+
     
 }
 /*

@@ -20,6 +20,7 @@ struct AllScheduledShiftsView: View {
     @Binding var navPath: NavigationPath
     
     var groupedShifts: [Date: [SingleScheduledShift]] {
+        
         Dictionary(grouping: shiftStore.shifts, by: { $0.startDate.startOfTheDay() })
     }
     
