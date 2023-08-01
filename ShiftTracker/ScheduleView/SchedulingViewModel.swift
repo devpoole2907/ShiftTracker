@@ -12,6 +12,8 @@ import CoreData
 @MainActor
 class SchedulingViewModel: ObservableObject {
     
+    @Published var shouldScrollToNextShift = true
+    
 
     func deleteShift(_ shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext){
         

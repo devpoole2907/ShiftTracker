@@ -241,8 +241,10 @@ struct JobOverview: View {
                 Menu {
                     ForEach(0..<shiftManager.statsModes.count) { index in
                         Button(action: {
-                            shiftManager.statsMode = StatsMode(rawValue: index) ?? .earnings
-                            shiftManager.shiftDataLoaded.send(())
+                            withAnimation {
+                                shiftManager.statsMode = StatsMode(rawValue: index) ?? .earnings
+                                shiftManager.shiftDataLoaded.send(())
+                            }
                         }) {
                             HStack {
                                 Text(shiftManager.statsModes[index])

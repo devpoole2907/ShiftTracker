@@ -46,6 +46,8 @@ struct ScheduleView: View {
     
     @State private var activeSheet: ActiveSheet?
     
+    @State private var shouldScrollToNextShift = false
+    
     enum ActiveSheet: Identifiable {
         case pastShiftSheet, scheduleSheet
         
@@ -161,6 +163,7 @@ struct ScheduleView: View {
                         .onDisappear{
                             
                             dateSelected = Date().dateComponents
+                            shouldScrollToNextShift = true
                             
                         }
                     
@@ -180,7 +183,9 @@ struct ScheduleView: View {
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button(action: {
                         withAnimation(.easeInOut(duration: 0.4)) {
+                            scheduleModel.shouldScrollToNextShift = true
                             showAllScheduledShiftsView.toggle()
+                            
                         }
                     }) {
                         Image(systemName: "list.bullet")

@@ -308,12 +308,27 @@ class ContentViewModel: ObservableObject {
             return totalDuration
         }
     
-     func breakLengthInMinutes(startDate: Date?, endDate: Date?) -> String {
-        guard let start = startDate, let end = endDate else { return "N/A" }
+    func breakLength(startDate: Date?, endDate: Date?) -> Int {
+        guard let start = startDate, let end = endDate else { return 0 }
         let duration = end.timeIntervalSince(start)
         let minutes = Int(duration) / 60
-        return "\(minutes) minutes"
+        return minutes
     }
+
+    func breakLengthInMinutes(startDate: Date?, endDate: Date?) -> String {
+        let minutes = breakLength(startDate: startDate, endDate: endDate)
+        if minutes == 0 {
+            
+            return "N/A"
+            
+        }
+        if minutes == 1 {
+            return "\(minutes) minute"
+        } else {
+            return "\(minutes) minutes"
+        }
+    }
+
     
     func deleteBreaks(at offsets: IndexSet) {
             tempBreaks.remove(atOffsets: offsets)

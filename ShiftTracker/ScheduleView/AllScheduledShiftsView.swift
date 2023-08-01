@@ -12,7 +12,6 @@ struct AllScheduledShiftsView: View {
     
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
-    
     @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -157,13 +156,18 @@ struct AllScheduledShiftsView: View {
                 }
                 .onAppear {
                     
-                    // !!!!!!!!!!!!!!!!!!! this shouldn't scroll every appear, it should only on its first appearance/when toggling this view
                     
-                    if let nextShiftDate = nextShiftDate {
+                    print("Should scroll is \(scheduleModel.shouldScrollToNextShift)")
+                
+                    
+                    if let nextShiftDate = nextShiftDate, scheduleModel.shouldScrollToNextShift {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             scrollProxy.scrollTo(nextShiftDate, anchor: .top)
                         }
                     }
+                    
+                    scheduleModel.shouldScrollToNextShift = false
+                    
                 }
                 
                 .navigationDestination(for: OldShift.self) { shift in

@@ -149,24 +149,46 @@ struct JobView: View {
                                     let offset = geometry.frame(in: .global).minY
                         VStack{
                             Spacer()
-                            Image(systemName: selectedIcon)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .foregroundColor(.white)
-                                .padding(20)
-                                .background {
-                                    
-                                    Circle()
-                                        .foregroundStyle(selectedColor.gradient)
-                                    
+                            ZStack {
+                                Image(systemName: selectedIcon)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .foregroundStyle(.white)
+                                    .padding(20)
+                                    .background {
+                                        
+                                        Circle()
+                                            .foregroundStyle(selectedColor.gradient)
+                                        
+                                        
+                                    }
+                                VStack(alignment: .trailing){
+                                    Spacer()
+                                    Image(systemName: "pencil")
+                                        .font(.caption)
+                                      //  .foregroundStyle(.white)
+                                        .padding(8)
+                                        .background {
+                                           
+                                           Circle()
+                                               .foregroundStyle(Color("SquaresColor"))
+                                           
+                                           
+                                       }
+                                        .padding(.leading, 60)
+                                        .padding(.top, 15)
                                     
                                 }
+                                
+                                
+                            }
                                 .scaleEffect(1 + (offset / 1000))
                                 .onTapGesture {
                                     activeSheet = .symbolSheet
                                 }
                                 .frame(maxWidth: .infinity)
                         }
+                        
                     }.frame(height: 80)
                     
                     

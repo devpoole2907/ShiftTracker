@@ -31,6 +31,7 @@ struct BreakTimerView: View {
             Text("\(timeElapsed.stringFromTimeInterval())")
             .foregroundStyle(themeManager.breaksColor)
                 .font(.system(size: 15, weight: .bold).monospacedDigit())
+                .fontDesign(.rounded)
     }
 }
 

@@ -18,32 +18,39 @@ struct CurrentBreaksListView: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         
         
-        Group {
-            
-            HStack{
-                Text("Breaks").font(.title2).bold()
-                    .textCase(nil)
-                    .foregroundColor(textColor)
-                Spacer()
-            }.listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
+ 
         
-        ForEach(viewModel.tempBreaks.reversed(), id: \.self) { breakItem in
-            Section {
+            ForEach(Array(viewModel.tempBreaks.reversed().enumerated()), id: \.element) { index, breakItem in
+                Section(header: VStack {
+                                if index == 0 {
+                                    HStack {
+                                        Text("Breaks")
+                                            .font(.title2)
+                                            .bold()
+                                            .textCase(nil)
+                                            .foregroundColor(textColor)
+                                        Spacer()
+                                    }
+                                    .listRowSeparator(.hidden)
+                                    .listRowBackground(Color.clear)
+                                }
+                            }) {
                 VStack(alignment: .leading){
                     HStack{
-                        VStack(alignment: .leading, spacing: 8){
+                        VStack(alignment: .leading, spacing: 5){
                             if breakItem.isUnpaid{
                                 Text("Unpaid")
                                     .font(.subheadline)
                                     .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : themeManager.breaksColor)
                                     .bold()
+                                    .fontDesign(.rounded)
                             }
                             else {
                                 Text("Paid")
                                     .font(.subheadline)
                                     .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : themeManager.breaksColor)
                                     .bold()
+                                    .fontDesign(.rounded)
                             }
                             if viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" {
                                 BreakTimerView(timeElapsed: $viewModel.breakTimeElapsed)
@@ -54,6 +61,7 @@ struct CurrentBreaksListView: View {
                                     .listRowSeparator(.hidden)
                                     .font(.subheadline)
                                     .bold()
+                                    .fontDesign(.rounded)
                             }
                         }
                         Spacer()
@@ -76,28 +84,35 @@ struct CurrentBreaksListView: View {
                                 in: viewModel.minimumStartDate(for: breakItem)...Date.distantFuture,
                                 displayedComponents: [.hourAndMinute])
                             .labelsHidden()
-                            DatePicker(
-                                "End Date",
-                                selection: Binding<Date>(
-                                    get: {
-                                        return breakItem.endDate ?? Date()
-                                    },
-                                    set: { newEndDate in
-                                        let updatedBreak = TempBreak(
-                                            startDate: breakItem.startDate,
-                                            endDate: newEndDate,
-                                            isUnpaid: breakItem.isUnpaid
-                                        )
-                                        viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
-                                    }
-                                ),
-                                in: breakItem.startDate...Date.distantFuture,
-                                displayedComponents: [.hourAndMinute])
-                            .labelsHidden()
                             .disabled(viewModel.isOnBreak)
+                            if !(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A") {
+                                DatePicker(
+                                    "End Date",
+                                    selection: Binding<Date>(
+                                        get: {
+                                            return breakItem.endDate ?? Date()
+                                        },
+                                        set: { newEndDate in
+                                            
+                                            let breakLength = viewModel.breakLength(startDate: breakItem.startDate, endDate: newEndDate)
+                                                        if Double(breakLength) / 60 <= viewModel.timeElapsed {
+                                                            let updatedBreak = TempBreak(
+                                                                startDate: breakItem.startDate,
+                                                                endDate: newEndDate,
+                                                                isUnpaid: breakItem.isUnpaid
+                                                            )
+                                                            viewModel.updateBreak(oldBreak: breakItem, newBreak: updatedBreak)
+                                                        }
+                                        }
+                                    ),
+                                    in: breakItem.startDate...breakItem.startDate.addingTimeInterval((breakItem.endDate == breakItem.startDate ? 61 : viewModel.timeElapsed * 60)),
+                                    displayedComponents: [.hourAndMinute])
+                                .labelsHidden()
+                                .disabled(viewModel.isOnBreak)
+                            }
                         }
                     }
-                }
+                }.padding(.vertical, 2)
             }
             .listRowBackground(Color("SquaresColor"))
             .listRowSeparator(.hidden)
@@ -111,7 +126,7 @@ struct CurrentBreaksListView: View {
             }
             
         }
-    }
+    
         
     }
 }
