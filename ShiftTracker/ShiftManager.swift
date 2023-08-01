@@ -21,9 +21,11 @@ class ShiftDataManager: ObservableObject {
     
     @Published var weeklyTotalPay: Double = 0
     @Published var weeklyTotalHours: Double = 0
+    @Published var weeklyTotalBreaksHours: Double = 0
     @Published var totalPay: Double = 0
     @Published var totalHours: Double = 0
     @Published var totalShifts: Int = 0
+    @Published var totalBreaksHours: Double = 0
     
     let shiftDataLoaded = PassthroughSubject<Void, Never>()
     
@@ -90,6 +92,11 @@ class ShiftDataManager: ObservableObject {
         return total / 3600
     }
     
+    func addAllBreaksHours(shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> Double {
+        let total = shifts.filter({ shouldIncludeShift($0, jobModel: jobModel) }).reduce(0) { $0 + $1.breakDuration }
+        return total / 3600
+    }
+    
     
     // This function filters shifts that start after a given date
     func filterShifts(startingAfter date: Date, from shifts: FetchedResults<OldShift>) -> [OldShift] {
@@ -141,33 +148,49 @@ class ShiftDataManager: ObservableObject {
     }
 
     func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager, dateRange: DateRange) -> [singleShift] {
-
-        // Group shifts by day/week/month/year
+        // Group shifts by day for all cases
         let shiftsGroupedByDate: [Date: [OldShift]] = Dictionary(grouping: shifts) { shift in
-            switch dateRange {
-            case .week:
-                return Calendar.current.startOfDay(for: shift.shiftStartDate!)
-            case .month:
-                return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: shift.shiftStartDate!))!
-            case .halfYear:
-                return Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: shift.shiftStartDate!))!
-            case .year:
-                return Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: shift.shiftStartDate!))!
-            }
+            return Calendar.current.startOfDay(for: shift.shiftStartDate!)
         }
 
         // Filter only the shifts in the desired range
         let today = Date()
         let startDate = Calendar.current.date(byAdding: dateRange.dateComponent, value: -dateRange.length, to: today)!
         let filteredShifts = shiftsGroupedByDate.filter { $0.key >= startDate && $0.key <= today }
-
-        // Convert to singleShift
-        let periodShifts: [singleShift] = filteredShifts.flatMap { date, shifts in
-            shifts.map { singleShift(shift: $0) }
+        
+        let calendar = Calendar.current
+        var periodShifts: [singleShift] = []
+        
+        switch dateRange {
+        case .week, .month:
+            // Convert to singleShift
+            periodShifts = filteredShifts.flatMap { date, shifts in
+                shifts.map { singleShift(shift: $0) }
+            }
+        case .halfYear:
+            // Group shifts by week
+            let shiftsGroupedByWeek: [Date: [OldShift]] = Dictionary(grouping: filteredShifts.flatMap { $0.value }) { shift in
+                return calendar.startOfDay(for: calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: shift.shiftStartDate!))!)
+            }
+            // Convert to singleShift
+            periodShifts = shiftsGroupedByWeek.map { date, shifts in
+                singleShift(aggregateShifts: shifts, startDate: date)
+            }
+        case .year:
+            // Group shifts by month
+            let shiftsGroupedByMonth: [Date: [OldShift]] = Dictionary(grouping: filteredShifts.flatMap { $0.value }) { shift in
+                return calendar.date(from: calendar.dateComponents([.year, .month], from: shift.shiftStartDate!))!
+            }
+            // Convert to singleShift
+            periodShifts = shiftsGroupedByMonth.map { date, shifts in
+                singleShift(aggregateShifts: shifts, startDate: date)
+            }
         }
 
-        return periodShifts
+        return periodShifts.sorted(by: { $0.shiftStartDate < $1.shiftStartDate })
     }
+
+
 
 
 
@@ -221,6 +244,10 @@ class ShiftDataManager: ObservableObject {
     
     func getTotalHours<T: Payable>(from shifts: [T]) -> Double {
         return shifts.reduce(0, { $0 + $1.hoursCount })
+    }
+    
+    func getTotalBreaksHours<T: Payable>(from shifts: [T]) -> Double {
+        return shifts.reduce(0, { $0 + $1.breakDuration })
     }
     
     

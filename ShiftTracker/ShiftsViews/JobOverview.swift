@@ -339,6 +339,7 @@ struct JobOverview: View {
         shiftManager.recentShifts = weeklyShifts
         shiftManager.weeklyTotalPay = shiftManager.getTotalPay(from: weeklyShifts)
         shiftManager.weeklyTotalHours = shiftManager.getTotalHours(from: weeklyShifts)
+        shiftManager.weeklyTotalBreaksHours = shiftManager.getTotalBreaksHours(from: weeklyShifts)
 
         shiftManager.monthlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .month)
         shiftManager.halfYearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .halfYear)
@@ -347,6 +348,7 @@ struct JobOverview: View {
         shiftManager.totalPay = shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel)
         shiftManager.totalHours = shiftManager.addAllHours(shifts: shifts, jobModel: jobSelectionViewModel)
         shiftManager.totalShifts = shiftManager.getShiftCount(from: shifts, jobModel: jobSelectionViewModel)
+        shiftManager.totalBreaksHours = shiftManager.addAllBreaksHours(shifts: shifts, jobModel: jobSelectionViewModel)
         
         shiftManager.shiftDataLoaded.send(())
     }

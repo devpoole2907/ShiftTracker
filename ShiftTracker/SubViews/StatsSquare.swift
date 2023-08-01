@@ -30,6 +30,27 @@ struct StatsSquare: View {
                         .font(.title)
                         .bold()
                         .foregroundStyle(headerColor)
+                    
+                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.totalPay)) ?? "0") Total")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundStyle(subTextColor)
+                        .fontDesign(.rounded)
+                    
+                } else if shiftManager.statsMode == .breaks {
+                    
+                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.weeklyTotalBreaksHours))")
+                    
+                        .font(.title)
+                        .bold()
+                        .foregroundStyle(headerColor)
+                    
+                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.totalBreaksHours)) Total")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundStyle(subTextColor)
+                        .fontDesign(.rounded)
+                    
                 } else {
                     
                     Text("\(shiftManager.formatTime(timeInHours: shiftManager.weeklyTotalHours))")
@@ -37,22 +58,16 @@ struct StatsSquare: View {
                         .font(.title)
                         .bold()
                         .foregroundStyle(headerColor)
-                }
-                
-                if shiftManager.statsMode == .earnings {
-                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.totalPay)) ?? "0") Total")
-                        .font(.subheadline)
-                        .bold()
-                        .foregroundStyle(subTextColor)
-                        .fontDesign(.rounded)
-                } else {
-
+                    
                     Text("\(shiftManager.formatTime(timeInHours: shiftManager.totalHours)) Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
                         .fontDesign(.rounded)
+                    
                 }
+                
+                
                 
             }
             .padding(.leading)

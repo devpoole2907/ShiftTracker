@@ -551,6 +551,8 @@ struct AddShiftView: View {
         let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate) }
         let paidDuration = newShift.duration - totalBreakDuration
         
+        newShift.breakDuration = totalBreakDuration
+        
         newShift.totalPay = ((paidDuration / 3600.0) * newShift.hourlyPay) * (newShift.multiplierEnabled ? newShift.payMultiplier : 1.0)
 
         

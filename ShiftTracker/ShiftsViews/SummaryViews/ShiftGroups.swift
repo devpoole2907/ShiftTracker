@@ -29,7 +29,7 @@ public struct singleShift: Identifiable {
         formatter.dateFormat = "dd/MM/YYYY"
                 self.date = formatter.string(from: start)
         
-        var totalShiftBreakDuration = 0.0
+       /* var totalShiftBreakDuration = 0.0
                 if let breaks = shift.breaks as? Set<Break> {
                     breaks.forEach { breakInstance in
                         if let breakStartDate = breakInstance.startDate,
@@ -38,8 +38,8 @@ public struct singleShift: Identifiable {
                             totalShiftBreakDuration += breakDuration
                         }
                     }
-                }
-                self.breakDuration = totalShiftBreakDuration / 3600.0
+                } */
+        self.breakDuration = shift.breakDuration / 3600.0
         
         self.shiftStartDate = shift.shiftStartDate!
         
@@ -65,6 +65,23 @@ public struct singleShift: Identifiable {
             self.date = shifts[0].date
             self.shiftStartDate = shifts[0].shiftStartDate
         }
+    
+    init(aggregateShifts: [OldShift], startDate: Date) {
+        // Sum of all properties
+        self.hoursCount = aggregateShifts.reduce(0, { $0 + $1.shiftEndDate!.timeIntervalSince($1.shiftStartDate!) / 3600.0 })
+        self.totalPay = aggregateShifts.reduce(0, { $0 + $1.totalPay })
+        self.breakDuration = aggregateShifts.reduce(0, { $0 + $1.breakDuration / 3600.0 })
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        self.dayOfWeek = formatter.string(from: startDate)
+
+        formatter.dateFormat = "dd/MM/YYYY"
+        self.date = formatter.string(from: startDate)
+
+        self.shiftStartDate = startDate
+    }
+
     
 }
 
@@ -133,6 +150,7 @@ public struct ShiftMonth: Identifiable {
 protocol Payable {
     var totalPay: Double { get }
     var hoursCount: Double { get }
+    var breakDuration: Double { get }
 }
 
 extension singleShift: Payable {}

@@ -553,6 +553,8 @@ class ContentViewModel: ObservableObject {
             latestShift!.multiplierEnabled = isMultiplierEnabled
             latestShift!.payMultiplier = payMultiplier
             
+            latestShift!.breakDuration = totalBreakDuration()
+            
             latestShift!.shiftID = UUID()
             
             latestShift!.job = job

@@ -92,6 +92,14 @@ struct ShiftsList: View {
                 }
 
             }
+            
+            // bottom "padding" if the list is long, as the tag picker will overlap 
+            
+            if sortSelection.filteredShifts.count >= 5 {
+                Color.clear
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color("SquaresColor"))
+            }
 
         }.searchable(text: $sortSelection.searchTerm, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             

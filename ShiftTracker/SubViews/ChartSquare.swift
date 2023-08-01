@@ -38,6 +38,45 @@ struct ChartSquare: View {
 
     
     @Environment(\.colorScheme) var colorScheme
+    
+    func getTotalPayBasedOnDateRange() -> Double {
+        switch shiftManager.dateRange {
+        case .week:
+            return shiftManager.weeklyTotalPay
+        case .month:
+            return shiftManager.getTotalPay(from: shiftManager.monthlyShifts)
+        case .halfYear:
+            return shiftManager.getTotalPay(from: shiftManager.halfYearlyShifts)
+        case .year:
+            return shiftManager.getTotalPay(from: shiftManager.yearlyShifts)
+        }
+    }
+
+    func getTotalHoursBasedOnDateRange() -> Double {
+        switch shiftManager.dateRange {
+        case .week:
+            return shiftManager.weeklyTotalHours
+        case .month:
+            return shiftManager.getTotalHours(from: shiftManager.monthlyShifts)
+        case .halfYear:
+            return shiftManager.getTotalHours(from: shiftManager.halfYearlyShifts)
+        case .year:
+            return shiftManager.getTotalHours(from: shiftManager.yearlyShifts)
+        }
+    }
+
+    func getTotalBreaksHoursBasedOnDateRange() -> Double {
+        switch shiftManager.dateRange {
+        case .week:
+            return shiftManager.weeklyTotalBreaksHours
+        case .month:
+            return shiftManager.getTotalBreaksHours(from: shiftManager.monthlyShifts)
+        case .halfYear:
+            return shiftManager.getTotalBreaksHours(from: shiftManager.halfYearlyShifts)
+        case .year:
+            return shiftManager.getTotalBreaksHours(from: shiftManager.yearlyShifts)
+        }
+    }
 
     
     var body: some View {
@@ -45,6 +84,32 @@ struct ChartSquare: View {
         
         let subTextColor: Color = colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)
         let headerColor: Color = colorScheme == .dark ? .white : .black
+        
+        
+        let barColor: LinearGradient = {
+                    switch shiftManager.statsMode {
+                    case .earnings:
+                        return LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color(red: 198 / 255, green: 253 / 255, blue: 80 / 255),
+                                Color(red: 112 / 255, green: 218 / 255, blue: 65 / 255)
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom)
+                    case .hours:
+                        return LinearGradient(
+                            gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                            startPoint: .top,
+                            endPoint: .bottom)
+                    case .breaks:
+                        return LinearGradient(
+                            gradient: Gradient(colors: [Color.indigo, Color.purple]),
+                            startPoint: .top,
+                            endPoint: .bottom)
+                    }
+                }()
+        
+        
         HStack{
             VStack(alignment: .leading) {
                 HStack(spacing: isChartViewPrimary ? 10 : 5){
@@ -95,19 +160,22 @@ struct ChartSquare: View {
                                 .bold()
                                 .fontDesign(.rounded)
                                 .foregroundColor(.gray)
-
-                            Text(shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.getTotalPay(from: shiftManager.recentShifts))) ?? "0")" : shiftManager.formatTime(timeInHours: shiftManager.getTotalHours(from: shiftManager.recentShifts)))
-                                    .font(.title2)
-                                    .bold()
-                                
                             
-                                
+                            Text(
+                                shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: getTotalPayBasedOnDateRange())) ?? "0")" :
+                                shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: getTotalHoursBasedOnDateRange()) :
+                                shiftManager.formatTime(timeInHours: getTotalBreaksHoursBasedOnDateRange())
+                            )
+                            .font(.title2)
+                            .bold()
+
+                            .font(.title2)
+                            .bold()
                         }
                         Spacer()
-                        
                     }.padding(.top, 5)
-                        .padding(.leading)
-                    .opacity(showSelectionBar ? 0.0 : 1.0)
+                     .padding(.leading)
+                     .opacity(showSelectionBar ? 0.0 : 1.0)
                 }
                 
                 
@@ -131,8 +199,11 @@ struct ChartSquare: View {
                                             
                                             ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else {
+                                        } else if shiftManager.statsMode == .hours {
                                             ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
                                         }
                                         
@@ -143,23 +214,18 @@ struct ChartSquare: View {
                             
                             
                             BarMark(x: .value("Day", shift.shiftStartDate, unit: .weekday),
-                                    y: .value(shiftManager.statsMode == .earnings ? "Earnings" : "Hours",
-                                              shift.animate
-                                              ? (shiftManager.statsMode == .earnings
-                                                 ? shift.totalPay
-                                                 : shift.hoursCount)
-                                              : 0
-                                             )
-                            )
-                            .foregroundStyle(shiftManager.statsMode == .earnings ? LinearGradient(
-                                gradient: Gradient(colors: [Color(red: 198 / 255, green: 253 / 255, blue: 80 / 255), Color(red: 112 / 255, green: 218 / 255, blue: 65 / 255)
-                                                           ]),
-                                startPoint: .top,
-                                endPoint: .bottom) : LinearGradient(
-                                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
-                                    startPoint: .top,
-                                    endPoint: .bottom)
-                            )
+                                                    y: .value(shiftManager.statsMode == .earnings ? "Earnings" :
+                                                              shiftManager.statsMode == .hours ? "Hours" : "Breaks",
+                                                              shift.animate
+                                                              ? (shiftManager.statsMode == .earnings
+                                                                 ? shift.totalPay
+                                                                 : shiftManager.statsMode == .hours
+                                                                 ? shift.hoursCount
+                                                                 : shift.breakDuration)
+                                                              : 0
+                                                            )
+                                            )
+                            .foregroundStyle(barColor)
                             .cornerRadius(shiftManager.statsMode == .earnings ? 10 : 5, style: .continuous)
                             
                             
@@ -178,8 +244,11 @@ struct ChartSquare: View {
                                             
                                             ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else {
+                                        } else if shiftManager.statsMode == .hours {
                                             ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
                                         }
                                         
@@ -190,23 +259,18 @@ struct ChartSquare: View {
                             
                             
                             BarMark(x: .value("Day", shift.shiftStartDate, unit: .day),
-                                    y: .value(shiftManager.statsMode == .earnings ? "Earnings" : "Hours",
+                                    y: .value(shiftManager.statsMode == .earnings ? "Earnings" :
+                                              shiftManager.statsMode == .hours ? "Hours" : "Breaks",
                                               shift.animate
                                               ? (shiftManager.statsMode == .earnings
                                                  ? shift.totalPay
-                                                 : shift.hoursCount)
+                                                 : shiftManager.statsMode == .hours
+                                                 ? shift.hoursCount
+                                                 : shift.breakDuration)
                                               : 0
-                                             )
+                                            )
                             )
-                            .foregroundStyle(shiftManager.statsMode == .earnings ? LinearGradient(
-                                gradient: Gradient(colors: [Color(red: 198 / 255, green: 253 / 255, blue: 80 / 255), Color(red: 112 / 255, green: 218 / 255, blue: 65 / 255)
-                                                           ]),
-                                startPoint: .top,
-                                endPoint: .bottom) : LinearGradient(
-                                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
-                                    startPoint: .top,
-                                    endPoint: .bottom)
-                            )
+                            .foregroundStyle(barColor)
                             .cornerRadius(shiftManager.statsMode == .earnings ? 10 : 5, style: .continuous)
                             
                             
@@ -226,8 +290,11 @@ struct ChartSquare: View {
                                             
                                             ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else {
+                                        } else if shiftManager.statsMode == .hours {
                                             ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
                                         }
                                         
@@ -240,23 +307,18 @@ struct ChartSquare: View {
                             
                             
                             BarMark(x: .value("Day", shift.shiftStartDate, unit: .weekOfYear),
-                                    y: .value(shiftManager.statsMode == .earnings ? "Earnings" : "Hours",
+                                    y: .value(shiftManager.statsMode == .earnings ? "Earnings" :
+                                              shiftManager.statsMode == .hours ? "Hours" : "Breaks",
                                               shift.animate
                                               ? (shiftManager.statsMode == .earnings
                                                  ? shift.totalPay
-                                                 : shift.hoursCount)
+                                                 : shiftManager.statsMode == .hours
+                                                 ? shift.hoursCount
+                                                 : shift.breakDuration)
                                               : 0
-                                             )
+                                            )
                             )
-                            .foregroundStyle(shiftManager.statsMode == .earnings ? LinearGradient(
-                                gradient: Gradient(colors: [Color(red: 198 / 255, green: 253 / 255, blue: 80 / 255), Color(red: 112 / 255, green: 218 / 255, blue: 65 / 255)
-                                                           ]),
-                                startPoint: .top,
-                                endPoint: .bottom) : LinearGradient(
-                                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
-                                    startPoint: .top,
-                                    endPoint: .bottom)
-                            )
+                            .foregroundStyle(barColor)
                             .cornerRadius(shiftManager.statsMode == .earnings ? 10 : 5, style: .continuous)
                         }
                         
@@ -272,8 +334,11 @@ struct ChartSquare: View {
                                         
                                         ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
                                             .opacity(showSelectionBar ? 1.0 : 0.0)
-                                    } else {
+                                    } else if shiftManager.statsMode == .hours {
                                         ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                            .opacity(showSelectionBar ? 1.0 : 0.0)
+                                    } else {
+                                        ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
                                             .opacity(showSelectionBar ? 1.0 : 0.0)
                                     }
                                     
@@ -284,23 +349,18 @@ struct ChartSquare: View {
                         
                         
                         BarMark(x: .value("Day", shift.shiftStartDate, unit: .month),
-                                y: .value(shiftManager.statsMode == .earnings ? "Earnings" : "Hours",
+                                y: .value(shiftManager.statsMode == .earnings ? "Earnings" :
+                                          shiftManager.statsMode == .hours ? "Hours" : "Breaks",
                                           shift.animate
                                           ? (shiftManager.statsMode == .earnings
                                              ? shift.totalPay
-                                             : shift.hoursCount)
+                                             : shiftManager.statsMode == .hours
+                                             ? shift.hoursCount
+                                             : shift.breakDuration)
                                           : 0
-                                         )
+                                        )
                         )
-                        .foregroundStyle(shiftManager.statsMode == .earnings ? LinearGradient(
-                            gradient: Gradient(colors: [Color(red: 198 / 255, green: 253 / 255, blue: 80 / 255), Color(red: 112 / 255, green: 218 / 255, blue: 65 / 255)
-                                                       ]),
-                            startPoint: .top,
-                            endPoint: .bottom) : LinearGradient(
-                                gradient: Gradient(colors: [Color.yellow, Color.orange]),
-                                startPoint: .top,
-                                endPoint: .bottom)
-                        )
+                        .foregroundStyle(barColor)
                         .cornerRadius(shiftManager.statsMode == .earnings ? 10 : 5, style: .continuous)
                         
                     }

@@ -595,12 +595,15 @@ struct DetailView: View {
                         
                         shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
                         
+                        
+                        
                         shift.payMultiplier = payMultiplier
                         shift.multiplierEnabled = multiplierEnabled
                         
                         
                         let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
                         let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
+                        shift.breakDuration = totalBreakDuration
                         let paidDuration = shift.duration - totalBreakDuration
                         shift.totalPay = ((paidDuration / 3600.0) * shift.hourlyPay) * (shift.multiplierEnabled ? shift.payMultiplier : 1.0)
                         shift.shiftNote = notes
