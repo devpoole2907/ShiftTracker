@@ -12,11 +12,10 @@ struct CreateShiftForm: View {
     @Environment(\.dismiss) private var dismiss
     
     @EnvironmentObject var shiftStore: ShiftStore
+    @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
     @Environment(\.colorScheme) var colorScheme
-    
-    private let notificationManager = ShiftNotificationManager.shared
     
     //  let jobs: FetchedResults<Job>
     @Binding var dateSelected: DateComponents?
@@ -24,7 +23,6 @@ struct CreateShiftForm: View {
     @State private var selectedJob: Job?
     @State private var startDate: Date
     @State private var endDate: Date
-    @State var selectedDays = Array(repeating: false, count: 7)
     
     @State private var enableRepeat = false
     
@@ -37,107 +35,115 @@ struct CreateShiftForm: View {
     
     @State private var selectedTags: Set<Tag> = []
     
-    // for notifications
-    @State private var notifyMe = true
-    @State private var selectedReminderTime: ReminderTime = .fifteenMinutes
-    
-    
-    init(dateSelected: Binding<DateComponents?>) {
-        _dateSelected = dateSelected
-
-        let defaultDate: Date = Calendar.current.date(from: dateSelected.wrappedValue ?? DateComponents()) ?? Date()
-        _startDate = State(initialValue: defaultDate)
-        _endDate = State(initialValue: defaultDate)
-        
-        
-
-        let defaultRepeatEnd = Calendar.current.date(byAdding: .month, value: 2, to: defaultDate)!
-        _selectedRepeatEnd = State(initialValue: defaultRepeatEnd)
-    }
-    
-    private func incrementDate(_ date: Date, by interval: Calendar.Component, value: Int) -> Date {
-        let calendar = Calendar.current
-        return calendar.date(byAdding: interval, value: value, to: date)!
-    }
-
-    private func createScheduledShift(startDate: Date, endDate: Date, shiftID: UUID, repeatID: String, job: Job, notifyMe: Bool, selectedTags: Set<Tag>) -> ScheduledShift {
-        let newShift = ScheduledShift(context: viewContext)
-        newShift.startDate = startDate
-        newShift.endDate = endDate
-        newShift.id = shiftID
-        newShift.repeatIdString = repeatID
-        newShift.isRepeating = enableRepeat
-        newShift.reminderTime = selectedReminderTime.timeInterval
-        newShift.notifyMe = notifyMe
-        newShift.job = job
-        newShift.tags = NSSet(array: Array(selectedTags))
-        newShift.payMultiplier = payMultiplier
-        newShift.multiplierEnabled = multiplierEnabled
-        return newShift
-    }
-    
-    private func saveShifts() {
-        do {
-            try viewContext.save()
-            if notifyMe {
-                notificationManager.scheduleNotifications()
-            }
-        } catch {
-            print("Error saving shifts: \(error.localizedDescription)")
-        }
-    }
-    
-    private func createShift() {
-        let shiftID = UUID()
-        let repeatID = UUID().uuidString
-        let job = jobSelectionViewModel.fetchJob(in: viewContext)!
-        
-        let newShift = createScheduledShift(startDate: startDate, endDate: endDate, shiftID: shiftID, repeatID: repeatID, job: job, notifyMe: notifyMe, selectedTags: selectedTags)
-        let singleShift = SingleScheduledShift(shift: newShift)
-        
-        shiftStore.add(singleShift)
-        
-        if newShift.isRepeating {
-            saveRepeatingShiftSeries(startDate: startDate, endDate: endDate, repeatEveryWeek: enableRepeat, repeatID: repeatID, job: job)
-        }
-        
-        saveShifts()
-        
-        dismiss()
-    }
-
-    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: String, job: Job) {
-        var currentStartDate = incrementDate(startDate, by: .day, value: 1)
-        var currentEndDate = incrementDate(endDate, by: .day, value: 1)
-        
-        var repeatingShifts = [ScheduledShift]()
-        
-        while currentStartDate <= selectedRepeatEnd {
-            if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
-                let shiftID = UUID()
-                
-                let shift = createScheduledShift(startDate: currentStartDate, endDate: currentEndDate, shiftID: shiftID, repeatID: repeatEveryWeek ? repeatID : UUID().uuidString, job: job, notifyMe: notifyMe, selectedTags: selectedTags)
-                let singleShift = SingleScheduledShift(shift: shift)
-                
-                repeatingShifts.append(shift)
-                shiftStore.add(singleShift)
-            }
-            
-            currentStartDate = incrementDate(currentStartDate, by: .day, value: 1)
-            currentEndDate = incrementDate(currentEndDate, by: .day, value: 1)
-        }
-        
-        saveShifts()
-    }
-
-    
-    
+    @State var scheduledShift: ScheduledShift?
     
     @State var startAngle: Double = 0
     @State var toAngle: Double = 180
     
     @State var startProgress: CGFloat = 0
     @State var toProgress: CGFloat = 0.5
+    
+    
+    init(dateSelected: Binding<DateComponents?>, scheduledShift: ScheduledShift? = nil) {
+        _dateSelected = dateSelected
+
+        let defaultDate: Date = Calendar.current.date(from: dateSelected.wrappedValue ?? DateComponents()) ?? Date()
+        _startDate = State(initialValue: defaultDate)
+        _endDate = State(initialValue: defaultDate)
+        
+        _scheduledShift = State(wrappedValue: scheduledShift)
+        
+        if let scheduledShift = scheduledShift {
+            
+            let startDate = scheduledShift.startDate ?? defaultDate
+                    let endDate = scheduledShift.endDate ?? defaultDate
+            
+            _startDate = State(initialValue: startDate)
+                   _endDate = State(initialValue: endDate)
+            _enableRepeat = State(initialValue: scheduledShift.isRepeating)
+            if let tagSet = scheduledShift.tags as? Set<Tag> {
+                    _selectedTags = State(initialValue: tagSet)
+                }
+            _payMultiplier = State(initialValue: scheduledShift.payMultiplier)
+            _multiplierEnabled = State(initialValue: scheduledShift.multiplierEnabled)
+            
+        }
+        
+        let defaultRepeatEnd = Calendar.current.date(byAdding: .month, value: 2, to: defaultDate)!
+        _selectedRepeatEnd = State(initialValue: defaultRepeatEnd)
+       
+    }
+    
+    func getAngleFromDate(date: Date) -> Double {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour, .minute], from: date)
+        
+        let totalMinutesInDay = 24 * 60
+        let currentMinutes = components.hour! * 60 + components.minute!
+        
+        let angle = (Double(currentMinutes) / Double(totalMinutesInDay)) * 360
+        return angle
+    }
+
+    
+    func createShift() {
+        let shiftID = UUID()
+        let repeatID = UUID().uuidString
+        let job = jobSelectionViewModel.fetchJob(in: viewContext)!
+        
+        let newShift = scheduleModel.createScheduledShift(startDate: startDate, endDate: endDate, shiftID: shiftID, repeatID: repeatID, job: job, selectedTags: selectedTags, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, in: viewContext)
+        let singleShift = SingleScheduledShift(shift: newShift)
+        
+        shiftStore.add(singleShift)
+        
+        if newShift.isRepeating {
+            scheduleModel.saveRepeatingShiftSeries(startDate: startDate, endDate: endDate, repeatEveryWeek: enableRepeat, repeatID: repeatID, job: job, shiftStore: shiftStore, selectedTags: selectedTags, selectedRepeatEnd: selectedRepeatEnd, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, in: viewContext)
+        }
+        
+        scheduleModel.saveShifts(in: viewContext)
+        
+        dismiss()
+    }
+    
+    func updateShift(){
+        
+        guard let shiftToUpdate = scheduledShift else { return }
+        
+        shiftToUpdate.startDate = startDate
+        shiftToUpdate.endDate = endDate
+        shiftToUpdate.tags = NSSet(array: Array(selectedTags))
+        shiftToUpdate.multiplierEnabled = multiplierEnabled
+        shiftToUpdate.reminderTime = scheduleModel.selectedReminderTime.timeInterval
+        shiftToUpdate.payMultiplier = payMultiplier
+        shiftToUpdate.notifyMe = scheduleModel.notifyMe
+        shiftToUpdate.isRepeating = false // disables repeat for now and only edits the shift in question
+        
+        
+        let singleShift = SingleScheduledShift(shift: shiftToUpdate)
+        
+        shiftStore.update(singleShift)
+        
+        
+        scheduleModel.saveShifts(in: viewContext)
+        
+        dismiss()
+    }
+    
+    func setupSlider() {
+        guard let scheduledShift = scheduledShift else { return }
+
+        let defaultDate: Date = Calendar.current.date(from: dateSelected ?? DateComponents()) ?? Date()
+
+        let startDate = scheduledShift.startDate ?? defaultDate
+        let endDate = scheduledShift.endDate ?? defaultDate
+
+        startAngle = getAngleFromDate(date: startDate)
+        toAngle = getAngleFromDate(date: endDate)
+        startProgress = CGFloat(startAngle / 360.0)
+        toProgress = CGFloat(toAngle / 360.0)
+    }
+    
+
     
     var body: some View {
         
@@ -146,7 +152,8 @@ struct CreateShiftForm: View {
             ScrollView{
                 
                 VStack(spacing: 15){
-                 
+                    
+                    if scheduledShift == nil {
                     VStack(spacing: 5){
                         
                         HStack(spacing: 5){
@@ -181,11 +188,11 @@ struct CreateShiftForm: View {
                         
                         
                             .onAppear {
-                                selectedDays[getDayOfWeek(date: (dateSelected?.date ?? Date())) - 1] = true
+                                scheduleModel.selectedDays[getDayOfWeek(date: (dateSelected?.date ?? Date())) - 1] = true
                                 
                                 print("start date is : \(startDate)")
                             }
-                            .haptics(onChangeOf: selectedDays, type: .light)
+                            .haptics(onChangeOf: scheduleModel.selectedDays, type: .light)
                         
                         HStack {
                             ForEach(0..<7) { i in
@@ -193,14 +200,14 @@ struct CreateShiftForm: View {
                                     if i == getDayOfWeek(date: startDate) - 1 {
                                         return
                                     }
-                                    selectedDays[i].toggle()
+                                    scheduleModel.selectedDays[i].toggle()
                                 }) {
                                     Text(getDayShortName(day: i))
                                         .font((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? .caption : .callout)
                                         .bold()
                                 }
                                 //  .padding()
-                                .background(selectedDays[i] ? (colorScheme == .dark ? .white : .black) : Color(.systemGray6))
+                                .background(scheduleModel.selectedDays[i] ? (colorScheme == .dark ? .white : .black) : Color(.systemGray6))
                                 .foregroundColor(colorScheme == .dark ? .black : .white)
                                 .cornerRadius(8)
                                 .clipShape(Circle())
@@ -218,6 +225,8 @@ struct CreateShiftForm: View {
                         .padding(.horizontal)
                         
                     }
+                }
+                
                     
                     VStack(spacing: 10){
                     
@@ -295,7 +304,9 @@ struct CreateShiftForm: View {
                     // .frame(minWidth: screenBounds().width - 40)
                         .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 20 : 30)
                         .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? -85 : -10)
-                        
+                        .onAppear {
+                                   setupSlider()
+                               }
                         
                         HStack(spacing: 5){
                             Text("\(getTimeDifference().0) hr")
@@ -320,7 +331,7 @@ struct CreateShiftForm: View {
                         
                         HStack(spacing: 5){
                             
-                            Toggle(isOn: $notifyMe){
+                            Toggle(isOn: $scheduleModel.notifyMe){
                                 Text("Reminder")
                                     .bold()
                             }.toggleStyle(CustomToggleStyle())
@@ -332,11 +343,11 @@ struct CreateShiftForm: View {
                             
                             
                             
-                            Picker("When", selection: $selectedReminderTime) {
+                            Picker("When", selection: $scheduleModel.selectedReminderTime) {
                                 ForEach(ReminderTime.allCases) { reminderTime in
                                     Text(reminderTime.rawValue).tag(reminderTime)
                                 }
-                            }.disabled(!notifyMe)
+                            }.disabled(!scheduleModel.notifyMe)
                             
                                 .frame(height: 40)
                                 .padding(.horizontal)
@@ -393,9 +404,15 @@ struct CreateShiftForm: View {
                             endDate = getTime(angle: toAngle, isEndDate: true)
                             selectedJob = jobSelectionViewModel.fetchJob(in: viewContext)
                             
-                         
+                            if let scheduledShift = scheduledShift {
+                                
+                                updateShift()
+                                
+                            } else {
                                 
                                 createShift()
+                                
+                            }
                             
                            
                         } label: {
@@ -411,7 +428,7 @@ struct CreateShiftForm: View {
                         }
                     }
                 }
-                .navigationTitle("Schedule")
+                .navigationTitle(scheduledShift == nil ? "Schedule" : "Edit Schedule")
     
                 .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
         }.onAppear {
@@ -637,5 +654,7 @@ struct CreateShiftForm: View {
         
         return (components.hour ?? 0, components.minute ?? 0)
     }
+    
+    
     
 }

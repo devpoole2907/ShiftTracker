@@ -13,43 +13,46 @@ import CoreData
 class SchedulingViewModel: ObservableObject {
     
     @Published var shouldScrollToNextShift = true
+    @Published var selectedDays = Array(repeating: false, count: 7)
+    // for notifications
+    @Published var notifyMe = true
+    @Published var selectedReminderTime: ReminderTime = .fifteenMinutes
     
-
-    func deleteShift(_ shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext){
-        
-        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", shift.id as CVarArg)
+    private let notificationManager = ShiftNotificationManager.shared
+    
+    func fetchScheduledShift(id: UUID, in viewContext: NSManagedObjectContext) -> ScheduledShift? {
+        let request: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
-        
+
         do {
             let results = try viewContext.fetch(request)
-            
-            if let shiftToDelete = results.first as? ScheduledShift {
-                cancelNotification(for: shiftToDelete)
-                viewContext.delete(shiftToDelete)
-                shiftStore.delete(shift)
-                
-                
-                
-                do {
-                    print("Successfully deleted the scheduled shift.")
-                    try viewContext.save()
-                    
-                    
-                } catch {
-                    print("Failed to delete the corresponding shift.")
-                    
-                }
-                
-            }
+            return results.first
         } catch {
-            
-            print("Failed to fetch the corresponding shift to delete.")
-            
+            // handle the error
+            return nil
         }
-        
-        
     }
+    
+
+    func deleteShift(_ shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
+        
+        if let shiftToDelete = fetchScheduledShift(id: shift.id, in: viewContext) {
+            cancelNotification(for: shiftToDelete)
+            viewContext.delete(shiftToDelete)
+            shiftStore.delete(shift)
+            
+            do {
+                print("Successfully deleted the scheduled shift.")
+                try viewContext.save()
+            } catch {
+                print("Failed to delete the corresponding shift.")
+            }
+        } else {
+            print("Failed to fetch the corresponding shift to delete.")
+        }
+    }
+
     
     func deleteOldShift(_ shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext){
         
@@ -155,6 +158,64 @@ class SchedulingViewModel: ObservableObject {
         let identifier = "ScheduledShift-\(scheduledShift.objectID)"
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
     }
+    
+    func incrementDate(_ date: Date, by interval: Calendar.Component, value: Int) -> Date {
+        let calendar = Calendar.current
+        return calendar.date(byAdding: interval, value: value, to: date)!
+    }
+
+    func createScheduledShift(startDate: Date, endDate: Date, shiftID: UUID, repeatID: String, job: Job, selectedTags: Set<Tag>, enableRepeat: Bool, payMultiplier: Double, multiplierEnabled: Bool, in viewContext: NSManagedObjectContext) -> ScheduledShift {
+        let newShift = ScheduledShift(context: viewContext)
+        newShift.startDate = startDate
+        newShift.endDate = endDate
+        newShift.id = shiftID
+        newShift.repeatIdString = repeatID
+        newShift.isRepeating = enableRepeat
+        newShift.reminderTime = selectedReminderTime.timeInterval
+        newShift.notifyMe = notifyMe
+        newShift.job = job
+        newShift.tags = NSSet(array: Array(selectedTags))
+        newShift.payMultiplier = payMultiplier
+        newShift.multiplierEnabled = multiplierEnabled
+        return newShift
+    }
+    
+    func saveShifts(in viewContext: NSManagedObjectContext) {
+        do {
+            try viewContext.save()
+                notificationManager.scheduleNotifications()
+            
+        } catch {
+            print("Error saving shifts: \(error.localizedDescription)")
+        }
+    }
+    
+
+
+    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: String, job: Job, shiftStore: ShiftStore, selectedTags: Set<Tag>, selectedRepeatEnd: Date, enableRepeat: Bool, payMultiplier: Double, multiplierEnabled: Bool, in viewContext: NSManagedObjectContext) {
+        var currentStartDate = incrementDate(startDate, by: .day, value: 1)
+        var currentEndDate = incrementDate(endDate, by: .day, value: 1)
+        
+        var repeatingShifts = [ScheduledShift]()
+        
+        while currentStartDate <= selectedRepeatEnd {
+            if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
+                let shiftID = UUID()
+                
+                let shift = createScheduledShift(startDate: currentStartDate, endDate: currentEndDate, shiftID: shiftID, repeatID: repeatEveryWeek ? repeatID : UUID().uuidString, job: job, selectedTags: selectedTags, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, in: viewContext)
+                let singleShift = SingleScheduledShift(shift: shift)
+                
+                repeatingShifts.append(shift)
+                shiftStore.add(singleShift)
+            }
+            
+            currentStartDate = incrementDate(currentStartDate, by: .day, value: 1)
+            currentEndDate = incrementDate(currentEndDate, by: .day, value: 1)
+        }
+        
+        saveShifts(in: viewContext)
+    }
+
     
     
 }

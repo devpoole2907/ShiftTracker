@@ -96,6 +96,16 @@ class ShiftStore: ObservableObject {
             changedShift = shift
         }
     
+    func update(_ newShift: SingleScheduledShift) {
+
+            if let index = shifts.firstIndex(where: { $0.id == newShift.id }) {
+          
+                shifts[index] = newShift
+            } else {
+                print("Shift not found in store.")
+            }
+        }
+    
     func updateOldShift(_ shift: OldShift){
         
         if let index = shifts.firstIndex(where: {$0.id == shift.shiftID}) {

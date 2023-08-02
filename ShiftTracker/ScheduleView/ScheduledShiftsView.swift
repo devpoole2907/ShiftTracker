@@ -28,6 +28,8 @@ struct ScheduledShiftsView: View {
     @Binding var navPath: NavigationPath
     @Binding var displayedOldShifts: [OldShift]
     
+    @State private var selectedShiftToEdit: ScheduledShift?
+    
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d, YYYY"
@@ -92,7 +94,7 @@ struct ScheduledShiftsView: View {
                 if !foundShifts.isEmpty {
                     ForEach(foundShifts) { shift in
                         if shift.endDate > Date() {
-                            ListViewRow(shift: shift)
+                            ListViewRow(shift: shift, selectedShiftToEdit: $selectedShiftToEdit)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)
                                 .swipeActions {
@@ -110,6 +112,13 @@ struct ScheduledShiftsView: View {
                                     Button(role: .none){
                                         
                                         // edit scheduled shift to go here
+                                        
+                                        
+                                        if let id = foundShifts.first?.id {  // replace with the ID of the shift to be edited
+                                            selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: id, in: viewContext)
+                                                }
+                                        
+                                       
                                         
                                         
                                     } label: {
@@ -157,7 +166,18 @@ struct ScheduledShiftsView: View {
                 }
             
             
-             
+      
+            
+        }.sheet(item: $selectedShiftToEdit, onDismiss: {
+            
+            selectedShiftToEdit = nil
+            
+        }) { shift in
+            
+            CreateShiftForm(dateSelected: $dateSelected, scheduledShift: shift)
+                .presentationDetents([.large])
+                .presentationCornerRadius(35)
+                .presentationBackground(colorScheme == .dark ? .black : .white)
             
         }
 
@@ -182,6 +202,8 @@ struct ListViewRow: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     
     let shift: SingleScheduledShift
+    
+    @Binding var selectedShiftToEdit: ScheduledShift?
     
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -276,6 +298,7 @@ struct ListViewRow: View {
                                 }
                                 Button(action:{
                                   
+                                    selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)
                                     
                                 }){
                                     HStack{
@@ -283,7 +306,7 @@ struct ListViewRow: View {
                                         Spacer()
                                         Text("Edit")
                                     }
-                                }.disabled(true)
+                                }
                                 
                             } label: {
                                 Image(systemName: "ellipsis")
