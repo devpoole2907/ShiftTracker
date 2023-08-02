@@ -19,6 +19,7 @@ struct ScheduledShiftsView: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     let shiftManager = ShiftDataManager()
     
@@ -200,10 +201,13 @@ struct ListViewRow: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     let shift: SingleScheduledShift
     
     @Binding var selectedShiftToEdit: ScheduledShift?
+    
+    @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
     
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -325,7 +329,7 @@ struct ListViewRow: View {
                     
                     
                 }
-            }
+            }.opacity(!purchaseManager.hasUnlockedPro ? (shift.job?.uuid?.uuidString != lastSelectedJobUUID ? 0.5 : 1.0) : 1.0)
         
     }
 }

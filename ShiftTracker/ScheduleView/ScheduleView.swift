@@ -390,6 +390,10 @@ struct ScheduleView: View {
                 shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
             }
             
+            print("selected job is \(jobSelectionViewModel.fetchJob(in: viewContext)?.name)")
+            
+            
+            
         }
         
         .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in

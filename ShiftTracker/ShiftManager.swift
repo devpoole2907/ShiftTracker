@@ -149,7 +149,10 @@ class ShiftDataManager: ObservableObject {
 
     func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager, dateRange: DateRange) -> [singleShift] {
         // Group shifts by day for all cases
-        let shiftsGroupedByDate: [Date: [OldShift]] = Dictionary(grouping: shifts) { shift in
+        
+        let currentJobShifts = shifts.filter { shouldIncludeShift($0, jobModel: jobModel) }
+        
+        let shiftsGroupedByDate: [Date: [OldShift]] = Dictionary(grouping: currentJobShifts) { shift in
             return Calendar.current.startOfDay(for: shift.shiftStartDate!)
         }
 

@@ -15,6 +15,8 @@ struct UpcomingShiftView: View {
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
+    @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
+    
     @FetchRequest(
         entity: ScheduledShift.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \ScheduledShift.startDate, ascending: true)],
@@ -48,9 +50,20 @@ struct UpcomingShiftView: View {
                 
                 // this should only start the shift if it is the selected job rather than switching it if subscription is expired
                 
+                
+                
                 let next24Hours = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
                 
-                if upcomingShift.startDate ?? Date() < next24Hours {
+                
+                if !purchaseManager.hasUnlockedPro && upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID {
+                    
+                    withAnimation(.linear(duration: 0.4)) {
+                        viewModel.upcomingShiftShakeTimes += 2
+                    }
+                    
+                }
+                
+                else if upcomingShift.startDate ?? Date() < next24Hours {
                     if let upcomingShiftJob = upcomingShift.job {
                         
                         CustomConfirmationAlert(action: {
@@ -123,7 +136,12 @@ struct UpcomingShiftView: View {
                             .background {
                                 
                                 Circle()
-                                    .foregroundStyle(Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient)
+                                   // .foregroundStyle()
+                                
+                                    .foregroundStyle(!purchaseManager.hasUnlockedPro ? (upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID ? Color.gray.gradient : Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient) : Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient)
+                                
+                                
+                                  //  .opacity(!purchaseManager.hasUnlockedPro ? (upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID ? 0.5 : 1.0) : 1.0)
                                 
                             }
                         
@@ -157,6 +175,13 @@ struct UpcomingShiftView: View {
                     
                 }
             }.buttonStyle(.plain)
+            
+                .opacity(!purchaseManager.hasUnlockedPro ? (upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID ? 0.5 : 1.0) : 1.0)
+               // .allowsHitTesting(!purchaseManager.hasUnlockedPro ? (upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID ? false : true) : true)
+            
+                .haptics(onChangeOf: viewModel.upcomingShiftShakeTimes, type: .error)
+                    
+                
         } else {
             VStack(alignment: .leading) {
                 
@@ -174,6 +199,12 @@ struct UpcomingShiftView: View {
                     .bold()
                     .padding(.vertical, 2)
                     .fontDesign(.rounded)
+                
+            }.onTapGesture {
+             
+                    withAnimation(.linear(duration: 0.4)) {
+                        viewModel.upcomingShiftShakeTimes += 2
+                    }
                 
             }
         }

@@ -81,6 +81,8 @@ class ContentViewModel: ObservableObject {
     
     @Published  var shiftEnded = false
     
+    @Published var upcomingShiftShakeTimes: CGFloat = 0
+    
     @Published  var breakStartDate: Date?
     @Published  var breakEndDate: Date?
     @Published  var overtimeStartDate: Date?

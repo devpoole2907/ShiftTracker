@@ -66,6 +66,7 @@ struct ContentView: View {
                         if viewModel.shift == nil{
                             UpcomingShiftView()
                                 .padding(.horizontal)
+                                .shake(times: viewModel.upcomingShiftShakeTimes)
                             
                         }
                         else {

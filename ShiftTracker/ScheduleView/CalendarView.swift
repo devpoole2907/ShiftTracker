@@ -85,6 +85,17 @@ struct CalendarView: UIViewRepresentable {
             }
         }
         
+        for changedEvent in shiftStore.previousSelectedShifts {
+            let changedEventDate = changedEvent.dateComponents.date!
+            if changedEventDate >= visibleDate && changedEventDate <= futureDate {
+                uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
+                shiftStore.previousSelectedShifts = []
+            }
+            
+        }
+        
+    
+        
         
         if let selectedDate = dateSelected?.date {
                 if selectedDate >= visibleDate && selectedDate <= futureDate {
