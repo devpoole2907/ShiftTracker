@@ -32,12 +32,12 @@ struct JobOverview: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
-    @EnvironmentObject var shiftStore: ShiftStore
+    let shiftStore = ShiftStore()
     
     @FetchRequest var shifts: FetchedResults<OldShift>
     
     init(navPath: Binding<NavigationPath>){
-        
+        print("job overview itself got reinitialised")
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         fetchRequest.predicate = nil
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
@@ -45,6 +45,7 @@ struct JobOverview: View {
         
         
         _navPath = navPath
+        
     }
     
     private var currencyFormatter: NumberFormatter {
@@ -114,13 +115,15 @@ struct JobOverview: View {
             
             
             Section{
-                ForEach(shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }).prefix(10), id: \.objectID) { shift in
+                ForEach(shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }).prefix(10), id: \.self) { shift in
                     
                     NavigationLink(value: shift) {
                         ShiftDetailRow(shift: shift)
                             
                         
                     }
+                  
+                                
                     .navigationDestination(for: OldShift.self) { shift in
                         
                         // it was not the worlds greatest workaround ... lets do things properly!
@@ -128,8 +131,6 @@ struct JobOverview: View {
 
                             
                         }
-                                
-                            
                     
                     
                  /*    */
@@ -148,6 +149,8 @@ struct JobOverview: View {
                     
                     
                 }
+                
+               
             } header: {
                 
                 NavigationLink(value: 1) {
@@ -175,7 +178,7 @@ struct JobOverview: View {
             }
             .listRowBackground(Color("SquaresColor"))
             .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-            
+           
            
             
         }.scrollContentBackground(.hidden)
@@ -191,15 +194,20 @@ struct JobOverview: View {
         }
             
         
-            
+     
         .onAppear {
             navigationState.gestureEnabled = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            
+  
+            
+   
                 loadShiftData()
                 print("on appear called")
-            }
+            
             
         }
+            
+            
   
         .onReceive(shiftManager.$shiftAdded) { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
@@ -221,7 +229,6 @@ struct JobOverview: View {
 
             
         .navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext)?.name ?? "Summary")
-      //  .toolbarBackground(Color(red: Double(jobSelectionViewModel.fetchJob(in: viewContext)?.colorRed ?? 0), green: Double(jobSelectionViewModel.fetchJob(in: viewContext)?.colorGreen ?? 0), blue: Double(jobSelectionViewModel.fetchJob(in: viewContext)?.colorBlue ?? 0)).gradient)
             
         .toolbar{
             
@@ -285,6 +292,32 @@ struct JobOverview: View {
         
     }
     
+    private func loadShiftData() {
+        
+        if let selectedJob = jobSelectionViewModel.selectedJobUUID {
+            shifts.nsPredicate = NSPredicate(format: "job.uuid == %@", selectedJob as CVarArg)
+        } else {
+            shifts.nsPredicate = nil
+        }
+        
+        let weeklyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week)
+        shiftManager.recentShifts = weeklyShifts
+        shiftManager.weeklyTotalPay = shiftManager.getTotalPay(from: weeklyShifts)
+        shiftManager.weeklyTotalHours = shiftManager.getTotalHours(from: weeklyShifts)
+        shiftManager.weeklyTotalBreaksHours = shiftManager.getTotalBreaksHours(from: weeklyShifts)
+
+        shiftManager.monthlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .month)
+        shiftManager.halfYearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .halfYear)
+        shiftManager.yearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .year)
+        
+        shiftManager.totalPay = shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel)
+        shiftManager.totalHours = shiftManager.addAllHours(shifts: shifts, jobModel: jobSelectionViewModel)
+        shiftManager.totalShifts = shiftManager.getShiftCount(from: shifts, jobModel: jobSelectionViewModel)
+        shiftManager.totalBreaksHours = shiftManager.addAllBreaksHours(shifts: shifts, jobModel: jobSelectionViewModel)
+        
+        shiftManager.shiftDataLoaded.send(())
+    }
+    
     func shareButton() {
         
         var fileName = "export.csv"
@@ -334,24 +367,7 @@ struct JobOverview: View {
     }
     
     
-    private func loadShiftData() {
-        let weeklyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week)
-        shiftManager.recentShifts = weeklyShifts
-        shiftManager.weeklyTotalPay = shiftManager.getTotalPay(from: weeklyShifts)
-        shiftManager.weeklyTotalHours = shiftManager.getTotalHours(from: weeklyShifts)
-        shiftManager.weeklyTotalBreaksHours = shiftManager.getTotalBreaksHours(from: weeklyShifts)
 
-        shiftManager.monthlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .month)
-        shiftManager.halfYearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .halfYear)
-        shiftManager.yearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .year)
-        
-        shiftManager.totalPay = shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel)
-        shiftManager.totalHours = shiftManager.addAllHours(shifts: shifts, jobModel: jobSelectionViewModel)
-        shiftManager.totalShifts = shiftManager.getShiftCount(from: shifts, jobModel: jobSelectionViewModel)
-        shiftManager.totalBreaksHours = shiftManager.addAllBreaksHours(shifts: shifts, jobModel: jobSelectionViewModel)
-        
-        shiftManager.shiftDataLoaded.send(())
-    }
 
     
 }

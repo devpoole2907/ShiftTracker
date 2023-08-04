@@ -33,13 +33,14 @@ struct MainWithSideBarView: View {
     @StateObject var jobSelectionModel = JobSelectionManager()
     @EnvironmentObject var navigationState: NavigationState
     @StateObject var scheduleModel = SchedulingViewModel()
+    @StateObject var sortSelection = SortSelection(in: PersistenceController.shared.container.viewContext)
     
     @StateObject var shiftManager = ShiftDataManager.shared
     
     @EnvironmentObject var themeManager: ThemeDataManager
    // @EnvironmentObject var locationManager: LocationDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
-    @EnvironmentObject var sortSelection: SortSelection
+  //  @EnvironmentObject var sortSelection: SortSelection
     
     private let notificationManager = ShiftNotificationManager.shared
     
@@ -105,6 +106,7 @@ struct MainWithSideBarView: View {
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(jobSelectionModel)
                                     .environmentObject(navigationState)
+                                    .environmentObject(sortSelection)
                                     .environmentObject(shiftManager)
                                     .tag(Tab.timesheets)
                                 
@@ -144,14 +146,9 @@ struct MainWithSideBarView: View {
                                             
                                           
                                                 
-                                                 //path = NavigationPath()
+                                                 path = NavigationPath()
                                                 
-                                            if path.count == 2 {
-                                                
-                                                path.removeLast()
-                                                path.removeLast()
-                                                
-                                            }
+                                   
                                              
                                             
                                         }

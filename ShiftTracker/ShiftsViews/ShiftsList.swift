@@ -95,7 +95,7 @@ struct ShiftsList: View {
             
             // bottom "padding" if the list is long, as the tag picker will overlap 
             
-            if sortSelection.filteredShifts.count >= 5 {
+            if sortSelection.filteredShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }).count >= 5 {
                 Color.clear
                     .listRowSeparator(.hidden)
                     .listRowBackground(Color("SquaresColor"))
@@ -109,10 +109,16 @@ struct ShiftsList: View {
             .scrollContentBackground(.hidden)
 
             .onAppear {
+                
+                print(sortSelection.selectedSort)
+                
                 if navigationState.gestureEnabled || sortSelection.oldShifts.isEmpty {
                     navigationState.gestureEnabled = false
                     sortSelection.fetchShifts()
                 }
+                
+                
+                
             }
 
             TagSortView(selectedFilters: $sortSelection.selectedFilters)
@@ -165,6 +171,7 @@ struct ShiftsList: View {
                             CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
                         }) {
                             Image(systemName: "trash")
+                                .bold()
                         }.disabled(selection.isEmpty)
                         
                     } else {
@@ -250,72 +257,6 @@ struct TagSortView: View {
 }
 
 
-class SortSelection: ObservableObject {
-    @Published var selectedSort: ShiftNSSort = .default
-    
-    @Published var selectedFilters: Set<TagFilter> = []
-    
-    @Published var oldShifts: [OldShift] = []
-    @Published var filteredShifts: [OldShift] = []
-    
-    @Published var searchTerm: String = "" {
-        didSet {
-            if searchTerm.isEmpty {
-                if oldShifts.isEmpty {
-                    fetchShifts()
-                }
-                filteredShifts = oldShifts
-            } else {
-                filteredShifts = oldShifts.filter {
-                    $0.shiftNote?.lowercased().contains(searchTerm.lowercased()) ?? false
-                }
-            }
-        }
-    }
-    
-
-    private var viewContext: NSManagedObjectContext
-
-    init(in context: NSManagedObjectContext) {
-        self.viewContext = context
-        fetchShifts()
-    }
-
-    
-     func fetchShifts() {
-        let request = NSFetchRequest<OldShift>(entityName: "OldShift")
-        request.sortDescriptors = selectedSort.descriptors
-         
-         var predicates = selectedFilters.compactMap { $0.predicate }
-         
-         if !searchTerm.isEmpty {
-                 let searchPredicate = NSPredicate(
-                     format: "shiftNote contains[cd] %@", searchTerm)
-                 predicates.append(searchPredicate)
-             }
-         
-         if !predicates.isEmpty {
-             
-             request.predicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
-         }
-
-        do {
-            try withAnimation{
-                oldShifts = try viewContext.fetch(request)
-                filteredShifts = oldShifts
-            }
-        } catch {
-            print("Failed to fetch shifts: \(error)")
-        }
-    }
-    
-    func commitSearch() {
-            fetchShifts() // we only commit full fetch when searching if they submit the search to be more efficient
-        }
-    
-}
-
-
 struct SortSelectionView: View {
     
     @Binding var selectedSortItem: ShiftNSSort
@@ -335,7 +276,7 @@ struct SortSelectionView: View {
             
         } label: {
             
-            Label("Sort", systemImage: "line.horizontal.3.decrease.circle")
+            Label("Sort", systemImage: "line.horizontal.3.decrease.circle").bold()
             
         }
     }
