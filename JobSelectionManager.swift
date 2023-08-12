@@ -65,7 +65,7 @@ class JobSelectionManager: ObservableObject {
                 storedSelectedJobUUID = jobUUID.uuidString
             }
         } else {
-            OkButtonPopup(title: "End your current shift to select another job.", action: nil).showAndStack()
+            OkButtonPopup(title: "End your current shift to select another job.").showAndStack()
         }
     }
     
@@ -85,7 +85,7 @@ class JobSelectionManager: ObservableObject {
             selectedJobUUID = nil
             storedSelectedJobUUID = ""
         } else {
-            OkButtonPopup(title: "End your current shift to deselect this job.", action: nil).showAndStack()
+            OkButtonPopup(title: "End your current shift to deselect this job.").showAndStack()
 
         }
         

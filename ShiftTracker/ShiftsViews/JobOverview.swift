@@ -127,7 +127,7 @@ struct JobOverview: View {
                     .navigationDestination(for: OldShift.self) { shift in
                         
                         // it was not the worlds greatest workaround ... lets do things properly!
-                            DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext) == nil ? (shift.job?.name ?? "Shift Details") : "Shift Details").environmentObject(savedPublisher)
+                            DetailView(shift: shift, navPath: $navPath).environmentObject(savedPublisher)
 
                             
                         }
@@ -183,11 +183,18 @@ struct JobOverview: View {
             
         }.scrollContentBackground(.hidden)
             
-        .fullScreenCover(isPresented: $showingAddShiftSheet) {
+        .sheet(isPresented: $showingAddShiftSheet) {
             if let job = jobSelectionViewModel.fetchJob(in: viewContext){
-                AddShiftView(job: job).environment(\.managedObjectContext, viewContext).environmentObject(shiftManager)
-                    .presentationDetents([.large])
-                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                
+                
+  
+                NavigationStack{
+                    DetailView(job: job, presentedAsSheet: true)
+                }
+                
+                .presentationDetents([.large])
+                .presentationCornerRadius(35)
+                .presentationBackground(Color("allSheetBackground"))
             } else {
                 Text("Error")
             }

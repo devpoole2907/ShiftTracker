@@ -49,7 +49,7 @@ struct JobRow: View {
                         editAction()
                     }
                     else {
-                        OkButtonPopup(title: "End your current shift before editing.", action: nil).showAndStack()
+                        OkButtonPopup(title: "End your current shift before editing.").showAndStack()
                     }}) {
                         Image(systemName: "pencil")
                             .foregroundColor(isSelected ? .white : textColor)

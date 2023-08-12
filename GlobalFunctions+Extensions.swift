@@ -16,6 +16,16 @@ import Haptics
 import UserNotifications
 
 
+extension TimeInterval {
+    func stringFromTimeInterval() -> String {
+        let time = NSInteger(self)
+        let hours = (time / 3600)
+        let minutes = (time / 60) % 60
+        let seconds = time % 60
+        return String(format: "%02i:%02i:%02i", hours, minutes, seconds)
+    }
+}
+
 extension UIColor {
     var rgbComponents: (Float, Float, Float) {
         var r: CGFloat = 0

@@ -137,12 +137,12 @@ struct ContentView: View {
             case .detailSheet:
                 if let thisShift = viewModel.lastEndedShift {
                     NavigationStack{
-                        DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $viewModel.activeSheet, navPath: $navPath).navigationBarTitle("Shift Ended")
+                        DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $viewModel.activeSheet).navigationBarTitle("Shift Ended")
                             .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
                             .environment(\.managedObjectContext, context)
                     }.presentationDetents([ .large])
                         .presentationCornerRadius(35)
-                        .presentationBackground(colorScheme == .dark ? .black : .white)
+                        .presentationBackground(Color("allSheetBackground"))
                         .onDisappear{
                             navigationState.gestureEnabled = true
                         }
@@ -152,26 +152,26 @@ struct ContentView: View {
                     .environment(\.managedObjectContext, context)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
                     .presentationCornerRadius(35)
-                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                    .presentationBackground(Color("allSheetBackground"))
                 
             case .endShiftSheet:
                 ActionView(navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
                     .environment(\.managedObjectContext, context)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
                     .presentationCornerRadius(35)
-                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                    .presentationBackground(Color("allSheetBackground"))
             case .endBreakSheet:
                 ActionView(navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
                     .environment(\.managedObjectContext, context)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
                     .presentationCornerRadius(35)
-                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                    .presentationBackground(Color("allSheetBackground"))
             case .startShiftSheet:
                 ActionView(navTitle: "Start Shift", actionType: .startShift)
                     .environment(\.managedObjectContext, context)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.85 : 0.7)])
                     .presentationCornerRadius(35)
-                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                    .presentationBackground(Color("allSheetBackground"))
             }
             
             

@@ -360,12 +360,15 @@ struct ScheduleView: View {
                         
                             .presentationDetents([.large])
                             .presentationCornerRadius(35)
-                            .presentationBackground(colorScheme == .dark ? .black : .white)
+                            .presentationBackground(Color("allSheetBackground"))
                         
                         
                     case .pastShiftSheet:
                         
-                        AddShiftView(job: jobSelectionViewModel.fetchJob(in: viewContext)!, dateSelected: dateSelected)
+                        NavigationStack{
+                            DetailView(job: jobSelectionViewModel.fetchJob(in: viewContext)!, dateSelected: dateSelected, presentedAsSheet: true)
+                        }
+                   
                             .environmentObject(shiftManager)
                             .onDisappear {
                                 
@@ -375,7 +378,7 @@ struct ScheduleView: View {
                         
                             .presentationDetents([.large])
                             .presentationCornerRadius(35)
-                            .presentationBackground(colorScheme == .dark ? .black : .white)
+                            .presentationBackground(Color("allSheetBackground"))
                         
                         
                     }

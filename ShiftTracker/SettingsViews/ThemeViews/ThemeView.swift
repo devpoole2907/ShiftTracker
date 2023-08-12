@@ -118,7 +118,7 @@ struct ThemeView: View {
         
             ThemesGuideView()
                 .presentationDetents([.fraction(0.8)])
-                .presentationBackground(colorScheme == .dark ? .black : .white)
+                .presentationBackground(Color("allSheetBackground"))
             .presentationCornerRadius(35)
         }
     

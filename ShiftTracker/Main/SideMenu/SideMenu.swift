@@ -225,7 +225,7 @@ struct SideMenu: View {
                     AddTagView()
                         .presentationDetents([.medium])
                         .presentationCornerRadius(35)
-                        .presentationBackground(colorScheme == .dark ? .black : .white)
+                        .presentationBackground(Color("allSheetBackground"))
                     
                 }
             

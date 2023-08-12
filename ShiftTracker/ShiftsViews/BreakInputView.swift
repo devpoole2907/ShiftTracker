@@ -8,19 +8,17 @@
 import SwiftUI
 
 struct BreakInputView: View {
-    @Binding var newBreakStartDate: Date
-    @Binding var newBreakEndDate: Date
-    @Binding var isUnpaid: Bool
+    
+    @EnvironmentObject var viewModel: DetailViewModel
+
     var startDate: Date
     var endDate: Date
     var buttonAction: () -> Void
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     
-    init(newBreakStartDate: Binding<Date>, newBreakEndDate: Binding<Date>, isUnpaid: Binding<Bool>, startDate: Date, endDate: Date, buttonAction: @escaping () -> Void){
-        _newBreakStartDate = newBreakStartDate
-        _newBreakEndDate = newBreakEndDate
-        _isUnpaid = isUnpaid
+    init(startDate: Date, endDate: Date, buttonAction: @escaping () -> Void){
+
         self.startDate = startDate
         self.endDate = endDate
         self.buttonAction = buttonAction
@@ -36,12 +34,12 @@ struct BreakInputView: View {
                         .bold()
                         .frame(width: 50, alignment: .leading)
                         .padding(.vertical, 5)
-                    DatePicker("Start:", selection: $newBreakStartDate, in: startDate...endDate, displayedComponents: [.date, .hourAndMinute])
+                    DatePicker("Start:", selection: $viewModel.selectedBreakStartDate, in: startDate...endDate, displayedComponents: [.date, .hourAndMinute])
                         .labelsHidden()
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .onChange(of: newBreakStartDate) { newValue in
-                            if newBreakEndDate < newValue || newBreakEndDate > endDate {
-                                newBreakEndDate = newValue.addingTimeInterval(10 * 60)
+                        .onChange(of: viewModel.selectedBreakStartDate) { newValue in
+                            if viewModel.selectedBreakStartDate < newValue || viewModel.selectedBreakEndDate > endDate {
+                                viewModel.selectedBreakEndDate = newValue.addingTimeInterval(10 * 60)
                             }
                         }
                 }
@@ -49,16 +47,16 @@ struct BreakInputView: View {
                     Text("End:")
                         .bold()
                         .frame(width: 50, alignment: .leading)
-                    DatePicker("End:", selection: $newBreakEndDate, in: ...endDate, displayedComponents: [.date, .hourAndMinute])
+                    DatePicker("End:", selection: $viewModel.selectedBreakEndDate, in: ...endDate, displayedComponents: [.date, .hourAndMinute])
                         .labelsHidden()
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .onChange(of: newBreakEndDate) { newValue in
-                            if newValue < newBreakStartDate || newValue > endDate {
-                                newBreakEndDate = newBreakStartDate.addingTimeInterval(10 * 60)
+                        .onChange(of: viewModel.selectedBreakEndDate) { newValue in
+                            if newValue < viewModel.selectedBreakStartDate || newValue > endDate {
+                                viewModel.selectedBreakEndDate = viewModel.selectedBreakStartDate.addingTimeInterval(10 * 60)
                             }
                         }
                 }
-                Picker(selection: $isUnpaid, label: Text("Break Type")) {
+                Picker(selection: $viewModel.isUnpaid, label: Text("Break Type")) {
                     Text("Paid").tag(false)
                     Text("Unpaid").tag(true)
                 }.pickerStyle(SegmentedPickerStyle())

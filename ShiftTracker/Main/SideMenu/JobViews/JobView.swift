@@ -445,7 +445,7 @@ struct JobView: View {
                             OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .fraction(0.4)])
-                                .presentationBackground(colorScheme == .dark ? .black : .white)
+                                .presentationBackground(Color("allSheetBackground"))
                                 .presentationDragIndicator(.visible)
                                 .presentationCornerRadius(35)
                             
@@ -455,7 +455,7 @@ struct JobView: View {
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .medium, .large])
                                 .presentationDragIndicator(.visible)
-                                .presentationBackground(colorScheme == .dark ? .black : .white)
+                                .presentationBackground(Color("allSheetBackground"))
                                 .presentationCornerRadius(35)
                        
                             

@@ -56,6 +56,7 @@ class ShiftDataManager: ObservableObject {
     }
     
     
+    
     func deleteShift(_ shift: OldShift, in viewContext: NSManagedObjectContext) {
         viewContext.delete(shift)
         do {

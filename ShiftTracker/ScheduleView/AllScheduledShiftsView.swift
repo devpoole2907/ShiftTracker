@@ -173,7 +173,7 @@ struct AllScheduledShiftsView: View {
                 .navigationDestination(for: OldShift.self) { shift in
                     
                     
-                    DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
+                    DetailView(shift: shift, navPath: $navPath).environmentObject(savedPublisher)
                     
                     
                 }

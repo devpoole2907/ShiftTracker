@@ -13,6 +13,11 @@ struct OkButtonPopup: CentrePopup {
     let title: String
     let action: (() -> Void)?
     
+    init(title: String, action: ( () -> Void)? = nil) {
+        self.title = title
+        self.action = action
+    }
+    
     func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
         popup.horizontalPadding(28)
             .backgroundColour(Color.clear)

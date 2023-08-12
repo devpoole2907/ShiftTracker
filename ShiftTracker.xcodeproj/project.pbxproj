@@ -99,7 +99,6 @@
 		1AC9DDF929F7B28700C15008 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF729F7B28700C15008 /* JobData.swift */; };
 		1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
-		1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60B529D7F07100B279CB /* AddShiftView.swift */; };
 		1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */; };
 		1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
@@ -169,6 +168,8 @@
 		7CAC9B742A762AAC0048F818 /* LockscreenWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */; };
 		7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B752A762D410048F818 /* ShiftEntry.swift */; };
 		7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */; };
+		7CD8A31D2A87420F0011A1C0 /* TempBreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31C2A87420F0011A1C0 /* TempBreaksListView.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -298,7 +299,6 @@
 		1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		1AC9DDF729F7B28700C15008 /* JobData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobData.swift; sourceTree = "<group>"; };
 		1ACA60AC29D7913700B279CB /* ShiftKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftKeys.swift; sourceTree = "<group>"; };
-		1ACA60B529D7F07100B279CB /* AddShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddShiftView.swift; sourceTree = "<group>"; };
 		1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToggleStyle.swift; sourceTree = "<group>"; };
 		1ACAA96829F92BAD002D86B5 /* ShiftTracker Watch Edition Watch App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ShiftTracker Watch Edition Watch App.entitlements"; sourceTree = "<group>"; };
 		1ACAA96929F92BBC002D86B5 /* ShiftTracker-Watch-Edition-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ShiftTracker-Watch-Edition-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -346,6 +346,8 @@
 		7CAC9B712A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerLockscreenPayWidgets.swift; sourceTree = "<group>"; };
 		7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockscreenWidgetProvider.swift; sourceTree = "<group>"; };
 		7CAC9B752A762D410048F818 /* ShiftEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftEntry.swift; sourceTree = "<group>"; };
+		7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
+		7CD8A31C2A87420F0011A1C0 /* TempBreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreaksListView.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -635,12 +637,13 @@
 				1A8D4AD92A4EE16400EEB334 /* JobOverview.swift */,
 				1A4E610C29C82DF9008AC8ED /* DetailView.swift */,
 				1AECCC5E29E0BD2E00D879FE /* SummaryViews */,
-				1ACA60B529D7F07100B279CB /* AddShiftView.swift */,
 				1A88007029E3D98D009458BE /* BreaksListView.swift */,
 				1A30F3C32A223AA400A7BD92 /* BreakInputView.swift */,
 				1A8D4ADB2A4EFAC100EEB334 /* ShiftsList.swift */,
 				1A8D4ADD2A4EFC6000EEB334 /* ShiftDetailRow.swift */,
 				7CA586A92A7CCE0E0080BC48 /* SortSelection.swift */,
+				7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */,
+				7CD8A31C2A87420F0011A1C0 /* TempBreaksListView.swift */,
 			);
 			path = ShiftsViews;
 			sourceTree = "<group>";
@@ -1040,6 +1043,7 @@
 				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
 				7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */,
 				1A8D4AD62A4EDE0D00EEB334 /* AnimatedButton.swift in Sources */,
+				7CD8A31D2A87420F0011A1C0 /* TempBreaksListView.swift in Sources */,
 				1A9855D629C55F8A003F512C /* ContentView.swift in Sources */,
 				BFFEF1FA2A691C3D00E3F406 /* AppIconView.swift in Sources */,
 				1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */,
@@ -1072,7 +1076,6 @@
 				BF8191442A5A71130079E449 /* ThemeView.swift in Sources */,
 				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
-				1ACA60B629D7F07100B279CB /* AddShiftView.swift in Sources */,
 				7C8CEA9A2A5D3B2E006C833F /* TagButtonView.swift in Sources */,
 				7CA586AA2A7CCE0E0080BC48 /* SortSelection.swift in Sources */,
 				7CAC9B572A75EF3D0048F818 /* JobSelectionManager.swift in Sources */,
@@ -1105,6 +1108,7 @@
 				1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */,
 				1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */,
+				7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */,
 				7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */,
 				1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,

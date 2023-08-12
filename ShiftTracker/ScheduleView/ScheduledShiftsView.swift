@@ -56,7 +56,7 @@ struct ScheduledShiftsView: View {
                     .navigationDestination(for: OldShift.self) { shift in
                        
                        
-                       DetailView(shift: shift, presentedAsSheet: false, navPath: $navPath).navigationTitle(shift.job?.name ?? "Shift Details").environmentObject(savedPublisher)
+                       DetailView(shift: shift, navPath: $navPath).environmentObject(savedPublisher)
                        
                        
                    }
@@ -178,7 +178,7 @@ struct ScheduledShiftsView: View {
             CreateShiftForm(dateSelected: $dateSelected, scheduledShift: shift)
                 .presentationDetents([.large])
                 .presentationCornerRadius(35)
-                .presentationBackground(colorScheme == .dark ? .black : .white)
+                .presentationBackground(Color("allSheetBackground"))
             
         }
 

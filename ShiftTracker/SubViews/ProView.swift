@@ -241,7 +241,7 @@ struct ProView: View {
                  
                         PurchaseSuccessView()
                 
-                    .presentationBackground(colorScheme == .dark ? .black : .white)
+                    .presentationBackground(Color("allSheetBackground"))
                     .presentationCornerRadius(25)
                   
                     }
