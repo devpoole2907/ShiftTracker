@@ -95,7 +95,7 @@ struct ScheduledShiftsView: View {
                 if !foundShifts.isEmpty {
                     ForEach(foundShifts) { shift in
                         if shift.endDate > Date() {
-                            ScheduledShiftRow(shift: shift, selectedShiftToEdit: $selectedShiftToEdit)
+                            ScheduledShiftListRow(shift: shift, selectedShiftToEdit: $selectedShiftToEdit)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)
                                 .swipeActions {
@@ -195,7 +195,7 @@ extension View {
 }
 
 
-struct ScheduledShiftRow: View {
+struct ScheduledShiftListRow: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
