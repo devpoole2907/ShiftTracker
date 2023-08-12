@@ -39,7 +39,7 @@ struct ExportSquare: View {
             
             Button(action: {
                 
-                isTapped.toggle()
+              
                 
                 if purchaseManager.hasUnlockedPro {
                     action()
@@ -48,12 +48,7 @@ struct ExportSquare: View {
                     showingProView.toggle()
                     
                 }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                    
-                    isTapped.toggle()
-                    
-                }
+           
                 
                 
             }){
@@ -75,13 +70,10 @@ struct ExportSquare: View {
                     .padding(.vertical, 10)
                 .background(colorScheme == .dark ? .white : .black)
                     .cornerRadius(16)
-                    .buttonStyle(.plain)
                     .contentShape(Rectangle())
             }
             .frame(maxWidth: .infinity)
-            .scaleEffect(isTapped ? 1.35 : 1)
-            .animation(.easeInOut(duration: 0.5))
-            .buttonStyle(.plain)
+            .buttonStyle(.scale)
             .haptics(onChangeOf: isTapped, type: .light)
             
         }.padding()

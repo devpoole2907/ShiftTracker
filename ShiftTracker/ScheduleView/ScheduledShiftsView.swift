@@ -95,7 +95,7 @@ struct ScheduledShiftsView: View {
                 if !foundShifts.isEmpty {
                     ForEach(foundShifts) { shift in
                         if shift.endDate > Date() {
-                            ListViewRow(shift: shift, selectedShiftToEdit: $selectedShiftToEdit)
+                            ScheduledShiftRow(shift: shift, selectedShiftToEdit: $selectedShiftToEdit)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)
                                 .swipeActions {
@@ -195,7 +195,7 @@ extension View {
 }
 
 
-struct ListViewRow: View {
+struct ScheduledShiftRow: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
@@ -226,6 +226,7 @@ struct ListViewRow: View {
     var body: some View {
         Section(header: Text("\(dateFormatter.string(from: shift.startDate )) - \(dateFormatter.string(from: shift.endDate ))")
             .bold()
+            .fontDesign(.rounded)
             .textCase(nil)){
                 
                 ZStack{
@@ -273,6 +274,7 @@ struct ListViewRow: View {
                                     .foregroundColor(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
                                     .font(.subheadline)
                                     .bold()
+                                    .fontDesign(.rounded)
                                 
                                 
                                 
@@ -324,6 +326,7 @@ struct ListViewRow: View {
                             .foregroundStyle(.gray)
                             .bold()
                             .padding(.bottom)
+                            .fontDesign(.rounded)
                     }
                     
                     

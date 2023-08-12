@@ -35,7 +35,7 @@ struct ProView: View {
                     Text("PRO")
                         .font(.largeTitle)
                         .fontWeight(.heavy)
-                        .foregroundColor(proButtonColor)
+                        .foregroundStyle(proButtonColor.gradient)
                 }
                
                 VStack(alignment: .leading){
@@ -126,15 +126,15 @@ struct ProView: View {
                         Text("UNLOCK")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(upgradeButtonTextColor)
+                            .foregroundStyle(upgradeButtonTextColor)
                         Text("PRO")
                             .font(.largeTitle)
                             .fontWeight(.heavy)
-                            .foregroundColor(proButtonColor)
-                        Text("Features")
+                            .foregroundStyle(proButtonColor.gradient)
+                        Text("FEATURES")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(upgradeButtonTextColor)
+                            .foregroundStyle(upgradeButtonTextColor)
                     }
                     
                     .foregroundColor(textColor)
@@ -232,6 +232,7 @@ struct ProView: View {
                 }) {
                     Text("Restore")
                         .bold()
+                        .fontDesign(.rounded)
                 }.padding()
                 
                // Spacer(minLength: 50)

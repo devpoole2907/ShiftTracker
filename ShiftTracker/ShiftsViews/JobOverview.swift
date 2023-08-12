@@ -157,13 +157,15 @@ struct JobOverview: View {
                     
                     Text("Latest Shifts")
                         .textCase(nil)
-                        .foregroundColor(textColor)
+                        .foregroundStyle(textColor)
                         .padding(.leading, jobSelectionViewModel.fetchJob(in: viewContext) != nil ? -12 : -4)
                         .font(.title2)
                         .bold()
-                    Spacer()
+                    
                     Image(systemName: "chevron.right")
                     .bold()
+                    .foregroundStyle(.gray)
+                    Spacer()
                     
                 }
                 .navigationDestination(for: Int.self) { _ in

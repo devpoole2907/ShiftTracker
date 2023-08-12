@@ -54,12 +54,7 @@ struct ContentViewButtonsView: View {
                     CustomConfirmationAlert(action: {
                         viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
                     }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
-                    withAnimation {
-                        viewModel.isEndShiftTapped = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            viewModel.isEndShiftTapped = false
-                        }
-                    }
+                    
                 }) {
                     Text("Cancel Shift")
                         .frame(minWidth: UIScreen.main.bounds.width / 3)
@@ -69,10 +64,9 @@ struct ContentViewButtonsView: View {
                         .foregroundColor(foregroundColor)
                         .cornerRadius(18)
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.scale)
                 .frame(maxWidth: .infinity)
-                .scaleEffect(viewModel.isEndShiftTapped ? 1.1 : 1)
-                .animation(.easeInOut(duration: 0.3), value: viewModel.isEndShiftTapped)
+        
                 
                 
             } else if viewModel.shiftState == .inProgress {

@@ -19,22 +19,9 @@ struct CurrentBreaksListView: View {
         
         
  
-        
-            ForEach(Array(viewModel.tempBreaks.reversed().enumerated()), id: \.element) { index, breakItem in
-                Section(header: VStack {
-                                if index == 0 {
-                                    HStack {
-                                        Text("Breaks")
-                                            .font(.title2)
-                                            .bold()
-                                            .textCase(nil)
-                                            .foregroundColor(textColor)
-                                        Spacer()
-                                    }
-                                    .listRowSeparator(.hidden)
-                                    .listRowBackground(Color.clear)
-                                }
-                            }) {
+        Section{
+            ForEach(Array(viewModel.tempBreaks.reversed()), id: \.self) { breakItem in
+         
                 VStack(alignment: .leading){
                     HStack{
                         VStack(alignment: .leading, spacing: 5){
@@ -58,7 +45,7 @@ struct CurrentBreaksListView: View {
                             }
                             else {
                                 Text("\(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate))")
-                                    .listRowSeparator(.hidden)
+                                   // .listRowSeparator(.hidden)
                                     .font(.subheadline)
                                     .bold()
                                     .fontDesign(.rounded)
@@ -113,9 +100,7 @@ struct CurrentBreaksListView: View {
                         }
                     }
                 }.padding(.vertical, 2)
-            }
-            .listRowBackground(Color("SquaresColor"))
-            .listRowSeparator(.hidden)
+            
             
             .swipeActions {
                 Button(role: .destructive) {
@@ -125,9 +110,33 @@ struct CurrentBreaksListView: View {
                 }.disabled(breakItem.endDate == nil)
             }
             
-        }
+        
     
         
     }
+        
+        
+        } header : {
+            
+            
+            HStack {
+                Text("Breaks")
+                    .font(.title2)
+                    .bold()
+                    .textCase(nil)
+                    .foregroundColor(textColor)
+                Spacer()
+            }
+          //  .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            
+        }
+        .listRowBackground(Color("SquaresColor"))
+       // .listRowSeparator(.hidden)
+            
+            
+        }
+    
+        
 }
 

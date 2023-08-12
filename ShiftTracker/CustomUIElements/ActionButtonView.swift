@@ -38,5 +38,6 @@ struct ActionButtonView: View {
             .background(backgroundColor)
             .cornerRadius(20)
         }.haptics(onChangeOf: isActionButtonTapped, type: .success)
+            .buttonStyle(.scale)
     }
 }

@@ -24,12 +24,6 @@ struct AnimatedButton: View {
         
         Button(action: {
             self.activeSheet = activeSheetCase
-            withAnimation {
-                self.isTapped = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    self.isTapped = false
-                }
-            }
         }) {
             Text(title)
                 .frame(minWidth: UIScreen.main.bounds.width / 3)
@@ -39,10 +33,10 @@ struct AnimatedButton: View {
                 .foregroundColor(foregroundColor)
                 .cornerRadius(18)
         }
-        .buttonStyle(.borderless)
+        .buttonStyle(.scale)
         .disabled(isDisabled)
         .frame(maxWidth: .infinity)
-        .scaleEffect(isTapped ? 1.1 : 1)
-        .animation(.easeInOut(duration: 0.3))
+        //.scaleEffect(isTapped ? 1.1 : 1)
+       // .animation(.easeInOut(duration: 0.3))
     }
 }

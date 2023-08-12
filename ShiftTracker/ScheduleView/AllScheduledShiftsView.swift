@@ -63,13 +63,7 @@ struct AllScheduledShiftsView: View {
                                         ScheduledShiftRow(shift: shift)
                                             .environmentObject(shiftStore)
                                             .environmentObject(scheduleModel)
-                                        
-                                        
-                                        
-                                        
                                     }
-                                    
-                                    
                                     .swipeActions {
                                         Button(role: .destructive) {
                                             //scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
@@ -111,8 +105,6 @@ struct AllScheduledShiftsView: View {
                                                                         Button(role: .cancel) {
                                                                             
                                                                            // scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
-                                                                            
-                                                                            
                                                                                 //dismiss()
                                                                                 CustomConfirmationAlert(action: {
                                                                                     scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
@@ -129,17 +121,7 @@ struct AllScheduledShiftsView: View {
                                                                     }
                                                           
                                                             }
-                                
-                                
-                                
-                          
-                                
-                                   
-                                
                             }
-                            
-                            
-                           
                             
                         } header: { Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? (colorScheme == .dark ? .orange : .cyan) : textColor)
                           
@@ -252,7 +234,6 @@ struct ScheduledShiftRow: View {
                         .bold()
                         .fontDesign(.rounded)
                         .foregroundStyle(.gray)
-                
             }
         }
     }
