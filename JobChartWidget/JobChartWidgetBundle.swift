@@ -11,6 +11,7 @@ import SwiftUI
 @main
 struct JobChartWidgetBundle: WidgetBundle {
     var body: some Widget {
-        JobChartWidget()
+        JobChartHoursWidget()
+        JobChartEarningsWidget()
     }
 }

@@ -44,7 +44,7 @@ struct ShiftDetailRow: View {
         let duration = shiftEndDate.timeIntervalSince(shiftStartDate) / 3600.0
         
         let dateString = dateFormatter.string(from: shiftStartDate)
-        let payString = String(format: "%.2f", shift.taxedPay)
+        let payString = String(format: "%.2f", shift.totalPay)
         
         let job = shift.job
         

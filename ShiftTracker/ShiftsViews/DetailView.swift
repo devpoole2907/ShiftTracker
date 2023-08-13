@@ -122,6 +122,8 @@ struct DetailView: View {
                 
                 VStack{
                     
+                    
+                    
                     if !viewModel.areAllTempBreaksWithin {
                         HStack {
                             
@@ -135,6 +137,50 @@ struct DetailView: View {
                             .frame(width: UIScreen.main.bounds.width - 60)
                            
                     }
+                    HStack{
+                        VStack(alignment: .leading, spacing: 2) {
+                            
+                            if let job = job ?? shift?.job {
+                                let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
+                                HStack{
+                                    Image(systemName: job.icon ?? "")
+                                        .font(.title3)
+                                        .foregroundStyle(.white)
+                                        .padding(10)
+                                        .background {
+                                            
+                                            Circle()
+                                                .foregroundStyle(jobColor)
+                                            
+ 
+                                        }
+                                    
+                                    VStack(alignment: .leading, spacing: 3){
+                                        Text(job.name ?? "No Job Found")
+                                            .bold()
+                                            .font(.title2)
+                                        
+                                        Divider().frame(maxWidth: 200)
+                                        
+                                        
+                                        Text(job.title ?? "No Job Title")
+                                            .foregroundStyle(jobColor)
+                                            .fontDesign(.rounded)
+                                            .bold()
+                                            .font(.body)
+                                            .padding(.leading, 1.4)
+                                    }
+                                }.padding(.vertical, 2)
+                            }
+                            
+                            
+                        }.frame(alignment: .leading)
+                        Spacer()
+                    }   .padding(.horizontal)
+                    
+                    .frame(width: UIScreen.main.bounds.width - 60)
+                      
+                        .padding(.top, -5)
                     
                     ZStack{
                         RoundedRectangle(cornerRadius: 12)
@@ -144,7 +190,7 @@ struct DetailView: View {
                         VStack(alignment: .center, spacing: 5) {
                             
                             VStack {
-                                Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.taxedPay)) ?? "")")
+                                Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.totalPay)) ?? "")")
                                     .padding(.horizontal, 20)
                                     .font(.system(size: 60).monospacedDigit())
                                     .fontWeight(.bold)
@@ -160,7 +206,7 @@ struct DetailView: View {
                                         Image(systemName: "chart.line.downtrend.xyaxis")
                                             .font(.system(size: 15).monospacedDigit())
                                             .fontWeight(.light)
-                                        Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.totalPay)) ?? "")")
+                                        Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.taxedPay)) ?? "")")
                                             .font(.system(size: 20).monospacedDigit())
                                             .bold()
                                             .lineLimit(1)
@@ -478,7 +524,7 @@ struct DetailView: View {
         }
         
         .navigationTitle(shift == nil ? "Add Shift" : "Shift Details")
-        //.navigationBarTitleDisplayMode(shift == nil ? .inline : .automatic)
+        .navigationBarTitleDisplayMode(.inline)
         
         .onAppear{
             

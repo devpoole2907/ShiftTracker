@@ -63,10 +63,14 @@ struct ShiftTrackerApp: App {
                     print("url is: \(url)")
                     print("url path is: \(url.path)")
                     print("url scheme is: \(url.scheme)")
-                    if url.scheme == "shifttrackerapp"  && url.host == "schedule" {
+                    if url.scheme == "shifttrackerapp"  {
                         
-                        navigationState.currentTab = .schedule
-                        
+                        if url.host == "schedule" {
+                            navigationState.currentTab = .schedule
+                        }
+                        if url.host == "summary" {
+                            navigationState.currentTab = .timesheets
+                        }
                     }
                 }
                 .onAppear {

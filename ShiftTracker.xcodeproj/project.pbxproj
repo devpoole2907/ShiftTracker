@@ -127,6 +127,18 @@
 		1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = 1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7C0AC12A2A88EB360016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
+		7C0AC12B2A88EB3F0016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
+		7C0AC12C2A88EB400016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
+		7C0AC12E2A88EBA10016456E /* ShiftToChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */; };
+		7C0AC12F2A88EBA10016456E /* ShiftToChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */; };
+		7C0AC1302A88EBA10016456E /* ShiftToChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */; };
+		7C0AC1322A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */; };
+		7C0AC1332A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */; };
+		7C0AC1342A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */; };
+		7C0AC1362A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */; };
+		7C0AC1372A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */; };
+		7C0AC1382A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */; };
 		7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */; };
@@ -180,7 +192,7 @@
 		7CD8A3352A88A48C0011A1C0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7CD8A3362A88A48C0011A1C0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7CD8A3392A88A48C0011A1C0 /* JobChartWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3382A88A48C0011A1C0 /* JobChartWidgetBundle.swift */; };
-		7CD8A33B2A88A48C0011A1C0 /* JobChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A33A2A88A48C0011A1C0 /* JobChartWidget.swift */; };
+		7CD8A33B2A88A48C0011A1C0 /* JobChartHoursWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A33A2A88A48C0011A1C0 /* JobChartHoursWidget.swift */; };
 		7CD8A33D2A88A48F0011A1C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7CD8A33C2A88A48F0011A1C0 /* Assets.xcassets */; };
 		7CD8A3412A88A48F0011A1C0 /* JobChartWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7CD8A3462A88A4E70011A1C0 /* JobSelectionIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */; };
@@ -356,6 +368,10 @@
 		1AE3845C29D447DE0002378F /* CustomTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabView.swift; sourceTree = "<group>"; };
 		1AEBFE002A5132B900884DBF /* StatsSquare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsSquare.swift; sourceTree = "<group>"; };
 		1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreak.swift; sourceTree = "<group>"; };
+		7C0AC1292A88EB360016456E /* JobEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobEntry.swift; sourceTree = "<group>"; };
+		7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftToChart.swift; sourceTree = "<group>"; };
+		7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartWidgetProvider.swift; sourceTree = "<group>"; };
+		7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartEarningsWidget.swift; sourceTree = "<group>"; };
 		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerBundle.swift; sourceTree = "<group>"; };
 		7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerLiveActivity.swift; sourceTree = "<group>"; };
@@ -397,7 +413,7 @@
 		7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = JobSelectionIntent.intentdefinition; sourceTree = "<group>"; };
 		7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = JobChartWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CD8A3382A88A48C0011A1C0 /* JobChartWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartWidgetBundle.swift; sourceTree = "<group>"; };
-		7CD8A33A2A88A48C0011A1C0 /* JobChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartWidget.swift; sourceTree = "<group>"; };
+		7CD8A33A2A88A48C0011A1C0 /* JobChartHoursWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartHoursWidget.swift; sourceTree = "<group>"; };
 		7CD8A33C2A88A48F0011A1C0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7CD8A33E2A88A48F0011A1C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7CD8A3452A88A4B10011A1C0 /* JobChartWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JobChartWidgetExtension.entitlements; sourceTree = "<group>"; };
@@ -868,9 +884,13 @@
 			children = (
 				7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */,
 				7CD8A3382A88A48C0011A1C0 /* JobChartWidgetBundle.swift */,
-				7CD8A33A2A88A48C0011A1C0 /* JobChartWidget.swift */,
+				7CD8A33A2A88A48C0011A1C0 /* JobChartHoursWidget.swift */,
 				7CD8A33C2A88A48F0011A1C0 /* Assets.xcassets */,
 				7CD8A33E2A88A48F0011A1C0 /* Info.plist */,
+				7C0AC1292A88EB360016456E /* JobEntry.swift */,
+				7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */,
+				7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */,
+				7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */,
 			);
 			path = JobChartWidget;
 			sourceTree = "<group>";
@@ -1239,11 +1259,13 @@
 				7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */,
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
+				7C0AC12E2A88EBA10016456E /* ShiftToChart.swift in Sources */,
 				1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
 				7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */,
 				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
 				7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */,
+				7C0AC12A2A88EB360016456E /* JobEntry.swift in Sources */,
 				1A8D4AD62A4EDE0D00EEB334 /* AnimatedButton.swift in Sources */,
 				1A9855D629C55F8A003F512C /* ContentView.swift in Sources */,
 				BFFEF1FA2A691C3D00E3F406 /* AppIconView.swift in Sources */,
@@ -1255,6 +1277,7 @@
 				7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */,
 				1AC9DDF829F7B28700C15008 /* JobData.swift in Sources */,
 				7C1AA4662A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */,
+				7C0AC1322A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */,
 				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
@@ -1329,6 +1352,7 @@
 				1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */,
 				7C8CEA982A5D3836006C833F /* AddTagView.swift in Sources */,
 				1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */,
+				7C0AC1362A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,
 				BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */,
 				1AE3845B29D444800002378F /* TabBottomView.swift in Sources */,
 				BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */,
@@ -1393,12 +1417,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C0AC12F2A88EBA10016456E /* ShiftToChart.swift in Sources */,
 				7CD8A3472A88A5650011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */,
+				7C0AC1332A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */,
+				7C0AC12B2A88EB3F0016456E /* JobEntry.swift in Sources */,
 				7CD8A3462A88A4E70011A1C0 /* JobSelectionIntent.intentdefinition in Sources */,
-				7CD8A33B2A88A48C0011A1C0 /* JobChartWidget.swift in Sources */,
+				7CD8A33B2A88A48C0011A1C0 /* JobChartHoursWidget.swift in Sources */,
 				7CD8A3392A88A48C0011A1C0 /* JobChartWidgetBundle.swift in Sources */,
 				7CD8A3762A88BA020011A1C0 /* IntentHandler.swift in Sources */,
 				7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */,
+				7C0AC1372A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1406,10 +1434,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C0AC12C2A88EB400016456E /* JobEntry.swift in Sources */,
 				7CD8A3772A88BB800011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */,
 				7CD8A3722A88ACBC0011A1C0 /* PersistenceController.swift in Sources */,
 				7CD8A3542A88AB1A0011A1C0 /* IntentHandler.swift in Sources */,
+				7C0AC1302A88EBA10016456E /* ShiftToChart.swift in Sources */,
+				7C0AC1342A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */,
 				7CD8A3702A88AB840011A1C0 /* JobSelectionIntent.intentdefinition in Sources */,
+				7C0AC1382A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

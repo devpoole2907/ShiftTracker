@@ -101,7 +101,7 @@ struct TimerView: View {
             } */
             ZStack {
                 // This is the center aligned text
-                Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
+                Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
                     .padding(.horizontal, 20)
                     .font(.system(size: 60).monospacedDigit())
                     .fontWeight(.bold)
@@ -129,7 +129,7 @@ struct TimerView: View {
                     Image(systemName: "chart.line.downtrend.xyaxis")
                         .font(.system(size: 15).monospacedDigit())
                         .fontWeight(.light)
-                    Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
+                    Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
                         .font(.system(size: 20).monospacedDigit())
                         .bold()
                         .lineLimit(1)
