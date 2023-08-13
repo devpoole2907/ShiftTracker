@@ -39,5 +39,6 @@ struct ActionButtonView: View {
             .cornerRadius(20)
         }.haptics(onChangeOf: isActionButtonTapped, type: .success)
             .buttonStyle(.scale)
+            .listRowBackground(Color.clear)
     }
 }

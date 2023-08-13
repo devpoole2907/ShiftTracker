@@ -175,6 +175,7 @@
 		7CD8A3262A882F350011A1C0 /* ShiftSorts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3252A882F350011A1C0 /* ShiftSorts.swift */; };
 		7CD8A3282A8831B80011A1C0 /* TagSortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3272A8831B80011A1C0 /* TagSortView.swift */; };
 		7CD8A32A2A8831D20011A1C0 /* SortSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3292A8831D20011A1C0 /* SortSelectionView.swift */; };
+		7CD8A32D2A887CE00011A1C0 /* ConfigureExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A32C2A887CE00011A1C0 /* ConfigureExportView.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -358,6 +359,7 @@
 		7CD8A3252A882F350011A1C0 /* ShiftSorts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftSorts.swift; sourceTree = "<group>"; };
 		7CD8A3272A8831B80011A1C0 /* TagSortView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSortView.swift; sourceTree = "<group>"; };
 		7CD8A3292A8831D20011A1C0 /* SortSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSelectionView.swift; sourceTree = "<group>"; };
+		7CD8A32C2A887CE00011A1C0 /* ConfigureExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigureExportView.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -652,6 +654,7 @@
 				1A8D4ADB2A4EFAC100EEB334 /* ShiftsList.swift */,
 				1A8D4ADD2A4EFC6000EEB334 /* ShiftDetailRow.swift */,
 				7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */,
+				7CD8A32C2A887CE00011A1C0 /* ConfigureExportView.swift */,
 			);
 			path = ShiftsViews;
 			sourceTree = "<group>";
@@ -1125,6 +1128,7 @@
 				1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1A4E611229C84DF2008AC8ED /* TipView.swift in Sources */,
 				1AE3845929D444340002378F /* TabItemView.swift in Sources */,
+				7CD8A32D2A887CE00011A1C0 /* ConfigureExportView.swift in Sources */,
 				7CD8A31F2A882AED0011A1C0 /* ScaleButtonStyle.swift in Sources */,
 				7CD8A32A2A8831D20011A1C0 /* SortSelectionView.swift in Sources */,
 				1A83C61A2A5794F90054E3B1 /* BreakTimerView.swift in Sources */,

@@ -17,8 +17,6 @@ struct JobOverview: View {
     
     @EnvironmentObject var shiftManager: ShiftDataManager
     
-    @State private var showingAddShiftSheet = false
-    
     @State private var isShareSheetShowing = false
     
     @State private var isChartViewPrimary: Bool = false
@@ -33,6 +31,16 @@ struct JobOverview: View {
     
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     let shiftStore = ShiftStore()
+    
+    @State private var activeSheet: ActiveSheet?
+    
+    private enum ActiveSheet: Identifiable {
+        case addShiftSheet, configureExportSheet
+        
+         var id: Int {
+            hashValue
+        }
+    }
     
     @FetchRequest var shifts: FetchedResults<OldShift>
     
@@ -95,7 +103,9 @@ struct JobOverview: View {
                         }
                         if !isChartViewPrimary {
                         
-                            ExportSquare(action: shareButton)
+                            ExportSquare(action: {
+                                activeSheet = .configureExportSheet
+                            })
                                 .environmentObject(shiftManager)
                                 .frame(width: geometry.size.width / 2 - 8)
                                 .frame(height: geometry.size.height)
@@ -185,22 +195,54 @@ struct JobOverview: View {
             
         }.scrollContentBackground(.hidden)
             
-        .sheet(isPresented: $showingAddShiftSheet) {
-            if let job = jobSelectionViewModel.fetchJob(in: viewContext){
-                
-                
-  
-                NavigationStack{
-                    DetailView(job: job, presentedAsSheet: true)
+                .sheet(item: $activeSheet) { sheet in
+                    
+                    switch sheet {
+                        
+                    case .configureExportSheet:
+                        
+                        
+                        
+                        if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
+                        
+                            
+                            ConfigureExportView(shifts: shifts, job: job)
+                                .presentationDetents([.large])
+                                .presentationCornerRadius(35)
+                                .presentationBackground(Color("allSheetBackground"))
+                  
+                        }
+                        else {
+                            ConfigureExportView(shifts: shifts)
+                                .presentationDetents([.large])
+                                .presentationCornerRadius(35)
+                                .presentationBackground(Color("allSheetBackground"))
+                        }
+                   
+                        
+                    case .addShiftSheet:
+                        
+                        if let job = jobSelectionViewModel.fetchJob(in: viewContext){
+                            
+                            
+              
+                            NavigationStack{
+                                DetailView(job: job, presentedAsSheet: true)
+                            }
+                            
+                            .presentationDetents([.large])
+                            .presentationCornerRadius(35)
+                            .presentationBackground(Color("allSheetBackground"))
+                        } else {
+                            Text("Error")
+                        }
+                        
+                    }
+                    
+                    
                 }
-                
-                .presentationDetents([.large])
-                .presentationCornerRadius(35)
-                .presentationBackground(Color("allSheetBackground"))
-            } else {
-                Text("Error")
-            }
-        }
+            
+
             
         
      
@@ -243,7 +285,7 @@ struct JobOverview: View {
             
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    showingAddShiftSheet.toggle()
+                    activeSheet = .addShiftSheet
                 }){
                     
                     Image(systemName: "plus")
@@ -325,54 +367,6 @@ struct JobOverview: View {
         shiftManager.totalBreaksHours = shiftManager.addAllBreaksHours(shifts: shifts, jobModel: jobSelectionViewModel)
         
         shiftManager.shiftDataLoaded.send(())
-    }
-    
-    func shareButton() {
-        
-        var fileName = "export.csv"
-        
-        if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
-            
-            fileName = "\(job.name ?? "") ShiftTracker export"
-            
-        }
-        
-        let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-        var csvText = "Job,Start Date,End Date,Duration,Hourly Rate,Before Tax,After Tax,Tips,Notes\n"
-        
-        
-        for shift in shifts {
-            
-            if let jobid = jobSelectionViewModel.selectedJobUUID {
-                if shift.job?.uuid == jobSelectionViewModel.selectedJobUUID {
-                    csvText += "\(shift.job?.name ?? ""),\(shift.shiftStartDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.duration),\(shift.hourlyPay),\(shift.totalPay ),\(shift.taxedPay),\(shift.totalTips),\(shift.shiftNote ?? "")\n"
-                }
-                
-            } else {
-                
-                csvText += "\(shift.job?.name ?? ""),\(shift.shiftStartDate ?? Date()),\(shift.shiftEndDate ?? Date()),\(shift.duration),\(shift.hourlyPay),\(shift.totalPay ),\(shift.taxedPay),\(shift.totalTips),\(shift.shiftNote ?? "")\n"
-                
-            }
-            
-            
-        }
-        
-        do {
-            try csvText.write(to: path!, atomically: true, encoding: String.Encoding.utf8)
-        } catch {
-            print("Failed to create file")
-            print("\(error)")
-        }
-        print(path ?? "not found")
-        
-        var filesToShare = [Any]()
-        filesToShare.append(path!)
-        
-        let av = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
-        
-        UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
-        
-        isShareSheetShowing.toggle()
     }
     
     
