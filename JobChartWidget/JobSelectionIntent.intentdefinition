@@ -23,6 +23,8 @@
 			<string>SelectJob</string>
 			<key>INIntentConfigurable</key>
 			<true/>
+			<key>INIntentDescription</key>
+			<string>Select a job to display in the widget.</string>
 			<key>INIntentDescriptionID</key>
 			<string>dDJB0Y</string>
 			<key>INIntentEligibleForWidgets</key>
@@ -76,26 +78,6 @@
 							<true/>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${jobID}’.</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>KMUUct</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${jobID}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>hDJboA</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
 						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
