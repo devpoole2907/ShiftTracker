@@ -13,12 +13,16 @@ struct ThemeView: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
+    @EnvironmentObject var purchaseManager: PurchaseManager
+    
     @AppStorage("isFirstAppear") var isFirstAppear = true
     
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     
     @State private var showThemeInfoSheet = false
-
+    @Binding var showingProView: Bool
+    
     
     
     var body: some View {
@@ -103,7 +107,17 @@ struct ThemeView: View {
         }
             
         .onAppear {
-            if isFirstAppear {
+            
+            if !purchaseManager.hasUnlockedPro {
+          
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                    dismiss()
+                    showingProView.toggle()
+                }
+                
+            }
+            
+            else if isFirstAppear {
                 
               
                 
@@ -122,7 +136,7 @@ struct ThemeView: View {
             .presentationCornerRadius(35)
         }
     
-        
+  
         
         
         
@@ -130,7 +144,7 @@ struct ThemeView: View {
     
     struct ThemeView_Previews: PreviewProvider {
         static var previews: some View {
-            ThemeView()
+            ThemeView(showingProView: .constant(false))
                 .environmentObject(ThemeDataManager())
         }
     }

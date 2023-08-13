@@ -10,6 +10,7 @@ import SwiftUI
 struct BreakInputView: View {
     
     @EnvironmentObject var viewModel: DetailViewModel
+    @EnvironmentObject var themeManager: ThemeDataManager
 
     var startDate: Date
     var endDate: Date
@@ -56,24 +57,35 @@ struct BreakInputView: View {
                             }
                         }
                 }
-                Picker(selection: $viewModel.isUnpaid, label: Text("Break Type")) {
-                    Text("Paid").tag(false)
-                    Text("Unpaid").tag(true)
-                }.pickerStyle(SegmentedPickerStyle())
                 
-            }.padding()
+            }.padding(.horizontal)
+                .padding(.vertical, 10)
                 .background(Color("SquaresColor"),in:
                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
             
-            Button(action: buttonAction) {
-                Text("Add Break")
-                    .bold()
-            }.listRowSeparator(.hidden)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(colorScheme == .dark ? .white : .black)
-                .foregroundColor(colorScheme == .dark ? .black : .white)
-                .cornerRadius(20)
+            
+            
+            
+            HStack {
+                ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                    
+                    viewModel.isUnpaid = true
+                    
+                    buttonAction()
+                    
+                    
+                }
+                ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                    
+                    viewModel.isUnpaid = false
+                    
+                    buttonAction()
+                    
+                }
+            }
+            
+            
+            
         }
         .padding(20)
         

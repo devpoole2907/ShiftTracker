@@ -81,6 +81,19 @@ struct ProView: View {
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)
                     HStack {
+                        Image(systemName: "paintpalette")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(proButtonColor)
+                        Spacer().frame(width: 15)
+                        Text("Custom Themes")
+                            .font(.title2)
+                            .bold()
+                    }.listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .padding(.vertical, 5)
+                    HStack {
                         Image(systemName: "square.and.arrow.up")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -93,6 +106,22 @@ struct ProView: View {
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)
+                    
+                    HStack {
+                        Image(systemName: "photo.on.rectangle.angled")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(proButtonColor)
+                        Spacer().frame(width: 15)
+                        Text("Custom App Icons")
+                            .font(.title2)
+                            .bold()
+                    }.listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .padding(.vertical, 5)
+                    
+                    
                   /*  HStack {
                         Image(systemName: "timer")
                             .resizable()

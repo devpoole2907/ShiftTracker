@@ -154,6 +154,7 @@ struct ScheduledShiftsView: View {
                     Section{
                         Text("You have no shifts scheduled on this date.")
                             .bold()
+                            .fontDesign(.rounded)
                             .padding()
                     }.listRowBackground(Color("SquaresColor"))
                 }
@@ -161,7 +162,8 @@ struct ScheduledShiftsView: View {
             else if isBeforeEndOfToday(dateSelected?.date ?? Date()) && displayedOldShifts.isEmpty {
                     
                     Text("No previous shifts found for this date.")
-                        .bold()
+                    .bold()
+                    .fontDesign(.rounded)
                         .padding()
                         .listRowBackground(Color("SquaresColor"))
                 }

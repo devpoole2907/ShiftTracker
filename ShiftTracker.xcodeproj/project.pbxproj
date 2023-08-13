@@ -169,7 +169,6 @@
 		7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B752A762D410048F818 /* ShiftEntry.swift */; };
 		7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */; };
-		7CD8A31D2A87420F0011A1C0 /* TempBreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31C2A87420F0011A1C0 /* TempBreaksListView.swift */; };
 		7CD8A31F2A882AED0011A1C0 /* ScaleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */; };
 		7CD8A3222A882EE70011A1C0 /* TagFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3212A882EE70011A1C0 /* TagFilter.swift */; };
 		7CD8A3242A882F110011A1C0 /* HighlightedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3232A882F110011A1C0 /* HighlightedText.swift */; };
@@ -353,7 +352,6 @@
 		7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockscreenWidgetProvider.swift; sourceTree = "<group>"; };
 		7CAC9B752A762D410048F818 /* ShiftEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftEntry.swift; sourceTree = "<group>"; };
 		7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
-		7CD8A31C2A87420F0011A1C0 /* TempBreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempBreaksListView.swift; sourceTree = "<group>"; };
 		7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleButtonStyle.swift; sourceTree = "<group>"; };
 		7CD8A3212A882EE70011A1C0 /* TagFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagFilter.swift; sourceTree = "<group>"; };
 		7CD8A3232A882F110011A1C0 /* HighlightedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightedText.swift; sourceTree = "<group>"; };
@@ -783,7 +781,6 @@
 			children = (
 				1A88007029E3D98D009458BE /* BreaksListView.swift */,
 				1A30F3C32A223AA400A7BD92 /* BreakInputView.swift */,
-				7CD8A31C2A87420F0011A1C0 /* TempBreaksListView.swift */,
 			);
 			path = Breaks;
 			sourceTree = "<group>";
@@ -1078,7 +1075,6 @@
 				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
 				7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */,
 				1A8D4AD62A4EDE0D00EEB334 /* AnimatedButton.swift in Sources */,
-				7CD8A31D2A87420F0011A1C0 /* TempBreaksListView.swift in Sources */,
 				1A9855D629C55F8A003F512C /* ContentView.swift in Sources */,
 				BFFEF1FA2A691C3D00E3F406 /* AppIconView.swift in Sources */,
 				1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */,

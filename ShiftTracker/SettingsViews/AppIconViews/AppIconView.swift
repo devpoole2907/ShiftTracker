@@ -10,11 +10,59 @@ import UIKit
 
 struct AppIconView: View {
     @EnvironmentObject var iconManager: AppIconManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
+    @Environment(\.colorScheme) var colorScheme
    
+    @State private var showingProView = false
 
     var body: some View {
+        
+        let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
+        
+        let backgroundColor: Color = colorScheme == .dark ? .white : .black
+        let textColor: Color = colorScheme == .dark ? .black : .white
+        
             ScrollView {
+                
+                VStack {
+                    if !purchaseManager.hasUnlockedPro{
+                        Group{
+                            Button(action: {
+                                showingProView = true
+                            }) {
+                                Group{
+                                    ZStack {
+                                        backgroundColor
+                                            .cornerRadius(20)
+                                            .frame(height: 80)
+                                        VStack(spacing: 2) {
+                                            HStack{
+                                                Text("ShiftTracker")
+                                                    .font(.title2)
+                                                    .bold()
+                                                    .foregroundColor(textColor)
+                                                Text("PRO")
+                                                    .font(.title)
+                                                    .bold()
+                                                    .foregroundColor(proButtonColor)
+                                            }
+                                            //.padding(.top, 3)
+                                            
+                                            Text("Featuring Custom App Icons!")
+                                                .font(.subheadline)
+                                                .bold()
+                                                .foregroundColor(textColor)
+                                        }
+                                    }
+                                    .frame(maxWidth: UIScreen.main.bounds.width - 20)
+                                }
+                            }
+                        }
+                    }
+                }.padding(.horizontal)
+                
+                
                 VStack(spacing: 10) {
                     ForEach(AppIconManager.AppIcon.allCases) { appIcon in
                         HStack(spacing: 16) {
@@ -50,11 +98,26 @@ struct AppIconView: View {
                         .cornerRadius(12)
                         .onTapGesture {
                             withAnimation {
-                                iconManager.changeIcon(to: appIcon)
+                                
+                                if !purchaseManager.hasUnlockedPro {
+                                    showingProView.toggle()
+                                } else {
+                                    
+                                    iconManager.changeIcon(to: appIcon)
+                                }
                             }
                         }
                     }
                 }.padding(.horizontal)
+                
+                
+                    .fullScreenCover(isPresented: $showingProView) {
+                        
+                            ProView()
+                        
+                        
+                    }
+                
                    
             }.scrollContentBackground(.hidden)
             .navigationTitle("App Icon")

@@ -86,8 +86,8 @@ struct ContentViewButtonsView: View {
                         activeSheet: $viewModel.activeSheet,
                         activeSheetCase: .endBreakSheet,
                         title: "End Break",
-                        backgroundColor: buttonColor,
-                        isDisabled: false
+                        backgroundColor: !(viewModel.breakTimeElapsed <= 60) ? buttonColor : disabledButtonColor,
+                        isDisabled: viewModel.breakTimeElapsed <= 60
                     )
                 }
                 AnimatedButton(

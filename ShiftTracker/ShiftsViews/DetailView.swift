@@ -427,24 +427,7 @@ struct DetailView: View {
                 .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
             
             
-            
-            HStack{
-                Text("Breaks:")
-                    .bold()
-                
-                    .padding(.vertical, 5)
-                Spacer()
-                Button(action: {
-                    viewModel.isAddingBreak = true
-                }) {
-                    Image(systemName: "plus")
-                        .bold()
-                }.disabled(!viewModel.isEditing)
-            }.font(.title2)
-                .padding(.horizontal, 5)
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+      
             
             
                 .sheet(isPresented: $viewModel.isAddingBreak){
@@ -455,7 +438,7 @@ struct DetailView: View {
                             viewModel.isAddingBreak = false}).environmentObject(viewModel)
                         
                         
-                            .presentationDetents([ .fraction(0.45)])
+                            .presentationDetents([ .fraction(0.35)])
                             .presentationBackground(Color("allSheetBackground"))
                             .presentationCornerRadius(35)
                         
@@ -468,7 +451,7 @@ struct DetailView: View {
                         }).environmentObject(viewModel)
                         
                         
-                            .presentationDetents([ .fraction(0.45)])
+                            .presentationDetents([ .fraction(0.35)])
                             .presentationBackground(Color("allSheetBackground"))
                             .presentationCornerRadius(35)
                         
@@ -478,14 +461,12 @@ struct DetailView: View {
             
             if let shift = shift {
                 
-                if let breaks = shift.breaks as? Set<Break> {
-                    let sortedBreaks = breaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
-                    BreaksListView(breaks: sortedBreaks, isEditing: $viewModel.isEditing, shift: shift)
+                    BreaksListView(shift: shift).environmentObject(viewModel)
                         .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-                }
+                
                 
             } else {
-                TempBreaksListView(breaks: $viewModel.tempBreaks)
+                BreaksListView().environmentObject(viewModel)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
             }
             

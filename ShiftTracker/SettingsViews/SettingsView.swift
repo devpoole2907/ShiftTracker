@@ -40,7 +40,7 @@ struct SettingsView: View {
     
     @Binding var navPath: [Int]
     
-    let settingsScreens: [any View] = [ThemeView(), LocationView(), NotificationView(), AppearanceView()]
+    //let settingsScreens: [any View] = [ThemeView(, showingProView: <#Binding<Bool>#>), LocationView(), NotificationView(), AppearanceView()]
     
     var body: some View {
         
@@ -156,7 +156,7 @@ struct SettingsView: View {
                         
                         NavigationLink(value: 5){
                             
-                            SettingsRow(icon: "photo.artframe", title: "App Icon", secondaryInfo: iconManager.selectedAppIcon != .primary ? "Custom" : "Default")
+                            SettingsRow(icon: "photo.on.rectangle.angled", title: "App Icon", secondaryInfo: iconManager.selectedAppIcon != .primary ? "Custom" : "Default")
                             
                         }.padding()
                             .background(Color("SquaresColor"))
@@ -276,7 +276,7 @@ struct SettingsView: View {
                     
                     if i == 0 {
                         
-                        ThemeView()
+                        ThemeView(showingProView: $showingProView)
                         
                     }
                     else if i == 1 {
