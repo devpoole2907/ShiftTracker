@@ -15,9 +15,7 @@
 			<key>IntentsRestrictedWhileProtectedDataUnavailable</key>
 			<array/>
 			<key>IntentsSupported</key>
-			<array>
-				<string>SelectJob</string>
-			</array>
+			<array/>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.intents-service</string>
