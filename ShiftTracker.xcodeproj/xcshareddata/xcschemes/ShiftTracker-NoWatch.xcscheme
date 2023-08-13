@@ -34,6 +34,34 @@
                ReferencedContainer = "container:ShiftTracker.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7CD8A34E2A88AB1A0011A1C0"
+               BuildableName = "JobSelectionIntentExtension.appex"
+               BlueprintName = "JobSelectionIntentExtension"
+               ReferencedContainer = "container:ShiftTracker.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7CD8A3332A88A48C0011A1C0"
+               BuildableName = "JobChartWidgetExtension.appex"
+               BlueprintName = "JobChartWidgetExtension"
+               ReferencedContainer = "container:ShiftTracker.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

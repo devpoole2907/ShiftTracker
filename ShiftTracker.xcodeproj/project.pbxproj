@@ -176,6 +176,24 @@
 		7CD8A3282A8831B80011A1C0 /* TagSortView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3272A8831B80011A1C0 /* TagSortView.swift */; };
 		7CD8A32A2A8831D20011A1C0 /* SortSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3292A8831D20011A1C0 /* SortSelectionView.swift */; };
 		7CD8A32D2A887CE00011A1C0 /* ConfigureExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A32C2A887CE00011A1C0 /* ConfigureExportView.swift */; };
+		7CD8A32F2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */; };
+		7CD8A3352A88A48C0011A1C0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
+		7CD8A3362A88A48C0011A1C0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
+		7CD8A3392A88A48C0011A1C0 /* JobChartWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3382A88A48C0011A1C0 /* JobChartWidgetBundle.swift */; };
+		7CD8A33B2A88A48C0011A1C0 /* JobChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A33A2A88A48C0011A1C0 /* JobChartWidget.swift */; };
+		7CD8A33D2A88A48F0011A1C0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7CD8A33C2A88A48F0011A1C0 /* Assets.xcassets */; };
+		7CD8A3412A88A48F0011A1C0 /* JobChartWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7CD8A3462A88A4E70011A1C0 /* JobSelectionIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */; };
+		7CD8A3472A88A5650011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
+		7CD8A3512A88AB1A0011A1C0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CD8A3502A88AB1A0011A1C0 /* Intents.framework */; };
+		7CD8A3542A88AB1A0011A1C0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3532A88AB1A0011A1C0 /* IntentHandler.swift */; };
+		7CD8A3692A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7CD8A34F2A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7CD8A3702A88AB840011A1C0 /* JobSelectionIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */; };
+		7CD8A3722A88ACBC0011A1C0 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		7CD8A3742A88B0290011A1C0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3532A88AB1A0011A1C0 /* IntentHandler.swift */; };
+		7CD8A3762A88BA020011A1C0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3532A88AB1A0011A1C0 /* IntentHandler.swift */; };
+		7CD8A3772A88BB800011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -212,6 +230,20 @@
 			remoteGlobalIDString = 7CAC9B5D2A7604EB0048F818;
 			remoteInfo = ShiftTrackerLockscreenWidgetsExtension;
 		};
+		7CD8A33F2A88A48F0011A1C0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7CD8A3332A88A48C0011A1C0;
+			remoteInfo = JobChartWidgetExtension;
+		};
+		7CD8A3672A88AB1A0011A1C0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7CD8A34E2A88AB1A0011A1C0;
+			remoteInfo = JobSelectionIntentExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -221,9 +253,11 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				7CD8A3692A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex in Embed Foundation Extensions */,
 				1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */,
 				7C1AA4612A75106A00330A54 /* ShiftTrackerActivityTimerExtension.appex in Embed Foundation Extensions */,
 				7CAC9B6B2A7604EE0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex in Embed Foundation Extensions */,
+				7CD8A3412A88A48F0011A1C0 /* JobChartWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,6 +394,22 @@
 		7CD8A3272A8831B80011A1C0 /* TagSortView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSortView.swift; sourceTree = "<group>"; };
 		7CD8A3292A8831D20011A1C0 /* SortSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSelectionView.swift; sourceTree = "<group>"; };
 		7CD8A32C2A887CE00011A1C0 /* ConfigureExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigureExportView.swift; sourceTree = "<group>"; };
+		7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = JobSelectionIntent.intentdefinition; sourceTree = "<group>"; };
+		7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = JobChartWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CD8A3382A88A48C0011A1C0 /* JobChartWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartWidgetBundle.swift; sourceTree = "<group>"; };
+		7CD8A33A2A88A48C0011A1C0 /* JobChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartWidget.swift; sourceTree = "<group>"; };
+		7CD8A33C2A88A48F0011A1C0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7CD8A33E2A88A48F0011A1C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7CD8A3452A88A4B10011A1C0 /* JobChartWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JobChartWidgetExtension.entitlements; sourceTree = "<group>"; };
+		7CD8A34F2A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = JobSelectionIntentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CD8A3502A88AB1A0011A1C0 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		7CD8A3532A88AB1A0011A1C0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		7CD8A3552A88AB1A0011A1C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7CD8A35B2A88AB1A0011A1C0 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
+		7CD8A35E2A88AB1A0011A1C0 /* IntentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentViewController.swift; sourceTree = "<group>"; };
+		7CD8A3612A88AB1A0011A1C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		7CD8A3632A88AB1A0011A1C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7CD8A3752A88B1AB0011A1C0 /* JobSelectionIntentExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JobSelectionIntentExtension.entitlements; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -435,6 +485,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7CD8A3312A88A48C0011A1C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CD8A3362A88A48C0011A1C0 /* SwiftUI.framework in Frameworks */,
+				7CD8A3352A88A48C0011A1C0 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CD8A34C2A88AB1A0011A1C0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CD8A3512A88AB1A0011A1C0 /* Intents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -499,6 +566,8 @@
 			children = (
 				1A52AFA529C5616800415870 /* WidgetKit.framework */,
 				1A52AFA729C5616800415870 /* SwiftUI.framework */,
+				7CD8A3502A88AB1A0011A1C0 /* Intents.framework */,
+				7CD8A35B2A88AB1A0011A1C0 /* IntentsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -527,6 +596,7 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				7CD8A3452A88A4B10011A1C0 /* JobChartWidgetExtension.entitlements */,
 				7CAC9B6F2A7607570048F818 /* ShiftTrackerLockscreenWidgetsExtension.entitlements */,
 				7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */,
 				7C1AA46A2A7514EB00330A54 /* ShiftTrackerActivityTimerExtension.entitlements */,
@@ -547,6 +617,9 @@
 				1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */,
 				7C1AA4552A75106700330A54 /* ShiftTrackerActivityTimer */,
 				7CAC9B612A7604EB0048F818 /* ShiftTrackerLockscreenWidgets */,
+				7CD8A3372A88A48C0011A1C0 /* JobChartWidget */,
+				7CD8A3522A88AB1A0011A1C0 /* JobSelectionIntentExtension */,
+				7CD8A35D2A88AB1A0011A1C0 /* JobSelectionIntentExtensionUI */,
 				1A52AFA429C5616800415870 /* Frameworks */,
 				1A9855D129C55F8A003F512C /* Products */,
 			);
@@ -560,6 +633,8 @@
 				1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */,
 				7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */,
 				7CAC9B5E2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex */,
+				7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */,
+				7CD8A34F2A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -788,6 +863,38 @@
 			path = Breaks;
 			sourceTree = "<group>";
 		};
+		7CD8A3372A88A48C0011A1C0 /* JobChartWidget */ = {
+			isa = PBXGroup;
+			children = (
+				7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */,
+				7CD8A3382A88A48C0011A1C0 /* JobChartWidgetBundle.swift */,
+				7CD8A33A2A88A48C0011A1C0 /* JobChartWidget.swift */,
+				7CD8A33C2A88A48F0011A1C0 /* Assets.xcassets */,
+				7CD8A33E2A88A48F0011A1C0 /* Info.plist */,
+			);
+			path = JobChartWidget;
+			sourceTree = "<group>";
+		};
+		7CD8A3522A88AB1A0011A1C0 /* JobSelectionIntentExtension */ = {
+			isa = PBXGroup;
+			children = (
+				7CD8A3752A88B1AB0011A1C0 /* JobSelectionIntentExtension.entitlements */,
+				7CD8A3532A88AB1A0011A1C0 /* IntentHandler.swift */,
+				7CD8A3552A88AB1A0011A1C0 /* Info.plist */,
+			);
+			path = JobSelectionIntentExtension;
+			sourceTree = "<group>";
+		};
+		7CD8A35D2A88AB1A0011A1C0 /* JobSelectionIntentExtensionUI */ = {
+			isa = PBXGroup;
+			children = (
+				7CD8A35E2A88AB1A0011A1C0 /* IntentViewController.swift */,
+				7CD8A3602A88AB1A0011A1C0 /* MainInterface.storyboard */,
+				7CD8A3632A88AB1A0011A1C0 /* Info.plist */,
+			);
+			path = JobSelectionIntentExtensionUI;
+			sourceTree = "<group>";
+		};
 		BF8191392A5A6E9E0079E449 /* ThemeManager */ = {
 			isa = PBXGroup;
 			children = (
@@ -852,6 +959,8 @@
 				1A52AFB429C5616A00415870 /* PBXTargetDependency */,
 				7C1AA4602A75106A00330A54 /* PBXTargetDependency */,
 				7CAC9B6A2A7604EE0048F818 /* PBXTargetDependency */,
+				7CD8A3402A88A48F0011A1C0 /* PBXTargetDependency */,
+				7CD8A3682A88AB1A0011A1C0 /* PBXTargetDependency */,
 			);
 			name = ShiftTracker;
 			packageProductDependencies = (
@@ -932,6 +1041,40 @@
 			productReference = 7CAC9B5E2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		7CD8A3332A88A48C0011A1C0 /* JobChartWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7CD8A3422A88A48F0011A1C0 /* Build configuration list for PBXNativeTarget "JobChartWidgetExtension" */;
+			buildPhases = (
+				7CD8A3302A88A48C0011A1C0 /* Sources */,
+				7CD8A3312A88A48C0011A1C0 /* Frameworks */,
+				7CD8A3322A88A48C0011A1C0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JobChartWidgetExtension;
+			productName = JobChartWidgetExtension;
+			productReference = 7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		7CD8A34E2A88AB1A0011A1C0 /* JobSelectionIntentExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7CD8A36D2A88AB1A0011A1C0 /* Build configuration list for PBXNativeTarget "JobSelectionIntentExtension" */;
+			buildPhases = (
+				7CD8A34B2A88AB1A0011A1C0 /* Sources */,
+				7CD8A34C2A88AB1A0011A1C0 /* Frameworks */,
+				7CD8A34D2A88AB1A0011A1C0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JobSelectionIntentExtension;
+			productName = JobSelectionIntentExtension;
+			productReference = 7CD8A34F2A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -955,6 +1098,12 @@
 						CreatedOnToolsVersion = 15.0;
 					};
 					7CAC9B5D2A7604EB0048F818 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					7CD8A3332A88A48C0011A1C0 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					7CD8A34E2A88AB1A0011A1C0 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -990,6 +1139,8 @@
 				1AD72AAF29F7809800534342 /* ShiftTracker Watch App */,
 				7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */,
 				7CAC9B5D2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension */,
+				7CD8A3332A88A48C0011A1C0 /* JobChartWidgetExtension */,
+				7CD8A34E2A88AB1A0011A1C0 /* JobSelectionIntentExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1038,6 +1189,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7CD8A3322A88A48C0011A1C0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CD8A33D2A88A48F0011A1C0 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CD8A34D2A88AB1A0011A1C0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1069,6 +1235,7 @@
 				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				7C8CEA962A5D29B1006C833F /* ContentViewButtonsView.swift in Sources */,
 				1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */,
+				7CD8A3742A88B0290011A1C0 /* IntentHandler.swift in Sources */,
 				7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */,
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
@@ -1092,6 +1259,7 @@
 				1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */,
 				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
 				1A13F18A29CE56CD009BE6B0 /* Location.swift in Sources */,
+				7CD8A32F2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition in Sources */,
 				1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */,
 				1A1914192A15D43B000D0F8B /* UpcomingShiftView.swift in Sources */,
 				1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */,
@@ -1221,6 +1389,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7CD8A3302A88A48C0011A1C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CD8A3472A88A5650011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */,
+				7CD8A3462A88A4E70011A1C0 /* JobSelectionIntent.intentdefinition in Sources */,
+				7CD8A33B2A88A48C0011A1C0 /* JobChartWidget.swift in Sources */,
+				7CD8A3392A88A48C0011A1C0 /* JobChartWidgetBundle.swift in Sources */,
+				7CD8A3762A88BA020011A1C0 /* IntentHandler.swift in Sources */,
+				7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CD8A34B2A88AB1A0011A1C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7CD8A3772A88BB800011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */,
+				7CD8A3722A88ACBC0011A1C0 /* PersistenceController.swift in Sources */,
+				7CD8A3542A88AB1A0011A1C0 /* IntentHandler.swift in Sources */,
+				7CD8A3702A88AB840011A1C0 /* JobSelectionIntent.intentdefinition in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1239,7 +1431,28 @@
 			target = 7CAC9B5D2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension */;
 			targetProxy = 7CAC9B692A7604EE0048F818 /* PBXContainerItemProxy */;
 		};
+		7CD8A3402A88A48F0011A1C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7CD8A3332A88A48C0011A1C0 /* JobChartWidgetExtension */;
+			targetProxy = 7CD8A33F2A88A48F0011A1C0 /* PBXContainerItemProxy */;
+		};
+		7CD8A3682A88AB1A0011A1C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7CD8A34E2A88AB1A0011A1C0 /* JobSelectionIntentExtension */;
+			targetProxy = 7CD8A3672A88AB1A0011A1C0 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		7CD8A3602A88AB1A0011A1C0 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7CD8A3612A88AB1A0011A1C0 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1A52AFB729C5616A00415870 /* Debug */ = {
@@ -1700,6 +1913,136 @@
 			};
 			name = Release;
 		};
+		7CD8A3432A88A48F0011A1C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = JobChartWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = JobChartWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JobChartWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.JobChartWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7CD8A3442A88A48F0011A1C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = JobChartWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = JobChartWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JobChartWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.JobChartWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7CD8A36E2A88AB1A0011A1C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_ENTITLEMENTS = JobSelectionIntentExtension/JobSelectionIntentExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = JobSelectionIntentExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JobSelectionIntentExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.JobSelectionIntentExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7CD8A36F2A88AB1A0011A1C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_ENTITLEMENTS = JobSelectionIntentExtension/JobSelectionIntentExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = JobSelectionIntentExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JobSelectionIntentExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.JobSelectionIntentExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1753,6 +2096,24 @@
 			buildConfigurations = (
 				7CAC9B6D2A7604EE0048F818 /* Debug */,
 				7CAC9B6E2A7604EE0048F818 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7CD8A3422A88A48F0011A1C0 /* Build configuration list for PBXNativeTarget "JobChartWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7CD8A3432A88A48F0011A1C0 /* Debug */,
+				7CD8A3442A88A48F0011A1C0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7CD8A36D2A88AB1A0011A1C0 /* Build configuration list for PBXNativeTarget "JobSelectionIntentExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7CD8A36E2A88AB1A0011A1C0 /* Debug */,
+				7CD8A36F2A88AB1A0011A1C0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
