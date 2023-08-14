@@ -13,9 +13,6 @@
 		1A12240A29C900150036D04C /* RoundedSquareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A12240929C900150036D04C /* RoundedSquareView.swift */; };
 		1A12241029C92D2E0036D04C /* TabBar in Frameworks */ = {isa = PBXBuildFile; productRef = 1A12240F29C92D2E0036D04C /* TabBar */; };
 		1A13F18A29CE56CD009BE6B0 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F18929CE56CD009BE6B0 /* Location.swift */; };
-		1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */; };
-		1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */; };
-		1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		1A13F19529D02914009BE6B0 /* ProView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F19429D02914009BE6B0 /* ProView.swift */; };
 		1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */; };
 		1A1914192A15D43B000D0F8B /* UpcomingShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914182A15D43B000D0F8B /* UpcomingShiftView.swift */; };
@@ -25,7 +22,6 @@
 		1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914222A187DF9000D0F8B /* LockedView.swift */; };
 		1A1914252A188256000D0F8B /* ActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914242A188256000D0F8B /* ActionView.swift */; };
 		1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */; };
-		1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC8D29EFEEB70002D9E4 /* Date+Extension.swift */; };
 		1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9329F100950002D9E4 /* Enums.swift */; };
 		1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9629F101040002D9E4 /* ChartView.swift */; };
 		1A1DEC9A29F101770002D9E4 /* ShiftGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */; };
@@ -36,7 +32,6 @@
 		1A30F3C52A22405000A7BD92 /* GlobalFunctions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */; };
 		1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A30F3C82A22407E00A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
-		1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A30F3C62A22407E00A7BD92 /* BreaksManager.swift */; };
 		1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = 1A34588629D18D8800CADDD8 /* SwiftCSV */; };
 		1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4AB18629FCFE6D00AA62BC /* PopupView */; };
 		1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4AB18829FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift */; };
@@ -46,17 +41,10 @@
 		1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E610C29C82DF9008AC8ED /* DetailView.swift */; };
 		1A4E611029C843ED008AC8ED /* SlideOverCard in Frameworks */ = {isa = PBXBuildFile; productRef = 1A4E610F29C843ED008AC8ED /* SlideOverCard */; };
 		1A4E611229C84DF2008AC8ED /* TipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A4E611129C84DF2008AC8ED /* TipView.swift */; };
-		1A52AFA629C5616800415870 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
-		1A52AFA829C5616800415870 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
-		1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A52AFAA29C5616800415870 /* ShiftTrackerWidgetBundle.swift */; };
-		1A52AFAF29C5616800415870 /* ShiftTrackerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A52AFAE29C5616800415870 /* ShiftTrackerWidget.swift */; };
-		1A52AFB129C5616A00415870 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A52AFB029C5616A00415870 /* Assets.xcassets */; };
-		1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1A57D1F929CA751500305001 /* Haptics in Frameworks */ = {isa = PBXBuildFile; productRef = 1A57D1F829CA751500305001 /* Haptics */; };
 		1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0B9D2A53A3F00021572B /* JobView.swift */; };
 		1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0BA02A55001E0021572B /* CustomPopups.swift */; };
 		1A5B0BA32A5500BF0021572B /* CurrencyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0BA22A5500BF0021572B /* CurrencyTextField.swift */; };
-		1A5B0BA92A55030A0021572B /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1DEC9329F100950002D9E4 /* Enums.swift */; };
 		1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5B0BAA2A5503510021572B /* ShakeModifier.swift */; };
 		1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A69DA2429C98C88008FA77F /* LocationDataManager.swift */; };
 		1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */; };
@@ -92,17 +80,14 @@
 		1AB7EAB029FA635E00AC9565 /* WatchTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7EAAF29FA635E00AC9565 /* WatchTimerView.swift */; };
 		1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
 		1AC048C029E0D50E00355767 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
-		1AC048C129E0D50E00355767 /* Shift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BF29E0D50E00355767 /* Shift.swift */; };
 		1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */; };
 		1AC9DDF529F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF329F7AFA900C15008 /* WatchConnectivityManager.swift */; };
 		1AC9DDF829F7B28700C15008 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF729F7B28700C15008 /* JobData.swift */; };
 		1AC9DDF929F7B28700C15008 /* JobData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC9DDF729F7B28700C15008 /* JobData.swift */; };
 		1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
-		1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60AC29D7913700B279CB /* ShiftKeys.swift */; };
 		1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACA60BC29D8EDEC00B279CB /* CustomToggleStyle.swift */; };
 		1ACAA96629F92B18002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1ACAA96729F92B1B002D86B5 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
-		1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		1ACB8A6429FA81A500B152EB /* WatchBreakTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ACB8A6329FA81A500B152EB /* WatchBreakTimerView.swift */; };
 		1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */; };
 		1AD72A9829F5237100534342 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AD72A9729F5237100534342 /* GoogleService-Info.plist */; };
@@ -126,7 +111,6 @@
 		1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEBFE002A5132B900884DBF /* StatsSquare.swift */; };
 		1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = 1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
-		1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		7C0AC12A2A88EB360016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
 		7C0AC12B2A88EB3F0016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
 		7C0AC12C2A88EB400016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
@@ -148,6 +132,14 @@
 		7C1AA4662A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */; };
 		7C1AA4672A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */; };
 		7C1AA4682A75137C00330A54 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC048BC29E0D07700355767 /* ContentViewModel.swift */; };
+		7C4D82D52A8A183B006D54F9 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
+		7C4D82D62A8A183B006D54F9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
+		7C4D82D92A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D82D82A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift */; };
+		7C4D82DB2A8A183B006D54F9 /* UpcomingShiftWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D82DA2A8A183B006D54F9 /* UpcomingShiftWidget.swift */; };
+		7C4D82DD2A8A183D006D54F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C4D82DC2A8A183D006D54F9 /* Assets.xcassets */; };
+		7C4D82E12A8A183D006D54F9 /* UpcomingShiftWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7C4D82D42A8A183B006D54F9 /* UpcomingShiftWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7C4D82E52A8A1A52006D54F9 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
+		7C4D82E62A8A1A7D006D54F9 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
 		7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C82D8CB2A6222FF004DF369 /* JobRow.swift */; };
 		7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */; };
@@ -221,19 +213,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1A52AFB329C5616A00415870 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1A52AFA229C5616800415870;
-			remoteInfo = ShiftTrackerWidgetExtension;
-		};
 		7C1AA45F2A75106A00330A54 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7C1AA4512A75106700330A54;
 			remoteInfo = ShiftTrackerActivityTimerExtension;
+		};
+		7C4D82DF2A8A183D006D54F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A9855C829C55F8A003F512C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7C4D82D32A8A183B006D54F9;
+			remoteInfo = UpcomingShiftWidgetExtension;
 		};
 		7CAC9B692A7604EE0048F818 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -266,7 +258,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				7CD8A3692A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex in Embed Foundation Extensions */,
-				1A52AFB529C5616A00415870 /* ShiftTrackerWidgetExtension.appex in Embed Foundation Extensions */,
+				7C4D82E12A8A183D006D54F9 /* UpcomingShiftWidgetExtension.appex in Embed Foundation Extensions */,
 				7C1AA4612A75106A00330A54 /* ShiftTrackerActivityTimerExtension.appex in Embed Foundation Extensions */,
 				7CAC9B6B2A7604EE0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex in Embed Foundation Extensions */,
 				7CD8A3412A88A48F0011A1C0 /* JobChartWidgetExtension.appex in Embed Foundation Extensions */,
@@ -283,7 +275,6 @@
 		1A12240929C900150036D04C /* RoundedSquareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedSquareView.swift; sourceTree = "<group>"; };
 		1A12240D29C928EB0036D04C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A13F18929CE56CD009BE6B0 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
-		1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidgetAttributes.swift; sourceTree = "<group>"; };
 		1A13F19429D02914009BE6B0 /* ProView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProView.swift; sourceTree = "<group>"; };
 		1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllScheduledShiftsView.swift; sourceTree = "<group>"; };
 		1A1914182A15D43B000D0F8B /* UpcomingShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftView.swift; sourceTree = "<group>"; };
@@ -310,13 +301,8 @@
 		1A4AB18C29FE1DFA00AA62BC /* JobsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsViewModel.swift; sourceTree = "<group>"; };
 		1A4E610C29C82DF9008AC8ED /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		1A4E611129C84DF2008AC8ED /* TipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipView.swift; sourceTree = "<group>"; };
-		1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A52AFA529C5616800415870 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		1A52AFA729C5616800415870 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		1A52AFAA29C5616800415870 /* ShiftTrackerWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidgetBundle.swift; sourceTree = "<group>"; };
-		1A52AFAE29C5616800415870 /* ShiftTrackerWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerWidget.swift; sourceTree = "<group>"; };
-		1A52AFB029C5616A00415870 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1A52AFB229C5616A00415870 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A5B0B9D2A53A3F00021572B /* JobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobView.swift; sourceTree = "<group>"; };
 		1A5B0BA02A55001E0021572B /* CustomPopups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPopups.swift; sourceTree = "<group>"; };
 		1A5B0BA22A5500BF0021572B /* CurrencyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTextField.swift; sourceTree = "<group>"; };
@@ -379,6 +365,12 @@
 		7C1AA45E2A75106A00330A54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C1AA4652A7510DA00330A54 /* LiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityAttributes.swift; sourceTree = "<group>"; };
 		7C1AA46A2A7514EB00330A54 /* ShiftTrackerActivityTimerExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShiftTrackerActivityTimerExtension.entitlements; sourceTree = "<group>"; };
+		7C4D82D42A8A183B006D54F9 /* UpcomingShiftWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UpcomingShiftWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7C4D82D82A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftWidgetBundle.swift; sourceTree = "<group>"; };
+		7C4D82DA2A8A183B006D54F9 /* UpcomingShiftWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftWidget.swift; sourceTree = "<group>"; };
+		7C4D82DC2A8A183D006D54F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7C4D82DE2A8A183D006D54F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7C4D82E72A8A1CBF006D54F9 /* UpcomingShiftWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = UpcomingShiftWidgetExtension.entitlements; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
 		7C82D8CB2A6222FF004DF369 /* JobRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobRow.swift; sourceTree = "<group>"; };
 		7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentBreaksListView.swift; sourceTree = "<group>"; };
@@ -441,15 +433,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1A52AFA029C5616800415870 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1A52AFA829C5616800415870 /* SwiftUI.framework in Frameworks */,
-				1A52AFA629C5616800415870 /* WidgetKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1A9855CD29C55F8A003F512C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -489,6 +472,15 @@
 			files = (
 				7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */,
 				7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7C4D82D12A8A183B006D54F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C4D82D62A8A183B006D54F9 /* SwiftUI.framework in Frameworks */,
+				7C4D82D52A8A183B006D54F9 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,17 +580,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		1A52AFA929C5616800415870 /* ShiftTrackerWidget */ = {
-			isa = PBXGroup;
-			children = (
-				1A52AFAA29C5616800415870 /* ShiftTrackerWidgetBundle.swift */,
-				1A52AFAE29C5616800415870 /* ShiftTrackerWidget.swift */,
-				1A52AFB029C5616A00415870 /* Assets.xcassets */,
-				1A52AFB229C5616A00415870 /* Info.plist */,
-			);
-			path = ShiftTrackerWidget;
-			sourceTree = "<group>";
-		};
 		1A83C6172A5794E50054E3B1 /* TimerViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -612,6 +593,7 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				7C4D82E72A8A1CBF006D54F9 /* UpcomingShiftWidgetExtension.entitlements */,
 				7CD8A3452A88A4B10011A1C0 /* JobChartWidgetExtension.entitlements */,
 				7CAC9B6F2A7607570048F818 /* ShiftTrackerLockscreenWidgetsExtension.entitlements */,
 				7CAC9B562A75EF3D0048F818 /* JobSelectionManager.swift */,
@@ -629,13 +611,13 @@
 				1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */,
 				1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */,
 				1A9855D229C55F8A003F512C /* ShiftTracker */,
-				1A52AFA929C5616800415870 /* ShiftTrackerWidget */,
 				1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */,
 				7C1AA4552A75106700330A54 /* ShiftTrackerActivityTimer */,
 				7CAC9B612A7604EB0048F818 /* ShiftTrackerLockscreenWidgets */,
 				7CD8A3372A88A48C0011A1C0 /* JobChartWidget */,
 				7CD8A3522A88AB1A0011A1C0 /* JobSelectionIntentExtension */,
 				7CD8A35D2A88AB1A0011A1C0 /* JobSelectionIntentExtensionUI */,
+				7C4D82D72A8A183B006D54F9 /* UpcomingShiftWidget */,
 				1A52AFA429C5616800415870 /* Frameworks */,
 				1A9855D129C55F8A003F512C /* Products */,
 			);
@@ -645,12 +627,12 @@
 			isa = PBXGroup;
 			children = (
 				1A9855D029C55F8A003F512C /* ShiftTracker.app */,
-				1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */,
 				1AD72AB029F7809900534342 /* ShiftTracker Watch App.app */,
 				7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */,
 				7CAC9B5E2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension.appex */,
 				7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */,
 				7CD8A34F2A88AB1A0011A1C0 /* JobSelectionIntentExtension.appex */,
+				7C4D82D42A8A183B006D54F9 /* UpcomingShiftWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -676,7 +658,6 @@
 				1A13F18929CE56CD009BE6B0 /* Location.swift */,
 				1A9855D729C55F8C003F512C /* Assets.xcassets */,
 				1A9855D929C55F8C003F512C /* Preview Content */,
-				1A13F18B29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift */,
 				1AAC400329F2B09A00E204C8 /* OvertimeView.swift */,
 				1A1914202A185281000D0F8B /* ShiftManager.swift */,
 			);
@@ -844,6 +825,17 @@
 			path = ShiftTrackerActivityTimer;
 			sourceTree = "<group>";
 		};
+		7C4D82D72A8A183B006D54F9 /* UpcomingShiftWidget */ = {
+			isa = PBXGroup;
+			children = (
+				7C4D82D82A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift */,
+				7C4D82DA2A8A183B006D54F9 /* UpcomingShiftWidget.swift */,
+				7C4D82DC2A8A183D006D54F9 /* Assets.xcassets */,
+				7C4D82DE2A8A183D006D54F9 /* Info.plist */,
+			);
+			path = UpcomingShiftWidget;
+			sourceTree = "<group>";
+		};
 		7CAC9B612A7604EB0048F818 /* ShiftTrackerLockscreenWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -947,23 +939,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1A52AFB929C5616A00415870 /* Build configuration list for PBXNativeTarget "ShiftTrackerWidgetExtension" */;
-			buildPhases = (
-				1A52AF9F29C5616800415870 /* Sources */,
-				1A52AFA029C5616800415870 /* Frameworks */,
-				1A52AFA129C5616800415870 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ShiftTrackerWidgetExtension;
-			productName = ShiftTrackerWidgetExtension;
-			productReference = 1A52AFA329C5616800415870 /* ShiftTrackerWidgetExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		1A9855CF29C55F8A003F512C /* ShiftTracker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1A9855DE29C55F8C003F512C /* Build configuration list for PBXNativeTarget "ShiftTracker" */;
@@ -976,11 +951,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				1A52AFB429C5616A00415870 /* PBXTargetDependency */,
 				7C1AA4602A75106A00330A54 /* PBXTargetDependency */,
 				7CAC9B6A2A7604EE0048F818 /* PBXTargetDependency */,
 				7CD8A3402A88A48F0011A1C0 /* PBXTargetDependency */,
 				7CD8A3682A88AB1A0011A1C0 /* PBXTargetDependency */,
+				7C4D82E02A8A183D006D54F9 /* PBXTargetDependency */,
 			);
 			name = ShiftTracker;
 			packageProductDependencies = (
@@ -1044,6 +1019,23 @@
 			productReference = 7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		7C4D82D32A8A183B006D54F9 /* UpcomingShiftWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7C4D82E42A8A183D006D54F9 /* Build configuration list for PBXNativeTarget "UpcomingShiftWidgetExtension" */;
+			buildPhases = (
+				7C4D82D02A8A183B006D54F9 /* Sources */,
+				7C4D82D12A8A183B006D54F9 /* Frameworks */,
+				7C4D82D22A8A183B006D54F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UpcomingShiftWidgetExtension;
+			productName = UpcomingShiftWidgetExtension;
+			productReference = 7C4D82D42A8A183B006D54F9 /* UpcomingShiftWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		7CAC9B5D2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7CAC9B6C2A7604EE0048F818 /* Build configuration list for PBXNativeTarget "ShiftTrackerLockscreenWidgetsExtension" */;
@@ -1105,9 +1097,6 @@
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					1A52AFA229C5616800415870 = {
-						CreatedOnToolsVersion = 14.3;
-					};
 					1A9855CF29C55F8A003F512C = {
 						CreatedOnToolsVersion = 14.3;
 					};
@@ -1115,6 +1104,9 @@
 						CreatedOnToolsVersion = 14.3;
 					};
 					7C1AA4512A75106700330A54 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					7C4D82D32A8A183B006D54F9 = {
 						CreatedOnToolsVersion = 15.0;
 					};
 					7CAC9B5D2A7604EB0048F818 = {
@@ -1155,25 +1147,17 @@
 			projectRoot = "";
 			targets = (
 				1A9855CF29C55F8A003F512C /* ShiftTracker */,
-				1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */,
 				1AD72AAF29F7809800534342 /* ShiftTracker Watch App */,
 				7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */,
 				7CAC9B5D2A7604EB0048F818 /* ShiftTrackerLockscreenWidgetsExtension */,
 				7CD8A3332A88A48C0011A1C0 /* JobChartWidgetExtension */,
 				7CD8A34E2A88AB1A0011A1C0 /* JobSelectionIntentExtension */,
+				7C4D82D32A8A183B006D54F9 /* UpcomingShiftWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1A52AFA129C5616800415870 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1A52AFB129C5616A00415870 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1A9855CE29C55F8A003F512C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1198,6 +1182,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C1AA45D2A75106A00330A54 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7C4D82D22A8A183B006D54F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C4D82DD2A8A183D006D54F9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1227,24 +1219,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1A52AF9F29C5616800415870 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1A52AFAF29C5616800415870 /* ShiftTrackerWidget.swift in Sources */,
-				1A1DEC8F29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
-				1AC048C129E0D50E00355767 /* Shift.swift in Sources */,
-				1A5B0BA92A55030A0021572B /* Enums.swift in Sources */,
-				1AF3A96429E2773F00D1A7B5 /* TempBreak.swift in Sources */,
-				1A30F3C92A2240E100A7BD92 /* BreaksManager.swift in Sources */,
-				1A13F18D29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
-				1ACA60AE29D7913700B279CB /* ShiftKeys.swift in Sources */,
-				1A52AFAB29C5616800415870 /* ShiftTrackerWidgetBundle.swift in Sources */,
-				1A13F19029CEC645009BE6B0 /* ShiftDataModel.xcdatamodeld in Sources */,
-				1ACAA96A29F92CA7002D86B5 /* PersistenceController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		1A9855CC29C55F8A003F512C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1252,7 +1226,6 @@
 				1A8D4ADC2A4EFAC100EEB334 /* ShiftsList.swift in Sources */,
 				1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */,
 				7CD8A3222A882EE70011A1C0 /* TagFilter.swift in Sources */,
-				1A13F18C29CE8FE4009BE6B0 /* ShiftTrackerWidgetAttributes.swift in Sources */,
 				7C8CEA962A5D29B1006C833F /* ContentViewButtonsView.swift in Sources */,
 				1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */,
 				7CD8A3742A88B0290011A1C0 /* IntentHandler.swift in Sources */,
@@ -1399,6 +1372,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7C4D82D02A8A183B006D54F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7C4D82DB2A8A183B006D54F9 /* UpcomingShiftWidget.swift in Sources */,
+				7C4D82E52A8A1A52006D54F9 /* ShiftDataModel.xcdatamodeld in Sources */,
+				7C4D82D92A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift in Sources */,
+				7C4D82E62A8A1A7D006D54F9 /* PersistenceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7CAC9B5A2A7604EB0048F818 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1448,15 +1432,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1A52AFB429C5616A00415870 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1A52AFA229C5616800415870 /* ShiftTrackerWidgetExtension */;
-			targetProxy = 1A52AFB329C5616A00415870 /* PBXContainerItemProxy */;
-		};
 		7C1AA4602A75106A00330A54 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7C1AA4512A75106700330A54 /* ShiftTrackerActivityTimerExtension */;
 			targetProxy = 7C1AA45F2A75106A00330A54 /* PBXContainerItemProxy */;
+		};
+		7C4D82E02A8A183D006D54F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7C4D82D32A8A183B006D54F9 /* UpcomingShiftWidgetExtension */;
+			targetProxy = 7C4D82DF2A8A183D006D54F9 /* PBXContainerItemProxy */;
 		};
 		7CAC9B6A2A7604EE0048F818 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1487,68 +1471,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1A52AFB729C5616A00415870 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = ShiftTrackerWidgetExtension.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L9DB7QA9DE;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ShiftTrackerWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerWidget;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.ShiftTrackerWidget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		1A52AFB829C5616A00415870 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = ShiftTrackerWidgetExtension.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L9DB7QA9DE;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = ShiftTrackerWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerWidget;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.ShiftTrackerWidget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		1A9855DC29C55F8C003F512C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1878,6 +1800,73 @@
 			};
 			name = Release;
 		};
+		7C4D82E22A8A183D006D54F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = UpcomingShiftWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UpcomingShiftWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UpcomingShiftWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.UpcomingShiftWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7C4D82E32A8A183D006D54F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = UpcomingShiftWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L9DB7QA9DE;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = UpcomingShiftWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = UpcomingShiftWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = me.poole.james.ShiftTracker.UpcomingShiftWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		7CAC9B6D2A7604EE0048F818 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2078,15 +2067,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1A52AFB929C5616A00415870 /* Build configuration list for PBXNativeTarget "ShiftTrackerWidgetExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1A52AFB729C5616A00415870 /* Debug */,
-				1A52AFB829C5616A00415870 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		1A9855CB29C55F8A003F512C /* Build configuration list for PBXProject "ShiftTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2119,6 +2099,15 @@
 			buildConfigurations = (
 				7C1AA4622A75106A00330A54 /* Debug */,
 				7C1AA4632A75106A00330A54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7C4D82E42A8A183D006D54F9 /* Build configuration list for PBXNativeTarget "UpcomingShiftWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7C4D82E22A8A183D006D54F9 /* Debug */,
+				7C4D82E32A8A183D006D54F9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

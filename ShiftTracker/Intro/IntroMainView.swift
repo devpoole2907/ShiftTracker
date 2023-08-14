@@ -118,6 +118,7 @@ struct IntroView<ActionView: View>: View {
                     .aspectRatio(contentMode: .fit)
                     //.padding(15)
                     .frame(width: size.width, height: size.height)
+                    .cornerRadius(12)
                 
             }.offset(y: showView ? 0 : -size.height / 2)
                 .opacity(showView ? 1 : 0)

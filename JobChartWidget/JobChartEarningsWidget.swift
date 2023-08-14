@@ -99,7 +99,7 @@ struct JobChartEarningsWidgetEntryView : View {
                                 ]),
                                 startPoint: .top,
                                 endPoint: .bottom))
-                            .cornerRadius(5)
+                            .cornerRadius(10)
                         
                     }
                     
@@ -140,8 +140,8 @@ struct JobChartEarningsWidget: Widget {
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: SelectJob.self, provider: ChartWidgetProvider()) { entry in
-          /*  if #available(iOS 17.0, *) {
-                JobChartWidgetEntryView(entry: entry)
+         /*   if #available(iOS 17.0, *) {
+           JobChartEarningsWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
             } else { */
                 JobChartEarningsWidgetEntryView(entry: entry)

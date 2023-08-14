@@ -31,7 +31,7 @@ struct OvertimeView: View{
                         self.updateTimeInterval()
                     }
                 )
-        NavigationStack{
+
             HStack {
                 Picker(selection: hourBinding, label: Text("Hour")) {
                     ForEach(0..<24) { hour in
@@ -47,9 +47,9 @@ struct OvertimeView: View{
                 }
                 .pickerStyle(WheelPickerStyle())
 
-            }.navigationBarTitle("Overtime", displayMode: .inline)
-            Spacer()
-        }
+            }
+          
+        
     }
     
     private func updateTimeInterval() {

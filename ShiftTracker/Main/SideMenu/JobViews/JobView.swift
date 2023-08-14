@@ -423,6 +423,42 @@ struct JobView: View {
                             
                         }.background(Color("SquaresColor"))
                             .cornerRadius(20)
+                        
+                         VStack(alignment: .leading, spacing: 10){
+                                                    Toggle(isOn: $overtimeEnabled) {
+                                                        HStack {
+                                                            Text("Overtime")
+                                                        }
+                                                    }
+                                                    .toggleStyle(CustomToggleStyle())
+                                                    
+                                                    Stepper(value: $overtimeRate, in: 1.25...3, step: 0.25) {
+                                                    
+             
+                                                            Text("Rate: \(overtimeRate, specifier: "%.2f")x")
+                                                        
+                                                    }.disabled(!overtimeEnabled)
+                                                    
+                                                    HStack {
+                                                        
+                                                       
+                                                        
+                                                        Image(systemName: "calendar.badge.clock")
+                                                        Text("Apply after:")
+                                                        OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
+                                                            .frame(maxHeight: 100)
+                                                           
+                                                    }
+                                                    .disabled(!overtimeEnabled)
+                                                    .opacity(overtimeEnabled ? 1.0 : 0.5)
+                                                }.padding(.horizontal)
+                            .padding(.vertical, 10)
+                         
+                         .background(Color("SquaresColor"))
+                            .cornerRadius(20)
+                        
+                        
+                        
                     }
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding()

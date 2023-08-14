@@ -55,7 +55,7 @@ public enum DateRange: Int, CaseIterable {
         case .month:
             return "Monthly"
         case .halfYear:
-            return "6 Month"
+            return "6M"
         case .year:
             return "Yearly"
         }

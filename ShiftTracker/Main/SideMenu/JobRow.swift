@@ -15,6 +15,10 @@ struct JobRow: View {
     
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewModel: ContentViewModel
+    @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    
+    @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
     
     var body: some View {
         
@@ -51,7 +55,13 @@ struct JobRow: View {
                     else {
                         OkButtonPopup(title: "End your current shift before editing.").showAndStack()
                     }}) {
-                        Image(systemName: "pencil")
+                        Image(systemName: purchaseManager.hasUnlockedPro
+                                                   || jobSelectionViewModel.selectedJobUUID == job.uuid
+                                                   || (job.uuid?.uuidString == lastSelectedJobUUID)
+                                                   || (lastSelectedJobUUID == nil)
+                                              ? "pencil"
+                                                   : "lock.fill")
+                           
                             .foregroundColor(isSelected ? .white : textColor)
                     }.padding(.horizontal, 10)
             }
