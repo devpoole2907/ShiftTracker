@@ -11,9 +11,8 @@ import Intents
 import CoreData
 
 struct ChartWidgetProvider: IntentTimelineProvider {
-    
     typealias Entry = JobEntry
-    typealias Intent = SelectJob
+    typealias Intent = SelectJobIntent
     
     
     func placeholder(in context: Context) -> JobEntry {
@@ -23,16 +22,16 @@ struct ChartWidgetProvider: IntentTimelineProvider {
         JobEntry(date: Date(), job: nil, oldShifts: [])
     }
 
-    func getSnapshot(for configuration: SelectJob, in context: Context, completion: @escaping (JobEntry) -> Void) {
-        let job = fetchJob(byName: configuration.jobID ?? "")
+    func getSnapshot(for configuration: SelectJobIntent, in context: Context, completion: @escaping (JobEntry) -> Void) {
+        let job = fetchJob(byName: configuration.job ?? "")
         
         let allOldShifts = (try? fetchShifts(forJob: job)) ?? []
         
         completion(JobEntry(date: Date(), job: job, oldShifts: allOldShifts))
         }
 
-        func getTimeline(for configuration: SelectJob, in context: Context, completion: @escaping (Timeline<JobEntry>) -> Void) {
-            let job = fetchJob(byName: configuration.jobID ?? "")
+        func getTimeline(for configuration: SelectJobIntent, in context: Context, completion: @escaping (Timeline<JobEntry>) -> Void) {
+            let job = fetchJob(byName: configuration.job ?? "")
             
             let allOldShifts = (try? fetchShifts(forJob: job)) ?? []
             

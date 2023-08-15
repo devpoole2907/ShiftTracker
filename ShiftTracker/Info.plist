@@ -30,6 +30,7 @@
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>SelectJob</string>
+		<string>SelectJobIntent</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict>

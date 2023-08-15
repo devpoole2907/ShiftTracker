@@ -134,7 +134,7 @@ struct JobChartHoursWidget: Widget {
     let kind: String = "JobChartHoursWidget"
 
     var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: SelectJob.self, provider: ChartWidgetProvider()) { entry in
+        IntentConfiguration(kind: kind, intent: SelectJobIntent.self, provider: ChartWidgetProvider()) { entry in
           /*  if #available(iOS 17.0, *) {
                 JobChartHoursWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)

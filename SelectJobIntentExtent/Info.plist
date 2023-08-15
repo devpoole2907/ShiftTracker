@@ -16,7 +16,7 @@
 			<array/>
 			<key>IntentsSupported</key>
 			<array>
-				<string>SelectJob</string>
+				<string>SelectJobIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

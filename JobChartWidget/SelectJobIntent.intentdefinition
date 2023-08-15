@@ -7,7 +7,7 @@
 	<key>INIntentDefinitionModelVersion</key>
 	<string>1.2</string>
 	<key>INIntentDefinitionNamespace</key>
-	<string>innCTk</string>
+	<string>YCSXLN</string>
 	<key>INIntentDefinitionSystemVersion</key>
 	<string>23A5312d</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
@@ -19,12 +19,10 @@
 		<dict>
 			<key>INIntentCategory</key>
 			<string>generic</string>
-			<key>INIntentClassName</key>
-			<string>SelectJob</string>
 			<key>INIntentDescription</key>
-			<string>Select a job to display in the widget.</string>
+			<string>Select a job</string>
 			<key>INIntentDescriptionID</key>
-			<string>dDJB0Y</string>
+			<string>TRWIn6</string>
 			<key>INIntentEligibleForWidgets</key>
 			<true/>
 			<key>INIntentIneligibleForSuggestions</key>
@@ -41,7 +39,7 @@
 					<key>INIntentParameterDisplayName</key>
 					<string>Job</string>
 					<key>INIntentParameterDisplayNameID</key>
-					<string>iIcPUy</string>
+					<string>9kULZe</string>
 					<key>INIntentParameterDisplayPriority</key>
 					<integer>1</integer>
 					<key>INIntentParameterMetadata</key>
@@ -49,10 +47,10 @@
 						<key>INIntentParameterMetadataCapitalization</key>
 						<string>Sentences</string>
 						<key>INIntentParameterMetadataDefaultValueID</key>
-						<string>LkWgvS</string>
+						<string>CmOlQu</string>
 					</dict>
 					<key>INIntentParameterName</key>
-					<string>jobID</string>
+					<string>job</string>
 					<key>INIntentParameterPromptDialogs</key>
 					<array>
 						<dict>
@@ -66,6 +64,26 @@
 							<true/>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>There are ${count} options matching ‘${job}’.</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>jcqBHz</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>DisambiguationIntroduction</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogFormatString</key>
+							<string>Just to confirm, you wanted ‘${job}’?</string>
+							<key>INIntentParameterPromptDialogFormatStringID</key>
+							<string>FX46av</string>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Confirmation</string>
 						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
@@ -95,9 +113,9 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>SelectJob</string>
+			<string>Select Job</string>
 			<key>INIntentTitleID</key>
-			<string>Gsqd4J</string>
+			<string>uTYZWC</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>

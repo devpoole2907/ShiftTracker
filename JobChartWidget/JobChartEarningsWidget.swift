@@ -139,7 +139,7 @@ struct JobChartEarningsWidget: Widget {
     let kind: String = "JobChartEarningsWidget"
 
     var body: some WidgetConfiguration {
-        IntentConfiguration(kind: kind, intent: SelectJob.self, provider: ChartWidgetProvider()) { entry in
+        IntentConfiguration(kind: kind, intent: SelectJobIntent.self, provider: ChartWidgetProvider()) { entry in
          /*   if #available(iOS 17.0, *) {
            JobChartEarningsWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
