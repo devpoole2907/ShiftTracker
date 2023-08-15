@@ -21,8 +21,6 @@
 			<string>generic</string>
 			<key>INIntentClassName</key>
 			<string>SelectJob</string>
-			<key>INIntentConfigurable</key>
-			<true/>
 			<key>INIntentDescription</key>
 			<string>Select a job to display in the widget.</string>
 			<key>INIntentDescriptionID</key>
@@ -33,16 +31,6 @@
 			<true/>
 			<key>INIntentLastParameterTag</key>
 			<integer>1</integer>
-			<key>INIntentManagedParameterCombinations</key>
-			<dict>
-				<key>jobID</key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationUpdatesLinked</key>
-					<true/>
-				</dict>
-			</dict>
 			<key>INIntentName</key>
 			<string>SelectJob</string>
 			<key>INIntentParameters</key>
