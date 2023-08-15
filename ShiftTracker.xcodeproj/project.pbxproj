@@ -660,6 +660,7 @@
 				1A9855D929C55F8C003F512C /* Preview Content */,
 				1AAC400329F2B09A00E204C8 /* OvertimeView.swift */,
 				1A1914202A185281000D0F8B /* ShiftManager.swift */,
+				7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */,
 			);
 			path = ShiftTracker;
 			sourceTree = "<group>";
@@ -874,7 +875,6 @@
 		7CD8A3372A88A48C0011A1C0 /* JobChartWidget */ = {
 			isa = PBXGroup;
 			children = (
-				7CD8A32E2A88A2FA0011A1C0 /* JobSelectionIntent.intentdefinition */,
 				7CD8A3382A88A48C0011A1C0 /* JobChartWidgetBundle.swift */,
 				7CD8A33A2A88A48C0011A1C0 /* JobChartHoursWidget.swift */,
 				7CD8A33C2A88A48F0011A1C0 /* Assets.xcassets */,
