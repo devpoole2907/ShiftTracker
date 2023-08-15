@@ -54,7 +54,7 @@ struct ShiftDetailRow: View {
             
             
             
-            HStack{
+          
             VStack(alignment: .leading, spacing: 5){
                 HStack{
                     Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
@@ -87,19 +87,15 @@ struct ShiftDetailRow: View {
                     }
                     
                 }
+                
+                HStack(spacing: 4){
                 Text(shiftManager.formatTime(timeInHours: duration))
                     .foregroundStyle(themeManager.timerColor)
                     .fontDesign(.rounded)
                     .font(.subheadline)
                     .bold()
-                Text(dateString)
-                    .fontDesign(.rounded)
-                    .foregroundColor(.gray)
-                    .font(.footnote)
-                    .bold()
-            }
                 
-                Spacer()
+                
                 
                 if shift.multiplierEnabled {
                     Text("\(payMultiplier)x")
@@ -108,11 +104,19 @@ struct ShiftDetailRow: View {
                         .fontDesign(.rounded)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 5)
-                        .background(Color(.systemGray6))
+                        .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
                         .cornerRadius(12)
                 }
                 
-        }
+            }
+                Text(dateString)
+                    .fontDesign(.rounded)
+                    .foregroundColor(.gray)
+                    .font(.footnote)
+                    .bold()
+            }
+                
+            
                 
                 
                 
