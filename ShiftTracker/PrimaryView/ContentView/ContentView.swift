@@ -78,6 +78,39 @@ struct ContentView: View {
                     
                     TimerView()
                     
+                        .onReceive(viewModel.$overtimeEnabled) { value in
+                            
+                            if value {
+                                let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+                                   fetchRequest.predicate = NSPredicate(format: "name == %@", "Overtime")
+                                
+                                var overtimeTag: Tag?
+                                
+                                do {
+                                        let matchingTags = try context.fetch(fetchRequest)
+                                    overtimeTag = matchingTags.first
+                                    } catch {
+                                        print("Failed to fetch overtime tag: \(error)")
+                                        
+                                    }
+                                
+                                if let overtimeTag = overtimeTag,
+                                           let overtimeTagID = overtimeTag.tagID {
+                                         
+                                                viewModel.selectedTags.insert(overtimeTagID)
+                                            
+                                        }
+                            }
+                            
+                        }
+                    
+                    if viewModel.overtimeEnabled {
+                        
+                        Text("overtime is enabled")
+                            .font(.largeTitle)
+                        
+                    }
+                    
                     TagButtonView()
                         .frame(maxWidth: .infinity)
                     

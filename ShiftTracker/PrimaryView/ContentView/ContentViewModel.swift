@@ -86,8 +86,6 @@ class ContentViewModel: ObservableObject {
     @Published  var breakStartDate: Date?
     @Published  var breakEndDate: Date?
     @Published  var overtimeStartDate: Date?
-    @Published private var overtimeRate = 1.25
-    @Published private var overtimeAppliedAfter: TimeInterval = 1.0
     #if os(iOS)
     @Published  var engine: CHHapticEngine?
     #endif
@@ -106,6 +104,10 @@ class ContentViewModel: ObservableObject {
     @Published  var breakTaken = false
     
     @Published  var shouldShowPopup = false
+    
+    @AppStorage("timeElapsedUntilOvertime") var timeElapsedUntilOvertime: TimeInterval = 0
+    @AppStorage("overtimeRate") var overtimeRate: Double = 1.25
+    @AppStorage("applyOvertimeAfter") var applyOvertimeAfter: TimeInterval = 60
     
     //some context menu stuff:
     @Published  var isAutomaticBreak = false
@@ -194,10 +196,7 @@ class ContentViewModel: ObservableObject {
         
         
         // overtime stuff
-        
-        self._overtimeRate = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.overtimeMultiplierKey))
-        self._overtimeAppliedAfter = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey))
-        
+      
         // multiplier stuff
         
         self._payMultiplier = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.payMultiplierKey))
@@ -248,26 +247,26 @@ class ContentViewModel: ObservableObject {
         guard let shift = shift else { return 0 }
         
         let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
-        if elapsed <= overtimeAppliedAfter || !sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey){
-            let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
-            overtimeDuration = 0
-            return isMultiplierEnabled ? pay * payMultiplier : pay
+        
+        if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 && overtimeRate > 1.0 {
+            timeElapsedUntilOvertime = elapsed
+            overtimeEnabled = true
+            print("overtime enabled was set to true")
+            
+            
+            
+            
+            
         }
-        else {
-            print("OVERTIME!!!!")
-            isOvertime = true
-            let regularTime = overtimeAppliedAfter //* 3600.0
-            let overtime = elapsed - regularTime
-            let regularPay = (regularTime / 3600.0) * Double(shift.hourlyPay)
-            let overtimePay = (overtime / 3600.0) * Double(shift.hourlyPay) * overtimeRate // Multiply by overtimeRate
-            
-            overtimeDuration = overtime
-            
-            
-            let totalPay = regularPay + overtimePay
-            return isMultiplierEnabled ? totalPay * payMultiplier : totalPay
-        }
+
+        let basePay = (timeElapsedUntilOvertime > 0 ? timeElapsedUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
+        let overtimePay = overtimeEnabled ? (elapsed - timeElapsedUntilOvertime) / 3600.0 * Double(shift.hourlyPay) * overtimeRate : 0
+        
+        let pay = basePay + overtimePay
+
+        return isMultiplierEnabled ? pay * payMultiplier : pay
     }
+
     
     var taxedPay: Double {
         let pay = totalPay
@@ -278,24 +277,24 @@ class ContentViewModel: ObservableObject {
     // this func is used for calculating the total pay when the shift is ended, as the user may provide a custom end date
     func computeTotalPay(for endDate: Date) -> Double {
         guard let shift = shift else { return 0 }
-        
-        let elapsed = endDate.timeIntervalSince(shift.startDate) - totalBreakDuration()
-        if elapsed <= overtimeAppliedAfter || !sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey) {
-            let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
-            return isMultiplierEnabled ? pay * payMultiplier : pay
-        }
-        else {
-            print("OVERTIME!!!!")
-            isOvertime = true
-            let regularTime = overtimeAppliedAfter //* 3600.0
-            let overtime = elapsed - regularTime
-            let regularPay = (regularTime / 3600.0) * Double(shift.hourlyPay)
-            let overtimePay = (overtime / 3600.0) * Double(shift.hourlyPay) * overtimeRate // Multiply by overtimeRate
 
-            let totalPay = regularPay + overtimePay
-                    return isMultiplierEnabled ? totalPay * payMultiplier : totalPay
+        let elapsed = endDate.timeIntervalSince(shift.startDate) - totalBreakDuration()
+        
+        var computeOvertimeEnabled = false
+
+        if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 {
+            timeElapsedUntilOvertime = elapsed
+            computeOvertimeEnabled = true
         }
+
+        let basePay = (timeElapsedUntilOvertime > 0 ? timeElapsedUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
+        let overtimePay = computeOvertimeEnabled ? (elapsed - timeElapsedUntilOvertime) / 3600.0 * Double(shift.hourlyPay) * overtimeRate : 0
+
+        let pay = basePay + overtimePay
+
+        return isMultiplierEnabled ? pay * payMultiplier : pay
     }
+
 
     
     func totalBreakDuration() -> TimeInterval {
@@ -349,17 +348,6 @@ class ContentViewModel: ObservableObject {
         }
         return nil
     }
-    
-    func checkOvertime() {
-        if timeElapsed > overtimeAppliedAfter  && !isOvertime {
-            isOvertime = true
-            print("OVERTIME BABYYYY")
-        } else if timeElapsed <= overtimeAppliedAfter && isOvertime {
-            isOvertime = false
-        }
-    }
-
-        
         
         func saveHourlyPay() {
             sharedUserDefaults.set(hourlyPay, forKey: shiftKeys.hourlyPayKey)
@@ -525,6 +513,7 @@ class ContentViewModel: ObservableObject {
         sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey) // destroys the time elapsed before break
         sharedUserDefaults.set(breakTaken, forKey: shiftKeys.breakTakenKey)
         sharedUserDefaults.set(true, forKey: shiftKeys.shiftEndedKey)
+        sharedUserDefaults.set(false, forKey: shiftKeys.overtimeEnabledKey)
         
         
         var latestShift: OldShift? = nil
@@ -598,6 +587,9 @@ class ContentViewModel: ObservableObject {
             shift = nil
             shiftEnded = true
             overtimeDuration = 0
+        
+        timeElapsedUntilOvertime = 0 // reset time elapsed until overtime if it exists
+        
             isPresented = true
             //   breakStartDate = nil
             //  breakEndDate = nil
@@ -606,6 +598,7 @@ class ContentViewModel: ObservableObject {
             clearTempBreaksFromUserDefaults()
             isMultiplierEnabled = false
             payMultiplier = 1.0
+        overtimeEnabled = false
             
         return latestShift
         }
@@ -673,7 +666,7 @@ class ContentViewModel: ObservableObject {
                                 }
                     
                     
-                    self.checkOvertime()
+        
                 }
                 #if os(iOS)
                 startActivity(startDate: adjustedStartDate.addingTimeInterval(breakElapsed), hourlyPay: hourlyPay, viewContext: viewContext)
@@ -687,7 +680,7 @@ class ContentViewModel: ObservableObject {
                                    self.shiftState = .inProgress
                                }
                     
-                    self.checkOvertime()
+                 
                 }
                 #if os(iOS)
                 startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
@@ -789,6 +782,15 @@ class ContentViewModel: ObservableObject {
                     // lol this isnt actually using the hourly pay here...
                     shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
                     sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
+                    
+                    if job.overtimeEnabled {
+                        print("overtime is enabled when the shift started")
+                        self.applyOvertimeAfter = job.overtimeAppliedAfter
+                        self.overtimeRate = job.overtimeRate
+                    } else {
+                        self.applyOvertimeAfter = 0
+                        self.overtimeRate = 1.0
+                    }
                     
                     
                     if let savedTimeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as? TimeInterval {
