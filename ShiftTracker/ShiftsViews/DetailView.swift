@@ -137,50 +137,7 @@ struct DetailView: View {
                             .frame(width: UIScreen.main.bounds.width - 60)
                            
                     }
-                    HStack{
-                        VStack(alignment: .leading, spacing: 2) {
-                            
-                            if let job = job ?? shift?.job {
-                                let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
-                                HStack{
-                                    Image(systemName: job.icon ?? "")
-                                        .font(.title3)
-                                        .foregroundStyle(.white)
-                                        .padding(10)
-                                        .background {
-                                            
-                                            Circle()
-                                                .foregroundStyle(jobColor)
-                                            
- 
-                                        }
-                                    
-                                    VStack(alignment: .leading, spacing: 3){
-                                        Text(job.name ?? "No Job Found")
-                                            .bold()
-                                            .font(.title2)
-                                        
-                                        Divider().frame(maxWidth: 200)
-                                        
-                                        
-                                        Text(job.title ?? "No Job Title")
-                                            .foregroundStyle(jobColor)
-                                            .fontDesign(.rounded)
-                                            .bold()
-                                            .font(.body)
-                                            .padding(.leading, 1.4)
-                                    }
-                                }.padding(.vertical, 2)
-                            }
-                            
-                            
-                        }.frame(alignment: .leading)
-                        Spacer()
-                    }   .padding(.horizontal)
                     
-                    .frame(width: UIScreen.main.bounds.width - 60)
-                      
-                        .padding(.top, -5)
                     
                     ZStack{
                         RoundedRectangle(cornerRadius: 12)
@@ -205,24 +162,26 @@ struct DetailView: View {
                                     HStack(spacing: 2){
                                         Image(systemName: "chart.line.downtrend.xyaxis")
                                             .font(.system(size: 15).monospacedDigit())
-                                            .fontWeight(.light)
+                                     
                                         Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.taxedPay)) ?? "")")
                                             .font(.system(size: 20).monospacedDigit())
                                             .bold()
                                             .lineLimit(1)
                                             .allowsTightening(true)
                                     }.foregroundStyle(themeManager.taxColor)
+                                        .fontDesign(.rounded)
                                 }
                                 if Double(viewModel.selectedTotalTips) ?? 0 > 0 {
                                     HStack(spacing: 2){
                                         Image(systemName: "chart.line.uptrend.xyaxis")
                                             .font(.system(size: 15).monospacedDigit())
-                                            .fontWeight(.light)
+                                           
                                         Text("\(currencyFormatter.string(from: NSNumber(value: Double(viewModel.selectedTotalTips) ?? 0)) ?? "")")
                                             .font(.system(size: 20).monospacedDigit())
                                             .bold()
                                             .lineLimit(1)
                                     }.foregroundStyle(themeManager.tipsColor)
+                                        .fontDesign(.rounded)
                                 }
                             }
                             
@@ -292,6 +251,51 @@ struct DetailView: View {
                     TagPicker($viewModel.selectedTags).allowsHitTesting(viewModel.isEditing)
                         .padding(.horizontal, 15)
                         .padding(.top, 5)
+                    
+                    HStack{
+                        VStack(alignment: .leading, spacing: 2) {
+                            
+                            if let job = job ?? shift?.job {
+                                let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
+                                HStack{
+                                    Image(systemName: job.icon ?? "")
+                                        .font(.title3)
+                                        .foregroundStyle(.white)
+                                        .padding(10)
+                                        .background {
+                                            
+                                            Circle()
+                                                .foregroundStyle(jobColor)
+                                            
+ 
+                                        }
+                                    
+                                    VStack(alignment: .leading, spacing: 3){
+                                        Text(job.name ?? "No Job Found")
+                                            .bold()
+                                            .font(.title2)
+                                        
+                                        Divider().frame(maxWidth: 300)
+                                        
+                                        
+                                        Text(job.title ?? "No Job Title")
+                                            .foregroundStyle(jobColor)
+                                            .fontDesign(.rounded)
+                                            .bold()
+                                            .font(.callout)
+                                            .padding(.leading, 1.4)
+                                    }
+                                }.padding(.vertical, 2)
+                            }
+                            
+                            
+                        }.frame(maxWidth: .infinity)
+                        Spacer()
+                    }   .padding(.horizontal)
+                    
+                    .frame(width: UIScreen.main.bounds.width - 60)
+                      
+                    
                     
                 }
                 

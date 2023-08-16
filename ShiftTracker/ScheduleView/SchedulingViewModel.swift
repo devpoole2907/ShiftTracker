@@ -125,7 +125,7 @@ class SchedulingViewModel: ObservableObject {
                                     repeatID: repeatID,
                                     reminderTime: correspondingSingleShift.reminderTime,
                                     notifyMe: correspondingSingleShift.notifyMe,
-                                    tags: correspondingSingleShift.tags))
+                                    tags: correspondingSingleShift.tags, isComplete: correspondingSingleShift.isComplete))
                                 
                                 
                                 batchDeleted.append(correspondingSingleShift)

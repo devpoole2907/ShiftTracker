@@ -30,9 +30,10 @@ struct TagPicker: View {
                                     }) {
                                         Text("#\(tag.name ?? "")")
                                             .bold()
-                                            .font(.system(size: 16))
+                                            .font(.system(size: 15))
                                             .fontDesign(.rounded)
-                                            .frame(maxWidth: .infinity)
+                                            //.frame(maxWidth: tag.name?.lowercased() == "overtime" ? 100 : .infinity)
+                                            .frame(width: 75)
                                         
                                     }
                                     .buttonStyle(.bordered)

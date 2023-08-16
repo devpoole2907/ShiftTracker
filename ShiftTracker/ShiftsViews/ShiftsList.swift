@@ -43,7 +43,7 @@ struct ShiftsList: View {
     
     var body: some View {
         
-        ZStack(alignment: .bottom){
+      //  ZStack(alignment: .bottom){
         List(selection: $selection){
             ForEach(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 ZStack {
@@ -93,13 +93,7 @@ struct ShiftsList: View {
 
             }
             
-            // bottom "padding" if the list is long, as the tag picker will overlap 
             
-            if sortSelection.filteredShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }).count >= 5 {
-                Color.clear
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color("SquaresColor"))
-            }
 
         }.searchable(text: $sortSelection.searchTerm, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             
@@ -138,7 +132,7 @@ struct ShiftsList: View {
                     
                 }
         
-    }
+  //  }
         
         
         

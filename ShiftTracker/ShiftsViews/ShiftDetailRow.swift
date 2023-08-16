@@ -22,6 +22,22 @@ struct ShiftDetailRow: View {
     
     let shift: OldShift
     
+    var showTime: Bool = false
+    
+    init(shift: OldShift, showTime: Bool = false){
+        
+        self.showTime = showTime
+        self.shift = shift
+        
+    }
+    
+    var timeFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }
+    
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE, d MMM"
@@ -88,7 +104,7 @@ struct ShiftDetailRow: View {
                     
                 }
                 
-                HStack(spacing: 4){
+                HStack(spacing: 6){
                 Text(shiftManager.formatTime(timeInHours: duration))
                     .foregroundStyle(themeManager.timerColor)
                     .fontDesign(.rounded)
@@ -102,14 +118,16 @@ struct ShiftDetailRow: View {
                         .font(.caption)
                         .bold()
                         .fontDesign(.rounded)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 5)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
                         .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
-                        .cornerRadius(12)
+                        .cornerRadius(6)
                 }
                 
             }
-                Text(dateString)
+                
+                
+                Text(showTime ? "\(timeFormatter.string(from: shiftStartDate )) - \(timeFormatter.string(from: shiftEndDate ))" : dateString)
                     .fontDesign(.rounded)
                     .foregroundColor(.gray)
                     .font(.footnote)
@@ -163,7 +181,7 @@ struct ShiftDetailRow: View {
                         .font(.title2)
                         .bold()
                         .lineLimit(1)
-                    HStack(spacing: 4){
+                    HStack(spacing: 6){
                         Text(shiftManager.formatTime(timeInHours: duration))
                             .foregroundStyle(.gray)
                             .fontDesign(.rounded)
@@ -175,17 +193,17 @@ struct ShiftDetailRow: View {
                                 .font(.caption)
                                 .bold()
                                 .fontDesign(.rounded)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 5)
-                                .background(Color(.systemGray6))
-                                .cornerRadius(12)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
+                                .cornerRadius(6)
                         }
                     }
-                        Text(dateString)
-                            .foregroundColor(.gray)
-                            .fontDesign(.rounded)
-                            .font(.footnote)
-                            .bold()
+                    Text(showTime ? "\(timeFormatter.string(from: shiftStartDate )) - \(timeFormatter.string(from: shiftEndDate ))" : dateString)
+                        .fontDesign(.rounded)
+                        .foregroundColor(.gray)
+                        .font(.footnote)
+                        .bold()
                         
                         
                         

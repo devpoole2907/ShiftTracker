@@ -128,13 +128,15 @@ struct TimerView: View {
                 HStack(spacing: 2){
                     Image(systemName: "chart.line.downtrend.xyaxis")
                         .font(.system(size: 15).monospacedDigit())
-                        .fontWeight(.light)
+                   
                     Text("\(currencyFormatter.string(from: NSNumber(value: taxedPay)) ?? "")")
                         .font(.system(size: 20).monospacedDigit())
                         .bold()
                         .lineLimit(1)
                         .allowsTightening(true)
                 }.foregroundStyle(themeManager.taxColor)
+                    .fontDesign(.rounded)
+                
                 
                     .padding(.horizontal, 20)
                 

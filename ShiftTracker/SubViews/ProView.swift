@@ -9,7 +9,7 @@ import SwiftUI
 import StoreKit
 
 struct ProView: View {
-
+    
     @Environment(\.dismiss) var dismiss
     
     
@@ -25,8 +25,8 @@ struct ProView: View {
         let upgradeButtonTextColor: Color = colorScheme == .dark ? .white : Color.black
         
         
-       NavigationStack {
-
+        NavigationStack {
+            
             VStack{
                 HStack{
                     Text("ShiftTracker")
@@ -37,7 +37,7 @@ struct ProView: View {
                         .fontWeight(.heavy)
                         .foregroundStyle(proButtonColor.gradient)
                 }
-               
+                
                 VStack(alignment: .leading){
                     HStack {
                         Image(systemName: "clipboard")
@@ -62,7 +62,7 @@ struct ProView: View {
                         Text("Live Activities")
                             .font(.title2)
                             .bold()
-                            //.foregroundColor(textColor)
+                        //.foregroundColor(textColor)
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)
@@ -76,7 +76,7 @@ struct ProView: View {
                         Text("Location based clock in & clock out")
                             .font(.title2)
                             .bold()
-                            //.foregroundColor(textColor)
+                        //.foregroundColor(textColor)
                     }.listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                         .padding(.vertical, 5)
@@ -122,32 +122,32 @@ struct ProView: View {
                         .padding(.vertical, 5)
                     
                     
-                  /*  HStack {
-                        Image(systemName: "timer")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Automatic Breaks")
-                            .font(.title2)
-                            .bold()
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
-                    HStack {
-                        Image(systemName: "paperclip")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Invoice Generation")
-                            .font(.title2)
-                            .bold()
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)*/
+                    /*  HStack {
+                     Image(systemName: "timer")
+                     .resizable()
+                     .aspectRatio(contentMode: .fit)
+                     .frame(width: 40, height: 40)
+                     .foregroundColor(proButtonColor)
+                     Spacer().frame(width: 15)
+                     Text("Automatic Breaks")
+                     .font(.title2)
+                     .bold()
+                     }.listRowSeparator(.hidden)
+                     .listRowBackground(Color.clear)
+                     .padding(.vertical, 5)
+                     HStack {
+                     Image(systemName: "paperclip")
+                     .resizable()
+                     .aspectRatio(contentMode: .fit)
+                     .frame(width: 40, height: 40)
+                     .foregroundColor(proButtonColor)
+                     Spacer().frame(width: 15)
+                     Text("Invoice Generation")
+                     .font(.title2)
+                     .bold()
+                     }.listRowSeparator(.hidden)
+                     .listRowBackground(Color.clear)
+                     .padding(.vertical, 5)*/
                 }.padding(.horizontal, 30)
                 
                 VStack(alignment: .leading, spacing: 10) {
@@ -172,77 +172,15 @@ struct ProView: View {
                 .cornerRadius(20)
                 .frame(maxWidth: .infinity)
                 
+                
                 HStack(spacing: 10){
-                    Button(action: {
+                    ForEach(purchaseManager.products, id: \.subscription) { product in
                         
-                        Task {
-                                            do {
-                                                try await purchaseManager.purchase(purchaseManager.products[0])
-                                            } catch {
-                                                print("Purchase failed with error: \(error)")
-                                            }
-                                        }
+                        PurchaseButton(product: product)
                         
-
-                       // dismiss()
-                    }) {
-                        VStack{
-                            Text("MONTHLY")
-                                .font(.title2)
-                                .fontWeight(.heavy)
-                                .foregroundColor(upgradeButtonTextColor)
-                                .lineLimit(1)
-                                .allowsTightening(true)
-                                
-                         
-                                Text(purchaseManager.products[0] .displayPrice)
-                                                .foregroundColor(proButtonColor)
-                                        
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 60)
-                        .cornerRadius(20)
-                        .padding()
-                        .background(Color("SquaresColor"),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
                     }
-                  
                     
-                    
-                    Button(action: {
-                        
-                        Task {
-                                            do {
-                                                try await purchaseManager.purchase(purchaseManager.products[1])
-                                            } catch {
-                                                print("Purchase failed with error: \(error)")
-                                            }
-                                        }
-                        
-                        print("product count is: \(purchaseManager.products.count)")
-                        //dismiss()
-                    }) {
-                        VStack{
-                            Text("YEARLY")
-                                .font(.title2)
-                                .fontWeight(.heavy)
-                                .foregroundColor(upgradeButtonTextColor)
-                                .lineLimit(1)
-                                .allowsTightening(true)
-                                
-                            Text(purchaseManager.products[1] .displayPrice)
-                                            .foregroundColor(proButtonColor)
-                            
-                               
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 60)
-          
-                        .cornerRadius(20)
-                        .padding()
-                        .background(Color("SquaresColor"),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
                 }.padding(.horizontal, 30)
                 
                 Button(action: {
@@ -264,18 +202,17 @@ struct ProView: View {
                         .fontDesign(.rounded)
                 }.padding()
                 
-               // Spacer(minLength: 50)
             }
-           
+            
             .sheet(isPresented: $purchaseManager.showSuccessSheet, onDismiss: {dismiss()}) {
-                 
-                        PurchaseSuccessView()
+                
+                PurchaseSuccessView()
                 
                     .presentationBackground(Color("allSheetBackground"))
                     .presentationCornerRadius(25)
-                  
-                    }
-        
+                
+            }
+            
             .toolbar {
                 
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -288,9 +225,76 @@ struct ProView: View {
                 
             }
             
-    
+            
+        } .onAppear{
+            
+            Task{
+                
+                await purchaseManager.updatePurchasedProducts()
+                
+                
+            }
+            
         }
     }
+}
+
+struct PurchaseButton: View {
+    
+    @EnvironmentObject var purchaseManager: PurchaseManager
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    let product: Product
+    
+    
+    var body: some View {
+        
+        let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
+        let upgradeButtonTextColor: Color = colorScheme == .dark ? .white : Color.black
+        
+        Button(action: {
+            
+            Task {
+                do {
+                    try await purchaseManager.purchase(product)
+                } catch {
+                    print("Purchase failed with error: \(error)")
+                }
+            }
+            
+            
+            
+            
+        }){
+            
+            VStack{
+                Text(product.id == "pro_month" ? "MONTHLY" : "YEARLY")
+                    .font(.title2)
+                    .fontWeight(.heavy)
+                    .foregroundColor(upgradeButtonTextColor)
+                    .lineLimit(1)
+                    .allowsTightening(true)
+                
+                
+                Text(product.displayPrice)
+                    .foregroundColor(proButtonColor)
+                
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 60)
+            .cornerRadius(20)
+            .padding()
+            .background(Color("SquaresColor"),in:
+                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+            
+            
+            
+        }
+        
+        
+    }
+    
 }
 
 

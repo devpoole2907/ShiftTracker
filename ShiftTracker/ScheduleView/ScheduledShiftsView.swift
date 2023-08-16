@@ -48,7 +48,7 @@ struct ScheduledShiftsView: View {
                     
                     NavigationLink(value: shift) {
                         
-                        ShiftDetailRow(shift: shift)
+                        ShiftDetailRow(shift: shift, showTime: true)
                         
                         
                     }
@@ -80,21 +80,20 @@ struct ScheduledShiftsView: View {
                     
                 }
             } header: {
-                if let dateSelected = dateSelected{
-                    if let selectedDate = dateSelected.date {
-                        Text(dateFormatter.string(from: selectedDate)).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
+                
+                Text(dateFormatter.string(from: dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
                         
-                    }
                     
-                }
-            }.listRowInsets(.init(top: 0, leading: 20, bottom: 5, trailing: 0))
+                    
+                
+            }.listRowInsets(.init(top: 0, leading: 8, bottom: 5, trailing: 0))
                 
             }
             
             
                 if !foundShifts.isEmpty {
                     ForEach(foundShifts) { shift in
-                        if shift.endDate > Date() {
+                        if shift.endDate > Date() && !shift.isComplete {
                             ScheduledShiftListRow(shift: shift, selectedShiftToEdit: $selectedShiftToEdit)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)

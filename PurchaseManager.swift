@@ -96,18 +96,16 @@ class PurchaseManager: ObservableObject {
 
        
         if let transaction = latestTransaction {
-            if transaction.revocationDate == nil {
-                self.purchasedProductIDs.insert(transaction.productID)
-                self.subscriptionExpiryDate = transaction.expirationDate
-            } else {
-                self.purchasedProductIDs.remove(transaction.productID)
-                self.subscriptionExpiryDate = nil
-
-                if let expirationDate = transaction.expirationDate, expirationDate < Date() {
-                   // handleSubscriptionExpiry()
+                if let revocationDate = transaction.revocationDate,
+                   revocationDate < Date() {
+                    self.purchasedProductIDs.remove(transaction.productID)
+                    self.subscriptionExpiryDate = nil
+                 
+                } else {
+                    self.purchasedProductIDs.insert(transaction.productID)
+                    self.subscriptionExpiryDate = transaction.expirationDate
                 }
             }
-        }
     }
 
 
