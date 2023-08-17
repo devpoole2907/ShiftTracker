@@ -446,7 +446,7 @@ struct JobView: View {
                                                         Image(systemName: "calendar.badge.clock")
                                                         Text("Apply after:")
                                                         OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
-                                                            .frame(maxHeight: 100)
+                                                            .frame(maxHeight: 75)
                                                            
                                                     }
                                                     .disabled(!overtimeEnabled)

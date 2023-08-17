@@ -55,6 +55,7 @@
         <attribute name="shiftStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="tax" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="taxedPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="timeBeforeOvertime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="totalPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="totalTips" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="breaks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Break" inverseName="oldShift" inverseEntity="Break"/>

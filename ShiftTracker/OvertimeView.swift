@@ -11,8 +11,14 @@ struct OvertimeView: View{
     
     @Binding var overtimeAppliedAfter: TimeInterval
     
-    @State private var selectedOvertimeHour = 0
-    @State private var selectedOvertimeMinute = 0
+    @State private var selectedOvertimeHour = 8
+    @State private var selectedOvertimeMinute = 30
+    
+    init(overtimeAppliedAfter: Binding<TimeInterval>) {
+            _overtimeAppliedAfter = overtimeAppliedAfter
+            _selectedOvertimeHour = State(initialValue: Int(overtimeAppliedAfter.wrappedValue) / 3600)
+            _selectedOvertimeMinute = State(initialValue: Int(overtimeAppliedAfter.wrappedValue) % 3600 / 60)
+        }
 
     var body: some View{
         

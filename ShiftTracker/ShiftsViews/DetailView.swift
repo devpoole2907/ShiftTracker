@@ -470,6 +470,41 @@ struct DetailView: View {
                             .frame(minHeight: 200, maxHeight: .infinity)
                     }
                     
+                    VStack(alignment: .leading){
+                        
+                        Text("Overtime:")
+                            .bold()
+                        
+                            .padding(.vertical, 5)
+                        
+                            .cornerRadius(20)
+                        VStack{
+                            Stepper(value: $viewModel.overtimeRate, in: 1.00...3, step: 0.25) {
+                                
+                                
+                                Text("Rate: \(viewModel.overtimeRate, specifier: "%.2f")x")
+                                
+                            }
+                            
+                            HStack {
+                                
+                                
+                                
+                                Image(systemName: "calendar.badge.clock")
+                                Text("Applied after:")
+                                OvertimeView(overtimeAppliedAfter: $viewModel.overtimeAppliedAfter)
+                                    .frame(maxHeight: 75)
+                                
+                            }
+                            
+                        }.padding(.horizontal)
+                            .padding(.vertical)
+                            .background(Color("SquaresColor"),in:
+                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
+                                        
+                                           }
+                    
                 }
                 
             }.listRowSeparator(.hidden)

@@ -26,6 +26,9 @@ class DetailViewModel: ObservableObject {
     @Published var selectedTags: Set<Tag> = []
     @Published var shiftID: UUID
     
+    @Published var overtimeRate: Double = 1.00
+    @Published var overtimeAppliedAfter: Double = 60
+    
     @Published var shift: OldShift?
     
     
@@ -77,6 +80,8 @@ class DetailViewModel: ObservableObject {
         self.isEditing = false
         self.shift = shift
         
+        self.overtimeRate = shift.overtimeRate
+        self.overtimeAppliedAfter = shift.timeBeforeOvertime
         
     }
     
@@ -154,6 +159,9 @@ class DetailViewModel: ObservableObject {
         shift.multiplierEnabled = multiplierEnabled
         shift.shiftNote = notes
         shift.tags = NSSet(array: Array(selectedTags))
+        
+        shift.overtimeRate = overtimeRate
+        shift.timeBeforeOvertime = overtimeAppliedAfter
         
         let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
         let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }

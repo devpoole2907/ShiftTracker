@@ -35,31 +35,20 @@ struct TimerView: View {
     // using the viewmodels variables directly causes a black screen/freeze
     
     private var totalPay: Double {
-            let hourlyPay = sharedUserDefaults.double(forKey: shiftKeys.hourlyPayKey)
-        let overtimeRate = sharedUserDefaults.double(forKey: shiftKeys.overtimeMultiplierKey)
-        let overtimeAppliedAfter = sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey)
-        let overtimeEnabled = sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey)
-        let payMultiplier = sharedUserDefaults.double(forKey: shiftKeys.payMultiplierKey)
-           let isMultiplierEnabled = sharedUserDefaults.bool(forKey: shiftKeys.multiplierEnabledKey)
         
-
-        let rawPay: Double
-            if !isOvertime {
-                rawPay = (viewModel.timeElapsed / 3600.0) * hourlyPay
-            } else {
-                let regularTime = overtimeAppliedAfter //* 3600.0
-                let overtime = viewModel.timeElapsed - regularTime
-                let regularPay = (regularTime / 3600.0) * hourlyPay
-                let overtimePay = (overtime / 3600.0) * hourlyPay * overtimeRate
-                rawPay = regularPay + overtimePay
-            }
-        
-        let totalPay = isMultiplierEnabled ? rawPay * payMultiplier : rawPay
-            return totalPay < 0 ? 0 : totalPay
-        
-        
-        
+        if viewModel.timeElapsed >= viewModel.applyOvertimeAfter && viewModel.timeElapsedUntilOvertime == 0 && viewModel.overtimeRate > 1.0 {
+            viewModel.timeElapsedUntilOvertime = viewModel.timeElapsed
+            viewModel.overtimeEnabled = true
+           // print("overtime was set to true")
         }
+        let basePay = (viewModel.timeElapsedUntilOvertime > 0 ? viewModel.timeElapsedUntilOvertime : viewModel.timeElapsed) / 3600.0 * viewModel.hourlyPay
+        let overtimePay = viewModel.overtimeEnabled ? (viewModel.timeElapsed - viewModel.timeElapsedUntilOvertime) / 3600.0 * viewModel.hourlyPay * viewModel.overtimeRate : 0
+        
+        let pay = basePay + overtimePay
+
+        return viewModel.isMultiplierEnabled ? pay * viewModel.payMultiplier : pay < 0 ? 0 : pay
+    }
+
 
         private var taxedPay: Double {
             let pay = totalPay

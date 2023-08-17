@@ -81,6 +81,7 @@ struct ContentView: View {
                         .onReceive(viewModel.$overtimeEnabled) { value in
                             
                             if value {
+                                print("overtime is enabled in the receive ")
                                 let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
                                    fetchRequest.predicate = NSPredicate(format: "name == %@", "Overtime")
                                 
@@ -103,13 +104,6 @@ struct ContentView: View {
                             }
                             
                         }
-                    
-                    if viewModel.overtimeEnabled {
-                        
-                        Text("overtime is enabled")
-                            .font(.largeTitle)
-                        
-                    }
                     
                     TagButtonView()
                         .frame(maxWidth: .infinity)

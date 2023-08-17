@@ -251,12 +251,14 @@ class ContentViewModel: ObservableObject {
         if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 && overtimeRate > 1.0 {
             timeElapsedUntilOvertime = elapsed
             overtimeEnabled = true
-            print("overtime enabled was set to true")
+            print("overtime was set to true")
             
             
             
             
             
+        } else {
+            print("not overtime yet")
         }
 
         let basePay = (timeElapsedUntilOvertime > 0 ? timeElapsedUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
@@ -502,9 +504,19 @@ class ContentViewModel: ObservableObject {
 #if os(iOS)
         stopActivity()
 #endif
+        
+        
+        print("time elapsed until overtime was: \(timeElapsedUntilOvertime)")
+        print("ending shift, overtime time elapsed is: \(timeElapsed - timeElapsedUntilOvertime)")
+        
+        
+        let overtimeElapsed = timeElapsed - timeElapsedUntilOvertime
+        
         stopTimer(timer: &timer, timeElapsed: &timeElapsed)
         breakTaken = false
         isOvertime = false
+        
+      
         
         shiftEnded = true
         sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
@@ -539,7 +551,8 @@ class ContentViewModel: ObservableObject {
             latestShift!.tax = Double(taxPercentage)
             latestShift!.breakElapsed = breakElapsed
             latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
-            latestShift!.overtimeDuration = overtimeDuration
+            latestShift!.overtimeDuration = overtimeElapsed
+            latestShift!.timeBeforeOvertime = timeElapsedUntilOvertime
             latestShift!.overtimeRate = overtimeRate
             latestShift!.multiplierEnabled = isMultiplierEnabled
             latestShift!.payMultiplier = payMultiplier
@@ -783,9 +796,12 @@ class ContentViewModel: ObservableObject {
                     shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
                     sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
                     
+                    print("starting shift, time elapsed until overtime started was: \(timeElapsedUntilOvertime)")
+                    
                     if job.overtimeEnabled {
                         print("overtime is enabled when the shift started")
                         self.applyOvertimeAfter = job.overtimeAppliedAfter
+                        print("Overtime will be applied after: \(applyOvertimeAfter)")
                         self.overtimeRate = job.overtimeRate
                     } else {
                         self.applyOvertimeAfter = 0
