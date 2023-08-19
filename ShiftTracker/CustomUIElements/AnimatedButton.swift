@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct AnimatedButton: View {
-    @Binding var isTapped: Bool
-    @Binding var activeSheet: ActiveSheet?
     
     @Environment(\.colorScheme) var colorScheme
     
-    var activeSheetCase: ActiveSheet
+    
+    let action: () -> Void
     var title: String
     var backgroundColor: Color
     var isDisabled: Bool
@@ -22,9 +21,7 @@ struct AnimatedButton: View {
         
         let foregroundColor: Color = colorScheme == .dark ? .black : .white
         
-        Button(action: {
-            self.activeSheet = activeSheetCase
-        }) {
+        Button(action: action) {
             Text(title)
                 .frame(minWidth: UIScreen.main.bounds.width / 3)
                 .bold()

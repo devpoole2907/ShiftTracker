@@ -27,7 +27,7 @@ class DetailViewModel: ObservableObject {
     @Published var shiftID: UUID
     
     @Published var overtimeRate: Double = 1.00
-    @Published var overtimeAppliedAfter: Double = 60
+    @Published var overtimeAppliedAfter: Double = 0
     
     @Published var shift: OldShift?
     
@@ -164,16 +164,25 @@ class DetailViewModel: ObservableObject {
         shift.timeBeforeOvertime = overtimeAppliedAfter
         
         let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
-        let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
-        shift.breakDuration = totalBreakDuration
-        let paidDuration = shift.duration - totalBreakDuration
-        shift.totalPay = ((paidDuration / 3600.0) * shift.hourlyPay) * (shift.multiplierEnabled ? shift.payMultiplier : 1.0)
-        
-        
-        
-        shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
-        
-        return true
+            let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
+            shift.breakDuration = totalBreakDuration
+            let shiftDuration = selectedEndDate.timeIntervalSince(selectedStartDate)
+            shift.duration = shiftDuration
+            
+            var overtimeDuration = 0.0
+            var baseDuration = shiftDuration
+            if overtimeAppliedAfter > 0 && overtimeRate > 1.0 && shiftDuration > overtimeAppliedAfter {
+                overtimeDuration = shiftDuration - overtimeAppliedAfter
+                baseDuration = shiftDuration - overtimeDuration
+            }
+
+        let basePay = (baseDuration - totalBreakDuration) / 3600.0 * Double(selectedHourlyPay)!
+        let overtimePay = (overtimeDuration / 3600.0) * Double(selectedHourlyPay)! * overtimeRate
+
+            shift.totalPay = (shift.multiplierEnabled ? (basePay + overtimePay) * payMultiplier : basePay + overtimePay)
+            shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
+            
+            return true
         
         
         

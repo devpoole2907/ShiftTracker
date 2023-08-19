@@ -26,28 +26,31 @@ struct TimerView: View {
         formatter.locale = Locale.current
         return formatter
     }
-   private var isOvertime: Bool {
-       let overtimeEnabled = sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey)
-       return overtimeEnabled && viewModel.timeElapsed > sharedUserDefaults.double(forKey: shiftKeys.overtimeAppliedAfterKey)
-    }
-    
     
     // using the viewmodels variables directly causes a black screen/freeze
     
     private var totalPay: Double {
         
-        if viewModel.timeElapsed >= viewModel.applyOvertimeAfter && viewModel.timeElapsedUntilOvertime == 0 && viewModel.overtimeRate > 1.0 {
-            viewModel.timeElapsedUntilOvertime = viewModel.timeElapsed
-            viewModel.overtimeEnabled = true
-           // print("overtime was set to true")
+        if viewModel.isOnBreak && viewModel.totalPayAtBreakStart > 0.0 {
+            return viewModel.totalPayAtBreakStart
         }
-        let basePay = (viewModel.timeElapsedUntilOvertime > 0 ? viewModel.timeElapsedUntilOvertime : viewModel.timeElapsed) / 3600.0 * viewModel.hourlyPay
-        let overtimePay = viewModel.overtimeEnabled ? (viewModel.timeElapsed - viewModel.timeElapsedUntilOvertime) / 3600.0 * viewModel.hourlyPay * viewModel.overtimeRate : 0
+        
+        let adjustedTimeElapsed = viewModel.timeElapsed - viewModel.totalBreakDuration() // Subtract break duration
+        let adjustedTimeElapsedUntilOvertime = viewModel.timeElapsedUntilOvertime > 0 ? viewModel.timeElapsedUntilOvertime - viewModel.totalBreakDuration() : adjustedTimeElapsed
+        
+        if adjustedTimeElapsed >= viewModel.applyOvertimeAfter && viewModel.timeElapsedUntilOvertime == 0 && viewModel.overtimeRate > 1.0 {
+            viewModel.timeElapsedUntilOvertime = adjustedTimeElapsed
+            viewModel.overtimeEnabled = true
+        }
+        
+        let basePay = adjustedTimeElapsedUntilOvertime / 3600.0 * viewModel.hourlyPay
+        let overtimePay = viewModel.overtimeEnabled ? (adjustedTimeElapsed - viewModel.timeElapsedUntilOvertime) / 3600.0 * viewModel.hourlyPay * viewModel.overtimeRate : 0
         
         let pay = basePay + overtimePay
 
         return viewModel.isMultiplierEnabled ? pay * viewModel.payMultiplier : pay < 0 ? 0 : pay
     }
+
 
 
         private var taxedPay: Double {
@@ -70,24 +73,6 @@ struct TimerView: View {
                 .shadow(radius: 5, x: 2, y: 4)
                
         VStack(alignment: .center, spacing: 5) {
-           /* if isOvertime{
-                Text("OVERTIME")
-                    .foregroundColor(.white)
-                    .font(.system(size: 15, weight: .bold))
-                    .frame(width: 200, height: 20)
-                    .background(.red.opacity(0.8))
-                    .cornerRadius(12)
-                    .fixedSize()
-            }
-            else {
-                Text("")
-                    .foregroundColor(.white)
-                    .font(.system(size: 15, weight: .bold))
-                    .frame(width: 200, height: 20)
-                    .background(Color.clear)
-                    .cornerRadius(12)
-                    .fixedSize()
-            } */
             ZStack {
                 // This is the center aligned text
                 Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
@@ -150,8 +135,7 @@ struct TimerView: View {
             .foregroundStyle(themeManager.timerColor)
             .frame(maxWidth: .infinity)
             .padding(.bottom)
-            
-            
+
             
             
            

@@ -29,10 +29,7 @@ struct ContentViewButtonsView: View {
         HStack{
             if viewModel.shiftState == .notStarted {
                 AnimatedButton(
-                    isTapped: $viewModel.isStartShiftTapped,
-                    activeSheet: $viewModel.activeSheet,
-                    activeSheetCase: .startShiftSheet,
-                    title: "Start Shift",
+                    action: { viewModel.activeSheet = .startShiftSheet }, title: "Start Shift",
                     backgroundColor: buttonColor,
                     isDisabled: viewModel.hourlyPay == 0 || jobSelectionViewModel.selectedJobUUID == nil
                 )
@@ -72,9 +69,7 @@ struct ContentViewButtonsView: View {
             } else if viewModel.shiftState == .inProgress {
                 if !viewModel.isOnBreak{
                     AnimatedButton(
-                        isTapped: $viewModel.isBreakTapped,
-                        activeSheet: $viewModel.activeSheet,
-                        activeSheetCase: .startBreakSheet,
+                        action: { viewModel.activeSheet = .startBreakSheet },
                         title: "Start Break",
                         backgroundColor: !viewModel.isEditing ? buttonColor : disabledButtonColor,
                         isDisabled: viewModel.isEditing
@@ -82,18 +77,14 @@ struct ContentViewButtonsView: View {
                 }
                 else {
                     AnimatedButton(
-                        isTapped: $viewModel.isBreakTapped,
-                        activeSheet: $viewModel.activeSheet,
-                        activeSheetCase: .endBreakSheet,
-                        title: "End Break",
-                        backgroundColor: !(viewModel.breakTimeElapsed <= 60) ? buttonColor : disabledButtonColor,
-                        isDisabled: viewModel.breakTimeElapsed <= 60
+                        action:  viewModel.breakTimeElapsed <= 60 ? viewModel.cancelBreak : { viewModel.activeSheet = .endBreakSheet } ,
+                        title: viewModel.breakTimeElapsed <= 60 ? "Cancel Break" : "End Break",
+                        backgroundColor: buttonColor,
+                        isDisabled: viewModel.isEditing
                     )
                 }
                 AnimatedButton(
-                    isTapped: $viewModel.isEndShiftTapped,
-                    activeSheet: $viewModel.activeSheet,
-                    activeSheetCase: .endShiftSheet,
+                    action: { viewModel.activeSheet = .endShiftSheet },
                     title: "End Shift",
                     backgroundColor: (viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
                     isDisabled: viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing

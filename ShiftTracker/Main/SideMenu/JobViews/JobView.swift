@@ -41,6 +41,7 @@ struct JobView: View {
     @State private var payShakeTimes: CGFloat = 0
     @State private var nameShakeTimes: CGFloat = 0
     @State private var titleShakeTimes: CGFloat = 0
+    @State private var overtimeShakeTimes: CGFloat = 0
     
     @State private var showOvertimeTimeView = false
     @State private var overtimeRate = 1.25
@@ -112,6 +113,7 @@ struct JobView: View {
         _overtimeEnabled = State(initialValue: job?.overtimeEnabled ?? false)
         _overtimeRate = State(initialValue: job?.overtimeRate ?? 1.25)
         _overtimeAppliedAfter = State(initialValue: job?.overtimeAppliedAfter ?? 8.0)
+        
         _rosterReminder = State(initialValue: job?.rosterReminder ?? false)
         _selectedDay = State(initialValue: Int(job?.rosterDayOfWeek ?? 1))
         _selectedTime = State(initialValue: job?.rosterTime ?? Date())
@@ -451,6 +453,7 @@ struct JobView: View {
                                                     }
                                                     .disabled(!overtimeEnabled)
                                                     .opacity(overtimeEnabled ? 1.0 : 0.5)
+                                                    .shake(times: overtimeShakeTimes)
                                                 }.padding(.horizontal)
                             .padding(.vertical, 10)
                          
@@ -528,6 +531,10 @@ struct JobView: View {
                                 }
                                 
                                 
+                            } else if overtimeEnabled && overtimeAppliedAfter == 0 {
+                                withAnimation(.linear(duration: 0.4)) {
+                                    overtimeShakeTimes += 2
+                                }
                             }
                             else {
                                 saveJob()
