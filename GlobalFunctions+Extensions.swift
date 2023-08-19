@@ -427,3 +427,30 @@ class NotificationManager: ObservableObject {
 
     
 }
+
+
+extension View {
+    @ViewBuilder
+    func customSectionSpacing(with spacing: CGFloat) -> some View {
+        if #available(iOS 17, *) {
+            self
+                .modifier(SectionSpacingModifier(spacing: spacing))
+        }
+        else {
+            self
+        }
+    }
+}
+
+@available(iOS 17, *)
+struct SectionSpacingModifier: ViewModifier {
+    var spacing: CGFloat
+    
+    func body(content: Content) -> some View {
+        content
+        .listSectionSpacing(spacing)
+    }
+    
+    
+    
+}

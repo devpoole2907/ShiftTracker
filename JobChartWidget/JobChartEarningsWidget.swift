@@ -140,17 +140,17 @@ struct JobChartEarningsWidget: Widget {
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: SelectJobIntent.self, provider: ChartWidgetProvider()) { entry in
-         /*   if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, *) {
            JobChartEarningsWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
-            } else { */
+            } else {
                 JobChartEarningsWidgetEntryView(entry: entry)
                 .padding(.horizontal, 5)
                 .padding(.bottom, 8)
                 .padding(.top, 10)
             
                     .background()
-          //  }
+            }
         }
         .configurationDisplayName("Weekly Earnings")
         .description("A summary of your earnings this week. Tap to select job.")

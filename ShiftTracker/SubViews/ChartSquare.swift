@@ -191,23 +191,42 @@ struct ChartSquare: View {
                         ForEach(shiftManager.recentShifts) { shift in
                             
                             if let currentActiveShift, currentActiveShift.id == shift.id{
-                       
-                                RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekday))
-                                    .foregroundStyle(Color(.systemGray6))
-                                    .annotation(position: .top){
-                                        if shiftManager.statsMode == .earnings {
+                                if #available(iOS 17, *){
+                                    RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekday))
+                                        .foregroundStyle(Color(.systemGray6))
+                                        .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
+                                            if shiftManager.statsMode == .earnings {
+                                                
+                                                ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
+                                                    .opacity(showSelectionBar ? 1.0 : 0.0)
+                                            } else if shiftManager.statsMode == .hours {
+                                                ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                    .opacity(showSelectionBar ? 1.0 : 0.0)
+                                            } else {
+                                                ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
+                                                    .opacity(showSelectionBar ? 1.0 : 0.0)
+                                            }
                                             
-                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else if shiftManager.statsMode == .hours {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
                                         }
-                                        
-                                    }
+                                
+                                } else {
+                                    RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekday))
+                                        .foregroundStyle(Color(.systemGray6))
+                                        .annotation(position: .top){
+                                            if shiftManager.statsMode == .earnings {
+                                                
+                                                ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
+                                                    .opacity(showSelectionBar ? 1.0 : 0.0)
+                                            } else if shiftManager.statsMode == .hours {
+                                                ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                    .opacity(showSelectionBar ? 1.0 : 0.0)
+                                            } else {
+                                                ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
+                                                    .opacity(showSelectionBar ? 1.0 : 0.0)
+                                            }
+                                            
+                                        }
+                                }
                                 
                             }
                             
@@ -236,9 +255,28 @@ struct ChartSquare: View {
                         ForEach(shiftManager.monthlyShifts) { shift in
                             
                             if let currentActiveShift, currentActiveShift.id == shift.id{
-                       
+                                if #available(iOS 17, *){
                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .day))
                                     .foregroundStyle(Color(.systemGray6))
+                                    .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
+                           
+                                        if shiftManager.statsMode == .earnings {
+                                            
+                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else if shiftManager.statsMode == .hours {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        }
+                                        
+                                    }
+                            } else {
+                                RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .day))
+                                    .foregroundStyle(Color(.systemGray6))
+                                 
                                     .annotation(position: .top){
                                         if shiftManager.statsMode == .earnings {
                                             
@@ -253,6 +291,9 @@ struct ChartSquare: View {
                                         }
                                         
                                     }
+                                
+                                
+                            }
                                 
                             }
                             
@@ -282,7 +323,25 @@ struct ChartSquare: View {
                         ForEach(shiftManager.halfYearlyShifts) { shift in
                             
                             if let currentActiveShift, currentActiveShift.id == shift.id{
-                  
+                                if #available(iOS 17, *){
+                                RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekOfYear))
+                                    .foregroundStyle(Color(.systemGray6))
+                                    .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
+                                        if shiftManager.statsMode == .earnings {
+                                            
+                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else if shiftManager.statsMode == .hours {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        }
+                                        
+                                    }
+                                
+                            } else {
                                 RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekOfYear))
                                     .foregroundStyle(Color(.systemGray6))
                                     .annotation(position: .top){
@@ -299,6 +358,8 @@ struct ChartSquare: View {
                                         }
                                         
                                     }
+                                
+                            }
                                 
                             }
                             
@@ -325,24 +386,48 @@ struct ChartSquare: View {
                     case .year:
                         
                         ForEach(shiftManager.yearlyShifts) { shift in
-                        if let currentActiveShift, currentActiveShift.id == shift.id{
-                 
-                            RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
-                                .foregroundStyle(Color(.systemGray6))
-                                .annotation(position: .top){
-                                    if shiftManager.statsMode == .earnings {
+                            if let currentActiveShift, currentActiveShift.id == shift.id{
+                                if #available(iOS 17, *){
+                                RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
+                                    .foregroundStyle(Color(.systemGray6))
+                                    .annotation(position: .top, spacing: 0, overflowResolution: .init(x: .fit, y: .disabled)){
+                                
+                                        if shiftManager.statsMode == .earnings {
+                                            
+                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else if shiftManager.statsMode == .hours {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        }
                                         
-                                        ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                            .opacity(showSelectionBar ? 1.0 : 0.0)
-                                    } else if shiftManager.statsMode == .hours {
-                                        ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                            .opacity(showSelectionBar ? 1.0 : 0.0)
-                                    } else {
-                                        ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
-                                            .opacity(showSelectionBar ? 1.0 : 0.0)
                                     }
-                                    
-                                }
+                                
+                                
+                            } else {
+                                RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
+                                    .foregroundStyle(Color(.systemGray6))
+                          
+                                    .annotation(position: .top){
+                                        if shiftManager.statsMode == .earnings {
+                                            
+                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else if shiftManager.statsMode == .hours {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        } else {
+                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
+                                                .opacity(showSelectionBar ? 1.0 : 0.0)
+                                        }
+                                        
+                                    }
+                                
+                                
+                            }
                             
                         }
                         

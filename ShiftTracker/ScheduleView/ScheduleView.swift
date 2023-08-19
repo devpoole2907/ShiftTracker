@@ -154,7 +154,8 @@ struct ScheduleView: View {
                     }.opacity(showAllScheduledShiftsView ? 0 : 1)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                         .scrollContentBackground(.hidden)
-                    // .listSectionSpacing(0) // iOS 17
+                        .customSectionSpacing(with: 18) // iOS 17, wrapped modifier
+                   
                     
                 } else {
                     AllScheduledShiftsView(navPath: $navPath).environmentObject(savedPublisher)
@@ -196,7 +197,7 @@ struct ScheduleView: View {
                                     .fill(showAllScheduledShiftsView ? (colorScheme == .dark ? .white : .black) : .clear)
                                     .padding(-5)
                             )
-                    }    // .disabled(true)
+                    }  //.symbolEffect(.bounce.down, value: showAllScheduledShiftsView)  // .disabled(true)
                 }
                 ToolbarItem(placement: .navigationBarTrailing){
                     

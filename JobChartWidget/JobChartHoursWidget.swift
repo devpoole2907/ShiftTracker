@@ -135,17 +135,17 @@ struct JobChartHoursWidget: Widget {
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: SelectJobIntent.self, provider: ChartWidgetProvider()) { entry in
-          /*  if #available(iOS 17.0, *) {
+            if #available(iOS 17.0, *) {
                 JobChartHoursWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
-            } else { */
+            } else {
                 JobChartHoursWidgetEntryView(entry: entry)
                 .padding(.horizontal, 5)
                 .padding(.bottom, 8)
                 .padding(.top, 10)
             
                     .background()
-           // }
+            }
         }
         .configurationDisplayName("Weekly Hours")
         .description("A summary of your hours this week. Tap to select job.")
