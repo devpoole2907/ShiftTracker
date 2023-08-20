@@ -119,7 +119,7 @@ struct AppIconView: View {
                     }
                 
                    
-            }.scrollContentBackground(.hidden)
+            }//.scrollContentBackground(.hidden)
             .navigationTitle("App Icon")
         
     }

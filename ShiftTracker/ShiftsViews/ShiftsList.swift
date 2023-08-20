@@ -43,7 +43,7 @@ struct ShiftsList: View {
     
     var body: some View {
         
-      //  ZStack(alignment: .bottom){
+        ZStack(alignment: .bottom){
         List(selection: $selection){
             ForEach(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 ZStack {
@@ -100,7 +100,7 @@ struct ShiftsList: View {
                 .onSubmit(of: .search, sortSelection.fetchShifts)
                
             .tint(Color.gray)
-            .scrollContentBackground(.hidden)
+           // .scrollContentBackground(.hidden)
 
             .onAppear {
                 
@@ -116,15 +116,18 @@ struct ShiftsList: View {
             }
 
             TagSortView(selectedFilters: $sortSelection.selectedFilters)
-                .padding(.bottom)
-                .background {
-                    
-                    colorScheme == .dark ? Color.black : Color.white
-                        
-                    
-                } //.padding(.top)
-                .frame(width: UIScreen.main.bounds.width)
-                .frame(maxHeight: 30)
+                //.padding(.top)
+                .frame(width: UIScreen.main.bounds.width - 20)
+                .frame(maxHeight: 40)
+                .padding(5)
+                .background(.thinMaterial)
+                .cornerRadius(12)
+              //
+               
+                
+                .shadow(radius: 3)
+            
+                .padding(.bottom, 5)
             
                 .onChange(of: sortSelection.selectedFilters) { _ in
                     
@@ -132,7 +135,7 @@ struct ShiftsList: View {
                     
                 }
         
-  //  }
+    }
         
         
         

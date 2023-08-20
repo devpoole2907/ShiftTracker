@@ -146,9 +146,9 @@ struct JobView: View {
             ZStack{
                 Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 ScrollView{
-                    
+                    VStack(spacing: 15){
                     GeometryReader { geometry in
-                                    let offset = geometry.frame(in: .global).minY
+                        let offset = geometry.frame(in: .global).minY
                         VStack{
                             Spacer()
                             ZStack {
@@ -164,19 +164,20 @@ struct JobView: View {
                                         
                                         
                                     }
+                                    .shadow(color: selectedColor, radius: 4, x: 0, y: 0)
                                 VStack(alignment: .trailing){
                                     Spacer()
                                     Image(systemName: "pencil")
                                         .font(.caption)
-                                      //  .foregroundStyle(.white)
+                                    //  .foregroundStyle(.white)
                                         .padding(8)
                                         .background {
-                                           
-                                           Circle()
-                                               .foregroundStyle(Color("SquaresColor"))
-                                           
-                                           
-                                       }
+                                            
+                                            Circle()
+                                                .foregroundStyle(Color("SquaresColor"))
+                                            
+                                            
+                                        }
                                         .padding(.leading, 60)
                                         .padding(.top, 15)
                                     
@@ -184,29 +185,46 @@ struct JobView: View {
                                 
                                 
                             }
-                                .scaleEffect(1 + (offset / 1000))
-                                .onTapGesture {
-                                    activeSheet = .symbolSheet
-                                }
-                                .frame(maxWidth: .infinity)
+                            .scaleEffect(1 + (offset / 1000))
+                            .onTapGesture {
+                                activeSheet = .symbolSheet
+                            }
+                            .frame(maxWidth: .infinity)
                         }
                         
                     }.frame(height: 80)
+                    
+                        TextField("Company Name", text: $name)
+                            .font(.title)
+                            .bold()
+                            .fontDesign(.rounded)
+                            .foregroundStyle(selectedColor.gradient)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .background(Color(.systemGray5),in:
+                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .padding(.horizontal)
+                            .shake(times: nameShakeTimes)
+                    
+                }
+                    .padding(.vertical)
+                        .background(Color("SquaresColor"))
+                        .cornerRadius(20)
+                        .padding(.horizontal)
+                        
+                    
                     
                     
                     
                     VStack(spacing: 15){
                         
                       //  Group{
-                            TextField("Company Name", text: $name)
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                .shake(times: nameShakeTimes)
+                            
                             
                             
                             TextField("Job Title", text: $title)
+                            .fontDesign(.rounded)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color("SquaresColor"),in:
@@ -214,6 +232,7 @@ struct JobView: View {
                                 .shake(times: titleShakeTimes)
                             
                             CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
+                            .fontDesign(.rounded)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color("SquaresColor"), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -504,7 +523,11 @@ struct JobView: View {
                     
                     
                     
-                }.toolbar{
+                }
+                .background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
+                
+                
+                .toolbar{
                     ToolbarItemGroup(placement: .keyboard){
                         Spacer()
                         

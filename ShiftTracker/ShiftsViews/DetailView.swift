@@ -635,7 +635,10 @@ struct DetailView: View {
         }
         
         
-        .scrollContentBackground(.hidden)
+        //.scrollContentBackground(.hidden)
+        
+        .customScrollBackgroundModifier()
+        
         
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -685,7 +688,7 @@ struct DetailView: View {
                     }) {
                         Image(systemName: "folder.badge.plus")
                             .bold()
-                            .padding()
+                           // .padding()
                     }
                     .disabled(viewModel.totalPay <= 0 || !viewModel.areAllTempBreaksWithin)
                     
@@ -715,7 +718,7 @@ struct DetailView: View {
                         Image(systemName: "trash")
                     }
                     .foregroundColor(.red)
-                    .padding([.vertical, .trailing])
+                  //  .padding([.vertical, .trailing])
                     
                 }
             }

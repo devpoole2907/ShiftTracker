@@ -153,7 +153,7 @@ struct ScheduleView: View {
                         
                     }.opacity(showAllScheduledShiftsView ? 0 : 1)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
-                        .scrollContentBackground(.hidden)
+                        //.scrollContentBackground(.hidden)
                     // .listSectionSpacing(0) // iOS 17
                     
                 } else {

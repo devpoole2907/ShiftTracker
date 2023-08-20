@@ -56,7 +56,7 @@ struct ConfigureExportView: View {
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color("SquaresColor"))
                 
-            } .scrollContentBackground(.hidden)
+            } //.scrollContentBackground(.hidden)
                 .navigationTitle("Export")
             
             

@@ -48,7 +48,7 @@ struct MainWithSideBarView: View {
     
     init(/*currentTab: Binding<Tab>*/) {
         // self._currentTab = currentTab
-         UITabBar.appearance().isHidden = true
+       //  UITabBar.appearance().isHidden = true
      }
     
     //@Binding var currentTab: Tab
@@ -88,7 +88,7 @@ struct MainWithSideBarView: View {
                             .environmentObject(jobSelectionModel)
                             .environmentObject(themeManager)
                         
-                        VStack(spacing: 0){
+                        ZStack(alignment: .bottom){
                             
                             TabView(selection: $navigationState.currentTab) {
                                 ContentView()
@@ -181,12 +181,16 @@ struct MainWithSideBarView: View {
                                 }
                                 .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
                                 .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
+                               // .background(.ultraThinMaterial)
+                                
                             }
                             
                             
                         }
                         .frame(width: getRect().width)
                         .ignoresSafeArea(.keyboard)
+           
+                        
                         
                         .overlay(
                             
@@ -202,6 +206,7 @@ struct MainWithSideBarView: View {
                     .frame(width: getRect().width + sideBarWidth)
                     .offset(x: -sideBarWidth / 2)
                     .offset(x: offset > 0 ? offset : 0)
+            
                     
                     if (navigationState.currentTab == .settings && settingsPath.isEmpty) || (navigationState.currentTab == .home || navigationState.currentTab == .schedule) || (navigationState.currentTab == .timesheets && path.isEmpty) {
                     

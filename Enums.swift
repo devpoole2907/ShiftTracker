@@ -27,6 +27,22 @@ public enum StatsMode: Int, CaseIterable {
             
         }
     }
+    
+    var image: String {
+        switch self {
+        case .earnings:
+            return "dollarsign.circle"
+        case .hours:
+            return "clock"
+        case .breaks:
+            return "bed.double"
+            
+        }
+        
+        
+    }
+    
+    
 }
 
 public enum DateRange: Int, CaseIterable {

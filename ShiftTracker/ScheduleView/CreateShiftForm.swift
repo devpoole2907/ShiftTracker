@@ -395,7 +395,11 @@ struct CreateShiftForm: View {
                     
                 }
           
-            }.scrollContentBackground(.hidden)
+            }//.scrollContentBackground(.hidden)
+           // .customScrollBackgroundModifier()
+            
+            
+            .background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
             
                 .toolbar{
                     ToolbarItem(placement: .navigationBarTrailing){

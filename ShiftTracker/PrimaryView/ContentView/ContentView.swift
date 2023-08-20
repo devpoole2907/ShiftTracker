@@ -147,7 +147,7 @@ struct ContentView: View {
                 if viewModel.shift != nil && !viewModel.tempBreaks.isEmpty {
                     CurrentBreaksListView()
                 }
-            }.scrollContentBackground(.hidden)
+            }//.scrollContentBackground(.hidden)
                 .toolbar{
                     ToolbarItemGroup(placement: .keyboard){
                         Spacer()

@@ -188,12 +188,12 @@ struct JobOverview: View {
                   
                     
             }
-            .listRowBackground(Color("SquaresColor"))
+            //.listRowBackground(Color("SquaresColor"))
             .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
            
            
             
-        }.scrollContentBackground(.hidden)
+        }//.scrollContentBackground(.hidden)
             
                 .sheet(item: $activeSheet) { sheet in
                     
@@ -305,6 +305,7 @@ struct JobOverview: View {
                             }
                         }) {
                             HStack {
+                                
                                 Text(shiftManager.statsModes[index])
                                     .textCase(nil)
                                 if index == shiftManager.statsMode.rawValue {

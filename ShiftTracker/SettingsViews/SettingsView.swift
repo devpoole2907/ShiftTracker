@@ -264,7 +264,9 @@ struct SettingsView: View {
                 Spacer()
                 
                 
-            }.scrollContentBackground(.hidden)
+            }//.scrollContentBackground(.hidden)
+            .background(Color(.systemGroupedBackground))
+       
             
                 .onAppear {
                     
@@ -463,7 +465,7 @@ struct NotificationView: View{
 
         }
         
-        .scrollContentBackground(.hidden)
+        //.scrollContentBackground(.hidden)
         
         .navigationTitle("Notifications")
         
@@ -525,7 +527,7 @@ struct LocationView: View{
             
             
             
-        }.scrollContentBackground(.hidden)
+        }//.scrollContentBackground(.hidden)
         
             .navigationTitle("Location")
         
@@ -575,7 +577,7 @@ struct AppearanceView: View {
                     
                 }
             }.padding(.horizontal)
-        }.scrollContentBackground(.hidden)
+        }//.scrollContentBackground(.hidden)
             
             .navigationTitle("Appearance")
         

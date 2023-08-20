@@ -161,7 +161,7 @@ struct AllScheduledShiftsView: View {
                 }
                 
                 .listStyle(PlainListStyle())
-                .scrollContentBackground(.hidden)
+                //.scrollContentBackground(.hidden)
             }
         } else {
             Text("You don't have any shifts scheduled.")

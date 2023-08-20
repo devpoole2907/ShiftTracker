@@ -427,3 +427,26 @@ class NotificationManager: ObservableObject {
 
     
 }
+
+// applies hidden scroll background only if in dark mode
+
+struct CustomScrollBackgroundModifier: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+
+    func body(content: Content) -> some View {
+        Group {
+            if colorScheme == .dark {
+                content.scrollContentBackground(.hidden)
+            } else {
+                content
+            }
+        }
+    }
+}
+
+extension View {
+    func customScrollBackgroundModifier() -> some View {
+        self.modifier(CustomScrollBackgroundModifier())
+    }
+}
+
