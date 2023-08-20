@@ -53,7 +53,7 @@ struct ActionView: View {
                         
                         
                         
-                        DatePicker("", selection: $actionDate, in: .distantPast...Date().addingTimeInterval(24*60*60),  displayedComponents: [.date, .hourAndMinute])
+                        DatePicker("", selection: $actionDate, in: Date().addingTimeInterval(-(24*60*60))...Date().addingTimeInterval(24*60*60),  displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.wheel)
                             .labelsHidden()
                             .frame(maxWidth: .infinity, alignment: .center)

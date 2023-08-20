@@ -105,6 +105,22 @@ struct ContentView: View {
                             
                         }
                     
+                        .onReceive(viewModel.$timeElapsed) { value in
+                            
+                            if value >= 86400 {
+                                DispatchQueue.main.async {
+                                    self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(86400), job: jobSelectionViewModel.fetchJob(in: context)!)
+                                    
+                                    
+                                    //  DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    viewModel.activeSheet = .detailSheet
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                    
                     TagButtonView()
                         .frame(maxWidth: .infinity)
                     
