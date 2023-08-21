@@ -278,29 +278,29 @@ struct SettingsView: View {
                     
                     if i == 0 {
                         
-                        ThemeView(showingProView: $showingProView)
+                        ThemeView(showingProView: $showingProView) .background(Color(.systemGroupedBackground))
                         
                     }
                     else if i == 1 {
                         
-                        LocationView()
+                        LocationView() .background(Color(.systemGroupedBackground))
                         
                     } else if i == 2 {
                         
-                        NotificationView()
+                        NotificationView() .background(Color(.systemGroupedBackground))
                         
                     } else if i == 3 {
                         
-                        AppearanceView()
+                        AppearanceView() .background(Color(.systemGroupedBackground))
                         
                     } else if i == 4 {
                         
-                        TipView()
+                        TipView() .background(Color(.systemGroupedBackground))
                         
                         
                     } else {
                         
-                        AppIconView().environmentObject(iconManager)
+                        AppIconView().environmentObject(iconManager) .background(Color(.systemGroupedBackground))
                         
                     }
                     
@@ -452,20 +452,22 @@ struct NotificationView: View{
     @Environment(\.scenePhase) var scenePhase
     
     var body: some View{
-        ScrollView{
-            
-            SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
-          
-                .onAppear(perform: notificationManager.checkNotificationStatus)
-                .onChange(of: scenePhase) { newPhase in
-                    if newPhase == .active {
-                        notificationManager.checkNotificationStatus()
-                    }
-                }
-
-        }
         
-        //.scrollContentBackground(.hidden)
+     
+           
+                
+                SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)
+                
+                    .onAppear(perform: notificationManager.checkNotificationStatus)
+                    .onChange(of: scenePhase) { newPhase in
+                        if newPhase == .active {
+                            notificationManager.checkNotificationStatus()
+                        }
+                    }
+                
+            
+            
+        
         
         .navigationTitle("Notifications")
         
@@ -483,30 +485,33 @@ struct SettingsCheckView: View {
     
     var body: some View {
         
-        
-        VStack(alignment: .center, spacing: 10){
-            Image(systemName: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: 50)
-                .bold().foregroundStyle(checkmarkColor)
-                .padding(.top)
+        List{
+            VStack(alignment: .center, spacing: 10){
+                Image(systemName: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: 50)
+                    .bold().foregroundStyle(checkmarkColor)
+                    .padding(.top)
+                
+                Text(headline)
+                    .bold()
+                    .font(.title3)
+                    .padding(.bottom)
+                Text(subheadline)
+                    .lineLimit(2, reservesSpace: true)
+                    .multilineTextAlignment(.center)
+                    .fontDesign(.rounded)
+                    .font(.callout)
+                    .padding()
+            }.padding()
+                .frame(minWidth: UIScreen.main.bounds.width - 80)
+                .background(Color("SquaresColor"))
+                .cornerRadius(12)
+                .padding(.horizontal, 40)
+                .listRowBackground(Color.clear)
             
-            Text(headline)
-                .bold()
-                .font(.title3)
-                .padding(.bottom)
-            Text(subheadline)
-                .fontDesign(.rounded)
-                .font(.callout)
-                .padding()
-        }.padding()
-            .frame(minWidth: UIScreen.main.bounds.width - 80)
-            .background(Color("SquaresColor"))
-            .cornerRadius(12)
-            .padding()
-           
-           
+        }
     }
     
     
@@ -517,7 +522,7 @@ struct LocationView: View{
     @EnvironmentObject private var locationManager: LocationDataManager
     
     var body: some View{
-        ScrollView{
+ 
             
             
             
@@ -526,8 +531,7 @@ struct LocationView: View{
                 
             
             
-            
-        }//.scrollContentBackground(.hidden)
+     
         
             .navigationTitle("Location")
         
