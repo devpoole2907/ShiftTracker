@@ -482,13 +482,13 @@ class ContentViewModel: ObservableObject {
          /*   if sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) == nil {
                 sharedUserDefaults.set(timeElapsed, forKey: shiftKeys.timeElapsedBeforeBreakKey)
             } */
-        if isUnpaid{
+      
             #if os(iOS)
-            updateActivity(startDate: currentBreak.startDate)
+            updateActivity(startDate: currentBreak.startDate, isUnpaid: isUnpaid)
             #endif
            // stopTimer(timer: &timer, timeElapsed: &timeElapsed)
             
-            
+        if isUnpaid {
             
             totalPayAtBreakStart = totalPay
             
@@ -781,10 +781,10 @@ class ContentViewModel: ObservableObject {
             
         }
         
-        func updateActivity(startDate: Date){
+    func updateActivity(startDate: Date, isUnpaid: Bool = false){
             Task{
                 
-                let updatedState = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak)
+                let updatedState = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak, unpaidBreak: isUnpaid)
                 
                 let updatedContent = ActivityContent(state: updatedState, staleDate: nil)
                 

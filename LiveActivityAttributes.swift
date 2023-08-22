@@ -15,6 +15,7 @@ struct LiveActivityAttributes: ActivityAttributes {
         var startTime: Date
         var totalPay: Double
         var isOnBreak: Bool
+        var unpaidBreak: Bool = false
 
     }
 
