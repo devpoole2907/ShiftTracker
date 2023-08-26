@@ -208,7 +208,7 @@ struct ProView: View {
                 
                 PurchaseSuccessView()
                 
-                    .presentationBackground(Color("allSheetBackground"))
+                    .presentationBackground(.ultraThinMaterial)
                     .presentationCornerRadius(25)
                 
             }
@@ -226,7 +226,10 @@ struct ProView: View {
             }
             
             
-        } .onAppear{
+        }
+        
+        
+        .onAppear{
             
             Task{
                 

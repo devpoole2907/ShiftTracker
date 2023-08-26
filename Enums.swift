@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 public enum Field: Hashable {
     case field1, field2, field3
@@ -31,19 +32,90 @@ public enum StatsMode: Int, CaseIterable {
     var image: String {
         switch self {
         case .earnings:
-            return "dollarsign.circle"
+            return "dollarsign.circle.fill"
         case .hours:
-            return "clock"
+            return "clock.fill"
         case .breaks:
-            return "bed.double"
+            return "bed.double.fill"
             
         }
         
         
     }
     
+    var color: Color {
+        
+        switch self {
+        case .earnings:
+            return Color.green
+        case .hours:
+            return Color.orange
+        case .breaks:
+            return Color.indigo
+        }
+        
+    }
+    
+    var gradient: LinearGradient {
+            switch self {
+            case .earnings:
+                return LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(red: 198 / 255, green: 253 / 255, blue: 80 / 255),
+                        Color(red: 112 / 255, green: 218 / 255, blue: 65 / 255)
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom)
+            case .hours:
+                return LinearGradient(
+                    gradient: Gradient(colors: [Color.yellow, Color.orange]),
+                    startPoint: .top,
+                    endPoint: .bottom)
+            case .breaks:
+                return LinearGradient(
+                    gradient: Gradient(colors: [Color.indigo, Color.purple]),
+                    startPoint: .top,
+                    endPoint: .bottom)
+            }
+        
+    }
+    
+    var cornerRadius: CGFloat {
+        switch self {
+        case .earnings:
+            return 10
+        case .breaks:
+            return 5
+        case .hours:
+            return 5
+        }
+    }
+    
     
 }
+
+
+public enum HistoryRange: Int, CaseIterable {
+    
+    case week
+    case month
+    case year
+    
+    var shortDescription: String {
+        switch self {
+        case .week:
+            return "Week"
+        case .month:
+            return "Month"
+        case .year:
+            return "Year"
+        }
+    }
+    
+    
+}
+
+
 
 public enum DateRange: Int, CaseIterable {
     case week

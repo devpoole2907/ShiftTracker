@@ -117,6 +117,9 @@
 		7C0AC1332A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */; };
 		7C0AC1362A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */; };
 		7C0AC1372A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */; };
+		7C1A507A2A99612F00305171 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A50792A99612F00305171 /* HistoryView.swift */; };
+		7C1A507C2A9976C500305171 /* HistoryPagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A507B2A9976C500305171 /* HistoryPagesView.swift */; };
+		7C1A507E2A99F31A00305171 /* PageControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A507D2A99F31900305171 /* PageControlView.swift */; };
 		7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */; };
@@ -354,6 +357,9 @@
 		7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftToChart.swift; sourceTree = "<group>"; };
 		7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartWidgetProvider.swift; sourceTree = "<group>"; };
 		7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartEarningsWidget.swift; sourceTree = "<group>"; };
+		7C1A50792A99612F00305171 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		7C1A507B2A9976C500305171 /* HistoryPagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPagesView.swift; sourceTree = "<group>"; };
+		7C1A507D2A99F31900305171 /* PageControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControlView.swift; sourceTree = "<group>"; };
 		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerBundle.swift; sourceTree = "<group>"; };
 		7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerLiveActivity.swift; sourceTree = "<group>"; };
@@ -756,6 +762,7 @@
 				7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */,
 				7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */,
 				7CD8A3232A882F110011A1C0 /* HighlightedText.swift */,
+				7C1A507D2A99F31900305171 /* PageControlView.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -800,6 +807,8 @@
 				1A1DEC9629F101040002D9E4 /* ChartView.swift */,
 				1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */,
 				1A0F5F1429F11B9D003C83F0 /* HighlightView.swift */,
+				7C1A50792A99612F00305171 /* HistoryView.swift */,
+				7C1A507B2A9976C500305171 /* HistoryPagesView.swift */,
 			);
 			path = SummaryViews;
 			sourceTree = "<group>";
@@ -1210,6 +1219,7 @@
 				1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */,
 				7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */,
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
+				7C1A507A2A99612F00305171 /* HistoryView.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
 				7C0AC12E2A88EBA10016456E /* ShiftToChart.swift in Sources */,
 				1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */,
@@ -1241,6 +1251,7 @@
 				1AB7D6AB29FC059500326AAA /* IntroMainView.swift in Sources */,
 				1A5B0BA32A5500BF0021572B /* CurrencyTextField.swift in Sources */,
 				1A0F5F1529F11B9D003C83F0 /* HighlightView.swift in Sources */,
+				7C1A507E2A99F31A00305171 /* PageControlView.swift in Sources */,
 				BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */,
 				1A8D4ADA2A4EE16400EEB334 /* JobOverview.swift in Sources */,
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
@@ -1264,6 +1275,7 @@
 				7CD8A3262A882F350011A1C0 /* ShiftSorts.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
 				BF8191422A5A70FB0079E449 /* Tempgraph.swift in Sources */,
+				7C1A507C2A9976C500305171 /* HistoryPagesView.swift in Sources */,
 				BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */,
 				1A13F19529D02914009BE6B0 /* ProView.swift in Sources */,
 				7CD8A3282A8831B80011A1C0 /* TagSortView.swift in Sources */,

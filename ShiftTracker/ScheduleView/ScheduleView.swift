@@ -105,7 +105,7 @@ struct ScheduleView: View {
         
         NavigationStack(path: $navPath) {
             ZStack{
-                if !showAllScheduledShiftsView{
+               
                     // note for ios 17: there is a modifier that reduces this spacing
                     List {
                         let interval = DateInterval(start: .distantPast, end: .distantFuture)
@@ -151,14 +151,14 @@ struct ScheduleView: View {
                         
                         
                         
-                    }.opacity(showAllScheduledShiftsView ? 0 : 1)
+                    }//.opacity(showAllScheduledShiftsView ? 0 : 1)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                         //.scrollContentBackground(.hidden)
                     // .listSectionSpacing(0) // iOS 17
                     
-                } else {
+                if showAllScheduledShiftsView {
                     AllScheduledShiftsView(navPath: $navPath).environmentObject(savedPublisher)
-                        .opacity(showAllScheduledShiftsView ? 1 : 0)
+                       // .opacity(showAllScheduledShiftsView ? 1 : 0)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                         .onDisappear{
                             
@@ -168,6 +168,8 @@ struct ScheduleView: View {
                         }
                     
                 }
+                    
+                
             }.onAppear {
                 
                 navigationState.gestureEnabled = true
@@ -360,7 +362,7 @@ struct ScheduleView: View {
                         
                             .presentationDetents([.large])
                             .presentationCornerRadius(35)
-                            .presentationBackground(Color("allSheetBackground"))
+                            .presentationBackground(.ultraThinMaterial)
                         
                         
                     case .pastShiftSheet:
@@ -378,7 +380,7 @@ struct ScheduleView: View {
                         
                             .presentationDetents([.large])
                             .presentationCornerRadius(35)
-                            .presentationBackground(Color("allSheetBackground"))
+                            .presentationBackground(.ultraThinMaterial)
                         
                         
                     }

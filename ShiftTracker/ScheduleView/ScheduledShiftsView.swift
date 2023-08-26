@@ -179,7 +179,7 @@ struct ScheduledShiftsView: View {
             CreateShiftForm(dateSelected: $dateSelected, scheduledShift: shift)
                 .presentationDetents([.large])
                 .presentationCornerRadius(35)
-                .presentationBackground(Color("allSheetBackground"))
+                .presentationBackground(.ultraThinMaterial)
             
         }
 

@@ -316,6 +316,8 @@ class NavigationState: ObservableObject {
     
     @Published var currentTab: Tab = .home
     
+    @Published var hideTabBar = false
+    
 }
 
 
@@ -449,4 +451,7 @@ extension View {
         self.modifier(CustomScrollBackgroundModifier())
     }
 }
+
+
+
 

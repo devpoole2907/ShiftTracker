@@ -69,7 +69,13 @@ struct IntroMainView: View {
                     .onDisappear{
                         isFirstLaunch = false
                     }
+                
+                
+                    .presentationBackground(.ultraThinMaterial)
+                
             }
+            
+            
             
             
         }

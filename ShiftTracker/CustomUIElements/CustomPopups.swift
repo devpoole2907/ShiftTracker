@@ -36,7 +36,7 @@ struct OkButtonPopup: CentrePopup {
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
         
-        .background(Color("SquaresColor"))
+        .background(.ultraThinMaterial)
         .cornerRadius(20)
         .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
@@ -99,7 +99,7 @@ struct CustomConfirmationAlert: CentrePopup {
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
-        .background(Color("SquaresColor"))
+        .background(.ultraThinMaterial)
         .cornerRadius(20)
         .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()

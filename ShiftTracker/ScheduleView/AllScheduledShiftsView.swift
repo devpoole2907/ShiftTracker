@@ -136,6 +136,7 @@ struct AllScheduledShiftsView: View {
                         .listRowSeparator(.hidden)
                     
                 }
+                  //
                 .onAppear {
                     
                     
@@ -161,12 +162,21 @@ struct AllScheduledShiftsView: View {
                 }
                 
                 .listStyle(PlainListStyle())
-                //.scrollContentBackground(.hidden)
+                .scrollContentBackground(.hidden)
+                .background(.ultraThinMaterial)
+                
             }
         } else {
-            Text("You don't have any shifts scheduled.")
-                .bold()
-                .padding()
+            ZStack {
+                Color.clear
+                    .background(.ultraThinMaterial)
+                    .ignoresSafeArea()
+
+                Text("You don't have any shifts scheduled.")
+                    .bold()
+                    .padding()
+            }
+
         }
     }
 }

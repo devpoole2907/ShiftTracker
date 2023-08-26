@@ -85,6 +85,8 @@ struct ExportSquare: View {
                 ProView()
                     .environmentObject(purchaseManager)
                 
+                    .presentationBackground(.ultraThinMaterial)
+                
             }
         
         

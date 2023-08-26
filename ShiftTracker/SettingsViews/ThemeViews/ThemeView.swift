@@ -132,7 +132,7 @@ struct ThemeView: View {
         
             ThemesGuideView()
                 .presentationDetents([.fraction(0.8)])
-                .presentationBackground(Color("allSheetBackground"))
+                .presentationBackground(.ultraThinMaterial)
             .presentationCornerRadius(35)
         }
     

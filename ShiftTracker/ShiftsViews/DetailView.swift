@@ -57,8 +57,7 @@ struct DetailView: View {
     @AppStorage("TipsEnabled") private var tipsEnabled: Bool = true
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
     
-    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
-    var shifts: FetchedResults<OldShift>
+
     
     var shift: OldShift?
     var job: Job?
@@ -116,286 +115,247 @@ struct DetailView: View {
         
         
         
-        
-        List{
-            Section{
-                
-                VStack{
+        ZStack(alignment: .bottomTrailing){
+            List{
+                Section{
                     
-                    
-                    
-                    if !viewModel.areAllTempBreaksWithin {
-                        HStack {
-                            
-                            Image(systemName: "exclamationmark.triangle.fill")
-                            Text("Breaks are not within the shift start & end dates.").bold().fontDesign(.rounded)
-                               
-                        }
-                        .padding()
+                    VStack{
+                        
+                        
+                        
+                        if !viewModel.areAllTempBreaksWithin {
+                            HStack {
+                                
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                Text("Breaks are not within the shift start & end dates.").bold().fontDesign(.rounded)
+                                
+                            }
+                            .padding()
                             .background(Color("SquaresColor"))
                             .cornerRadius(12)
                             .frame(width: UIScreen.main.bounds.width - 60)
-                           
-                    }
-                    
-                    
-                    ZStack{
-                        RoundedRectangle(cornerRadius: 12)
-                            .foregroundColor(Color("SquaresColor"))
-                            .frame(width: UIScreen.main.bounds.width - 60)
-                            .shadow(radius: 5, x: 0, y: 4)
-                        VStack(alignment: .center, spacing: 5) {
                             
-                            VStack {
-                                Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.totalPay)) ?? "")")
-                                    .padding(.horizontal, 20)
-                                    .font(.system(size: 60).monospacedDigit())
-                                    .fontWeight(.bold)
-                                    .lineLimit(1)
-                                    .allowsTightening(true)
+                        }
+                        
+                        
+                        ZStack{
+                            RoundedRectangle(cornerRadius: 12)
+                                .foregroundStyle(.thinMaterial)
+                                .frame(width: UIScreen.main.bounds.width - 60)
+                               .shadow(radius: 5, x: 0, y: 4)
+                            VStack(alignment: .center, spacing: 5) {
                                 
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.top)
-                            HStack(spacing: 10){
-                                if viewModel.selectedTaxPercentage > 0 {
-                                    HStack(spacing: 2){
-                                        Image(systemName: "chart.line.downtrend.xyaxis")
-                                            .font(.system(size: 15).monospacedDigit())
-                                     
-                                        Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.taxedPay)) ?? "")")
-                                            .font(.system(size: 20).monospacedDigit())
-                                            .bold()
-                                            .lineLimit(1)
-                                            .allowsTightening(true)
-                                    }.foregroundStyle(themeManager.taxColor)
-                                        .fontDesign(.rounded)
+                                VStack {
+                                    Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.totalPay)) ?? "")")
+                                        .padding(.horizontal, 20)
+                                        .font(.system(size: 60).monospacedDigit())
+                                        .fontWeight(.bold)
+                                        .lineLimit(1)
+                                        .allowsTightening(true)
+                                    
                                 }
-                                if Double(viewModel.selectedTotalTips) ?? 0 > 0 {
-                                    HStack(spacing: 2){
-                                        Image(systemName: "chart.line.uptrend.xyaxis")
-                                            .font(.system(size: 15).monospacedDigit())
-                                           
-                                        Text("\(currencyFormatter.string(from: NSNumber(value: Double(viewModel.selectedTotalTips) ?? 0)) ?? "")")
-                                            .font(.system(size: 20).monospacedDigit())
-                                            .bold()
-                                            .lineLimit(1)
-                                    }.foregroundStyle(themeManager.tipsColor)
-                                        .fontDesign(.rounded)
-                                }
-                            }
-                            
-                            .padding(.horizontal, 20)
-                            
-                            
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom, 5)
-                            
-                            // }
-                            
-                            Divider().frame(maxWidth: 200)
-                            
-                            HStack(spacing: 0) {
-                                ForEach(0..<timeDigits.count, id: \.self) { index in
-                                    RollingDigit(digit: timeDigits[index])
-                                        .frame(width: 20, height: 30)
-                                        .mask(FadeMask())
-                                    if index == 1 || index == 3 {
-                                        Text(":")
-                                            .font(.system(size: 30, weight: .bold).monospacedDigit())
+                                .frame(maxWidth: .infinity)
+                                .padding(.top)
+                                HStack(spacing: 10){
+                                    if viewModel.selectedTaxPercentage > 0 {
+                                        HStack(spacing: 2){
+                                            Image(systemName: "chart.line.downtrend.xyaxis")
+                                                .font(.system(size: 15).monospacedDigit())
+                                            
+                                            Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.taxedPay)) ?? "")")
+                                                .font(.system(size: 20).monospacedDigit())
+                                                .bold()
+                                                .lineLimit(1)
+                                                .allowsTightening(true)
+                                        }.foregroundStyle(themeManager.taxColor)
+                                            .fontDesign(.rounded)
+                                    }
+                                    if Double(viewModel.selectedTotalTips) ?? 0 > 0 {
+                                        HStack(spacing: 2){
+                                            Image(systemName: "chart.line.uptrend.xyaxis")
+                                                .font(.system(size: 15).monospacedDigit())
+                                            
+                                            Text("\(currencyFormatter.string(from: NSNumber(value: Double(viewModel.selectedTotalTips) ?? 0)) ?? "")")
+                                                .font(.system(size: 20).monospacedDigit())
+                                                .bold()
+                                                .lineLimit(1)
+                                        }.foregroundStyle(themeManager.tipsColor)
+                                            .fontDesign(.rounded)
                                     }
                                 }
-                            }
-                            .foregroundStyle(themeManager.timerColor)
-                            //.frame(width: 250, height: 70)
-                            .frame(maxWidth: .infinity)
-                            .padding(.bottom,
-                                     
-                                     ((shift != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
-                                     
-                                     
-                            )
-                            
-                            
-                            
-                            
-                            
-                            
-                            if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (shift != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) {
+                                
+                                .padding(.horizontal, 20)
+                                
+                                
+                                .frame(maxWidth: .infinity)
+                                .padding(.bottom, 5)
+                                
+                                // }
+                                
+                                Divider().frame(maxWidth: 200)
+                                
                                 HStack(spacing: 0) {
-                                    ForEach(0..<breakDigits.count, id: \.self) { index in
-                                        RollingDigit(digit: breakDigits[index])
-                                            .frame(width: 9, height: 14)
+                                    ForEach(0..<timeDigits.count, id: \.self) { index in
+                                        RollingDigit(digit: timeDigits[index])
+                                            .frame(width: 20, height: 30)
                                             .mask(FadeMask())
                                         if index == 1 || index == 3 {
                                             Text(":")
-                                                .font(.system(size: 12, weight: .bold).monospacedDigit())
+                                                .font(.system(size: 30, weight: .bold).monospacedDigit())
                                         }
                                     }
                                 }
-                                .foregroundStyle(themeManager.breaksColor)
+                                .foregroundStyle(themeManager.timerColor)
                                 //.frame(width: 250, height: 70)
                                 .frame(maxWidth: .infinity)
-                                .padding(.bottom)
+                                .padding(.bottom,
+                                         
+                                         ((shift != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
+                                         
+                                         
+                                )
                                 
                                 
-                            }
-                            
-                            
-                            
-                            
-                            
-                        }
-                    }
-                    
-                    TagPicker($viewModel.selectedTags).allowsHitTesting(viewModel.isEditing)
-                        .padding(.horizontal, 15)
-                        .padding(.top, 5)
-                    
-                    HStack{
-                        VStack(alignment: .leading, spacing: 2) {
-                            
-                            if let job = job ?? shift?.job {
-                                let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
-                                HStack{
-                                    Image(systemName: job.icon ?? "")
-                                        .font(.title3)
-                                        .foregroundStyle(.white)
-                                        .padding(10)
-                                        .background {
-                                            
-                                            Circle()
-                                                .foregroundStyle(jobColor)
-                                            
- 
+                                
+                                
+                                
+                                
+                                if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (shift != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) {
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<breakDigits.count, id: \.self) { index in
+                                            RollingDigit(digit: breakDigits[index])
+                                                .frame(width: 9, height: 14)
+                                                .mask(FadeMask())
+                                            if index == 1 || index == 3 {
+                                                Text(":")
+                                                    .font(.system(size: 12, weight: .bold).monospacedDigit())
+                                            }
                                         }
-                                    
-                                    VStack(alignment: .leading, spacing: 3){
-                                        Text(job.name ?? "No Job Found")
-                                            .bold()
-                                            .font(.title2)
-                                        
-                                        Divider().frame(maxWidth: 300)
-                                        
-                                        
-                                        Text(job.title ?? "No Job Title")
-                                            .foregroundStyle(jobColor)
-                                            .fontDesign(.rounded)
-                                            .bold()
-                                            .font(.callout)
-                                            .padding(.leading, 1.4)
                                     }
-                                }.padding(.vertical, 2)
+                                    .foregroundStyle(themeManager.breaksColor)
+                                    //.frame(width: 250, height: 70)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.bottom)
+                                    
+                                    
+                                }
+                                
+                                
+                                
+                                
+                                
                             }
-                            
-                            
-                        }.frame(maxWidth: .infinity)
-                        Spacer()
-                    }   .padding(.horizontal)
-                    
-                    .frame(width: UIScreen.main.bounds.width - 60)
-                      
-                    
-                    
-                }
-                
-                
-                
-                VStack{
-                    VStack(alignment: .leading){
-                        Text("Start:")
-                            .bold()
-                        //.padding(.horizontal, 15)
-                            .padding(.vertical, 5)
-                        
-                        DatePicker("Start: ", selection: $viewModel.selectedStartDate)
-                            .labelsHidden()
-                            .onChange(of: viewModel.selectedStartDate) { _ in
-                                if viewModel.selectedStartDate > viewModel.selectedEndDate {
-                                    viewModel.selectedStartDate = viewModel.selectedEndDate
-                                }
-                                //shift.shiftStartDate = selectedStartDate
-                                //saveContext() // Save the value of tax percent whenever it changes
-                            }
-                            .disabled(!viewModel.isEditing)
-                            .scaleEffect(viewModel.isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
-                            .animation(.easeInOut(duration: 0.2))
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .background(Color("SquaresColor"),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    }
-                    VStack(alignment: .leading){
-                        Text("End:")
-                            .bold()
-                        //.padding(.horizontal, 15)
-                            .padding(.vertical, 5)
-                        
-                        DatePicker("", selection: $viewModel.selectedEndDate)
-                            .labelsHidden()
-                            .onChange(of: viewModel.selectedEndDate) { _ in
-                                if viewModel.selectedEndDate < viewModel.selectedStartDate {
-                                    viewModel.selectedEndDate = viewModel.selectedStartDate
-                                }
-                                //shift.shiftEndDate = selectedEndDate
-                                //saveContext() // Save the value of tax percent whenever it changes
-                            }.disabled(!viewModel.isEditing)
-                            .scaleEffect(viewModel.isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
-                            .animation(.easeInOut(duration: 0.2)) // Add an animation modifier to create the pulse effect
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .background(Color("SquaresColor"),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        
-                    }
-                }
-                
-                VStack{
-                    VStack(alignment: .leading) {
-                        
-                        Text("Hourly pay:")
-                            .bold()
-                        
-                            .padding(.vertical, 5)
-                        
-                            .cornerRadius(20)
-                        
-                        
-                        CurrencyTextField(placeholder: "Hourly Pay", text: $viewModel.selectedHourlyPay)
-                            .disabled(!viewModel.isEditing)
-                            .focused($focusedField, equals: .field1)
-                            .keyboardType(.decimalPad)
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .background(Color("SquaresColor"),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        
-                    }
-                    if viewModel.selectedTaxPercentage > 0 || taxEnabled {
-                        
-                        VStack(alignment: .leading){
-                            Text("Estimated Tax")
-                                .bold()
-                                .padding(.vertical, 5)
-                                .padding(.leading, -3)
-                            Picker("Estimated tax:", selection: $viewModel.selectedTaxPercentage) {
-                                ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
-                                    Text(index / 100, format: .percent)
-                                }
-                            }.pickerStyle(.wheel)
-                                .frame(maxHeight: 100)
-                                .disabled(!viewModel.isEditing)
-                                .tint(Color("SquaresColor"))
                         }
-                        .padding(.horizontal, 5)
+                        
+                        TagPicker($viewModel.selectedTags).allowsHitTesting(viewModel.isEditing)
+                            .padding(.horizontal, 15)
+                            .padding(.vertical, 5)
+                        
+                        HStack{
+                            VStack(alignment: .leading, spacing: 2) {
+                                
+                                if let job = job ?? shift?.job {
+                                    let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
+                                    HStack{
+                                        Image(systemName: job.icon ?? "")
+                                            .font(.title3)
+                                            .foregroundStyle(.white)
+                                            .padding(10)
+                                            .background {
+                                                
+                                                Circle()
+                                                    .foregroundStyle(jobColor)
+                                                
+                                                
+                                            }
+                                        
+                                        VStack(alignment: .leading, spacing: 3){
+                                            Text(job.name ?? "No Job Found")
+                                                .bold()
+                                                .font(.title2)
+                                            
+                                            Divider().frame(maxWidth: 300)
+                                            
+                                            
+                                            Text(job.title ?? "No Job Title")
+                                                .foregroundStyle(jobColor)
+                                                .fontDesign(.rounded)
+                                                .bold()
+                                                .font(.callout)
+                                                .padding(.leading, 1.4)
+                                        }
+                                    }.padding(.vertical, 2)
+                                }
+                                
+                                
+                            }.frame(maxWidth: .infinity)
+                            Spacer()
+                        }   .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .frame(width: UIScreen.main.bounds.width - 60)
+                        
+                            .background(Color("SquaresColor"),in:
+                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        
                     }
                     
-                    if tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
+                    
+                    
+                    VStack{
+                        VStack(alignment: .leading){
+                            Text("Start:")
+                                .bold()
+                            //.padding(.horizontal, 15)
+                                .padding(.vertical, 5)
+                            
+                            DatePicker("Start: ", selection: $viewModel.selectedStartDate)
+                                .labelsHidden()
+                                .onChange(of: viewModel.selectedStartDate) { _ in
+                                    if viewModel.selectedStartDate > viewModel.selectedEndDate {
+                                        viewModel.selectedStartDate = viewModel.selectedEndDate
+                                    }
+                                    //shift.shiftStartDate = selectedStartDate
+                                    //saveContext() // Save the value of tax percent whenever it changes
+                                }
+                                .disabled(!viewModel.isEditing)
+                                .scaleEffect(viewModel.isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
+                                .animation(.easeInOut(duration: 0.2))
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .background(Color("SquaresColor"),in:
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        }
+                        VStack(alignment: .leading){
+                            Text("End:")
+                                .bold()
+                            //.padding(.horizontal, 15)
+                                .padding(.vertical, 5)
+                            
+                            DatePicker("", selection: $viewModel.selectedEndDate)
+                                .labelsHidden()
+                                .onChange(of: viewModel.selectedEndDate) { _ in
+                                    if viewModel.selectedEndDate < viewModel.selectedStartDate {
+                                        viewModel.selectedEndDate = viewModel.selectedStartDate
+                                    }
+                                    //shift.shiftEndDate = selectedEndDate
+                                    //saveContext() // Save the value of tax percent whenever it changes
+                                }.disabled(!viewModel.isEditing)
+                                .scaleEffect(viewModel.isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
+                                .animation(.easeInOut(duration: 0.2)) // Add an animation modifier to create the pulse effect
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .background(Color("SquaresColor"),in:
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            
+                        }
+                    }
+                    
+                    VStack{
                         VStack(alignment: .leading) {
                             
-                            Text("Total tips:")
+                            Text("Hourly pay:")
                                 .bold()
                             
                                 .padding(.vertical, 5)
@@ -403,164 +363,282 @@ struct DetailView: View {
                                 .cornerRadius(20)
                             
                             
-                            CurrencyTextField(placeholder: "Total tips", text: $viewModel.selectedTotalTips)
+                            CurrencyTextField(placeholder: "Hourly Pay", text: $viewModel.selectedHourlyPay)
                                 .disabled(!viewModel.isEditing)
-                                .focused($focusedField, equals: .field2)
+                                .focused($focusedField, equals: .field1)
                                 .keyboardType(.decimalPad)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
                                 .background(Color("SquaresColor"),in:
                                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
                             
+                        }
+                        if viewModel.selectedTaxPercentage > 0 || taxEnabled {
                             
+                            VStack(alignment: .leading){
+                                Text("Estimated Tax")
+                                    .bold()
+                                    .padding(.vertical, 5)
+                                    .padding(.leading, -3)
+                                Picker("Estimated tax:", selection: $viewModel.selectedTaxPercentage) {
+                                    ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
+                                        Text(index / 100, format: .percent)
+                                    }
+                                }.pickerStyle(.wheel)
+                                    .frame(maxHeight: 100)
+                                    .disabled(!viewModel.isEditing)
+                                    .tint(Color("SquaresColor"))
+                            }
+                            .padding(.horizontal, 5)
+                        }
+                        
+                        if tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
+                            VStack(alignment: .leading) {
+                                
+                                Text("Total tips:")
+                                    .bold()
+                                
+                                    .padding(.vertical, 5)
+                                
+                                    .cornerRadius(20)
+                                
+                                
+                                CurrencyTextField(placeholder: "Total tips", text: $viewModel.selectedTotalTips)
+                                    .disabled(!viewModel.isEditing)
+                                    .focused($focusedField, equals: .field2)
+                                    .keyboardType(.decimalPad)
+                                    .padding(.horizontal)
+                                    .padding(.vertical, 10)
+                                    .background(Color("SquaresColor"),in:
+                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                
+                                
+                                
+                            }
+                            /*  Toggle(isOn: $addTipsToTotal) {
+                             HStack {
+                             Image(systemName: "chart.line.downtrend.xyaxis")
+                             Spacer().frame(width: 10)
+                             Text("Add tips to total pay")
+                             }
+                             }.toggleStyle(OrangeToggleStyle()) */
                             
                         }
-                        /*  Toggle(isOn: $addTipsToTotal) {
-                         HStack {
-                         Image(systemName: "chart.line.downtrend.xyaxis")
-                         Spacer().frame(width: 10)
-                         Text("Add tips to total pay")
-                         }
-                         }.toggleStyle(OrangeToggleStyle()) */
                         
-                    }
-                    
-                    VStack(alignment: .leading){
-                        
-                        Text("Pay multiplier:")
-                            .bold()
-                        
-                            .padding(.vertical, 5)
-                        
-                            .cornerRadius(20)
-                        
-                        Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
-                            Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
-                        }
-                        .onChange(of: viewModel.payMultiplier) { newMultiplier in
-                            viewModel.multiplierEnabled = newMultiplier > 1.0
-                        }
-                        
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal)
-                        .background(Color("SquaresColor"),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        
-                    }
-                    
-                    VStack(alignment: .leading){
-                        Text("Notes:")
-                            .bold()
-                        
-                            .padding(.vertical, 5)
-                        
-                            .cornerRadius(20)
-                        
-                        TextEditor(text: $viewModel.notes)
-                            .disabled(!viewModel.isEditing)
-                            .focused($focusedField, equals: .field3)
-                        
-                        
+                        VStack(alignment: .leading){
+                            
+                            Text("Pay multiplier:")
+                                .bold()
+                            
+                                .padding(.vertical, 5)
+                            
+                                .cornerRadius(20)
+                            
+                            Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
+                                Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
+                            }
+                            .onChange(of: viewModel.payMultiplier) { newMultiplier in
+                                viewModel.multiplierEnabled = newMultiplier > 1.0
+                            }
+                            
                             .padding(.horizontal)
                             .padding(.vertical, 10)
+                            .padding(.horizontal)
                             .background(Color("SquaresColor"),in:
                                             RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            
+                        }
                         
-                            .frame(minHeight: 200, maxHeight: .infinity)
+                        VStack(alignment: .leading){
+                            Text("Notes:")
+                                .bold()
+                            
+                                .padding(.vertical, 5)
+                            
+                                .cornerRadius(20)
+                            
+                            TextEditor(text: $viewModel.notes)
+                                .disabled(!viewModel.isEditing)
+                                .focused($focusedField, equals: .field3)
+                            
+                            
+                                .padding(.horizontal)
+                                .padding(.vertical, 10)
+                                .background(Color("SquaresColor"),in:
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            
+                                .frame(minHeight: 200, maxHeight: .infinity)
+                        }
+                        
+                        VStack(alignment: .leading){
+                            
+                            Text("Overtime:")
+                                .bold()
+                            
+                                .padding(.vertical, 5)
+                            
+                                .cornerRadius(20)
+                            VStack{
+                                Stepper(value: $viewModel.overtimeRate, in: 1.00...3, step: 0.25) {
+                                    
+                                    
+                                    Text("Rate: \(viewModel.overtimeRate, specifier: "%.2f")x")
+                                    
+                                }
+                                
+                                HStack {
+                                    
+                                    
+                                    
+                                    Image(systemName: "calendar.badge.clock")
+                                    Text("Applied after:")
+                                    OvertimeView(overtimeAppliedAfter: $viewModel.overtimeAppliedAfter)
+                                        .frame(maxHeight: 75)
+                                    
+                                }
+                                
+                            }.padding(.horizontal)
+                                .padding(.vertical)
+                                .background(Color("SquaresColor"),in:
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            
+                            
+                        }
+                        
                     }
                     
-                    VStack(alignment: .leading){
-                        
-                        Text("Overtime:")
-                            .bold()
-                        
-                            .padding(.vertical, 5)
-                        
-                            .cornerRadius(20)
-                        VStack{
-                            Stepper(value: $viewModel.overtimeRate, in: 1.00...3, step: 0.25) {
-                                
-                                
-                                Text("Rate: \(viewModel.overtimeRate, specifier: "%.2f")x")
-                                
-                            }
-                            
-                            HStack {
-                                
-                                
-                                
-                                Image(systemName: "calendar.badge.clock")
-                                Text("Applied after:")
-                                OvertimeView(overtimeAppliedAfter: $viewModel.overtimeAppliedAfter)
-                                    .frame(maxHeight: 75)
-                                
-                            }
-                            
-                        }.padding(.horizontal)
-                            .padding(.vertical)
-                            .background(Color("SquaresColor"),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        
-                                        
-                                           }
-                    
-                }
+                }.listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
                 
-            }.listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
-            
-            
-      
-            
-            
-                .sheet(isPresented: $viewModel.isAddingBreak){
-                    
-                    if let shift = shift {
+                
+                
+                
+                
+                    .sheet(isPresented: $viewModel.isAddingBreak){
                         
-                        BreakInputView(startDate: viewModel.selectedStartDate, endDate: viewModel.selectedEndDate, buttonAction: { breakManager.addBreak(oldShift: shift, startDate: viewModel.selectedBreakStartDate, endDate: viewModel.selectedBreakEndDate, isUnpaid: viewModel.isUnpaid, context: viewContext)
-                            viewModel.isAddingBreak = false}).environmentObject(viewModel)
-                        
-                        
-                            .presentationDetents([ .fraction(0.35)])
-                            .presentationBackground(Color("allSheetBackground"))
-                            .presentationCornerRadius(35)
-                        
-                    } else {
-                        
-                        BreakInputView(startDate: viewModel.selectedStartDate, endDate: viewModel.selectedEndDate, buttonAction: {
-                            let currentBreak = TempBreak(startDate: viewModel.selectedBreakStartDate, endDate: viewModel.selectedBreakEndDate, isUnpaid: viewModel.isUnpaid)
-                            viewModel.tempBreaks.append(currentBreak)
-                            viewModel.isAddingBreak = false
-                        }).environmentObject(viewModel)
-                        
-                        
-                            .presentationDetents([ .fraction(0.35)])
-                            .presentationBackground(Color("allSheetBackground"))
-                            .presentationCornerRadius(35)
-                        
-                        
+                        if let shift = shift {
+                            
+                            BreakInputView(startDate: viewModel.selectedStartDate, endDate: viewModel.selectedEndDate, buttonAction: { breakManager.addBreak(oldShift: shift, startDate: viewModel.selectedBreakStartDate, endDate: viewModel.selectedBreakEndDate, isUnpaid: viewModel.isUnpaid, context: viewContext)
+                                viewModel.isAddingBreak = false}).environmentObject(viewModel)
+                            
+                            
+                                .presentationDetents([ .fraction(0.35)])
+                                .presentationBackground(.ultraThinMaterial)
+                                .presentationCornerRadius(35)
+                            
+                        } else {
+                            
+                            BreakInputView(startDate: viewModel.selectedStartDate, endDate: viewModel.selectedEndDate, buttonAction: {
+                                let currentBreak = TempBreak(startDate: viewModel.selectedBreakStartDate, endDate: viewModel.selectedBreakEndDate, isUnpaid: viewModel.isUnpaid)
+                                viewModel.tempBreaks.append(currentBreak)
+                                viewModel.isAddingBreak = false
+                            }).environmentObject(viewModel)
+                            
+                            
+                                .presentationDetents([ .fraction(0.35)])
+                                .presentationBackground(.ultraThinMaterial)
+                                .presentationCornerRadius(35)
+                            
+                            
+                        }
                     }
-                }
-            
-            if let shift = shift {
                 
+                if let shift = shift {
+                    
                     BreaksListView(shift: shift).environmentObject(viewModel)
                         .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    
+                    
+                } else {
+                    BreaksListView().environmentObject(viewModel)
+                        .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+                }
                 
+                Spacer()
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
                 
-            } else {
-                BreaksListView().environmentObject(viewModel)
-                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
             }
             
-            Spacer()
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
+            VStack{
+            if let shift = shift {
+                HStack(spacing: 10){
+                    if viewModel.isEditing {
+                        
+                        Button(action: {
+                            
+                            viewModel.saveShift(shift, in: viewContext)
+                            
+                            savedShift = true
+                            
+                        }) {
+                            Text("Done").bold()
+                        }
+                        
+                    } else {
+                        Button(action: {
+                            withAnimation {
+                                viewModel.isEditing = true
+                            }
+                        }) {
+                            
+                            Image(systemName: "pencil").bold()
+                        }
+                    }
+                    
+                    Divider().frame(height: 10)
+                    
+                    Button(action: {
+                        viewModel.showingDeleteAlert = true
+                        if presentedAsSheet{
+                            dismiss()
+                        }
+                        
+                        CustomConfirmationAlert(action: {
+                            shiftStore.deleteOldShift(shift, in: viewContext)
+                        }, cancelAction: { presentedAsSheet ? activeSheet = .detailSheet : nil}, title: "Are you sure you want to delete this shift?").showAndStack()
+                        
+                        
+                        
+                    }) {
+                        Image(systemName: "trash")
+                            .bold()
+                    }
+                    .foregroundColor(.red)
+                    
+                    
+                }
+            } else {
+                Button(action: {
+                    
+                    if let job = job {
+                        viewModel.addShift(in: viewContext, with: shiftStore, job: job)
+                    } else {
+                        dismiss()
+                        OkButtonPopup(title: "Error adding shift.").showAndStack()
+                        
+                    }
+                    
+                    
+                    dismiss()
+                }) {
+                    Image(systemName: "folder.badge.plus")
+                        .bold()
+                       // .padding()
+                }
+                .disabled(viewModel.totalPay <= 0 || !viewModel.areAllTempBreaksWithin)
+            }
             
-        }
+            }.padding()
+                .background(.ultraThinMaterial)
+                .cornerRadius(12)
+            
+            .padding()
+            .shadow(radius: 3)
+            
+    }
         
         .navigationTitle(shift == nil ? "Add Shift" : "Shift Details")
         .navigationBarTitleDisplayMode(.inline)
@@ -641,87 +719,8 @@ struct DetailView: View {
         
         
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                
-                if let shift = shift {
-                    
-                    if viewModel.isEditing {
-                        
-                        Button(action: {
-                            
-                            viewModel.saveShift(shift, in: viewContext)
-                            
-                            savedShift = true
-                            
-                        }) {
-                            Text("Done").bold()
-                        }
-                        
-                    } else {
-                        Button(action: {
-                            withAnimation {
-                                viewModel.isEditing = true
-                            }
-                        }) {
-                            
-                            Image(systemName: "pencil").bold()
-                        }
-                    }
-                    
-           
-                    
-                } else {
-                    
-                    
-                    Button(action: {
-                        
-                        if let job = job {
-                            viewModel.addShift(in: viewContext, with: shiftStore, job: job)
-                        } else {
-                            dismiss()
-                            OkButtonPopup(title: "Error adding shift.").showAndStack()
-                            
-                        }
-                        
-                        
-                        dismiss()
-                    }) {
-                        Image(systemName: "folder.badge.plus")
-                            .bold()
-                           // .padding()
-                    }
-                    .disabled(viewModel.totalPay <= 0 || !viewModel.areAllTempBreaksWithin)
-                    
-                    
-                }
-                
-                
-                
-                
-                
-            }
-            if let shift = shift {
-                ToolbarItem(placement: .navigationBarTrailing){
-                    Button(action: {
-                        viewModel.showingDeleteAlert = true
-                        if presentedAsSheet{
-                            dismiss()
-                        }
-                        
-                        CustomConfirmationAlert(action: {
-                            shiftStore.deleteOldShift(shift, in: viewContext)
-                        }, cancelAction: { presentedAsSheet ? activeSheet = .detailSheet : nil}, title: "Are you sure you want to delete this shift?").showAndStack()
-                        
-                        
-                        
-                    }) {
-                        Image(systemName: "trash")
-                    }
-                    .foregroundColor(.red)
-                  //  .padding([.vertical, .trailing])
-                    
-                }
-            }
+            
+        
             if presentedAsSheet{
                 ToolbarItem(placement: .navigationBarLeading) {
                     CloseButton {

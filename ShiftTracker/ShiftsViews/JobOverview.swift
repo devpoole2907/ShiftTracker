@@ -138,7 +138,11 @@ struct JobOverview: View {
                         
                         // it was not the worlds greatest workaround ... lets do things properly!
                             DetailView(shift: shift, navPath: $navPath).environmentObject(savedPublisher)
-
+                            .onAppear {
+                                withAnimation {
+                                    shiftManager.showModePicker = false
+                                }
+                            }
                             
                         }
                     
@@ -178,9 +182,28 @@ struct JobOverview: View {
                     Spacer()
                     
                 }
-                .navigationDestination(for: Int.self) { _ in
+                .navigationDestination(for: Int.self) { value in
                        
-                    ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(savedPublisher).environmentObject(sortSelection)
+                    if value == 1 {
+                        ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(savedPublisher).environmentObject(sortSelection)
+                        
+                            .onAppear {
+                                withAnimation {
+                                    shiftManager.showModePicker = false
+                                }
+                            }
+                        
+                    } else if value == 2 {
+                        
+                        if #available(iOS 17.0, *) {
+                            HistoryPagesView(navPath: $navPath)
+                        } else {
+                            EmptyView()
+                        }
+                        
+                        
+                        
+                    }
                        
                    }
                 
@@ -209,14 +232,14 @@ struct JobOverview: View {
                             ConfigureExportView(shifts: shifts, job: job)
                                 .presentationDetents([.large])
                                 .presentationCornerRadius(35)
-                                .presentationBackground(Color("allSheetBackground"))
+                                .presentationBackground(.ultraThinMaterial)
                   
                         }
                         else {
                             ConfigureExportView(shifts: shifts)
                                 .presentationDetents([.large])
                                 .presentationCornerRadius(35)
-                                .presentationBackground(Color("allSheetBackground"))
+                                .presentationBackground(.ultraThinMaterial)
                         }
                    
                         
@@ -232,7 +255,7 @@ struct JobOverview: View {
                             
                             .presentationDetents([.large])
                             .presentationCornerRadius(35)
-                            .presentationBackground(Color("allSheetBackground"))
+                            .presentationBackground(.ultraThinMaterial)
                         } else {
                             Text("Error")
                         }
@@ -249,7 +272,9 @@ struct JobOverview: View {
         .onAppear {
             navigationState.gestureEnabled = true
             
-  
+            withAnimation {
+                shiftManager.showModePicker = true
+            }
             
    
                 loadShiftData()
@@ -279,7 +304,7 @@ struct JobOverview: View {
             
 
             
-        .navigationBarTitle(jobSelectionViewModel.fetchJob(in: viewContext)?.name ?? "Summary")
+        .navigationTitle(jobSelectionViewModel.fetchJob(in: viewContext)?.name ?? "Summary")
             
         .toolbar{
             
@@ -295,33 +320,7 @@ struct JobOverview: View {
                     
                 
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    ForEach(0..<shiftManager.statsModes.count) { index in
-                        Button(action: {
-                            withAnimation {
-                                shiftManager.statsMode = StatsMode(rawValue: index) ?? .earnings
-                                shiftManager.shiftDataLoaded.send(())
-                            }
-                        }) {
-                            HStack {
-                                
-                                Text(shiftManager.statsModes[index])
-                                    .textCase(nil)
-                                if index == shiftManager.statsMode.rawValue {
-                                    Spacer()
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.accentColor) // Customize the color if needed
-                                }
-                            }
-                        }
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .bold()
-                }
-                .haptics(onChangeOf: shiftManager.statsMode, type: .soft)
-            }
+
             
             ToolbarItem(placement: .navigationBarLeading){
                 Button{

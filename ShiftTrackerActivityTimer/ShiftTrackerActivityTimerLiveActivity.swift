@@ -170,22 +170,28 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
 }
 
 struct ShiftActivityView: View{
+    
+    @Environment(\.colorScheme) var colorScheme
+    
     let context: ActivityViewContext<LiveActivityAttributes>
     var body: some View{
         
+        let proColor = colorScheme == .dark ? Color.orange : Color.cyan
+        
         VStack(alignment: .leading){
             HStack{
+            HStack(alignment: .firstTextBaseline, spacing: 5){
                 Text("ShiftTracker")
                     .bold()
                     .font(.title3)
-                    .foregroundColor(.white)
+              
                 
                 Text("PRO")
-                    .bold()
-                    .font(.title)
+                    .font(.title2)
                     .fontWeight(.heavy)
-                    .foregroundColor(.orange)
-                
+                    .foregroundStyle(proColor)
+                   
+            }
                 if context.state.isOnBreak{
                     Text("On Break")
                         .font(.caption)
@@ -250,7 +256,7 @@ struct ShiftActivityView: View{
             }
             .padding()
         }
-            .background(Color.black)
+    
     }
 }
 
@@ -258,7 +264,7 @@ struct ShiftActivityView: View{
 
 struct ShiftTrackerActivityTimerLiveActivity_Previews: PreviewProvider {
     static let attributes = LiveActivityAttributes(jobName: "Apple", jobTitle: "CEO", jobIcon: "briefcase.circle", jobColorRed: 1.0, jobColorGreen: 1.0, jobColorBlue: 1.0, hourlyPay: 0)
-    static let contentState = LiveActivityAttributes.ContentState(startTime: Date(), totalPay: 220, isOnBreak: true)
+    static let contentState = LiveActivityAttributes.ContentState(startTime: Date(), totalPay: 220, isOnBreak: false)
 
     static var previews: some View {
         if #available(iOS 16.2, *) {

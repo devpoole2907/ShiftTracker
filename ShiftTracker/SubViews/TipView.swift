@@ -89,7 +89,7 @@ struct TipView: View {
                 if #available(iOS 16.4, *) {
                     ProView()
                         .presentationDetents([.large])
-                        .presentationBackground(.thinMaterial)
+                        .presentationBackground(.ultraThinMaterial)
                         .presentationDragIndicator(.visible)
                         .presentationCornerRadius(12)
                 }

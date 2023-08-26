@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import Firebase
 import UserNotifications
 import CoreData
+import Haptics
 
 struct MainWithSideBarView: View {
     
@@ -102,13 +102,63 @@ struct MainWithSideBarView: View {
                                     .tag(Tab.home)
                                 
                                 
-                                JobOverview(navPath: $path)
-                                    .environment(\.managedObjectContext, context)
-                                    .environmentObject(jobSelectionModel)
-                                    .environmentObject(navigationState)
-                                    .environmentObject(sortSelection)
-                                    .environmentObject(shiftManager)
-                                    .tag(Tab.timesheets)
+                                ZStack(alignment: .bottomTrailing) {
+                                    JobOverview(navPath: $path)
+                                        .environment(\.managedObjectContext, context)
+                                        .environmentObject(jobSelectionModel)
+                                        .environmentObject(navigationState)
+                                        .environmentObject(sortSelection)
+                                        .environmentObject(shiftManager)
+                                        
+                                    if shiftManager.showModePicker {
+                                        Picker(selection: $shiftManager.statsMode, label: Text("Cheese")) {
+                                            ForEach(StatsMode.allCases, id: \.self) { mode in
+                                                
+                                                Image(systemName: mode.image).symbolRenderingMode(.multicolor).foregroundStyle(mode.color.gradient)
+                                                
+                                            }
+                                            
+                                        }.pickerStyle(.segmented)
+                                            .padding(.bottom, 1)
+                                            .background(.ultraThinMaterial)
+                                            .frame(maxWidth: 175)
+                                            
+                                            .cornerRadius(8)
+                                            .shadow(radius: 3)
+                                        
+                                            .padding()
+                                        
+                                        
+                                        
+                                            .haptics(onChangeOf: shiftManager.statsMode, type: .soft)
+                                        
+                                            .contextMenu{
+                                                ForEach(0..<shiftManager.statsModes.count) { index in
+                                                    Button(action: {
+                                                        withAnimation {
+                                                            shiftManager.statsMode = StatsMode(rawValue: index) ?? .earnings
+                                                            shiftManager.shiftDataLoaded.send(())
+                                                        }
+                                                    }) {
+                                                        HStack {
+                                                            
+                                                            Text(shiftManager.statsModes[index])
+                                                                .textCase(nil)
+                                                            if index == shiftManager.statsMode.rawValue {
+                                                                Spacer()
+                                                                Image(systemName: "checkmark")
+                                                                    .foregroundColor(.accentColor) // Customize the color if needed
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        
+                                    }
+                                        
+                                    
+                                    
+                                }.tag(Tab.timesheets)
                                 
                                 
                                 ScheduleView(navPath: $schedulePath)

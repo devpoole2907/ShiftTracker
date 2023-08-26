@@ -313,7 +313,7 @@ struct SettingsView: View {
                 .fullScreenCover(isPresented: $showingProView) {
                     
                         ProView()
-                    
+                        .presentationBackground(.ultraThinMaterial)
                     
                 }
                 .toolbar{

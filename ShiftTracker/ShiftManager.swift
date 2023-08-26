@@ -19,6 +19,8 @@ class ShiftDataManager: ObservableObject {
     @Published var halfYearlyShifts: [singleShift] = []
     @Published var yearlyShifts: [singleShift] = []
     
+    @Published var showModePicker = true
+    
     @Published var weeklyTotalPay: Double = 0
     @Published var weeklyTotalHours: Double = 0
     @Published var weeklyTotalBreaksHours: Double = 0
@@ -222,6 +224,8 @@ class ShiftDataManager: ObservableObject {
         let startDate = Calendar.current.date(byAdding: components, to: now)!
         return startDate...now
     }
+    
+    
 
 
 

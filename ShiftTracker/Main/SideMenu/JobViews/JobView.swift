@@ -144,7 +144,7 @@ struct JobView: View {
         
         NavigationStack{
             ZStack{
-                Color(.systemBackground).edgesIgnoringSafeArea(.all)
+               // Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 ScrollView{
                     VStack(spacing: 15){
                     GeometryReader { geometry in
@@ -491,7 +491,7 @@ struct JobView: View {
                 
                             ProView()
                      
-                   
+                            .presentationBackground(.ultraThinMaterial)
                         
                         
                     }
@@ -513,7 +513,7 @@ struct JobView: View {
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .medium, .large])
                                 .presentationDragIndicator(.visible)
-                                .presentationBackground(Color("allSheetBackground"))
+                                .presentationBackground(.ultraThinMaterial)
                                 .presentationCornerRadius(35)
                        
                             
@@ -524,7 +524,7 @@ struct JobView: View {
                     
                     
                 }
-                .background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
+                //.background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
                 
                 
                 .toolbar{

@@ -216,7 +216,7 @@ struct ActionView: View {
         
                     ProView()
              
-           
+                    .presentationBackground(.ultraThinMaterial)
                 
                 
             }

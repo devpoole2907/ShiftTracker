@@ -114,31 +114,26 @@ struct ChartSquare: View {
             VStack(alignment: .leading) {
                 HStack(spacing: isChartViewPrimary ? 10 : 5){
                     
-                    
-                    Group {
-                        Text(isChartViewPrimary ? "\(shiftManager.dateRange.description) \(shiftManager.statsMode.description)" : "\(shiftManager.dateRange.description) Activity")
-                            .font(.callout)
-                            .bold()
-                            .foregroundStyle(headerColor)
-                            .padding(.leading)
-                            .padding(.vertical, isChartViewPrimary ? 10 : 0)
-                            .animation(.easeInOut, value: isChartViewPrimary)
-                        Image(systemName: "chevron.right")
-                            .font(isChartViewPrimary ? .callout : .footnote)
-                            .bold()
-                            .foregroundStyle(.gray)
-                            .rotationEffect(isChartViewPrimary ? .degrees(90) : .degrees(0))
-                            .animation(.easeInOut, value: isChartViewPrimary)
-                        
+                    HStack(spacing: 0){
+                        NavigationLink(value: 2) {
+                            Group {
+                                Text("Activity")
+                                    .font(.callout)
+                                    .bold()
+                                    .foregroundStyle(headerColor)
+                                    .padding(.leading)
+                                    .padding(.vertical, isChartViewPrimary ? 10 : 0)
+                                
+                            }
+                        }
+                        Spacer(minLength: 55)
                     }
-                    
-                    
-                    .onTapGesture {
+                 /*   .onTapGesture {
                         withAnimation{
                             isChartViewPrimary.toggle()
                         }
                     }
-                    
+                    */
                     Spacer()
                     if isChartViewPrimary {
                         CloseButton(action: {
