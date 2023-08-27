@@ -21,6 +21,8 @@ struct OkButtonPopup: CentrePopup {
     func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
         popup.horizontalPadding(28)
             .backgroundColour(Color.clear)
+        
+      
     }
     func createContent() -> some View {
         VStack(spacing: 5) {
@@ -36,9 +38,7 @@ struct OkButtonPopup: CentrePopup {
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
         
-        .background(.ultraThinMaterial)
-        .cornerRadius(20)
-        .shadow(radius: 10)
+        .glassModifier(cornerRadius: 30)
         .triggersHapticFeedbackWhenAppear()
     }
     
@@ -57,11 +57,10 @@ struct OkButtonPopup: CentrePopup {
         }) {
             Text("OK")
                 .bold()
-                .foregroundColor(colorScheme == .dark ? .black : .white)
+              
                 .frame(height: 46)
                 .frame(maxWidth: .infinity)
-                .background(colorScheme == .dark ? .white : .black)
-                .cornerRadius(8)
+                .glassModifier(cornerRadius: 20)
         }
     }
     
@@ -99,9 +98,8 @@ struct CustomConfirmationAlert: CentrePopup {
         .padding(.top, 12)
         .padding(.bottom, 24)
         .padding(.horizontal, 24)
-        .background(.ultraThinMaterial)
-        .cornerRadius(20)
-        .shadow(radius: 10)
+        .glassModifier(cornerRadius: 30)
+       // .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
     }
     
@@ -114,8 +112,7 @@ struct CustomConfirmationAlert: CentrePopup {
             
                 .frame(height: 46)
                 .frame(maxWidth: .infinity)
-                .background(.primary.opacity(0.1))
-                .cornerRadius(8)
+                .glassModifier(cornerRadius: 20)
         }
     }
     func createConfirmButton() -> some View {
@@ -125,11 +122,11 @@ struct CustomConfirmationAlert: CentrePopup {
         }) {
             Text("Confirm")
                 .bold()
-                .foregroundColor(colorScheme == .dark ? .black : .white)
+           
                 .frame(height: 46)
                 .frame(maxWidth: .infinity)
-                .background(colorScheme == .dark ? .white : .black)
-                .cornerRadius(8)
+                .glassModifier(cornerRadius: 20, darker: true)
+           
         }
     }
     
