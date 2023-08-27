@@ -105,6 +105,21 @@ struct DetailView: View {
         
     }
     
+    private let lightGradientColors = [
+        Color.white.opacity(0.3),
+        Color.white.opacity(0.1),
+        Color.white.opacity(0.1),
+        Color.white.opacity(0.4),
+        Color.white.opacity(0.5),
+    ]
+    
+    private let darkGradientColors = [
+        Color.gray.opacity(0.2),
+        Color.gray.opacity(0.1),
+        Color.gray.opacity(0.1),
+        Color.gray.opacity(0.3),
+        Color.gray.opacity(0.2),
+    ]
     
     
     var body: some View {
@@ -112,7 +127,7 @@ struct DetailView: View {
         var timeDigits = digitsFromTimeString(timeString: viewModel.adaptiveShiftDuration.stringFromTimeInterval())
         var breakDigits = shift != nil ? digitsFromTimeString(timeString: viewModel.totalBreakDuration(for: (shift!.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval()) : digitsFromTimeString(timeString: viewModel.totalTempBreakDuration(for: viewModel.tempBreaks).stringFromTimeInterval())
         
-        
+        let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
         
         
         ZStack(alignment: .bottomTrailing){
@@ -131,8 +146,7 @@ struct DetailView: View {
                                 
                             }
                             .padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                            .glassModifier(cornerRadius: 20)
                             .frame(width: UIScreen.main.bounds.width - 60)
                             
                         }
@@ -140,9 +154,17 @@ struct DetailView: View {
                         
                         ZStack{
                             RoundedRectangle(cornerRadius: 12)
-                                .foregroundStyle(.thinMaterial)
+                                .fill(Material.ultraThinMaterial)
+                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                                .overlay {
+                                    //if colorScheme == .light {
+                                        RoundedRectangle(cornerRadius: 12)
+                                         .stroke(LinearGradient(colors: gradientColors,
+                                         startPoint: .topLeading,
+                                         endPoint: .bottomTrailing))
+                                   // }
+                                }
                                 .frame(width: UIScreen.main.bounds.width - 60)
-                               .shadow(radius: 5, x: 0, y: 4)
                             VStack(alignment: .center, spacing: 5) {
                                 
                                 VStack {
@@ -294,8 +316,7 @@ struct DetailView: View {
                             .padding(.vertical, 10)
                             .frame(width: UIScreen.main.bounds.width - 60)
                         
-                            .background(Color("SquaresColor"),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .glassModifier(cornerRadius: 20)
                         
                     }
                     
@@ -323,8 +344,7 @@ struct DetailView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .glassModifier(cornerRadius: 20)
                         }
                         VStack(alignment: .leading){
                             Text("End:")
@@ -346,8 +366,7 @@ struct DetailView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .glassModifier(cornerRadius: 20)
                             
                         }
                     }
@@ -369,8 +388,7 @@ struct DetailView: View {
                                 .keyboardType(.decimalPad)
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .glassModifier(cornerRadius: 20)
                             
                         }
                         if viewModel.selectedTaxPercentage > 0 || taxEnabled {
@@ -409,8 +427,7 @@ struct DetailView: View {
                                     .keyboardType(.decimalPad)
                                     .padding(.horizontal)
                                     .padding(.vertical, 10)
-                                    .background(Color("SquaresColor"),in:
-                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    .glassModifier(cornerRadius: 20)
                                 
                                 
                                 
@@ -444,8 +461,7 @@ struct DetailView: View {
                             .padding(.horizontal)
                             .padding(.vertical, 10)
                             .padding(.horizontal)
-                            .background(Color("SquaresColor"),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .glassModifier(cornerRadius: 20)
                             
                         }
                         
@@ -464,8 +480,7 @@ struct DetailView: View {
                             
                                 .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .glassModifier(cornerRadius: 20)
                             
                                 .frame(minHeight: 200, maxHeight: .infinity)
                         }
@@ -494,13 +509,17 @@ struct DetailView: View {
                                     Text("Applied after:")
                                     OvertimeView(overtimeAppliedAfter: $viewModel.overtimeAppliedAfter)
                                         .frame(maxHeight: 75)
+                                        .disabled(!viewModel.isEditing)
                                     
                                 }
                                 
                             }.padding(.horizontal)
                                 .padding(.vertical)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .glassModifier(cornerRadius: 20)
+                            
+                            
+                               // .background(Color("SquaresColor"),in:
+                                          //      RoundedRectangle(cornerRadius: 12, style: .continuous))
                             
                             
                         }
@@ -560,7 +579,20 @@ struct DetailView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
                 
-            }
+            } .scrollContentBackground(.hidden)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+       
+                .background{
+                    
+                    if presentedAsSheet {
+                        Color.clear.ignoresSafeArea()
+                    } else {
+                        Color(.systemGroupedBackground).ignoresSafeArea()
+                    }
+                   
+                }
+            
+            
             
             VStack{
             if let shift = shift {
@@ -632,11 +664,10 @@ struct DetailView: View {
             }
             
             }.padding()
-                .background(.ultraThinMaterial)
-                .cornerRadius(12)
+                .glassModifier(cornerRadius: 20)
             
             .padding()
-            .shadow(radius: 3)
+           // .shadow(radius: 3)
             
     }
         

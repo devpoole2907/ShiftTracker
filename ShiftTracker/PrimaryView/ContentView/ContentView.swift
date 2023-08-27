@@ -141,13 +141,19 @@ struct ContentView: View {
                             
                         }
                         
-                        ContentViewButtonsView(jobShakeTimes: $jobShakeTimes, payShakeTimes: $payShakeTimes).padding(.horizontal, 50)
+                        ContentViewButtonsView(jobShakeTimes: $jobShakeTimes, payShakeTimes: $payShakeTimes).padding(.horizontal, 50) 
+                          
                     }
                 }.listRowBackground(Color.clear)
                 if viewModel.shift != nil && !viewModel.tempBreaks.isEmpty {
                     CurrentBreaksListView()
                 }
             }//.scrollContentBackground(.hidden)
+            
+            .scrollContentBackground(.hidden)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            
                 .toolbar{
                     ToolbarItemGroup(placement: .keyboard){
                         Spacer()

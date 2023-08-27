@@ -23,16 +23,18 @@ struct AnimatedButton: View {
         
         Button(action: action) {
             Text(title)
-                .frame(minWidth: UIScreen.main.bounds.width / 3)
+                .frame(minWidth: UIScreen.main.bounds.width / 3 - 10)
                 .bold()
                 .padding()
-                .background(backgroundColor)
-                .foregroundColor(foregroundColor)
-                .cornerRadius(18)
-        }
+               // .background(backgroundColor)
+               // .foregroundColor(foregroundColor)
+               // .cornerRadius(18)
+        }.glassModifier(cornerRadius: 20)
         .buttonStyle(.scale)
         .disabled(isDisabled)
         .frame(maxWidth: .infinity)
+        
+        
         //.scaleEffect(isTapped ? 1.1 : 1)
        // .animation(.easeInOut(duration: 0.3))
     }

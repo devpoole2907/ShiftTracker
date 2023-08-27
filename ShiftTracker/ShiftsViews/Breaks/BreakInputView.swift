@@ -60,14 +60,14 @@ struct BreakInputView: View {
                 
             }.padding(.horizontal)
                 .padding(.vertical, 10)
-                .background(Color("SquaresColor"),in:
+                .background(.thinMaterial .opacity(0.5),in:
                                 RoundedRectangle(cornerRadius: 12, style: .continuous))
             
             
             
             
             HStack {
-                ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: .indigo, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                     
                     viewModel.isUnpaid = true
                     
@@ -75,7 +75,7 @@ struct BreakInputView: View {
                     
                     
                 }
-                ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: .indigo, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                     
                     viewModel.isUnpaid = false
                     

@@ -130,7 +130,7 @@ struct BreaksListView: View {
                         .disabled(!viewModel.isEditing)
                     }
                 }.padding()
-                    .background(Color("SquaresColor"),in:
+                    .background(.thinMaterial .opacity(0.5),in:
                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
                 
                 
@@ -158,7 +158,7 @@ struct BreaksListView: View {
             
             
             
-            .listRowBackground(Color.clear)
+            .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
             .listRowSeparator(.hidden)
         }
         
@@ -196,8 +196,7 @@ struct BreaksListView: View {
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                     }.padding()
-                        .background(Color("SquaresColor"),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .glassModifier(cornerRadius: 20)
                     
                 } header: {
                     

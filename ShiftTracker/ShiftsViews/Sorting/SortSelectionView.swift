@@ -26,7 +26,9 @@ struct SortSelectionView: View {
             
         } label: {
             
-            Label("Sort", systemImage: "line.horizontal.3.decrease.circle").bold()
+            Image(systemName: "line.horizontal.3.decrease.circle").bold()
+            
+        
             
         }
     }

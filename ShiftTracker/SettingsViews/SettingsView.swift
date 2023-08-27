@@ -100,8 +100,7 @@ struct SettingsView: View {
                             
                             
                         }.padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                            .glassModifier()
                         
                         
                         
@@ -115,8 +114,7 @@ struct SettingsView: View {
                             }
                             
                         }.padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                            .glassModifier()
                         
                         
                         NavigationLink(value: 2){
@@ -133,8 +131,7 @@ struct SettingsView: View {
                             
                             
                         }.padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                            .glassModifier()
                             .onAppear(perform: notificationManager.checkNotificationStatus)
                             .onChange(of: scenePhase) { newPhase in
                                 if newPhase == .active {
@@ -148,8 +145,7 @@ struct SettingsView: View {
                             SettingsRow(icon: "circle.lefthalf.filled", title: "Appearance", secondaryInfo: "\(userColorScheme)".capitalized)
                             
                         }.padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                            .glassModifier()
                         
                         
                         
@@ -159,8 +155,7 @@ struct SettingsView: View {
                             SettingsRow(icon: "photo.on.rectangle.angled", title: "App Icon", secondaryInfo: iconManager.selectedAppIcon != .primary ? "Custom" : "Default")
                             
                         }.padding()
-                            .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                            .glassModifier()
                         
                         
                         
@@ -187,8 +182,7 @@ struct SettingsView: View {
                             }
                         }
                         .padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .glassModifier()
                     Toggle(isOn: $iCloudSyncOn) {
                         
                         SettingsRow(icon: "icloud", title: "iCloud Sync")
@@ -198,14 +192,12 @@ struct SettingsView: View {
                             PersistenceController.shared.updateCloudKitSyncStatus()
                         }
                         .padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .glassModifier()
                     Toggle(isOn: $tipsEnabled) {
                         SettingsRow(icon: "dollarsign.circle", title: "Tips")
                     }.toggleStyle(CustomToggleStyle())
                         .padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .glassModifier()
                     
                     Toggle(isOn: $taxEnabled) {
                         
@@ -217,8 +209,7 @@ struct SettingsView: View {
                             sharedUserDefaults.set(0.0, forKey: shiftKeys.taxPercentageKey)
                         }
                         .padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .glassModifier()
                     
                     NavigationLink(value: 4){
                         
@@ -226,8 +217,7 @@ struct SettingsView: View {
                         SettingsRow(icon: "hammer", title: "Support the Developer", secondaryImage: "chevron.right")
                         
                     }.padding()
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                            .glassModifier()
                     
                 }
                     
@@ -313,7 +303,8 @@ struct SettingsView: View {
                 .fullScreenCover(isPresented: $showingProView) {
                     
                         ProView()
-                        .presentationBackground(.ultraThinMaterial)
+                    // this one must be thin material due to the button behind it causing contrasting issues
+                        .presentationBackground(.thinMaterial)
                     
                 }
                 .toolbar{
@@ -506,8 +497,7 @@ struct SettingsCheckView: View {
                     .padding()
             }.padding()
                 .frame(minWidth: UIScreen.main.bounds.width - 80)
-                .background(Color("SquaresColor"))
-                .cornerRadius(12)
+                .glassModifier(cornerRadius: 20)
                 .padding(.horizontal, 40)
                 .listRowBackground(Color.clear)
             

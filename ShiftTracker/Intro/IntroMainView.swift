@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
 import AuthenticationServices
 import PopupView
 import CoreLocation
@@ -67,7 +66,9 @@ struct IntroMainView: View {
                     .environmentObject(viewModel)
                     .environmentObject(jobSelectionViewModel)
                     .onDisappear{
-                        isFirstLaunch = false
+                        withAnimation {
+                            isFirstLaunch = false
+                        }
                     }
                 
                 
@@ -80,6 +81,8 @@ struct IntroMainView: View {
             
         }
         .padding(15)
+        .background(.ultraThinMaterial)
+        
     }
     
 
@@ -122,9 +125,12 @@ struct IntroView<ActionView: View>: View {
                 Image(intro.introAssetImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                     //.padding(15)
                     .frame(width: size.width, height: size.height)
                     .cornerRadius(12)
+                
+                  
                 
             }.offset(y: showView ? 0 : -size.height / 2)
                 .opacity(showView ? 1 : 0)
@@ -133,18 +139,23 @@ struct IntroView<ActionView: View>: View {
                 
                 Spacer(minLength: 0)
                 
-                Text(intro.title)
-                    .font(.largeTitle)
-                    .fontWeight(.black)
-                    .lineLimit(2, reservesSpace: true)
-                    .allowsTightening(true)
                 
-                Text(intro.subTitle)
-                    .font(.headline)
-                    .foregroundColor(.gray)
-                    .padding(.top, 15)
-                    .lineLimit(3, reservesSpace: true)
-                    .allowsTightening(true)
+                    Text(intro.title)
+                        .font(.largeTitle)
+                        .fontWeight(.black)
+                        .lineLimit(2, reservesSpace: true)
+                        .allowsTightening(true)
+                    
+                    
+                    
+                    Text(intro.subTitle)
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                        .padding(.top, 15)
+                        .lineLimit(3, reservesSpace: true)
+                        .allowsTightening(true)
+                  
+               
                 
                 if !intro.displaysAction{
                     Group{
@@ -169,11 +180,10 @@ struct IntroView<ActionView: View>: View {
                         } label: {
                             Text("Next")
                             .fontWeight(.semibold)
-                            .foregroundColor(colorScheme == .dark ? .black : .white)
+                           // .foregroundColor(colorScheme == .dark ? .black : .white)
                             .frame(width: size.width * 0.4)
                             .padding(.vertical, 15)
-                            .background(colorScheme == .dark ? .white : .black)
-                            .cornerRadius(20)
+                            .glassModifier()
                         }.frame(maxWidth: .infinity)
                         
                 
@@ -220,6 +230,10 @@ struct IntroView<ActionView: View>: View {
                 
             }
         }
+        
+        
+
+        
         .onAppear{
             withAnimation(.spring(response: 0.8, dampingFraction: 0.8, blendDuration: 0).delay(0.1)){
                 showView = true
@@ -408,149 +422,4 @@ private extension LoginFailedPopup {
         }
     }
 
-}
-
-struct RegisterView: View {
-    
-    @State private var emailID: String = ""
-    @State private var password: String = ""
-    @State private var profilePicture: Data?
-    
-    @Environment(\.presentationMode) private var presentationMode
-    
-    var body: some View{
-        
-        HStack{
-            Text("Sign up")
-                .font(.system(size: 40))
-                .fontWeight(.black)
-            Spacer()
-                
-        }.padding()
-        
-        ZStack{
-            if let profilePicture, let image = UIImage(data: profilePicture){
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                
-            } else {
-                ZStack{
-                    Image(systemName: "person.crop.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(.black.opacity(0.3))
-                    
-                  //  Image(systemName: "camera")
-                    
-                }
-                
-            }
-            
-            
-        }.frame(width: 85, height: 85)
-            .clipShape(Circle())
-            .contentShape(Circle())
-        
-        VStack(spacing: 10){
-            CustomTextField(text: $emailID, hint: "Email Address", leadingIcon: "at.circle.fill")
-            
-            CustomTextField(text: $password, hint: "Password", leadingIcon: "lock.fill", isPassword: true)
-            
-          //  Spacer(minLength: 10)
-            
-            HStack{
-                Text("Already have an account?")
-                Button{
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    Text("Sign in")
-                        .bold()
-                }
-            }.padding()
-            
-            Button{
-               register()
-            } label: {
-                Text("Continue")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .padding(.vertical, 15)
-                    .frame(maxWidth: .infinity)
-                    .background{
-                        Capsule()
-                            .fill(.black)
-                    }
-            }
-            Divider()
-            Text("OR")
-            Divider()
-            
-            HStack{
-                Image(systemName: "applelogo")
-                    .foregroundColor(.white)
-                Text("Sign up with Apple")
-            }
-            .fontWeight(.semibold)
-            .foregroundColor(.white)
-            .padding(.vertical, 15)
-            .frame(maxWidth: .infinity)
-            .background{
-                Capsule()
-                    .fill(.black)
-            }
-            .overlay(
-                SignInWithAppleButton { request in
-                   // authModel.handleSignInWithAppleRequest(request)
-                } onCompletion: { result in
-                   // authModel.handleSignInWithAppleCompletion(result)
-                }
-                .signInWithAppleButtonStyle(.white)
-                .blendMode(.overlay)
-            )
-            
-            HStack{
-                Button{
-                    
-                } label: {
-                    Text("Skip sign in")
-                        .bold()
-                }
-            }.padding()
-            
-            
-            
-           /* Button{
-                register()
-            } label: {
-                HStack{
-                    Image(systemName: "applelogo")
-                        .foregroundColor(.white)
-                    Text("Sign in with Apple")
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .padding(.vertical, 15)
-                }
-                    .frame(maxWidth: .infinity)
-                    .background{
-                        Capsule()
-                            .fill(.black)
-                    }
-            } */
-            
-        }.padding(.top, 25)
-        
-        
-    }
-    
-    
-    func register() {
-        Auth.auth().createUser(withEmail: emailID, password: password) { result, error in
-            if error != nil {
-                print(error!.localizedDescription)
-            }
-           
-        }
-    }
-    
 }

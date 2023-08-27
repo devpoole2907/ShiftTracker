@@ -39,11 +39,9 @@ struct ShiftsList: View {
     @State private var selection = Set<NSManagedObjectID>()
     
     
-    
-    
     var body: some View {
         
-        ZStack(alignment: .bottom){
+        ZStack(alignment: .bottomTrailing){
         List(selection: $selection){
             ForEach(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
                 ZStack {
@@ -74,7 +72,7 @@ struct ShiftsList: View {
                     }
                 }
                 .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-                .listRowBackground(Color("SquaresColor"))
+                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 
                 .swipeActions {
                     Button(role: .destructive) {
@@ -101,6 +99,10 @@ struct ShiftsList: View {
                
             .tint(Color.gray)
            // .scrollContentBackground(.hidden)
+            
+            .scrollContentBackground(.hidden)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
 
             .onAppear {
                 
@@ -114,26 +116,63 @@ struct ShiftsList: View {
                 
                 
             }
-
-            TagSortView(selectedFilters: $sortSelection.selectedFilters)
-                //.padding(.top)
-                .frame(width: UIScreen.main.bounds.width - 20)
-                .frame(maxHeight: 40)
-                .padding(5)
-                .background(.thinMaterial)
-                .cornerRadius(12)
-              //
-               
+            
+            VStack(alignment: .trailing) {
                 
-                .shadow(radius: 3)
-            
-                .padding(.bottom, 5)
-            
-                .onChange(of: sortSelection.selectedFilters) { _ in
+                VStack{
+                
+                HStack(spacing: 10){
                     
-                    sortSelection.fetchShifts()
+                    EditButton()
                     
-                }
+                    Divider().frame(height: 10)
+                    
+                    if editMode?.wrappedValue.isEditing == true {
+                        
+                        Button(action: {
+                            CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                        }) {
+                            Image(systemName: "trash")
+                                .bold()
+                        }.disabled(selection.isEmpty)
+                        
+                    } else {
+                        
+                        SortSelectionView(selectedSortItem: $sortSelection.selectedSort, sorts: ShiftNSSort.sorts)
+                            .onChange(of: sortSelection.selectedSort) { _ in
+                                sortSelection.fetchShifts()
+                            }
+                        
+                    }
+                    
+                    
+                    
+                    
+                }.padding()
+                        .glassModifier(cornerRadius: 20)
+                
+                   // .padding()
+                   // .shadow(radius: 3)
+      
+            }
+                
+                TagSortView(selectedFilters: $sortSelection.selectedFilters)
+                //.padding(.top)
+                    .frame(width: UIScreen.main.bounds.width - 20)
+                    .frame(maxHeight: 40)
+                    .padding(5)
+                    .glassModifier(cornerRadius: 20)
+                
+                    .padding(.bottom, 5)
+                
+                    .onChange(of: sortSelection.selectedFilters) { _ in
+                        
+                        sortSelection.fetchShifts()
+                        
+                    }
+                
+                
+            }
         
     }
         
@@ -156,32 +195,7 @@ struct ShiftsList: View {
                     }
                 }
                 
-                ToolbarItemGroup(placement: .navigationBarTrailing){
-                    
-                   
-                    
-                    EditButton()
-                    
-                    if editMode?.wrappedValue.isEditing == true {
-                        
-                        Button(action: {
-                            CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                        }) {
-                            Image(systemName: "trash")
-                                .bold()
-                        }.disabled(selection.isEmpty)
-                        
-                    } else {
-                        
-                        SortSelectionView(selectedSortItem: $sortSelection.selectedSort, sorts: ShiftNSSort.sorts)
-                            .onChange(of: sortSelection.selectedSort) { _ in
-                                sortSelection.fetchShifts()
-                            }
-                        
-                    }
-                    
-                    
-                }
+            
                 
                 
             }

@@ -82,8 +82,7 @@ struct AddTagView: View {
                     
                     
                     
-                }.background(Color("SquaresColor"))
-                .cornerRadius(12)
+                }.glassModifier(cornerRadius: 20)
                 .padding()
                 
                 

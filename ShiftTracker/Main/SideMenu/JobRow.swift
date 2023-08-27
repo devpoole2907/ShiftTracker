@@ -42,7 +42,7 @@ struct JobRow: View {
             
             Text(job.name ?? "")
                 .bold()
-                .foregroundColor(isSelected ? .white : textColor)
+                .foregroundStyle(textColor)
                 .fontDesign(.rounded)
                 .lineLimit(1)
                 .allowsTightening(true)
@@ -62,7 +62,7 @@ struct JobRow: View {
                                               ? "pencil"
                                                    : "lock.fill")
                            
-                            .foregroundColor(isSelected ? .white : textColor)
+                        .foregroundStyle(textColor)
                     }.padding(.horizontal, 10)
             }
             

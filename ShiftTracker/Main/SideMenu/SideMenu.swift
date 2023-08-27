@@ -140,8 +140,15 @@ struct SideMenu: View {
                                         
                                     }.padding(.horizontal, 8)
                                         .padding(.vertical, 10)
-                                        .background(jobSelectionViewModel.selectedJobUUID == job.uuid ? jobBackground : Color.primary.opacity(0.04))
-                                        .cornerRadius(50)
+                                    
+                                    
+                                    
+                                    
+                                        .glassModifier(cornerRadius: 50)
+                                    
+                                        .shadow(radius: jobSelectionViewModel.selectedJobUUID == job.uuid ? 5 : 0)
+                                    
+                                    
                                         .opacity(purchaseManager.hasUnlockedPro
                                                  || jobSelectionViewModel.selectedJobUUID == job.uuid
                                                  || (job.uuid?.uuidString == lastSelectedJobUUID)
@@ -265,10 +272,7 @@ struct SideMenu: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(width: getRect().width-90)
         .frame(maxHeight: .infinity)
-        .background(
-            Color.primary
-                .opacity(0.04)
-                .ignoresSafeArea(.container, edges: .vertical))
+        .glassModifier(cornerRadius: 20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .onAppear {
             // Initialize the selected job to be the stored job when the view appears

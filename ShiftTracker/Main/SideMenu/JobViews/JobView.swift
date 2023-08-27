@@ -143,58 +143,59 @@ struct JobView: View {
     var body: some View {
         
         NavigationStack{
-            ZStack{
-               // Color(.systemBackground).edgesIgnoringSafeArea(.all)
+            ZStack(alignment: .bottomTrailing){
+                // Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 ScrollView{
                     VStack(spacing: 15){
-                    GeometryReader { geometry in
-                        let offset = geometry.frame(in: .global).minY
-                        VStack{
-                            Spacer()
-                            ZStack {
-                                Image(systemName: selectedIcon)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .foregroundStyle(.white)
-                                    .padding(20)
-                                    .background {
-                                        
-                                        Circle()
-                                            .foregroundStyle(selectedColor.gradient)
-                                        
-                                        
-                                    }
-                                    .shadow(color: selectedColor, radius: 4, x: 0, y: 0)
-                                VStack(alignment: .trailing){
-                                    Spacer()
-                                    Image(systemName: "pencil")
-                                        .font(.caption)
-                                    //  .foregroundStyle(.white)
-                                        .padding(8)
+                        GeometryReader { geometry in
+                            let offset = geometry.frame(in: .global).minY
+                            VStack{
+                                Spacer()
+                                ZStack {
+                                    Image(systemName: selectedIcon)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .foregroundStyle(.white)
+                                        .padding(20)
                                         .background {
                                             
                                             Circle()
-                                                .foregroundStyle(Color("SquaresColor"))
+                                                .foregroundStyle(selectedColor.gradient)
                                             
                                             
                                         }
-                                        .padding(.leading, 60)
-                                        .padding(.top, 15)
+                                        .shadow(color: selectedColor, radius: 4, x: 0, y: 0)
+                                    VStack(alignment: .trailing){
+                                        Spacer()
+                                        Image(systemName: "pencil")
+                                            .font(.caption)
+                                        //  .foregroundStyle(.white)
+                                            .padding(8)
+                                            .background {
+                                                
+                                                Circle()
+                                                    .foregroundStyle(Color("SquaresColor"))
+                                                
+                                                
+                                            }
+                                            .padding(.leading, 60)
+                                            .padding(.top, 15)
+                                        
+                                    }
+                                    
                                     
                                 }
-                                
-                                
+                                .scaleEffect(1 + (offset / 1000))
+                                .onTapGesture {
+                                    activeSheet = .symbolSheet
+                                }
+                                .frame(maxWidth: .infinity)
                             }
-                            .scaleEffect(1 + (offset / 1000))
-                            .onTapGesture {
-                                activeSheet = .symbolSheet
-                            }
-                            .frame(maxWidth: .infinity)
-                        }
+                            
+                        }.frame(height: 80)
                         
-                    }.frame(height: 80)
-                    
                         TextField("Company Name", text: $name)
+                           
                             .font(.title)
                             .bold()
                             .fontDesign(.rounded)
@@ -202,44 +203,46 @@ struct JobView: View {
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                             .padding(.vertical, 10)
-                            .background(Color(.systemGray5),in:
-                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .glassModifier(cornerRadius: 20)
+                        //  .shadow(radius: 1)
                             .padding(.horizontal)
                             .shake(times: nameShakeTimes)
-                    
-                }
-                    .padding(.vertical)
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(20)
-                        .padding(.horizontal)
+                           
                         
+                    }
+                    .padding(.vertical)
+                    .glassModifier(cornerRadius: 20)
+              
+                    .padding(.horizontal)
+                 
+                    
+                    
                     
                     
                     
                     
                     VStack(spacing: 15){
                         
-                      //  Group{
-                            
-                            
-                            
-                            TextField("Job Title", text: $title)
+                        //  Group{
+                        
+                        
+                        
+                        TextField("Job Title", text: $title)
                             .fontDesign(.rounded)
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color("SquaresColor"),in:
-                                                RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                .shake(times: titleShakeTimes)
-                            
-                            CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .glassModifier(cornerRadius: 20)
+                            .shake(times: titleShakeTimes)
+                        
+                        CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
                             .fontDesign(.rounded)
-                                .padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .background(Color("SquaresColor"), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                .keyboardType(.decimalPad)
-                                .shake(times: payShakeTimes)
-                            
-                       // }
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .glassModifier(cornerRadius: 20)
+                            .keyboardType(.decimalPad)
+                            .shake(times: payShakeTimes)
+                        
+                        // }
                             .haptics(onChangeOf: payShakeTimes, type: .error)
                             .haptics(onChangeOf: nameShakeTimes, type: .error)
                             .haptics(onChangeOf: titleShakeTimes, type: .error)
@@ -389,30 +392,28 @@ struct JobView: View {
                                 
                             }
                             
-                        }.background(Color("SquaresColor"))
-                            .cornerRadius(20)
+                        }.glassModifier(cornerRadius: 20)
                         
                         
                         
                         if taxEnabled || taxPercentage > 0 {
-                        VStack(alignment: .leading, spacing: 10){
-                            Text("Estimated Tax")
-                                .bold()
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
-                                .background(Color("SquaresColor"))
-                                .cornerRadius(20)
-                            Picker("Estimated tax:", selection: $taxPercentage) {
-                                ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
-                                    Text(index / 100, format: .percent)
-                                }
-                                
-                            }.pickerStyle(.wheel)
-                                .frame(maxHeight: 100)
+                            VStack(alignment: .leading, spacing: 10){
+                                Text("Estimated Tax")
+                                    .bold()
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .glassModifier(cornerRadius: 20)
+                                Picker("Estimated tax:", selection: $taxPercentage) {
+                                    ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
+                                        Text(index / 100, format: .percent)
+                                    }
+                                    
+                                }.pickerStyle(.wheel)
+                                    .frame(maxHeight: 100)
+                            }
+                            .padding(.horizontal, 5)
+                            
                         }
-                        .padding(.horizontal, 5)
-                        
-                    }
                         
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $rosterReminder){
@@ -440,44 +441,44 @@ struct JobView: View {
                                 .padding(.vertical, 10)
                                 .disabled(!rosterReminder)
                             
-                  
                             
-                        }.background(Color("SquaresColor"))
-                            .cornerRadius(20)
+                            
+                        }.glassModifier(cornerRadius: 20)
                         
-                         VStack(alignment: .leading, spacing: 10){
-                                                    Toggle(isOn: $overtimeEnabled) {
-                                                        HStack {
-                                                            Text("Overtime")
-                                                        }
-                                                    }
-                                                    .toggleStyle(CustomToggleStyle())
-                                                    
-                                                    Stepper(value: $overtimeRate, in: 1.25...3, step: 0.25) {
-                                                    
-             
-                                                            Text("Rate: \(overtimeRate, specifier: "%.2f")x")
-                                                        
-                                                    }.disabled(!overtimeEnabled)
-                                                    
-                                                    HStack {
-                                                        
-                                                       
-                                                        
-                                                        Image(systemName: "calendar.badge.clock")
-                                                        Text("Apply after:")
-                                                        OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
-                                                            .frame(maxHeight: 75)
-                                                           
-                                                    }
-                                                    .disabled(!overtimeEnabled)
-                                                    .opacity(overtimeEnabled ? 1.0 : 0.5)
-                                                    .shake(times: overtimeShakeTimes)
-                                                }.padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 10){
+                            Toggle(isOn: $overtimeEnabled) {
+                                HStack {
+                                    Text("Overtime")
+                                }
+                            }
+                            .toggleStyle(CustomToggleStyle())
+                            
+                            Stepper(value: $overtimeRate, in: 1.25...3, step: 0.25) {
+                                
+                                
+                                Text("Rate: \(overtimeRate, specifier: "%.2f")x")
+                                
+                            }.disabled(!overtimeEnabled)
+                            
+                            HStack {
+                                
+                                
+                                
+                                Image(systemName: "calendar.badge.clock")
+                                Text("Apply after:")
+                                OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
+                                    .frame(maxHeight: 75)
+                                
+                            }
+                            .disabled(!overtimeEnabled)
+                            .opacity(overtimeEnabled ? 1.0 : 0.5)
+                            .shake(times: overtimeShakeTimes)
+                        }.padding(.horizontal)
                             .padding(.vertical, 10)
-                         
-                         .background(Color("SquaresColor"))
-                            .cornerRadius(20)
+                            .glassModifier(cornerRadius: 20)
+                        
+                          /*  .background(.thinMaterial .opacity(0.5))
+                            .cornerRadius(20)*/
                         
                         
                         
@@ -485,12 +486,12 @@ struct JobView: View {
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding()
                     .navigationBarTitle(job != nil ? "Edit Job" : "Add Job", displayMode: .inline)
-
+                    
                     .fullScreenCover(isPresented: $showProSheet){
                         
-                
-                            ProView()
-                     
+                        
+                        ProView()
+                        
                             .presentationBackground(.ultraThinMaterial)
                         
                         
@@ -515,7 +516,7 @@ struct JobView: View {
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(.ultraThinMaterial)
                                 .presentationCornerRadius(35)
-                       
+                            
                             
                         }
                         
@@ -526,52 +527,48 @@ struct JobView: View {
                 }
                 //.background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
                 
-                
-                .toolbar{
-                    ToolbarItemGroup(placement: .keyboard){
-                        Spacer()
+                HStack(spacing: 10){
+                    
+             
+                    
+                    Button(action: {
                         
-                        Button("Done"){
-                            hideKeyboard()
+                        if name.isEmpty {
+                            withAnimation(.linear(duration: 0.4)) {
+                                nameShakeTimes += 2
+                            }
                         }
+                        else if hourlyPay.isEmpty || hourlyPay == "0.0" {
+                            withAnimation(.linear(duration: 0.4)) {
+                                payShakeTimes += 2
+                            }
+                        } else if title.isEmpty {
+                            withAnimation(.linear(duration: 0.4)) {
+                                titleShakeTimes += 2
+                            }
+                            
+                            
+                        } else if overtimeEnabled && overtimeAppliedAfter == 0 {
+                            withAnimation(.linear(duration: 0.4)) {
+                                overtimeShakeTimes += 2
+                            }
+                        }
+                        else {
+                            saveJob()
+                        }
+                        
+                        
+                        
+                    }) {
+                        Image(systemName: "folder.badge.plus")
+                            .bold()
                     }
                     
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            
-                            if name.isEmpty {
-                                withAnimation(.linear(duration: 0.4)) {
-                                    nameShakeTimes += 2
-                                }
-                            }
-                            else if hourlyPay.isEmpty || hourlyPay == "0.0" {
-                                withAnimation(.linear(duration: 0.4)) {
-                                    payShakeTimes += 2
-                                }
-                            } else if title.isEmpty {
-                                withAnimation(.linear(duration: 0.4)) {
-                                    titleShakeTimes += 2
-                                }
-                                
-                                
-                            } else if overtimeEnabled && overtimeAppliedAfter == 0 {
-                                withAnimation(.linear(duration: 0.4)) {
-                                    overtimeShakeTimes += 2
-                                }
-                            }
-                            else {
-                                saveJob()
-                            }
-                            
-                            
-                            
-                        }) {
-                            Image(systemName: "folder.badge.plus")
-                                .bold()
-                        }
-                    }
                     if job != nil {
-                        ToolbarItem(placement: .navigationBarTrailing) {
+                        
+                        Divider().frame(maxHeight: 10)
+                        
+                      
                             Button(action: {
                                 
                                 dismiss()
@@ -590,15 +587,37 @@ struct JobView: View {
                                     .foregroundColor(.red)
                                     .bold()
                             }
+                        
+                    }
+                    
+                    
+                    
+                }.padding()
+                    .glassModifier(cornerRadius: 20)
+                
+                    .padding()
+                 //   .shadow(radius: 3)
+                
+            }
+                
+                .toolbar{
+                    ToolbarItemGroup(placement: .keyboard){
+                        Spacer()
+                        
+                        Button("Done"){
+                            hideKeyboard()
                         }
                     }
+                    
+                 
+                    
                     ToolbarItem(placement: .navigationBarLeading) {
                         CloseButton {
                             dismiss()
                         }
                     }
                     
-                }            }
+                }
         }
     }
     

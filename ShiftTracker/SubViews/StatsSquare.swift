@@ -74,8 +74,7 @@ struct StatsSquare: View {
             Spacer()
         }
             .padding(.vertical, 16)
-            .background(Color("SquaresColor"))
-            .cornerRadius(12)
+            .glassModifier(cornerRadius: 12, applyPadding: false)
         
           
     }

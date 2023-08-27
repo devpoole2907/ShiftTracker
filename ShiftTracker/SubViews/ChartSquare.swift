@@ -126,7 +126,7 @@ struct ChartSquare: View {
                                 
                             }
                         }
-                        Spacer(minLength: 55)
+                       // Spacer(minLength: 55)
                     }
                  /*   .onTapGesture {
                         withAnimation{
@@ -574,8 +574,7 @@ struct ChartSquare: View {
             }
         }
             .padding(.vertical, 8)
-            .background(Color("SquaresColor"))
-            .cornerRadius(12)
+            .glassModifier(cornerRadius: 12, applyPadding: false)
           
     }
     

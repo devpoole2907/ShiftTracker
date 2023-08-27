@@ -26,17 +26,16 @@ struct ActionButtonView: View {
         }) {
             VStack(spacing: 10) {
                 Image(systemName: icon)
-                    .foregroundColor(textColor)
+                   .foregroundColor(textColor)
                 Text(title)
                     .font(.subheadline)
                     .bold()
-                    .foregroundColor(textColor)
+                  //  .foregroundColor(textColor)
             }
             .padding(.horizontal, 25)
             .frame(maxWidth: buttonWidth)
             .padding(.vertical, 8)
-            .background(backgroundColor)
-            .cornerRadius(20)
+            .glassModifier(cornerRadius: 20, darker: true)
         }.haptics(onChangeOf: isActionButtonTapped, type: .success)
             .buttonStyle(.scale)
             .listRowBackground(Color.clear)

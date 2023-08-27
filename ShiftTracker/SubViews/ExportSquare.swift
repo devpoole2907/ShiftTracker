@@ -77,8 +77,7 @@ struct ExportSquare: View {
             .haptics(onChangeOf: isTapped, type: .light)
             
         }.padding()
-        .background(Color("SquaresColor"))
-            .cornerRadius(12)
+            .glassModifier(cornerRadius: 12, applyPadding: false)
 
             .fullScreenCover(isPresented: $showingProView) {
                 

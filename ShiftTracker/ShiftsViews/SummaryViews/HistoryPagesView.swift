@@ -10,7 +10,7 @@ import Charts
 import CoreData
 import Haptics
 
-@available(iOS 17.0, *)
+
 struct HistoryPagesView: View {
     
     @Binding var navPath: NavigationPath
@@ -235,8 +235,8 @@ struct HistoryPagesView: View {
                                     
                                         .frame(minHeight: 200)
                                     
-                                        .selectionDisabled()
-                                }
+                           
+                                } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                                 
                                 
                                 Section {
@@ -249,11 +249,17 @@ struct HistoryPagesView: View {
                                     
                                     
                                     
-                                }
+                                } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                                
+                                Spacer(minLength: 225).listRowBackground(Color.clear)
                                 
                             }.tag(index)
                             
-                            Spacer(minLength: 225)
+                                .scrollContentBackground(.hidden)
+                                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                                .background(Color(.systemGroupedBackground).ignoresSafeArea())
+                            
+                            
                         }
                     }
                     
@@ -261,7 +267,7 @@ struct HistoryPagesView: View {
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 .haptics(onChangeOf: selectedTab, type: .light)
                 
-                    if #available(iOS 17.0, *){
+                 //   if #available(iOS 17.0, *){
                         
                         VStack{
                         
@@ -276,7 +282,7 @@ struct HistoryPagesView: View {
                             }) {
                                 Image(systemName: "trash")
                                     .bold()
-                                    .foregroundStyle(.red)
+                                    .foregroundStyle(selection.isEmpty ? .gray.opacity(0.5) : .red.opacity(1.0))
                             }.disabled(selection.isEmpty)
                             
                             
@@ -285,17 +291,16 @@ struct HistoryPagesView: View {
                             
                             
                         }.padding()
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(12)
+                                .glassModifier(cornerRadius: 20)
                         
                             .padding()
-                            .shadow(radius: 3)
+                           // .shadow(radius: 1)
                         
                             Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 200 : 270)
                     }
                         
                         
-                    }
+                    //}
                 
             }
                 
@@ -305,7 +310,9 @@ struct HistoryPagesView: View {
         
             PageControlView(currentPage: $selectedTab, numberOfPages: groupedShifts.count)
                 .frame(maxWidth: 175)
+            
                 .padding()
+              
                            // .frame(maxWidth: 0, maxHeight: 0)
                            // .padding(22)
             
@@ -391,7 +398,7 @@ struct HistoryPagesView: View {
     
 }
 
-@available(iOS 17.0, *)
+
 struct HistoryPagesView_Previews: PreviewProvider {
     
     static var previews: some View {

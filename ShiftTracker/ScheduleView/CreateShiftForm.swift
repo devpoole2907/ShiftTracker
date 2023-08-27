@@ -149,283 +149,288 @@ struct CreateShiftForm: View {
         
         let iconColor: Color = colorScheme == .dark ? .orange : .cyan
         NavigationStack {
-            ScrollView{
-                
-                VStack(spacing: 15){
+            ZStack(alignment: .bottomTrailing){
+                ScrollView{
                     
-                    if scheduledShift == nil {
-                    VStack(spacing: 5){
+                    VStack(spacing: 15){
                         
-                        HStack(spacing: 5){
-                            
-                            Toggle(isOn: $enableRepeat){
-                                Text("Repeat")
-                                    .bold()
-                            }.toggleStyle(CustomToggleStyle())
-                                .frame(height: 40)
-                            //  .padding(.vertical)
-                                .padding(.horizontal)
-                                .frame(maxWidth: .infinity)
-                                .background(Color("SquaresColor"))
-                                .cornerRadius(12)
-                            //  .padding()
-                            
-                            
-                            RepeatEndPicker(dateSelected: $dateSelected, selectedRepeatEnd: $selectedRepeatEnd)
-                                .frame(height: 40)
-                            //  .padding(.vertical)
-                                .padding(.horizontal)
-                                .frame(maxWidth: .infinity)
-                                .disabled(!enableRepeat)
-                            
-                                .background(Color("SquaresColor"))
-                                .cornerRadius(12)
-                            
-                            // .padding()
-                        }.padding(.horizontal)
-                        
-                        
-                        
-                        
-                            .onAppear {
-                                scheduleModel.selectedDays[getDayOfWeek(date: (dateSelected?.date ?? Date())) - 1] = true
+                        if scheduledShift == nil {
+                            VStack(spacing: 5){
                                 
-                                print("start date is : \(startDate)")
-                            }
-                            .haptics(onChangeOf: scheduleModel.selectedDays, type: .light)
-                        
-                        HStack {
-                            ForEach(0..<7) { i in
-                                Button(action: {
-                                    if i == getDayOfWeek(date: startDate) - 1 {
-                                        return
+                                HStack(spacing: 5){
+                                    
+                                    Toggle(isOn: $enableRepeat){
+                                        Text("Repeat")
+                                            .bold()
+                                    }.toggleStyle(CustomToggleStyle())
+                                        .frame(height: 40)
+                                    //  .padding(.vertical)
+                                        .padding(.horizontal)
+                                        .frame(maxWidth: .infinity)
+                                        .glassModifier(cornerRadius: 20)
+                                    //  .padding()
+                                    
+                                    
+                                    RepeatEndPicker(dateSelected: $dateSelected, selectedRepeatEnd: $selectedRepeatEnd)
+                                        .frame(height: 40)
+                                    //  .padding(.vertical)
+                                        .padding(.horizontal)
+                                        .frame(maxWidth: .infinity)
+                                        .disabled(!enableRepeat)
+                                    
+                                        .glassModifier(cornerRadius: 20)
+                                    
+                                    // .padding()
+                                }.padding(.horizontal)
+                                
+                                
+                                
+                                
+                                    .onAppear {
+                                        scheduleModel.selectedDays[getDayOfWeek(date: (dateSelected?.date ?? Date())) - 1] = true
+                                        
+                                        print("start date is : \(startDate)")
                                     }
-                                    scheduleModel.selectedDays[i].toggle()
-                                }) {
-                                    Text(getDayShortName(day: i))
-                                        .font((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? .caption : .callout)
+                                    .haptics(onChangeOf: scheduleModel.selectedDays, type: .light)
+                                
+                                HStack {
+                                    ForEach(0..<7) { i in
+                                        Button(action: {
+                                            if i == getDayOfWeek(date: startDate) - 1 {
+                                                return
+                                            }
+                                            scheduleModel.selectedDays[i].toggle()
+                                        }) {
+                                            Text(getDayShortName(day: i))
+                                                .font((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? .caption : .callout)
+                                                .bold()
+                                        }
+                                        //  .padding()
+                                        .background(scheduleModel.selectedDays[i] ? (colorScheme == .dark ? .white : .black) : Color.clear)
+                                        .foregroundColor(colorScheme == .dark ? .black : .white)
+                                        .cornerRadius(8)
+                                        .clipShape(Circle())
+                                        .buttonStyle(.bordered)
+                                        .frame(height: 15)
+                                        .frame(maxWidth: .infinity)
+                                        .disabled(!enableRepeat)
+                                    }
+                                }
+                                
+                                .padding()
+                                
+                                .glassModifier(cornerRadius: 20)
+                                .padding(.horizontal)
+                                
+                            }
+                        }
+                        
+                        
+                        VStack(spacing: 10){
+                            
+                            HStack(spacing: 10){
+                                VStack(alignment: .center, spacing: 2){
+                                    
+                                    
+                                    
+                                    HStack{
+                                        Image(systemName: "figure.walk.arrival")
+                                            .foregroundColor(iconColor)
+                                        Text("START")
+                                            .foregroundStyle(.gray)
+                                            .bold()
+                                        
+                                        
+                                        
+                                    }
+                                    .font(.system(.caption, design: .rounded))
+                                    
+                                    HStack{
+                                        Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
+                                        
+                                        
+                                            .font(.system(.title3, design: .rounded))
+                                            .bold()
+                                        
+                                        if getTime(angle: startAngle) < Date() {
+                                            
+                                            Image(systemName: "exclamationmark.triangle.fill")
+                                                .foregroundStyle(.gray)
+                                            
+                                        }
+                                        
+                                    }.padding(.leading, getTime(angle: startAngle) < Date() ? 28 : 0)
+                                    
+                                    Text(getTime(angle: startAngle).formatted(date: .abbreviated, time: .omitted))
+                                        .font(.system(.caption2, design: .rounded))
+                                        .foregroundColor(.gray)
                                         .bold()
-                                }
-                                //  .padding()
-                                .background(scheduleModel.selectedDays[i] ? (colorScheme == .dark ? .white : .black) : Color(.systemGray6))
-                                .foregroundColor(colorScheme == .dark ? .black : .white)
-                                .cornerRadius(8)
-                                .clipShape(Circle())
-                                .buttonStyle(.bordered)
-                                .frame(height: 15)
-                                .frame(maxWidth: .infinity)
-                                .disabled(!enableRepeat)
-                            }
-                        }
-                        
-                        .padding()
-                        
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
-                        .padding(.horizontal)
-                        
-                    }
-                }
-                
-                    
-                    VStack(spacing: 10){
-                    
-                    HStack(spacing: 10){
-                        VStack(alignment: .center, spacing: 2){
-                            
-                            
-                            
-                            HStack{
-                                Image(systemName: "figure.walk.arrival")
-                                    .foregroundColor(iconColor)
-                                Text("START")
-                                    .foregroundStyle(.gray)
-                                    .bold()
-                               
-                                
-                                
-                            }
-                            .font(.system(.caption, design: .rounded))
-                            
-                            HStack{
-                                Text(getTime(angle: startAngle).formatted(date: .omitted, time: .shortened))
-                                
-                                
-                                    .font(.system(.title3, design: .rounded))
-                                    .bold()
-                                
-                                if getTime(angle: startAngle) < Date() {
                                     
-                                    Image(systemName: "exclamationmark.triangle.fill")
-                                        .foregroundStyle(.gray)
                                     
                                 }
+                                .frame(maxWidth: .infinity, alignment: .center)
                                 
-                            }.padding(.leading, getTime(angle: startAngle) < Date() ? 28 : 0)
+                                VStack(alignment: .center, spacing: 2){
+                                    HStack{
+                                        Image(systemName: "figure.walk.departure")
+                                            .foregroundColor(iconColor)
+                                        Text("END")
+                                            .bold()
+                                            .foregroundStyle(.gray)
+                                    }
+                                    .font(.system(.caption, design: .rounded))
+                                    
+                                    Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .omitted, time: .shortened))
+                                        .font(.system(.title3, design: .rounded))
+                                        .bold()
+                                    
+                                    Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .abbreviated, time: .omitted))
+                                        .font(.system(.caption2, design: .rounded))
+                                        .foregroundColor(.gray)
+                                        .bold()
+                                    
+                                    
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                //.padding(.horizontal)
+                            }.listRowSeparator(.hidden)
+                                .padding(.top)
                             
-                            Text(getTime(angle: startAngle).formatted(date: .abbreviated, time: .omitted))
-                                .font(.system(.caption2, design: .rounded))
-                                .foregroundColor(.gray)
-                                .bold()
+                            scheduleSlider()
+                            //  .frame(maxWidth: .infinity, alignment: .center)
+                                .frame(minHeight: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? screenBounds().height / 2 : screenBounds().height / 3)
+                            // .frame(minWidth: screenBounds().width - 40)
+                                .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 20 : 30)
+                                .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? -85 : -10)
+                                .onAppear {
+                                    setupSlider()
+                                }
+                     
                             
-                            
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        
-                        VStack(alignment: .center, spacing: 2){
-                            HStack{
-                                Image(systemName: "figure.walk.departure")
-                                    .foregroundColor(iconColor)
-                                Text("END")
-                                    .bold()
-                                    .foregroundStyle(.gray)
-                            }
-                            .font(.system(.caption, design: .rounded))
-                            
-                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .omitted, time: .shortened))
-                                .font(.system(.title3, design: .rounded))
-                                .bold()
-                            
-                            Text(getTime(angle: toAngle, isEndDate: true).formatted(date: .abbreviated, time: .omitted))
-                                .font(.system(.caption2, design: .rounded))
-                                .foregroundColor(.gray)
-                                .bold()
-                            
-                            
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        //.padding(.horizontal)
-                    }.listRowSeparator(.hidden)
-                        .padding(.top)
-                    
-                    scheduleSlider()
-                    //  .frame(maxWidth: .infinity, alignment: .center)
-                        .frame(minHeight: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? screenBounds().height / 2 : screenBounds().height / 3)
-                    // .frame(minWidth: screenBounds().width - 40)
-                        .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 20 : 30)
-                        .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? -85 : -10)
-                        .onAppear {
-                                   setupSlider()
-                               }
-                        
-                        HStack(spacing: 5){
-                            Text("\(getTimeDifference().0) hr")
+                            HStack(spacing: 5){
+                                Text("\(getTimeDifference().0) hr")
                                 
-                            Text("\(getTimeDifference().1) m")
-                               
-                        }.font(.title.bold())
-                            .fontDesign(.rounded)
+                                Text("\(getTimeDifference().1) m")
+                                
+                            }.font(.title.bold())
+                                .fontDesign(.rounded)
                                 .padding(.bottom)
                                 .padding(.top, -10)
-                    
-                }
-                    
-                    .background(Color("SquaresColor"))
-                    .cornerRadius(12)
-                    .padding(.horizontal)
-                
-                    
-                    VStack(spacing: 10){
+                            
+                        }
                         
-                        
-                        
-                        HStack(spacing: 5){
-                            
-                            Toggle(isOn: $scheduleModel.notifyMe){
-                                Text("Reminder")
-                                    .bold()
-                            }.toggleStyle(CustomToggleStyle())
-                                .frame(height: 40)
-                                .padding(.horizontal)
-                                .frame(maxWidth: .infinity)
-                                .background(Color("SquaresColor"))
-                                .cornerRadius(12)
-                            
-                            
-                            
-                            Picker("When", selection: $scheduleModel.selectedReminderTime) {
-                                ForEach(ReminderTime.allCases) { reminderTime in
-                                    Text(reminderTime.rawValue).tag(reminderTime)
-                                }
-                            }.disabled(!scheduleModel.notifyMe)
-                            
-                                .frame(height: 40)
-                                .padding(.horizontal)
-                                .frame(maxWidth: .infinity)
-                      
-                            
-                                .background(Color("SquaresColor"))
-                                .cornerRadius(12)
-                            
-                        }.padding(.horizontal)
-                        
-                        HStack{
-                            Text("Pay Multiplier")
-                                .bold()
-                            
-                                .frame(height: 40)
-                                .padding(.horizontal)
-                              //
-                                
-                            Spacer(minLength: UIScreen.main.bounds.width / 3 - 100)
-                                
-                            Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
-                                Text("x\(payMultiplier, specifier: "%.2f")")
-                                            }
-                                            .onChange(of: payMultiplier) { newMultiplier in
-                                                multiplierEnabled = newMultiplier > 1.0
-                                            }
-                            
-                                            .frame(height: 40)
-                                            .padding(.horizontal)
-                                            
-                                           // .frame(maxWidth: .infinity)
-                                           
-                            
-                        } .background(Color("SquaresColor"))
-                            .cornerRadius(12)
+                        .glassModifier(cornerRadius: 20)
                         .padding(.horizontal)
                         
-                        HStack{
-                            TagPicker($selectedTags)
-                        }.padding(.horizontal)
-                           
+                        
+                        VStack(spacing: 10){
+                            
+                            
+                            
+                            HStack(spacing: 5){
+                                
+                                Toggle(isOn: $scheduleModel.notifyMe){
+                                    Text("Reminder")
+                                        .bold()
+                                }.toggleStyle(CustomToggleStyle())
+                                    .frame(height: 40)
+                                    .padding(.horizontal)
+                                    .frame(maxWidth: .infinity)
+                                    .glassModifier(cornerRadius: 20)
+                                
+                                
+                                
+                                Picker("When", selection: $scheduleModel.selectedReminderTime) {
+                                    ForEach(ReminderTime.allCases) { reminderTime in
+                                        Text(reminderTime.rawValue).tag(reminderTime)
+                                    }
+                                }.disabled(!scheduleModel.notifyMe)
+                                
+                                    .frame(height: 40)
+                                    .padding(.horizontal)
+                                    .frame(maxWidth: .infinity)
+                                
+                                
+                                    .glassModifier(cornerRadius: 20)
+                                
+                            }.padding(.horizontal)
+                            
+                            HStack{
+                                Text("Pay Multiplier")
+                                    .bold()
+                                
+                                    .frame(height: 40)
+                                    .padding(.horizontal)
+                                //
+                                
+                                Spacer(minLength: UIScreen.main.bounds.width / 3 - 100)
+                                
+                                Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
+                                    Text("x\(payMultiplier, specifier: "%.2f")")
+                                }
+                                .onChange(of: payMultiplier) { newMultiplier in
+                                    multiplierEnabled = newMultiplier > 1.0
+                                }
+                                
+                                .frame(height: 40)
+                                .padding(.horizontal)
+                                
+                                // .frame(maxWidth: .infinity)
+                                
+                                
+                            } .glassModifier(cornerRadius: 20)
+                                .padding(.horizontal)
+                            
+                            HStack{
+                                TagPicker($selectedTags)
+                            }.padding(.horizontal)
+                            
+                            
+                        }
                         
                     }
                     
-                }
-          
-            }//.scrollContentBackground(.hidden)
-           // .customScrollBackgroundModifier()
+                }//.scrollContentBackground(.hidden)
+                // .customScrollBackgroundModifier()
+                
+                HStack(spacing: 10){
+                    
+                    
+                    Button {
+                        startDate = getTime(angle: startAngle)
+                        endDate = getTime(angle: toAngle, isEndDate: true)
+                        selectedJob = jobSelectionViewModel.fetchJob(in: viewContext)
+                        
+                        if let scheduledShift = scheduledShift {
+                            
+                            updateShift()
+                            
+                        } else {
+                            
+                            createShift()
+                            
+                        }
+                        
+                       
+                    } label: {
+                        Image(systemName: "folder.badge.plus")
+                            .bold()
+                        
+                    }
+                        .disabled(getTime(angle: startAngle) < Date())
+                    
+                    
+                    
+                }.padding()
+                        .glassModifier(cornerRadius: 20)
+                        .padding()
+                
+            }
             
-            
-            .background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
+           // .background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
             
                 .toolbar{
-                    ToolbarItem(placement: .navigationBarTrailing){
-                        Button {
-                            startDate = getTime(angle: startAngle)
-                            endDate = getTime(angle: toAngle, isEndDate: true)
-                            selectedJob = jobSelectionViewModel.fetchJob(in: viewContext)
-                            
-                            if let scheduledShift = scheduledShift {
-                                
-                                updateShift()
-                                
-                            } else {
-                                
-                                createShift()
-                                
-                            }
-                            
-                           
-                        } label: {
-                            Image(systemName: "folder.badge.plus")
-                                .bold()
-                            
-                        }.padding()
-                            .disabled(getTime(angle: startAngle) < Date())
-                    }
+                    
                     ToolbarItem(placement: .navigationBarLeading){
                         CloseButton{
                             dismiss()
@@ -434,7 +439,7 @@ struct CreateShiftForm: View {
                 }
                 .navigationTitle(scheduledShift == nil ? "Schedule" : "Edit Schedule")
     
-                .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
+             
         }.onAppear {
             
             print("start date is \(startDate)")
@@ -458,7 +463,9 @@ struct CreateShiftForm: View {
                 ZStack {
                     
                     Circle()
-                        .foregroundStyle(colorScheme == .dark ? Color("SquaresColor") : .white)
+                    
+                        .foregroundStyle(.ultraThinMaterial)
+                        
                     
                     ForEach(1...60, id: \.self) { index in
                         Rectangle()
@@ -520,7 +527,13 @@ struct CreateShiftForm: View {
                 }
                     
                 Circle()
-                    .stroke(sliderBackgroundColor, lineWidth: 45)
+                    .stroke(colorScheme == .dark ? .ultraThickMaterial : Material.thin, lineWidth: 45)
+                   
+                        
+             
+                    
+                   
+                    
                
                    // .shadow(radius: 5, x: 2, y: 1)
                 

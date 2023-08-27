@@ -54,6 +54,8 @@ struct JobOverview: View {
         
         _navPath = navPath
         
+        UITableView.appearance().backgroundColor = UIColor.clear
+        
     }
     
     private var currencyFormatter: NumberFormatter {
@@ -64,6 +66,7 @@ struct JobOverview: View {
     }
     
     @Binding var navPath: NavigationPath
+    
     
     
    // @State var testNav: [OldShift] = []
@@ -83,74 +86,77 @@ struct JobOverview: View {
         
         
         NavigationStack(path: $navPath){
-        List{
-            Section{
-                GeometryReader { geometry in
-                    VStack(alignment: .leading, spacing: 0){
-                    HStack(spacing: 8){
-                        VStack(spacing: 0) {
-                            if !isChartViewPrimary {
-                                StatsSquare()
-                                    .environmentObject(shiftManager)
-                                    .frame(width: geometry.size.width / 2 - 8)
-                                Spacer()
-                            }
-                            ChartSquare(isChartViewPrimary: $isChartViewPrimary)
-                                .environmentObject(shiftManager)
-                                .frame(width: isChartViewPrimary ? geometry.size.width : geometry.size.width / 2 - 8)
-                                .frame(height: isChartViewPrimary ? geometry.size.height : geometry.size.height / 2)
-                                .animation(.easeInOut, value: isChartViewPrimary)
-                        }
-                        if !isChartViewPrimary {
-                        
-                            ExportSquare(action: {
-                                activeSheet = .configureExportSheet
-                            })
-                                .environmentObject(shiftManager)
-                                .frame(width: geometry.size.width / 2 - 8)
-                                .frame(height: geometry.size.height)
-                            
-                        }
-                        
-                    }
-                    }.frame(maxWidth: .infinity)
-                }
-                    .padding(.trailing, 2)
-            }.frame(minHeight: isChartViewPrimary ? 400 : 200)
-            
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .listRowInsets(.init(top: 20, leading: 0, bottom: 20, trailing: 0))
-                .haptics(onChangeOf: isChartViewPrimary, type: .light)
-            
-            
-            Section{
-                ForEach(shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }).prefix(10), id: \.self) { shift in
-                    
-                    NavigationLink(value: shift) {
-                        ShiftDetailRow(shift: shift)
-                            
-                        
-                    }
-                  
+            ZStack(alignment: .bottomTrailing){
+            List{
+                Section{
+               
+                        VStack(alignment: .leading, spacing: 0){
+                            HStack(spacing: 8){
+                                VStack(spacing: 0) {
+                                    if !isChartViewPrimary {
+                                        StatsSquare()
+                                            .environmentObject(shiftManager)
                                 
-                    .navigationDestination(for: OldShift.self) { shift in
-                        
-                        // it was not the worlds greatest workaround ... lets do things properly!
-                            DetailView(shift: shift, navPath: $navPath).environmentObject(savedPublisher)
-                            .onAppear {
-                                withAnimation {
-                                    shiftManager.showModePicker = false
+                                        Spacer()
+                                    }
+                                    ChartSquare(isChartViewPrimary: $isChartViewPrimary)
+                                        .environmentObject(shiftManager)
+                                     
                                 }
+                                if !isChartViewPrimary {
+                                    
+                                    ExportSquare(action: {
+                                        activeSheet = .configureExportSheet
+                                    })
+                                    .environmentObject(shiftManager)
+                              
+                                    
+                                }
+                                
                             }
+                        }.frame(maxWidth: .infinity)
+                        .padding(.horizontal, 12)
+                        .frame(maxHeight: 220)
+                    
+                    
+                  
+                    
+                }//.frame(minHeight: isChartViewPrimary ? 400 : 200)
+                
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(.init(top: 20, leading: 0, bottom: 30, trailing: 0))
+                    .haptics(onChangeOf: isChartViewPrimary, type: .light)
+                
+                
+                Section{
+                    
+                    ForEach(shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }).prefix(10), id: \.self) { shift in
+                        
+                        NavigationLink(value: shift) {
+                            ShiftDetailRow(shift: shift)
+                            
                             
                         }
-                    
-                    
-                 /*    */
-                    
-                    .swipeActions {
-                 
+                        
+                        
+                        .navigationDestination(for: OldShift.self) { shift in
+                            
+                            // it was not the worlds greatest workaround ... lets do things properly!
+                            DetailView(shift: shift, navPath: $navPath).environmentObject(savedPublisher)
+                                .onAppear {
+                                    withAnimation {
+                                        shiftManager.showModePicker = false
+                                    }
+                                }
+                            
+                        }
+                        
+                        
+                        /*    */
+                        
+                        .swipeActions {
+                            
                             Button(role: .destructive) {
                                 shiftStore.deleteOldShift(shift, in: viewContext)
                                 shiftManager.shiftAdded.toggle()
@@ -158,65 +164,104 @@ struct JobOverview: View {
                             } label: {
                                 Image(systemName: "trash")
                             }
-                        
-                    }
-                    
-                    
-                }
-                
-               
-            } header: {
-                
-                NavigationLink(value: 1) {
-                    
-                    Text("Latest Shifts")
-                        .textCase(nil)
-                        .foregroundStyle(textColor)
-                        .padding(.leading, jobSelectionViewModel.fetchJob(in: viewContext) != nil ? -12 : -4)
-                        .font(.title2)
-                        .bold()
-                    
-                    Image(systemName: "chevron.right")
-                    .bold()
-                    .foregroundStyle(.gray)
-                    Spacer()
-                    
-                }
-                .navigationDestination(for: Int.self) { value in
-                       
-                    if value == 1 {
-                        ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(savedPublisher).environmentObject(sortSelection)
-                        
-                            .onAppear {
-                                withAnimation {
-                                    shiftManager.showModePicker = false
-                                }
-                            }
-                        
-                    } else if value == 2 {
-                        
-                        if #available(iOS 17.0, *) {
-                            HistoryPagesView(navPath: $navPath)
-                        } else {
-                            EmptyView()
+                            
                         }
                         
                         
+                    }
+                    
+                    
+                } header: {
+                    
+                    NavigationLink(value: 1) {
+                        
+                        Text("Latest Shifts")
+                            .textCase(nil)
+                            .foregroundStyle(textColor)
+                            .padding(.leading, jobSelectionViewModel.fetchJob(in: viewContext) != nil ? -12 : -4)
+                            .font(.title2)
+                            .bold()
+                        
+                        Image(systemName: "chevron.right")
+                            .bold()
+                            .foregroundStyle(.gray)
+                        Spacer()
                         
                     }
-                       
-                   }
-                
+                    .navigationDestination(for: Int.self) { value in
                         
-                  
+                        if value == 1 {
+                            ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(savedPublisher).environmentObject(sortSelection)
+                            
+                                .onAppear {
+                                    withAnimation {
+                                        shiftManager.showModePicker = false
+                                    }
+                                }
+                            
+                        } else if value == 2 {
+                            
+                            
+                            HistoryPagesView(navPath: $navPath)
+                            
+                            
+                            
+                            
+                        }
+                        
+                    }
                     
-            }
-            //.listRowBackground(Color("SquaresColor"))
-            .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-           
+                    
+                    
+                    
+                }
+                
+                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                
+              
+               
+                
+            
+                .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+               
+               
+                
+                
+            }.scrollContentBackground(.hidden)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+                
            
             
-        }//.scrollContentBackground(.hidden)
+                VStack{
+                    
+                    HStack(spacing: 10){
+                        
+                        
+                        
+                        Button(action: {
+                            activeSheet = .addShiftSheet
+                        }){
+                            
+                            Image(systemName: "plus")
+                            .bold()
+                            
+                        }.disabled(jobSelectionViewModel.selectedJobUUID == nil)
+                        
+                        
+                        
+                        
+                    }.padding()
+                            .glassModifier(cornerRadius: 20)
+                    
+                        .padding()
+                       // .shadow(radius: 1)
+                    
+                        Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 50 : 40)
+                }
+            
+            
+        }
             
                 .sheet(item: $activeSheet) { sheet in
                     
@@ -307,19 +352,6 @@ struct JobOverview: View {
         .navigationTitle(jobSelectionViewModel.fetchJob(in: viewContext)?.name ?? "Summary")
             
         .toolbar{
-            
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    activeSheet = .addShiftSheet
-                }){
-                    
-                    Image(systemName: "plus")
-                    .bold()
-                    
-                }.disabled(jobSelectionViewModel.selectedJobUUID == nil)
-                    
-                
-            }
 
             
             ToolbarItem(placement: .navigationBarLeading){

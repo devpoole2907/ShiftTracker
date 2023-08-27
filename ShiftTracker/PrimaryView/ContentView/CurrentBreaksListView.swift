@@ -131,7 +131,7 @@ struct CurrentBreaksListView: View {
             .listRowBackground(Color.clear)
             
         }
-        .listRowBackground(Color("SquaresColor"))
+        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
        // .listRowSeparator(.hidden)
             
             

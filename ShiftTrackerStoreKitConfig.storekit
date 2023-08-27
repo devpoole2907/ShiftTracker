@@ -54,9 +54,6 @@
     "_applicationInternalID" : "6446443887",
     "_billingGracePeriodEnabled" : true,
     "_billingIssuesEnabled" : false,
-    "_compatibilityTimeRate" : {
-      "3" : 6
-    },
     "_developerTeamID" : "L9DB7QA9DE",
     "_failTransactionsEnabled" : false,
     "_lastSynchronizedDate" : 711271064.13617897,
@@ -118,7 +115,7 @@
         "name" : "Offer Code Redeem Sheet"
       }
     ],
-    "_timeRate" : 1004
+    "_timeRate" : 0
   },
   "subscriptionGroups" : [
     {

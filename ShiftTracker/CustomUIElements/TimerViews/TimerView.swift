@@ -16,6 +16,22 @@ struct TimerView: View {
     
     private let shiftKeys = ShiftKeys()
     
+    private let lightGradientColors = [
+        Color.white.opacity(0.3),
+        Color.white.opacity(0.1),
+        Color.white.opacity(0.1),
+        Color.white.opacity(0.4),
+        Color.white.opacity(0.5),
+    ]
+    
+    private let darkGradientColors = [
+        Color.gray.opacity(0.2),
+        Color.gray.opacity(0.1),
+        Color.gray.opacity(0.1),
+        Color.gray.opacity(0.3),
+        Color.gray.opacity(0.2),
+    ]
+    
     let sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
     @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
@@ -65,12 +81,23 @@ struct TimerView: View {
         
         var timeDigits = digitsFromTimeString(timeString: viewModel.timeElapsed.stringFromTimeInterval())
         
+        let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
         
         ZStack{
+            
+            
             RoundedRectangle(cornerRadius: 12)
-                .foregroundColor(Color("SquaresColor"))
+                .fill(Material.ultraThinMaterial)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                .overlay {
+                    //if colorScheme == .light {
+                        RoundedRectangle(cornerRadius: 12)
+                         .stroke(LinearGradient(colors: gradientColors,
+                         startPoint: .topLeading,
+                         endPoint: .bottomTrailing))
+                   // }
+                }
                 .frame(width: UIScreen.main.bounds.width - 60)
-                .shadow(radius: 5, x: 2, y: 4)
                
         VStack(alignment: .center, spacing: 5) {
             ZStack {

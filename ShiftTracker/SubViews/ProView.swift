@@ -286,10 +286,8 @@ struct PurchaseButton: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: 60)
-            .cornerRadius(20)
             .padding()
-            .background(Color("SquaresColor"),in:
-                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .glassModifier(cornerRadius: 20)
             
             
             

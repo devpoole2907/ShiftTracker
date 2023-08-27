@@ -18,6 +18,7 @@ struct ContentViewButtonsView: View {
     
     @Binding var jobShakeTimes: CGFloat
     @Binding var payShakeTimes: CGFloat
+    @State var breakCanceled: Bool = false
     
     var body: some View{
     
@@ -26,7 +27,7 @@ struct ContentViewButtonsView: View {
         let foregroundColor: Color = colorScheme == .dark ? .black : .white
         
     Section{
-        HStack{
+        HStack(spacing: 0){
             if viewModel.shiftState == .notStarted {
                 AnimatedButton(
                     action: { viewModel.activeSheet = .startShiftSheet }, title: "Start Shift",
@@ -77,7 +78,8 @@ struct ContentViewButtonsView: View {
                 }
                 else {
                     AnimatedButton(
-                        action:  viewModel.breakTimeElapsed <= 60 ? viewModel.cancelBreak : { viewModel.activeSheet = .endBreakSheet } ,
+                        action:  viewModel.breakTimeElapsed <= 60 ? { viewModel.cancelBreak()
+                            breakCanceled.toggle() } : { viewModel.activeSheet = .endBreakSheet } ,
                         title: viewModel.breakTimeElapsed <= 60 ? "Cancel Break" : "End Break",
                         backgroundColor: buttonColor,
                         isDisabled: viewModel.isEditing
@@ -95,8 +97,10 @@ struct ContentViewButtonsView: View {
         }.haptics(onChangeOf: payShakeTimes, type: .error)
             .haptics(onChangeOf: viewModel.activeSheet, type: .light)
             .haptics(onChangeOf: jobShakeTimes, type: .error)
+            .haptics(onChangeOf: breakCanceled, type: .error)
         
-        
-    }
+           
+    }.padding()
+            
 }
 }

@@ -64,7 +64,7 @@ struct ScheduledShiftsView: View {
                     
                    
                     
-                    .listRowBackground(Color("SquaresColor"))
+                    .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                     .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                     
                     .swipeActions {
@@ -143,7 +143,7 @@ struct ScheduledShiftsView: View {
                                     
                                     
                                 }
-                                .listRowBackground(Color("SquaresColor"))
+                                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                                 .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 20))
                         }
                     }
@@ -155,7 +155,7 @@ struct ScheduledShiftsView: View {
                             .bold()
                             .fontDesign(.rounded)
                             .padding()
-                    }.listRowBackground(Color("SquaresColor"))
+                    } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 }
             
             else if isBeforeEndOfToday(dateSelected?.date ?? Date()) && displayedOldShifts.isEmpty {
@@ -164,7 +164,7 @@ struct ScheduledShiftsView: View {
                     .bold()
                     .fontDesign(.rounded)
                         .padding()
-                        .listRowBackground(Color("SquaresColor"))
+                        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 }
             
             

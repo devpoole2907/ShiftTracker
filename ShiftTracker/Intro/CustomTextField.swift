@@ -46,10 +46,7 @@ struct CustomTextField: View {
             
         }.padding(.horizontal)
             .padding(.vertical, 10)
-            .background {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(.gray.opacity(0.1))
-            }
+            .glassModifier(cornerRadius: 20)
     }
 }
 

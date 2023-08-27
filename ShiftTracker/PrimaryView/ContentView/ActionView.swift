@@ -34,7 +34,7 @@ struct ActionView: View {
     var body: some View {
         
         let buttonColor: Color = colorScheme == .dark ? .white : .black
-        let textColor: Color = colorScheme == .dark ? .black : .white
+        let textColor: Color = colorScheme == .dark ? .white : .black
         
         NavigationStack {
             VStack {
@@ -86,8 +86,7 @@ struct ActionView: View {
                     .padding(.horizontal)
                         .frame(maxWidth: UIScreen.main.bounds.width - 80)
                         .padding(.vertical, 10)
-                        .background(Color("SquaresColor"),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .glassModifier(cornerRadius: 20)
                         
                         Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
                             Text("Pay Multiplier: x\(viewModel.payMultiplier, specifier: "%.2f")").bold()
@@ -99,8 +98,7 @@ struct ActionView: View {
                                         .padding(.horizontal)
                                             .frame(maxWidth: UIScreen.main.bounds.width - 80)
                                             .padding(.vertical, 10)
-                                            .background(Color("SquaresColor"),in:
-                                                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                            .glassModifier(cornerRadius: 20)
                         
 
                         
@@ -161,8 +159,7 @@ struct ActionView: View {
             .padding(.horizontal)
                 .frame(maxWidth: UIScreen.main.bounds.width - 80)
                 .padding(.vertical, 10)
-                .background(Color("SquaresColor"),in:
-                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .glassModifier(cornerRadius: 20)
                 .padding(.bottom, 10)
                 
                 
@@ -171,14 +168,14 @@ struct ActionView: View {
                 
                 if actionType == .startBreak {
                     HStack {
-                        ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                        ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: themeManager.breaksColor, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: true)
                             dismiss()
                         }
-                        ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: .white, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                        ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: themeManager.breaksColor, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: false)
                             dismiss()
-                        }
+                        } 
                     }
                 } else {
                     
@@ -204,6 +201,7 @@ struct ActionView: View {
                             viewModel.endBreak(endDate: actionDate, viewContext: context)
                             dismiss()
                         }
+                       
                     default:
                         fatalError("Unsupported action type")
                     }

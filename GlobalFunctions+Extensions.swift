@@ -44,7 +44,7 @@ func isBeforeEndOfToday(_ date: Date) -> Bool {
     if let date = calendar.date(from: dateComponents), let today = calendar.date(from: todayComponents) {
         return date <= today
     }
-        return false
+    return false
     
 }
 
@@ -59,7 +59,7 @@ extension CLPlacemark {
 class AddressManager: ObservableObject {
     private let geocoder = CLGeocoder()
     private let defaults = UserDefaults.standard
-
+    
     func loadSavedAddress(selectedAddressString: String?, completion: @escaping (MKCoordinateRegion?, IdentifiablePointAnnotation?) -> Void) {
         if let savedAddress = selectedAddressString {
             geocoder.geocodeAddressString(savedAddress) { placemarks, error in
@@ -119,8 +119,8 @@ class ShiftNotificationManager {
                 let minutesToStart = Int(shift.reminderTime / 60)
                 
                 content.title = "\(jobName) Shift Reminder"
-            
-                    content.body = "Shift starting in \(minutesToStart) \(minutesToStart == 1 ? "minute." : "minutes.")"
+                
+                content.body = "Shift starting in \(minutesToStart) \(minutesToStart == 1 ? "minute." : "minutes.")"
                 
                 content.interruptionLevel = .timeSensitive
                 let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: reminderDate)
@@ -138,55 +138,55 @@ class ShiftNotificationManager {
     // used for location based clock in and out/auto clock in and out
     
     func sendLocationNotification(with title: String, body: String) {
-           let content = UNMutableNotificationContent()
-           content.title = title
-           content.body = body
-           content.sound = .default
-           print("Sending notification") // debugging
-
-           let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-           let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-           let center = UNUserNotificationCenter.current()
-           center.add(request) { error in
-               if let error = error {
-                   print("Error scheduling notification: \(error.localizedDescription)")
-               }
-           }
-       }
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        print("Sending notification") // debugging
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        
+        let center = UNUserNotificationCenter.current()
+        center.add(request) { error in
+            if let error = error {
+                print("Error scheduling notification: \(error.localizedDescription)")
+            }
+        }
+    }
     
     // used for roster reminding notifications
     
     func updateRosterNotifications(viewContext: NSManagedObjectContext) {
         let center = UNUserNotificationCenter.current()
-
+        
         // Cancel all existing notifications
         center.removePendingNotificationRequests(withIdentifiers: ["roster"])
-
+        
         let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "rosterReminder == true")
-
+        
         do {
             let jobs = try viewContext.fetch(fetchRequest)
-
-    
+            
+            
             for job in jobs {
                 if let time = job.rosterTime,
                    let nextDate = nextDate(dayOfWeek: Int(job.rosterDayOfWeek), time: time) {
                     
-  
+                    
                     
                     let content = UNMutableNotificationContent()
                     content.title = "Check your roster"
                     content.body = "Open the app to schedule your shifts for \(job.name ?? "")."
-
+                    
                     content.userInfo = ["url": "shifttrackerapp://schedule"]
                     content.categoryIdentifier = "rosterCategory"
                     
                     
                     let triggerDate = Calendar.current.dateComponents([.weekday, .hour, .minute], from: nextDate)
                     let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
-
+                    
                     let request = UNNotificationRequest(identifier: "roster", content: content, trigger: trigger)
                     center.add(request, withCompletionHandler: { (error) in
                         if let error = error {
@@ -227,15 +227,15 @@ func getDayShortName(day: Int) -> String {
 func nextDate(dayOfWeek: Int, time: Date) -> Date? {
     let calendar = Calendar.current
     let now = Date()
-
+    
     let timeComponents = calendar.dateComponents([.hour, .minute], from: time)
     var dateComponents = DateComponents()
     dateComponents.weekday = dayOfWeek
     dateComponents.hour = timeComponents.hour
     dateComponents.minute = timeComponents.minute
-
+    
     let nextDate = calendar.nextDate(after: now, matching: dateComponents, matchingPolicy: .nextTime)
-
+    
     return nextDate
 }
 
@@ -244,11 +244,11 @@ public func wipeCoreData(in viewContext: NSManagedObjectContext) {
     let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
     
     let entityNames = ["Job", "OldShift", "Break", "JobLocation", "ScheduledShift", "Tip"]
-
+    
     for entityName in entityNames {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
+        
         do {
             try viewContext.execute(deleteRequest)
         } catch let error as NSError {
@@ -274,7 +274,7 @@ struct FadeMask: View {
     var body: some View {
         LinearGradient(gradient: Gradient(stops: [
             Gradient.Stop(color: Color.clear, location: 0),
-            Gradient.Stop(color: Color.black, location: 0.1), 
+            Gradient.Stop(color: Color.black, location: 0.1),
             Gradient.Stop(color: Color.black, location: 0.9),
             Gradient.Stop(color: Color.clear, location: 1),
         ]), startPoint: .top, endPoint: .bottom)
@@ -284,7 +284,7 @@ struct FadeMask: View {
 struct RollingDigit: View {
     let digit: Int
     @State private var shouldAnimate = false
-
+    
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
@@ -325,7 +325,7 @@ class NavigationState: ObservableObject {
 
 struct HeightPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat?
-
+    
     static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
         guard let nextValue = nextValue() else { return }
         value = nextValue
@@ -338,7 +338,7 @@ private struct ReadHeightModifier: ViewModifier {
             Color.clear.preference(key: HeightPreferenceKey.self, value: geometry.size.height)
         }
     }
-
+    
     func body(content: Content) -> some View {
         content.background(sizeView)
     }
@@ -382,9 +382,9 @@ extension View {
 // used to create 3 default tags when the app launches
 
 func createTags(in viewContext: NSManagedObjectContext) {
-        let tagNames = ["Night", "Overtime", "Late"]
-        let tagColors = [UIColor(.indigo), UIColor(.orange), UIColor(.pink)]
-
+    let tagNames = ["Night", "Overtime", "Late"]
+    let tagColors = [UIColor(.indigo), UIColor(.orange), UIColor(.pink)]
+    
     for index in tagNames.indices {
         
         let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
@@ -411,7 +411,7 @@ func createTags(in viewContext: NSManagedObjectContext) {
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
-    }
+}
 class NotificationManager: ObservableObject {
     @Published var authorizationStatus: UNAuthorizationStatus?
     
@@ -426,7 +426,7 @@ class NotificationManager: ObservableObject {
             }
         }
     }
-
+    
     
 }
 
@@ -434,7 +434,7 @@ class NotificationManager: ObservableObject {
 
 struct CustomScrollBackgroundModifier: ViewModifier {
     @Environment(\.colorScheme) var colorScheme
-
+    
     func body(content: Content) -> some View {
         Group {
             if colorScheme == .dark {
@@ -454,4 +454,125 @@ extension View {
 
 
 
+struct GlassModifier: ViewModifier {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    private let cornerRadius: CGFloat
+    private let applyModifier: Bool
+    private let applyPadding: Bool
+    private let darker: Bool
+    
+    private let lightGradientColors = [
+        Color.white.opacity(0.3),
+        Color.white.opacity(0.1),
+        Color.white.opacity(0.1),
+        Color.white.opacity(0.4),
+        Color.white.opacity(0.5),
+    ]
+    
+    private let darkGradientColors = [
+        Color.gray.opacity(0.2),
+        Color.gray.opacity(0.1),
+        Color.gray.opacity(0.1),
+        Color.gray.opacity(0.3),
+        Color.gray.opacity(0.2),
+    ]
+    
+    init(_ cornerRadius: CGFloat = 16, applyModifier: Bool = false, applyPadding: Bool = true, darker: Bool = false) {
+        self.cornerRadius = cornerRadius
+        self.applyModifier = applyModifier // optionally we can pass this a boolean, to determine whether to apply the modifier or not (e.g detailview being presented as a sheet or not boolean, we dont want to apply glass if its not a sheet)
+        self.applyPadding = applyPadding
+        self.darker = darker
+    }
+    
+    func body(content: Content) -> some View {
+        
+        let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
+        
+        
+        if applyModifier {
+            content.background{
+                
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(darker ? Material.thinMaterial : Material.ultraThinMaterial)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                
+            }
+            .overlay {
+                //if colorScheme == .light {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                     .stroke(LinearGradient(colors: gradientColors,
+                     startPoint: .topLeading,
+                     endPoint: .bottomTrailing))
+               // }
+            }
+            
+            .padding(.horizontal, applyPadding ? 5 : 0)
+            
+        } else {
+            content
+                .background(Color("SquaresColor"),in:
+                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+        
+    }
+    
+    
+}
 
+extension View {
+    func glassModifier(cornerRadius: CGFloat = 12, applyModifier: Bool = true, applyPadding: Bool = true, darker: Bool = false) -> some View {
+        self.modifier(GlassModifier(cornerRadius, applyModifier: applyModifier, applyPadding: applyPadding, darker: darker))
+    }
+}
+
+struct CustomSegmentedPicker: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    @Binding var selection: StatsMode
+    var cornerRadius: CGFloat = 20.0
+    var borderWidth: CGFloat = 2.0
+    
+    var body: some View {
+        
+        let iconColor = colorScheme == .dark ? Color.gray : Color.black
+        
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                
+                if let selectedIdx = StatsMode.allCases.firstIndex(of: selection) {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .foregroundColor(.white)
+                        //.padding(EdgeInsets(top: borderWidth, leading: borderWidth, bottom: borderWidth, trailing: borderWidth))
+                        .frame(width: geo.size.width / CGFloat(StatsMode.allCases.count))
+                        .offset(x: geo.size.width / CGFloat(StatsMode.allCases.count) * CGFloat(selectedIdx), y: 0)
+                        .animation(.spring().speed(1.5))
+                       
+                }
+                
+                HStack(spacing: 0) {
+                    ForEach(StatsMode.allCases, id: \.self) { mode in
+                        Button(action: {
+                            withAnimation(.spring().speed(1.5)) {
+                                selection = mode
+                            }
+                        }) {
+                            Image(systemName: mode.image)
+                              
+                                .foregroundStyle(iconColor)
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                              //  .padding()
+                        }
+                    }
+                }.frame(height: 30)
+                
+                
+            } .frame(maxHeight: 30)
+                
+        }
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+       // .frame(maxHeight: 35)
+    }
+}
