@@ -151,22 +151,19 @@ struct ScheduleView: View {
                         
                         
                         
-                    }//.opacity(showAllScheduledShiftsView ? 0 : 1)
-                        .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
-                        //.scrollContentBackground(.hidden)
-                    // .listSectionSpacing(0) // iOS 17
-                
+                    }.blur(radius: showAllScheduledShiftsView ? 2 : 0)
+                        .animation(.easeInOut(duration: 0.3), value: showAllScheduledShiftsView)
+              
                         .scrollContentBackground(.hidden)
                                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                         .background(Color(.systemGroupedBackground).ignoresSafeArea())
                 
                 if showAllScheduledShiftsView {
                     AllScheduledShiftsView(navPath: $navPath).environmentObject(savedPublisher)
-                       // .opacity(showAllScheduledShiftsView ? 1 : 0)
                         .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                         .onDisappear{
                             
-                            dateSelected = Date().dateComponents
+                         
                             shouldScrollToNextShift = true
                             
                         }
@@ -351,7 +348,9 @@ struct ScheduleView: View {
                    // .padding()
                    // .shadow(radius: 3)
       
-                }.padding()
+                    Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 65 : 55)
+                    
+                }//.padding()
                 
                     
                 

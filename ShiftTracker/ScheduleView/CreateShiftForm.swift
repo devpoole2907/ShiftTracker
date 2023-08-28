@@ -438,6 +438,7 @@ struct CreateShiftForm: View {
                     }
                 }
                 .navigationTitle(scheduledShift == nil ? "Schedule" : "Edit Schedule")
+                .navigationBarTitleDisplayMode(.inline)
     
              
         }.onAppear {
