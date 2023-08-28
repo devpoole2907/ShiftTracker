@@ -112,7 +112,7 @@ struct ChartSquare: View {
         
         HStack{
             VStack(alignment: .leading) {
-                HStack(spacing: isChartViewPrimary ? 10 : 5){
+                HStack(spacing: 5){
                     
                     HStack(spacing: 0){
                         NavigationLink(value: 2) {
@@ -122,7 +122,7 @@ struct ChartSquare: View {
                                     .bold()
                                     .foregroundStyle(headerColor)
                                     .padding(.leading)
-                                    .padding(.vertical, isChartViewPrimary ? 10 : 0)
+                                   
                                 
                             }
                         }
@@ -135,15 +135,7 @@ struct ChartSquare: View {
                     }
                     */
                     Spacer()
-                    if isChartViewPrimary {
-                        CloseButton(action: {
-                            withAnimation{
-                                isChartViewPrimary = false
-                            }
-                        })
-                            .frame(width: 24, height: 24)
-                            .padding(.trailing)
-                    }
+                
                                    
                 }
 
