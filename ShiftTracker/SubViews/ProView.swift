@@ -17,6 +17,8 @@ struct ProView: View {
     
     @EnvironmentObject var purchaseManager: PurchaseManager
     
+    @State private var hasAppeared = false // used to animate the background fading out when appearing as a fullscreencover due to a system glitch with black/white backgrounds no transparency
+    
     
     var body: some View {
         
@@ -24,8 +26,15 @@ struct ProView: View {
         let textColor: Color = colorScheme == .dark ? Color.white.opacity(0.9) : Color.white
         let upgradeButtonTextColor: Color = colorScheme == .dark ? .white : Color.black
         
+        let backgroundColor = colorScheme == .dark ? Color(.systemGray6) : Color.white
         
         NavigationStack {
+            
+            ZStack{
+                backgroundColor.opacity(hasAppeared ? 0 : 1)
+                    
+                    .edgesIgnoringSafeArea(.all)
+                
             
             VStack{
                 HStack{
@@ -202,6 +211,16 @@ struct ProView: View {
                         .fontDesign(.rounded)
                 }.padding()
                 
+            }
+            
+        }
+            
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation {
+                        hasAppeared = true
+                    }
+                }
             }
             
             .sheet(isPresented: $purchaseManager.showSuccessSheet, onDismiss: {dismiss()}) {

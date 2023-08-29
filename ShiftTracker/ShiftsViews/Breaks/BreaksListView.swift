@@ -240,27 +240,37 @@ struct BreaksHeaderView: View {
     var body: some View {
         
         HStack{
+            HStack {
             Text("Breaks")
                 .bold()
                 .textCase(nil)
                 .foregroundStyle(colorScheme == .dark ? .white : .black)
-            
+                .font(.title2)
                 .padding(.vertical, 5)
+            
+                Divider().frame(height: 10)
             
             Button(action: {
                 viewModel.isAddingBreak = true
             }) {
                 Image(systemName: "plus")
                     .bold()
+                
             }.disabled(!viewModel.isEditing)
+                    .font(.title3)
+            
+        }  .padding(.horizontal)
+                .glassModifier(cornerRadius: 20)
             
             Spacer()
             
-        }.font(.title2)
+        }
             .padding(.horizontal, 5)
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
+            .padding(.bottom, 10)
         
+            
         
     }
     

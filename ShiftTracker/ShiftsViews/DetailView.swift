@@ -318,18 +318,24 @@ struct DetailView: View {
                         
                             .glassModifier(cornerRadius: 20)
                         
+                            .padding(.bottom, 10)
+                        
                     }
                     
                     
                     
                     VStack{
-                        VStack(alignment: .leading){
+                        HStack{
                             Text("Start")
                                 .bold()
-                                .padding(.horizontal)
+                            //    .padding(.horizontal)
                             //.padding(.horizontal, 15)
                                 .padding(.vertical, 5)
-                                .glassModifier(cornerRadius: 20)
+                                .frame(width: 50)
+                            
+                            Divider().frame(height: 10)
+                            
+                            Spacer()
                             
                             DatePicker("Start: ", selection: $viewModel.selectedStartDate)
                                 .labelsHidden()
@@ -343,18 +349,23 @@ struct DetailView: View {
                                 .disabled(!viewModel.isEditing)
                                 .scaleEffect(viewModel.isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
                                 .animation(.easeInOut(duration: 0.2))
-                                .frame(maxWidth: .infinity)
-                                .padding(.horizontal)
+                           
+                              //  .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .glassModifier(cornerRadius: 20)
-                        }
-                        VStack(alignment: .leading){
+                            
+                        }.padding(.horizontal)
+                            .glassModifier(cornerRadius: 20)
+                        HStack{
                             Text("End")
                                 .bold()
-                                .padding(.horizontal)
+                            //    .padding(.horizontal)
                             //.padding(.horizontal, 15)
                                 .padding(.vertical, 5)
-                                .glassModifier(cornerRadius: 20)
+                                .frame(width: 50)
+                            
+                            Divider().frame(height: 10)
+                            
+                            Spacer()
                             
                             DatePicker("", selection: $viewModel.selectedEndDate)
                                 .labelsHidden()
@@ -367,34 +378,113 @@ struct DetailView: View {
                                 }.disabled(!viewModel.isEditing)
                                 .scaleEffect(viewModel.isEditing ? 1.01 : 1.0) // Add a scale effect that pulses the picker
                                 .animation(.easeInOut(duration: 0.2)) // Add an animation modifier to create the pulse effect
-                                .frame(maxWidth: .infinity)
-                                .padding(.horizontal)
+                               
+                              //  .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .glassModifier(cornerRadius: 20)
+                                
                             
-                        }
-                    }.padding(.horizontal)
+                        }.padding(.horizontal)
+                        .glassModifier(cornerRadius: 20)
+                    }.padding(.horizontal, 10)
                     
-                    VStack{
-                        VStack(alignment: .leading) {
+                    VStack(alignment: .leading){
+                        HStack {
                             
                             Text("Hourly Pay")
                                 .bold()
                             
                                 .padding(.vertical, 5)
-                                .padding(.horizontal)
-                                .glassModifier(cornerRadius: 20)
                             
+                                .frame(width: 120)
+                            
+                     
+                            Divider().frame(height: 10)
+                            
+                            Spacer()
                             
                             CurrencyTextField(placeholder: "Hourly Pay", text: $viewModel.selectedHourlyPay)
                                 .disabled(!viewModel.isEditing)
                                 .focused($focusedField, equals: .field1)
                                 .keyboardType(.decimalPad)
-                                .padding(.horizontal)
+                           
                                 .padding(.vertical, 10)
+                            
+                                .multilineTextAlignment(.trailing)
+                             //   .frame(maxWidth: 70)
+                                
+                            
+                        }     .padding(.horizontal)
+                            .glassModifier(cornerRadius: 20)
+                        
+                        if tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
+                            HStack {
+                                
+                                
+                                Text("Total Tips")
+                                    .bold()
+                                
+                                    .padding(.vertical, 5)
+                                
+                                    .frame(width: 120)
+                                   
+                          
+                                Divider().frame(height: 10)
+                                   
+                                Spacer()
+                                
+                                CurrencyTextField(placeholder: "Total tips", text: $viewModel.selectedTotalTips)
+                                    .disabled(!viewModel.isEditing)
+                                    .focused($focusedField, equals: .field2)
+                                    .keyboardType(.decimalPad)
+                                  //  .padding(.horizontal)
+                                    .padding(.vertical, 10)
+                                    .multilineTextAlignment(.trailing)
+                                  //  .frame(maxWidth: 70)
+                               //     .glassModifier(cornerRadius: 20)
+                                
+                                
+                                
+                            } .padding(.horizontal)
                                 .glassModifier(cornerRadius: 20)
+                            /*  Toggle(isOn: $addTipsToTotal) {
+                             HStack {
+                             Image(systemName: "chart.line.downtrend.xyaxis")
+                             Spacer().frame(width: 10)
+                             Text("Add tips to total pay")
+                             }
+                             }.toggleStyle(OrangeToggleStyle()) */
                             
                         }
+                        
+                        HStack{
+                            
+                            Text("Pay Multiplier").lineLimit(1)
+                                .bold()
+                            
+                                .padding(.vertical, 10)
+                                .frame(width: 120)
+                        
+                            
+                            Divider().frame(height: 10)
+                             
+                            Spacer()
+                            
+                            Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
+                                Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
+                            }
+                            .onChange(of: viewModel.payMultiplier) { newMultiplier in
+                                viewModel.multiplierEnabled = newMultiplier > 1.0
+                            }
+                            
+                           // .padding(.horizontal)
+                          //  .padding(.vertical, 10)
+                          //  .padding(.horizontal)
+                         
+                            
+                        } .padding(.horizontal)
+                            .glassModifier(cornerRadius: 20)
+                            .padding(.bottom, 5)
+                        
                         if viewModel.selectedTaxPercentage > 0 || taxEnabled {
                             
                             VStack(alignment: .leading){
@@ -417,60 +507,10 @@ struct DetailView: View {
                             .padding(.horizontal, 5)
                         }
                         
-                        if tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
-                            VStack(alignment: .leading) {
-                                
-                                Text("Total Tips")
-                                    .bold()
-                                
-                                    .padding(.vertical, 5)
-                                    .padding(.horizontal)
-                                    .glassModifier(cornerRadius: 20)
-                                
-                                
-                                CurrencyTextField(placeholder: "Total tips", text: $viewModel.selectedTotalTips)
-                                    .disabled(!viewModel.isEditing)
-                                    .focused($focusedField, equals: .field2)
-                                    .keyboardType(.decimalPad)
-                                    .padding(.horizontal)
-                                    .padding(.vertical, 10)
-                                    .glassModifier(cornerRadius: 20)
-                                
-                                
-                                
-                            }
-                            /*  Toggle(isOn: $addTipsToTotal) {
-                             HStack {
-                             Image(systemName: "chart.line.downtrend.xyaxis")
-                             Spacer().frame(width: 10)
-                             Text("Add tips to total pay")
-                             }
-                             }.toggleStyle(OrangeToggleStyle()) */
-                            
-                        }
+                      
                         
-                        VStack(alignment: .leading){
-                            
-                            Text("Pay Multiplier")
-                                .bold()
-                            
-                                .padding(.vertical, 5)
-                                .padding(.horizontal)
-                                .glassModifier(cornerRadius: 20)
-                            
-                            Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
-                                Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
-                            }
-                            .onChange(of: viewModel.payMultiplier) { newMultiplier in
-                                viewModel.multiplierEnabled = newMultiplier > 1.0
-                            }
-                            
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .padding(.horizontal)
-                            .glassModifier(cornerRadius: 20)
-                            
-                        }
+                   
+                        
                         
                         VStack(alignment: .leading){
                             Text("Notes")
@@ -523,7 +563,7 @@ struct DetailView: View {
                             }.padding(.horizontal)
                                 .padding(.vertical)
                                 .glassModifier(cornerRadius: 20)
-                            
+                                .padding(.bottom, 5)
                             
                                // .background(Color("SquaresColor"),in:
                                           //      RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -531,7 +571,7 @@ struct DetailView: View {
                             
                         }
                         
-                    }.padding(.horizontal)
+                    }.padding(.horizontal, 10)
                     
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)

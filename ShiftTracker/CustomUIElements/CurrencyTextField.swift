@@ -13,8 +13,9 @@ struct CurrencyTextField: View {
     
     var body: some View {
         HStack {
+          
             Text(Locale.current.currencySymbol ?? "")
-                .foregroundColor(.gray)
+                .foregroundStyle(.gray)
             TextField(placeholder, text: $text)
         }
     }

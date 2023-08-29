@@ -60,6 +60,8 @@ struct JobView: View {
     
     @State private var showProSheet = false
     
+    @State private var hasAppeared = false // used to animate the background fading out when appearing as a fullscreencover due to a system glitch with black/white backgrounds no transparency
+    
     @State private var selectedAddress: String?
     
     
@@ -142,9 +144,16 @@ struct JobView: View {
     
     var body: some View {
         
+        let backgroundColor = colorScheme == .dark ? Color(.systemGray6) : Color.white
+        
         NavigationStack{
             ZStack(alignment: .bottomTrailing){
                 // Color(.systemBackground).edgesIgnoringSafeArea(.all)
+                
+                backgroundColor.opacity(hasAppeared ? 0 : 1)
+                    
+                    .edgesIgnoringSafeArea(.all)
+                
                 ScrollView{
                     VStack(spacing: 15){
                         GeometryReader { geometry in
@@ -598,6 +607,12 @@ struct JobView: View {
                     .padding()
                  //   .shadow(radius: 3)
                 
+            }.onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation {
+                        hasAppeared = true
+                    }
+                }
             }
                 
                 .toolbar{
