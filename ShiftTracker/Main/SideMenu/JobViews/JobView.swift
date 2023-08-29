@@ -618,7 +618,7 @@ struct JobView: View {
                     }
                     
                 }
-        }
+        }.background(Color.clear)
     }
     
     private func saveJob() {

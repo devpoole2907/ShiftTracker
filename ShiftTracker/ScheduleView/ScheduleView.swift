@@ -345,10 +345,10 @@ struct ScheduleView: View {
                 }.padding()
                         .glassModifier(cornerRadius: 20)
                 
-                   // .padding()
+                    .padding()
                    // .shadow(radius: 3)
       
-                    Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 65 : 55)
+                 //   Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 65 : 55)
                     
                 }//.padding()
                 

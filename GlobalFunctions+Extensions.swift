@@ -462,6 +462,7 @@ struct GlassModifier: ViewModifier {
     private let applyModifier: Bool
     private let applyPadding: Bool
     private let darker: Bool
+    private let padding: Double
     
     private let lightGradientColors = [
         Color.white.opacity(0.3),
@@ -479,11 +480,12 @@ struct GlassModifier: ViewModifier {
         Color.gray.opacity(0.2),
     ]
     
-    init(_ cornerRadius: CGFloat = 16, applyModifier: Bool = false, applyPadding: Bool = true, darker: Bool = false) {
+    init(_ cornerRadius: CGFloat = 16, applyModifier: Bool = false, applyPadding: Bool = true, darker: Bool = false, padding: Double = 5) {
         self.cornerRadius = cornerRadius
         self.applyModifier = applyModifier // optionally we can pass this a boolean, to determine whether to apply the modifier or not (e.g detailview being presented as a sheet or not boolean, we dont want to apply glass if its not a sheet)
         self.applyPadding = applyPadding
         self.darker = darker
+        self.padding = padding
     }
     
     func body(content: Content) -> some View {
@@ -508,7 +510,7 @@ struct GlassModifier: ViewModifier {
                // }
             }
             
-            .padding(.horizontal, applyPadding ? 5 : 0)
+            .padding(.horizontal, applyPadding ? padding : 0)
             
         } else {
             content
@@ -522,57 +524,9 @@ struct GlassModifier: ViewModifier {
 }
 
 extension View {
-    func glassModifier(cornerRadius: CGFloat = 12, applyModifier: Bool = true, applyPadding: Bool = true, darker: Bool = false) -> some View {
+    func glassModifier(cornerRadius: CGFloat = 12, applyModifier: Bool = true, applyPadding: Bool = true, darker: Bool = false, padding: Double = 5) -> some View {
         self.modifier(GlassModifier(cornerRadius, applyModifier: applyModifier, applyPadding: applyPadding, darker: darker))
     }
 }
 
-struct CustomSegmentedPicker: View {
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    @Binding var selection: StatsMode
-    var cornerRadius: CGFloat = 20.0
-    var borderWidth: CGFloat = 2.0
-    
-    var body: some View {
-        
-        let iconColor = colorScheme == .dark ? Color.gray : Color.black
-        
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                
-                if let selectedIdx = StatsMode.allCases.firstIndex(of: selection) {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .foregroundColor(.white)
-                        //.padding(EdgeInsets(top: borderWidth, leading: borderWidth, bottom: borderWidth, trailing: borderWidth))
-                        .frame(width: geo.size.width / CGFloat(StatsMode.allCases.count))
-                        .offset(x: geo.size.width / CGFloat(StatsMode.allCases.count) * CGFloat(selectedIdx), y: 0)
-                        .animation(.spring().speed(1.5))
-                       
-                }
-                
-                HStack(spacing: 0) {
-                    ForEach(StatsMode.allCases, id: \.self) { mode in
-                        Button(action: {
-                            withAnimation(.spring().speed(1.5)) {
-                                selection = mode
-                            }
-                        }) {
-                            Image(systemName: mode.image)
-                              
-                                .foregroundStyle(iconColor)
-                                .frame(minWidth: 0, maxWidth: .infinity)
-                              //  .padding()
-                        }
-                    }
-                }.frame(height: 30)
-                
-                
-            } .frame(maxHeight: 30)
-                
-        }
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-       // .frame(maxHeight: 35)
-    }
-}
+

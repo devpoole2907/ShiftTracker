@@ -324,10 +324,12 @@ struct DetailView: View {
                     
                     VStack{
                         VStack(alignment: .leading){
-                            Text("Start:")
+                            Text("Start")
                                 .bold()
+                                .padding(.horizontal)
                             //.padding(.horizontal, 15)
                                 .padding(.vertical, 5)
+                                .glassModifier(cornerRadius: 20)
                             
                             DatePicker("Start: ", selection: $viewModel.selectedStartDate)
                                 .labelsHidden()
@@ -347,10 +349,12 @@ struct DetailView: View {
                                 .glassModifier(cornerRadius: 20)
                         }
                         VStack(alignment: .leading){
-                            Text("End:")
+                            Text("End")
                                 .bold()
+                                .padding(.horizontal)
                             //.padding(.horizontal, 15)
                                 .padding(.vertical, 5)
+                                .glassModifier(cornerRadius: 20)
                             
                             DatePicker("", selection: $viewModel.selectedEndDate)
                                 .labelsHidden()
@@ -369,17 +373,17 @@ struct DetailView: View {
                                 .glassModifier(cornerRadius: 20)
                             
                         }
-                    }
+                    }.padding(.horizontal)
                     
                     VStack{
                         VStack(alignment: .leading) {
                             
-                            Text("Hourly pay:")
+                            Text("Hourly Pay")
                                 .bold()
                             
                                 .padding(.vertical, 5)
-                            
-                                .cornerRadius(20)
+                                .padding(.horizontal)
+                                .glassModifier(cornerRadius: 20)
                             
                             
                             CurrencyTextField(placeholder: "Hourly Pay", text: $viewModel.selectedHourlyPay)
@@ -397,7 +401,10 @@ struct DetailView: View {
                                 Text("Estimated Tax")
                                     .bold()
                                     .padding(.vertical, 5)
+                                    .padding(.horizontal)
+                                    .glassModifier(cornerRadius: 20)
                                     .padding(.leading, -3)
+                                
                                 Picker("Estimated tax:", selection: $viewModel.selectedTaxPercentage) {
                                     ForEach(Array(stride(from: 0, to: 50, by: 0.5)), id: \.self) { index in
                                         Text(index / 100, format: .percent)
@@ -413,12 +420,12 @@ struct DetailView: View {
                         if tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
                             VStack(alignment: .leading) {
                                 
-                                Text("Total tips:")
+                                Text("Total Tips")
                                     .bold()
                                 
                                     .padding(.vertical, 5)
-                                
-                                    .cornerRadius(20)
+                                    .padding(.horizontal)
+                                    .glassModifier(cornerRadius: 20)
                                 
                                 
                                 CurrencyTextField(placeholder: "Total tips", text: $viewModel.selectedTotalTips)
@@ -444,12 +451,12 @@ struct DetailView: View {
                         
                         VStack(alignment: .leading){
                             
-                            Text("Pay multiplier:")
+                            Text("Pay Multiplier")
                                 .bold()
                             
                                 .padding(.vertical, 5)
-                            
-                                .cornerRadius(20)
+                                .padding(.horizontal)
+                                .glassModifier(cornerRadius: 20)
                             
                             Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
                                 Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
@@ -466,12 +473,12 @@ struct DetailView: View {
                         }
                         
                         VStack(alignment: .leading){
-                            Text("Notes:")
+                            Text("Notes")
                                 .bold()
                             
                                 .padding(.vertical, 5)
-                            
-                                .cornerRadius(20)
+                                .padding(.horizontal)
+                                .glassModifier(cornerRadius: 20)
                             
                             TextEditor(text: $viewModel.notes)
                                 .disabled(!viewModel.isEditing)
@@ -487,12 +494,12 @@ struct DetailView: View {
                         
                         VStack(alignment: .leading){
                             
-                            Text("Overtime:")
+                            Text("Overtime")
                                 .bold()
                             
                                 .padding(.vertical, 5)
-                            
-                                .cornerRadius(20)
+                                .padding(.horizontal)
+                                .glassModifier(cornerRadius: 20)
                             VStack{
                                 Stepper(value: $viewModel.overtimeRate, in: 1.00...3, step: 0.25) {
                                     
@@ -524,7 +531,7 @@ struct DetailView: View {
                             
                         }
                         
-                    }
+                    }.padding(.horizontal)
                     
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
