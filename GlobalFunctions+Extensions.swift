@@ -503,10 +503,11 @@ struct GlassModifier: ViewModifier {
             }
             .overlay {
                 //if colorScheme == .light {
-                    RoundedRectangle(cornerRadius: cornerRadius)
+                RoundedRectangle(cornerRadius: cornerRadius)
                      .stroke(LinearGradient(colors: gradientColors,
                      startPoint: .topLeading,
-                     endPoint: .bottomTrailing))
+                                            endPoint: .bottomTrailing), lineWidth: 1.0)
+                    
                // }
             }
             
