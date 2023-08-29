@@ -45,8 +45,6 @@ struct ChartSquare: View {
             return shiftManager.weeklyTotalPay
         case .month:
             return shiftManager.getTotalPay(from: shiftManager.monthlyShifts)
-        case .halfYear:
-            return shiftManager.getTotalPay(from: shiftManager.halfYearlyShifts)
         case .year:
             return shiftManager.getTotalPay(from: shiftManager.yearlyShifts)
         }
@@ -58,8 +56,6 @@ struct ChartSquare: View {
             return shiftManager.weeklyTotalHours
         case .month:
             return shiftManager.getTotalHours(from: shiftManager.monthlyShifts)
-        case .halfYear:
-            return shiftManager.getTotalHours(from: shiftManager.halfYearlyShifts)
         case .year:
             return shiftManager.getTotalHours(from: shiftManager.yearlyShifts)
         }
@@ -71,8 +67,6 @@ struct ChartSquare: View {
             return shiftManager.weeklyTotalBreaksHours
         case .month:
             return shiftManager.getTotalBreaksHours(from: shiftManager.monthlyShifts)
-        case .halfYear:
-            return shiftManager.getTotalBreaksHours(from: shiftManager.halfYearlyShifts)
         case .year:
             return shiftManager.getTotalBreaksHours(from: shiftManager.yearlyShifts)
         }
@@ -263,51 +257,7 @@ struct ChartSquare: View {
                             
                         }
                         
-                    case .halfYear:
-                        
-                        
-                        ForEach(shiftManager.halfYearlyShifts) { shift in
-                            
-                            if let currentActiveShift, currentActiveShift.id == shift.id{
-                  
-                                RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .weekOfYear))
-                                    .foregroundStyle(Color(.systemGray6))
-                                    .annotation(position: .top){
-                                        if shiftManager.statsMode == .earnings {
-                                            
-                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else if shiftManager.statsMode == .hours {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        }
-                                        
-                                    }
-                                
-                            }
-                            
-                            
-                            
-                            
-                            
-                            BarMark(x: .value("Day", shift.shiftStartDate, unit: .weekOfYear),
-                                    y: .value(shiftManager.statsMode == .earnings ? "Earnings" :
-                                              shiftManager.statsMode == .hours ? "Hours" : "Breaks",
-                                              shift.animate
-                                              ? (shiftManager.statsMode == .earnings
-                                                 ? shift.totalPay
-                                                 : shiftManager.statsMode == .hours
-                                                 ? shift.hoursCount
-                                                 : shift.breakDuration)
-                                              : 0
-                                            )
-                            )
-                            .foregroundStyle(barColor)
-                            .cornerRadius(shiftManager.statsMode == .earnings ? 10 : 5, style: .continuous)
-                        }
+                
                         
                     case .year:
                         
@@ -394,15 +344,6 @@ struct ChartSquare: View {
                                         AxisValueLabel(format: .dateTime.month(), centered: true, collisionResolution: .disabled)
                                     }
                                 }
-                        } else if shiftManager.dateRange == .halfYear {
-                            AxisMarks(values: .stride(by: .month, count: 1)) { value in
-                                    if let date = value.as(Date.self) {
-                                        AxisValueLabel(format: .dateTime.month(), centered: true, collisionResolution: .disabled)
-                                    }
-                                }
-                            
-  
-                            
                         } else if shiftManager.dateRange == .month {
                             
                            AxisMarks { value in
@@ -486,20 +427,7 @@ struct ChartSquare: View {
                                                         self.currentActiveShift = currentMark
                                                         self.plotWidth = proxy.plotAreaSize.width
                                                     }
-                                                case .halfYear:
-                                                    if let currentMark = shiftManager.halfYearlyShifts.first(where: { mark in
-                                                        
-                                                        print("check check")
-                                                        
-                                                        return compareDates(mark.shiftStartDate, date)
-                                                        
-                                                        
-                                                        
-                                                    }) {
-                                                        print("check check check")
-                                                        self.currentActiveShift = currentMark
-                                                        self.plotWidth = proxy.plotAreaSize.width
-                                                    }
+                                            
                                                 case .year:
                                                     if let currentMark = shiftManager.yearlyShifts.first(where: { mark in
                                                         
@@ -543,26 +471,7 @@ struct ChartSquare: View {
                         }
                     })
                 
-                if isChartViewPrimary{
-                    
-                    
-                    
-                    Picker(selection: $shiftManager.dateRange, label: Text("Duration")) {
-                        ForEach(DateRange.allCases, id: \.self) { dateRange in
-                            Text(dateRange.shortDescription).bold().tag(dateRange).fontDesign(.rounded)
-                        }
-                    }.padding(.horizontal)
-                       // .disabled(!isPickerEnabled) temp crash fix when changing picker too fast ...
-                    .listRowSeparator(.hidden)
-                    .pickerStyle(.segmented)
-                    .contentShape(Rectangle())
-                    
-                    
-                    .onChange(of: shiftManager.dateRange){ _ in
-                        animateGraph()
-                    }
-                    
-                }
+              
             }
         }
             .padding(.vertical, 8)
@@ -572,8 +481,8 @@ struct ChartSquare: View {
     
     func animateGraph(){
         
-        switch shiftManager.dateRange {
-        case .week:
+      
+    
             for(index,_) in shiftManager.recentShifts.enumerated(){
                 
                // DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
@@ -586,48 +495,15 @@ struct ChartSquare: View {
 
             }
             
-        case .month:
-            for(index,_) in shiftManager.monthlyShifts.enumerated(){
-                
-              //  DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
-                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
-                        shiftManager.monthlyShifts[index].animate = true
-                        
-                    }
-                    
-               // }
+    
+            
 
-            }
             
-        case .halfYear:
-            for(index,_) in shiftManager.halfYearlyShifts.enumerated(){
-                
-          //      DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
-                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
-                        shiftManager.halfYearlyShifts[index].animate = true
-                        
-                    }
-                    
-           //     }
-
-            }
-            
-        case .year:
-            for(index,_) in shiftManager.yearlyShifts.enumerated(){
-                
-             //   DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
-                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
-                        shiftManager.yearlyShifts[index].animate = true
-                        
-                    }
-                    
-            //    }
-
-            }
+   
             
             
             
-        }
+        
         
 
     }
@@ -641,20 +517,7 @@ struct ChartSquare: View {
 
     
 }
-/*
-struct ChartSquare_Previews: PreviewProvider {
-    static var previews: some View {
-        ChartSquare(isChartViewPrimary: .constant(true))
-            .previewLayout(.fixed(width: 400, height: 200)) // Change the width and height as per your requirement
-    }
-}*/
 
-
-struct ChartTest: Identifiable {
-    var type: String
-    var count: Double
-    var id = UUID()
-}
 
 struct ChartAnnotation: View {
     

@@ -88,22 +88,22 @@ struct JobOverview: View {
         NavigationStack(path: $navPath){
             ZStack(alignment: .bottomTrailing){
             List{
-                Section{
+             
                
                         VStack(alignment: .leading, spacing: 0){
                             HStack(spacing: 8){
                                 VStack(spacing: 0) {
-                                    if !isChartViewPrimary {
+                                  
                                         StatsSquare()
                                             .environmentObject(shiftManager)
                                 
                                         Spacer()
-                                    }
+                               
                                     ChartSquare(isChartViewPrimary: $isChartViewPrimary)
-                                        .environmentObject(shiftManager)
+                                       .environmentObject(shiftManager)
                                      
                                 }
-                                if !isChartViewPrimary {
+                    
                                     
                                     ExportSquare(action: {
                                         activeSheet = .configureExportSheet
@@ -111,7 +111,7 @@ struct JobOverview: View {
                                     .environmentObject(shiftManager)
                               
                                     
-                                }
+                                
                                 
                             }
                         }.frame(maxWidth: .infinity)
@@ -121,7 +121,7 @@ struct JobOverview: View {
                     
                   
                     
-                }//.frame(minHeight: isChartViewPrimary ? 400 : 200)
+                //.frame(minHeight: isChartViewPrimary ? 400 : 200)
                 
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
@@ -390,7 +390,6 @@ struct JobOverview: View {
         shiftManager.weeklyTotalBreaksHours = shiftManager.getTotalBreaksHours(from: weeklyShifts)
 
         shiftManager.monthlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .month)
-        shiftManager.halfYearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .halfYear)
         shiftManager.yearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .year)
         
         shiftManager.totalPay = shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel)

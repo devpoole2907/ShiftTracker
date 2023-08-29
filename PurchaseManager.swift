@@ -29,7 +29,9 @@ class PurchaseManager: ObservableObject {
     
     var hasUnlockedPro: Bool {
         
-        return !self.purchasedProductIDs.isEmpty && (subscriptionExpiryDate ?? Date()) > Date()
+       // return !self.purchasedProductIDs.isEmpty && (subscriptionExpiryDate ?? Date()) > Date()
+        
+        return true // temporary for testflight
         
     }
     

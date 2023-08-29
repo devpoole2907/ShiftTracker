@@ -173,15 +173,6 @@ class ShiftDataManager: ObservableObject {
             periodShifts = filteredShifts.flatMap { date, shifts in
                 shifts.map { singleShift(shift: $0) }
             }
-        case .halfYear:
-            // Group shifts by week
-            let shiftsGroupedByWeek: [Date: [OldShift]] = Dictionary(grouping: filteredShifts.flatMap { $0.value }) { shift in
-                return calendar.startOfDay(for: calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: shift.shiftStartDate!))!)
-            }
-            // Convert to singleShift
-            periodShifts = shiftsGroupedByWeek.map { date, shifts in
-                singleShift(aggregateShifts: shifts, startDate: date)
-            }
         case .year:
             // Group shifts by month
             let shiftsGroupedByMonth: [Date: [OldShift]] = Dictionary(grouping: filteredShifts.flatMap { $0.value }) { shift in
@@ -211,10 +202,6 @@ class ShiftDataManager: ObservableObject {
             components.day = -7
         case .month:
             components.month = -1
-        case .halfYear:
-           // extraComponent.month = 1
-          //  now = Calendar.current.date(byAdding: extraComponent, to: now) ?? Date()
-            components.weekOfYear = -26
         case .year:
             extraComponent.month = 1
             now = Calendar.current.date(byAdding: extraComponent, to: now) ?? Date()
@@ -238,8 +225,6 @@ class ShiftDataManager: ObservableObject {
         case .month:
             let range = calendar.range(of: .day, in: .month, for: date)!
             return 0..<range.count
-        case .halfYear:
-            return 0..<(30 * 6 * 4)
         case .year:
             return 0..<52
         }

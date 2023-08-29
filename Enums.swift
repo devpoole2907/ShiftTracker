@@ -120,7 +120,6 @@ public enum HistoryRange: Int, CaseIterable {
 public enum DateRange: Int, CaseIterable {
     case week
     case month
-    case halfYear
     case year
 
     var shortDescription: String {
@@ -129,8 +128,6 @@ public enum DateRange: Int, CaseIterable {
             return "W"
         case .month:
             return "M"
-        case .halfYear:
-            return "6M"
         case .year:
             return "Y"
         }
@@ -142,8 +139,6 @@ public enum DateRange: Int, CaseIterable {
             return "Weekly"
         case .month:
             return "Monthly"
-        case .halfYear:
-            return "6M"
         case .year:
             return "Yearly"
         }
@@ -155,8 +150,6 @@ public enum DateRange: Int, CaseIterable {
             return .day
         case .month:
             return .month
-        case .halfYear:
-            return .weekOfYear
         case .year:
             return .month
         }
@@ -168,8 +161,6 @@ public enum DateRange: Int, CaseIterable {
             return 7
         case .month:
             return 1
-        case .halfYear:
-            return 26
         case .year:
             return 13
         }
