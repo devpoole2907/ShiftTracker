@@ -46,13 +46,11 @@ struct ShiftTrackerLockscreenPayWidgets: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: LockscreenWidgetProvider()) { entry in
-          /*  if #available(iOS 17.0, *) {
+      
                 ShiftTrackerLockscreenPayWidgetsView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {*/
-                ShiftTrackerLockscreenPayWidgetsView(entry: entry)
+                .widgetBackgroundModifier()
                   
-          // }
+      
         }
         .configurationDisplayName("Current Pay")
         .description("Track your current shifts total pay.")

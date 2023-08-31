@@ -56,152 +56,8 @@ extension CLPlacemark {
     }
 }
 
-class AddressManager: ObservableObject {
-    private let geocoder = CLGeocoder()
-    private let defaults = UserDefaults.standard
-    
-    func loadSavedAddress(selectedAddressString: String?, completion: @escaping (MKCoordinateRegion?, IdentifiablePointAnnotation?) -> Void) {
-        if let savedAddress = selectedAddressString {
-            geocoder.geocodeAddressString(savedAddress) { placemarks, error in
-                if let error = error {
-                    print("Error geocoding address: \(error.localizedDescription)")
-                } else if let placemarks = placemarks, let firstPlacemark = placemarks.first {
-                    let annotation = IdentifiablePointAnnotation()
-                    annotation.coordinate = firstPlacemark.location!.coordinate
-                    annotation.title = firstPlacemark.formattedAddress
-                    
-                    if let coordinate = firstPlacemark.location?.coordinate {
-                        let region = MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-                        completion(region, annotation)
-                    }
-                }
-            }
-        }
-    }
-}
 
-// scheduled shifts notification manager
 
-class ShiftNotificationManager {
-    static let shared = ShiftNotificationManager()
-    
-    private var shiftNotificationIdentifiers: [String] = []
-    
-    func fetchUpcomingShifts() -> [ScheduledShift] {
-        let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "notifyMe == true")
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \ScheduledShift.reminderTime, ascending: true)]
-        fetchRequest.fetchLimit = 10
-        
-        do {
-            let shifts = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
-            return shifts
-        } catch {
-            print("Failed to fetch shifts: \(error.localizedDescription)")
-            return []
-        }
-    }
-    
-    func scheduleNotifications() {
-        let shifts = fetchUpcomingShifts()
-        let center = UNUserNotificationCenter.current()
-        
-        center.removePendingNotificationRequests(withIdentifiers: shiftNotificationIdentifiers)
-        shiftNotificationIdentifiers.removeAll()
-        
-        for shift in shifts {
-            let content = UNMutableNotificationContent()
-            
-            
-            if let reminderDate = shift.startDate?.addingTimeInterval(-shift.reminderTime),
-               let _ = shift.startDate, let jobName = shift.job?.name {
-                
-                let minutesToStart = Int(shift.reminderTime / 60)
-                
-                content.title = "\(jobName) Shift Reminder"
-                
-                content.body = "Shift starting in \(minutesToStart) \(minutesToStart == 1 ? "minute." : "minutes.")"
-                
-                content.interruptionLevel = .timeSensitive
-                let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: reminderDate)
-                let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-                
-                let identifier = "Shift-\(shift.id?.uuidString ?? UUID().uuidString)"
-                let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-                center.add(request)
-                
-                shiftNotificationIdentifiers.append(identifier)
-            }
-        }
-    }
-    
-    // used for location based clock in and out/auto clock in and out
-    
-    func sendLocationNotification(with title: String, body: String) {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = .default
-        print("Sending notification") // debugging
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        
-        let center = UNUserNotificationCenter.current()
-        center.add(request) { error in
-            if let error = error {
-                print("Error scheduling notification: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    // used for roster reminding notifications
-    
-    func updateRosterNotifications(viewContext: NSManagedObjectContext) {
-        let center = UNUserNotificationCenter.current()
-        
-        // Cancel all existing notifications
-        center.removePendingNotificationRequests(withIdentifiers: ["roster"])
-        
-        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "rosterReminder == true")
-        
-        do {
-            let jobs = try viewContext.fetch(fetchRequest)
-            
-            
-            for job in jobs {
-                if let time = job.rosterTime,
-                   let nextDate = nextDate(dayOfWeek: Int(job.rosterDayOfWeek), time: time) {
-                    
-                    
-                    
-                    let content = UNMutableNotificationContent()
-                    content.title = "Check your roster"
-                    content.body = "Open the app to schedule your shifts for \(job.name ?? "")."
-                    
-                    content.userInfo = ["url": "shifttrackerapp://schedule"]
-                    content.categoryIdentifier = "rosterCategory"
-                    
-                    
-                    let triggerDate = Calendar.current.dateComponents([.weekday, .hour, .minute], from: nextDate)
-                    let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: true)
-                    
-                    let request = UNNotificationRequest(identifier: "roster", content: content, trigger: trigger)
-                    center.add(request, withCompletionHandler: { (error) in
-                        if let error = error {
-                            // handle the error
-                            print("Notification error: ", error)
-                        }
-                    })
-                }
-            }
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-    }
-    
-}
 
 
 extension NSNotification.Name {
@@ -308,17 +164,7 @@ struct RollingDigit: View {
     }
 }
 
-class NavigationState: ObservableObject {
-    static let shared = NavigationState()
-    
-    @Published var gestureEnabled: Bool = true
-    @Published var showMenu: Bool = false
-    
-    @Published var currentTab: Tab = .home
-    
-    @Published var hideTabBar = false
-    
-}
+
 
 
 // test modifier to capture view height from Matthew's dev blog daringsnowball.net
@@ -412,23 +258,7 @@ func createTags(in viewContext: NSManagedObjectContext) {
         }
     }
 }
-class NotificationManager: ObservableObject {
-    @Published var authorizationStatus: UNAuthorizationStatus?
-    
-    init() {
-        checkNotificationStatus()
-    }
-    
-    func checkNotificationStatus() {
-        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
-            DispatchQueue.main.async {
-                self?.authorizationStatus = settings.authorizationStatus
-            }
-        }
-    }
-    
-    
-}
+
 
 // applies hidden scroll background only if in dark mode
 
@@ -454,80 +284,6 @@ extension View {
 
 
 
-struct GlassModifier: ViewModifier {
-    
-    @Environment(\.colorScheme) var colorScheme
-    
-    private let cornerRadius: CGFloat
-    private let applyModifier: Bool
-    private let applyPadding: Bool
-    private let darker: Bool
-    private let padding: Double
-    
-    private let lightGradientColors = [
-        Color.white.opacity(0.3),
-        Color.white.opacity(0.1),
-        Color.white.opacity(0.1),
-        Color.white.opacity(0.4),
-        Color.white.opacity(0.5),
-    ]
-    
-    private let darkGradientColors = [
-        Color.gray.opacity(0.2),
-        Color.gray.opacity(0.1),
-        Color.gray.opacity(0.1),
-        Color.gray.opacity(0.3),
-        Color.gray.opacity(0.2),
-    ]
-    
-    init(_ cornerRadius: CGFloat = 16, applyModifier: Bool = false, applyPadding: Bool = true, darker: Bool = false, padding: Double = 5) {
-        self.cornerRadius = cornerRadius
-        self.applyModifier = applyModifier // optionally we can pass this a boolean, to determine whether to apply the modifier or not (e.g detailview being presented as a sheet or not boolean, we dont want to apply glass if its not a sheet)
-        self.applyPadding = applyPadding
-        self.darker = darker
-        self.padding = padding
-    }
-    
-    func body(content: Content) -> some View {
-        
-        let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
-        
-        
-        if applyModifier {
-            content.background{
-                
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(darker ? Material.thinMaterial : Material.ultraThinMaterial)
-                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                
-            }
-            .overlay {
-                //if colorScheme == .light {
-                RoundedRectangle(cornerRadius: cornerRadius)
-                     .stroke(LinearGradient(colors: gradientColors,
-                     startPoint: .topLeading,
-                                            endPoint: .bottomTrailing), lineWidth: 1.0)
-                    
-               // }
-            }
-            
-            .padding(.horizontal, applyPadding ? padding : 0)
-            
-        } else {
-            content
-                .background(Color("SquaresColor"),in:
-                                RoundedRectangle(cornerRadius: 12, style: .continuous))
-        }
-        
-    }
-    
-    
-}
 
-extension View {
-    func glassModifier(cornerRadius: CGFloat = 12, applyModifier: Bool = true, applyPadding: Bool = true, darker: Bool = false, padding: Double = 5) -> some View {
-        self.modifier(GlassModifier(cornerRadius, applyModifier: applyModifier, applyPadding: applyPadding, darker: darker))
-    }
-}
 
 

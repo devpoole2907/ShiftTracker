@@ -168,61 +168,61 @@ struct MainWithSideBarView: View {
                                 .tag(Tab.settings)
                             
                             
-                        }
+                        }.ignoresSafeArea(.keyboard)
                         
+                            VStack(spacing: 0){
+                                HStack(spacing: 0) {
+                                    TabButton(tab: .home, useSystemImage: true)
+                                    TabButton(tab: .timesheets, useSystemImage: true, action: {
+                                        
+                                        if path.isEmpty {
+                                            
+                                            navigationState.showMenu.toggle()
+                                            
+                                        } else {
+                                            // broken ios 17 beta 4
+                                            
+                                            
+                                            
+                                            path = NavigationPath()
+                                            
+                                            
+                                            
+                                            
+                                        }
+                                        
+                                        
+                                    })
+                                    TabButton(tab: .schedule, useSystemImage: true, action: {
+                                        
+                                        if schedulePath.isEmpty {
+                                            navigationState.showMenu.toggle()
+                                        } else {
+                                            schedulePath = NavigationPath()
+                                        }
+                                        
+                                        
+                                    })
+                                    TabButton(tab: .settings, useSystemImage: true, action: {
+                                        
+                                        if settingsPath.isEmpty {
+                                            
+                                            navigationState.showMenu.toggle()
+                                            
+                                        } else {
+                                            
+                                            settingsPath = []
+                                            
+                                        }
+                                        
+                                    })
+                                }
+                                .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
+                                .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
+                                .ignoresSafeArea(.keyboard)
+                                
+                            }.ignoresSafeArea(.keyboard)
                         
-                        VStack(spacing: 0){
-                            HStack(spacing: 0) {
-                                TabButton(tab: .home, useSystemImage: true)
-                                TabButton(tab: .timesheets, useSystemImage: true, action: {
-                                    
-                                    if path.isEmpty {
-                                        
-                                        navigationState.showMenu.toggle()
-                                        
-                                    } else {
-                                        // broken ios 17 beta 4
-                                        
-                                        
-                                        
-                                        path = NavigationPath()
-                                        
-                                        
-                                        
-                                        
-                                    }
-                                    
-                                    
-                                })
-                                TabButton(tab: .schedule, useSystemImage: true, action: {
-                                    
-                                    if schedulePath.isEmpty {
-                                        navigationState.showMenu.toggle()
-                                    } else {
-                                        schedulePath = NavigationPath()
-                                    }
-                                    
-                                    
-                                })
-                                TabButton(tab: .settings, useSystemImage: true, action: {
-                                    
-                                    if settingsPath.isEmpty {
-                                        
-                                        navigationState.showMenu.toggle()
-                                        
-                                    } else {
-                                        
-                                        settingsPath = []
-                                        
-                                    }
-                                    
-                                })
-                            }
-                            .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
-                            .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
-                            
-                            
-                        }
                     }  .frame(width: getRect().width)
                             .ignoresSafeArea(.keyboard)
                      
@@ -230,6 +230,8 @@ struct MainWithSideBarView: View {
                             .blur(radius: Double((offset / sideBarWidth) * 4))
                         
                             .allowsHitTesting(!navigationState.showMenu)
+                        
+                        
                         
                        SideMenu(currentTab: $navigationState.currentTab)
                             .disabled(!navigationState.showMenu)
@@ -284,7 +286,7 @@ struct MainWithSideBarView: View {
                             
                         }
                         
-                    }
+                    }.ignoresSafeArea(.keyboard)
                   
                     
                   
@@ -293,7 +295,7 @@ struct MainWithSideBarView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarHidden(true)
                 
-            }
+            }.ignoresSafeArea(.keyboard)
             .animation(.easeOut, value: offset == 0)
             .onChange(of: navigationState.showMenu) { newValue in
                 if navigationState.showMenu && offset == 0{
@@ -386,7 +388,7 @@ struct MainWithSideBarView: View {
                     }
                 
             }
-        }
+        }.ignoresSafeArea(.keyboard)
             //.onAppear{ authModel.checkUserLoginStatus() }
         
         

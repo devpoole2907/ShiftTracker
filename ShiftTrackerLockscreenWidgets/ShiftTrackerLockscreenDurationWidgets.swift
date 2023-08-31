@@ -46,13 +46,10 @@ struct ShiftTrackerLockscreenDurationWidgets: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: LockscreenWidgetProvider()) { entry in
-         /*   if #available(iOS 17.0, *) {
+      
                 ShiftTrackerLockscreenDurationWidgetsView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else { */
-                ShiftTrackerLockscreenDurationWidgetsView(entry: entry)
-                  
-           //}
+                .widgetBackgroundModifier()
+     
         }
         .configurationDisplayName("Shift Duration")
         .description("Track your current shift progress.")
@@ -78,6 +75,7 @@ struct ShiftTrackerLockscreenDurationWidgets_Previews: PreviewProvider {
         } else { */
             ShiftTrackerLockscreenDurationWidgetsView(entry: ShiftEntry(date: Date(), shiftStartDate: Date(), totalPay: 0, taxedPay: 0, isOnBreak: false))
                 .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
+           
                 .padding()
                 .background()
        // }
