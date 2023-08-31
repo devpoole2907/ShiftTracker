@@ -1,5 +1,5 @@
 //
-//  colorpick.swift
+//  ThemeColorPicker.swift
 //  testEnvironment
 //
 //  Created by Louis Kolodzinski on 4/07/23.
@@ -43,10 +43,10 @@ struct ThemeColorPicker: View {
         ColorPicker("", selection: $selectedColor, supportsOpacity: false)
             .padding()
     }
-    .background(.thinMaterial)
-    .cornerRadius(20, antialiased: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+    .glassModifier(cornerRadius: 20, darker: true)
+   
     .padding(.horizontal)
-    .shadow(radius: 5, x: 0, y: 4)
+   
     
 }
 }

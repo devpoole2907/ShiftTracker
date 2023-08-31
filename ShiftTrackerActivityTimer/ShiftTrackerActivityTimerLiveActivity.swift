@@ -20,153 +20,126 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
             }
             .activityBackgroundTint(Color.cyan)
             .activitySystemActionForegroundColor(Color.black)
-
+            
         } dynamicIsland: { context in
             DynamicIsland {
-                // Expanded UI goes here.  Compose the expanded UI through
-                // various regions, like leading/trailing/center/bottom
-                DynamicIslandExpandedRegion(.leading) {
-                    VStack{
+                
+                DynamicIslandExpandedRegion(.trailing){
+                 
+                    Text("PRO")
+                        .foregroundStyle(.orange.gradient)
+                        .fontWeight(.heavy)
+                        .padding([.top], 10)
+                        .padding(.trailing, 35)
+                }.contentMargins(.vertical, 0)
+                
+
+                DynamicIslandExpandedRegion(.bottom, priority: 1) {
+                    
+                    HStack {
+                        
+                        VStack(alignment: .leading) {
+                            HStack{
+                                Image(systemName: context.attributes.jobIcon)
+                                    .foregroundStyle(.white)
+                                    .font(.title3)
+                                    .padding(10)
+                                    .background{
+                                        Circle()
+                                            .foregroundStyle(jobColor(from: context).gradient)
+                                    }
+                                    .shadow(color: jobColor(from: context), radius: 3)
+                                VStack(alignment: .leading, spacing: 1){
+                                    Text(context.attributes.jobName)
+                                        .fontDesign(.rounded)
+                                        .bold()
+                                    HStack(spacing: 0){
+                                        Text("\(context.state.isOnBreak ? "Break s" : "S")tarted at ")
+                                        Text(context.state.startTime, style: .time)
+                                    }
+                                    .font(.footnote)
+                                    .fontDesign(.rounded)
+                                    .foregroundStyle(.gray)
+                                }
+                                
+                                
+                            }.padding(.vertical, 5)
+                        }
+                        
                         Spacer()
                         
-                        // buttons removed for iOS 17 button implementation later
-                        
-                     /*   HStack(spacing: 1){
-                            if context.state.isOnBreak{
-                                Button(action: {
-                                    // Action to perform when button is tapped
-                                }) {
-                                    Image(systemName: "play.circle")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(.indigo.opacity(0.8))
-                                }
-                            }
-                            else {
-                                Button(action: {
-                                    // Action to perform when button is tapped
-                                }) {
-                                    Image(systemName: "pause.circle")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(.orange.opacity(0.8))
-                                }
-                            }
-                                Button(action: {
-                                    // Action to perform when button is tapped
-                                }) {
-                                    Image(systemName: "xmark.circle")
-                                        .font(.system(size: 40))
-                                        .foregroundColor(.gray.opacity(0.6))
-                                }
-                            
-                        }*/
-                    }//.padding(.top, 10)
-                }
-                DynamicIslandExpandedRegion(.trailing) {
-                    VStack{
-                    Spacer()
-                        if !context.state.isOnBreak{
-                            Text(context.state.startTime, style: .timer)
-                                .font(.system(size: 35))
-                                .foregroundColor(Color.orange)
-                                .bold()
-                        }
-                        else {
-                            Text(context.state.startTime, style: .timer)
-                                .font(.system(size: 35))
-                                .foregroundColor(Color.indigo)
-                                .bold()
-                        }
-                        
-                        
-                        
-                    }.padding(.horizontal, -20)
-                        .padding(.top, -5)
-                        .padding(.leading, 15)
-                    
-                       // .padding(.horizontal, 20)
-                }
-                DynamicIslandExpandedRegion(.bottom) {
-                   // ExpandedIslandView(context: context)
-                    
+                    }
                     HStack{
-                        Text("ShiftTracker")
-                            .font(.caption2)
+                        Button(action: {
+                            
+                            // start the break or end the break if on break
+                            
+                        }){
+                            Text(context.state.isOnBreak ? "End Break" : "Break")
+                                .fontDesign(.rounded)
+                                .bold()
+                                .padding(3)
+                            
+                        }.tint(.indigo)
+                        
+                        Button(action: {
+                            // end the shift, do nothing if on break
+                            
+                        }){
+                            Text("End Shift")
+                                .fontDesign(.rounded)
+                                .bold()
+                                .padding(3)
+                            
+                        }.tint(context.state.isOnBreak ? .gray : .red)
+                        
+                        
+                        Text(context.state.startTime, style: .timer)
+                            .fontDesign(.rounded)
+                            .multilineTextAlignment(.trailing)
+                            .font(.title)
                             .bold()
-                        Text("PRO")
-                            .foregroundColor(.orange)
-                            .font(.caption)
-                            .bold()
+                        
+                            .foregroundStyle(jobColor(from: context))
+                         
                     }
-                    if context.state.isOnBreak{
-                        Text("On Break")
-                            .font(.caption)
-                            .bold()
-                            .frame(width: 80, height: 20)
-                            .background(.indigo)
-                            .cornerRadius(12)
-                            .foregroundColor(.white)
-                            .padding(.bottom, 1)
-                    }
-                    //.padding(.bottom, -5)
-                    
-                    
                     
                 }
                 
             } compactLeading: {
-                if !context.state.isOnBreak{
-                    Image(systemName: "briefcase.circle")
-                        
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundColor(.orange)
-                }
-                else {
-                    Text("Break")
-                        .foregroundColor(.indigo)
-                        .font(.caption2)
-                        //.frame(maxWidth: 50)
-                        .padding(.leading, 8)
-                }
-                    //.frame(width: 40)
-                    
-            } compactTrailing: {
-                if context.state.isOnBreak{
-                    Text(context.state.startTime, style: .timer).monospacedDigit()
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: 50)
-                        .font(.caption2)
-                        .foregroundColor(.indigo)
-                }
-                else {
-                    Text(context.state.startTime, style: .timer)
-                        .monospacedDigit()
-                        .multilineTextAlignment(.leading)
-                        .frame(maxWidth: 50)
-                        .font(.caption2)
-                        .foregroundColor(.orange)
-                }
-                    
+                Image(systemName: context.attributes.jobIcon)
+                    .foregroundStyle(jobColor(from: context).gradient)
                 
-                    //.frame(alignment: .trailing)
+            } compactTrailing: {
+                
+                var startTime = context.state.startTime
+                
+                Text(context.state.startTime, style: .timer)
+                    .monospacedDigit()
+                    .multilineTextAlignment(.trailing)
+                    .foregroundStyle(jobColor(from: context))
+                    .fontDesign(.rounded)
+                    .font(.caption)
+                    .frame(width: 60)
             } minimal: {
-                if !context.state.isOnBreak{
-                    Image(systemName: "briefcase.circle")
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundColor(.orange)
-                }
-                else {
-                    Image(systemName: "briefcase.circle")
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundColor(.indigo)
-                }
+                
+                Image(systemName: context.attributes.jobIcon)
+                    .foregroundStyle(jobColor(from: context).gradient)
+                
+                
             }
-            .widgetURL(URL(string: "http://www.apple.com"))
+            .widgetURL(URL(string: "shifttrackerapp://"))
             .keylineTint(Color.orange)
         }
     }
+    
+
+    
+    func jobColor(from context: ActivityViewContext<LiveActivityAttributes>) -> Color {
+        return context.state.isOnBreak ? Color.indigo : Color(red: context.attributes.jobColorRed, green: context.attributes.jobColorGreen, blue: context.attributes.jobColorBlue)
+    }
+    
+    
 }
 
 struct ShiftActivityView: View{
@@ -174,98 +147,105 @@ struct ShiftActivityView: View{
     @Environment(\.colorScheme) var colorScheme
     
     let context: ActivityViewContext<LiveActivityAttributes>
+    
     var body: some View{
         
         let proColor = colorScheme == .dark ? Color.orange : Color.cyan
         
-        VStack(alignment: .leading){
-            HStack{
-            HStack(alignment: .firstTextBaseline, spacing: 5){
+        let jobColor = context.state.isOnBreak ? Color.indigo : Color(red: context.attributes.jobColorRed, green: context.attributes.jobColorGreen, blue: context.attributes.jobColorBlue)
+        
+        VStack(alignment: .leading, spacing: 8){
+      
+            HStack(spacing: 2){
                 Text("ShiftTracker")
                     .bold()
-                    .font(.title3)
-              
-                
                 Text("PRO")
                     .font(.title2)
+                    .foregroundStyle(.orange.gradient)
                     .fontWeight(.heavy)
-                    .foregroundStyle(proColor)
-                   
             }
-                if context.state.isOnBreak{
-                    Text("On Break")
-                        .font(.caption)
-                        .bold()
-                        .frame(width: 80, height: 20)
-                        .background(.indigo)
-                        .cornerRadius(12)
-                        .foregroundColor(.white)
-                        .padding(.bottom, 1)
-                }
-            }.padding(.horizontal, 20)
-                .padding(.top, 15)
-        
-            HStack {
-               
-                    //.padding(.vertical, 10)
-                if context.state.isOnBreak{
-                    Text(context.state.startTime, style: .timer)
-                        .font(.system(size: 45))
-                        .foregroundColor(Color.indigo)
-                        .bold()
-                        .padding(.horizontal, 20)
-                    
-                    // buttons removed for iOS 17
-                    
-                  /*  Button(action: {
-                        // Action to perform when button is tapped
-                    }) {
-                        Image(systemName: "play.circle")
-                            .font(.system(size: 45))
-                            .foregroundColor(.indigo.opacity(0.8))
-                    }*/
-                }
-                else {
-                    Text(context.state.startTime, style: .timer)
-                        .font(.system(size: 45))
-                        .foregroundColor(Color.orange)
-                        .bold()
-                        .padding(.horizontal, 20)
-                    
-                }
-                    
-                    // buttons removed for iOS 17
-                    
-                  /*  Button(action: {
-                        // Action to perform when button is tapped
-                    }) {
-                        Image(systemName: "pause.circle")
-                            .font(.system(size: 45))
-                            .foregroundColor(.orange.opacity(0.8))
-                    }
-                }
-                    Button(action: {
-                        // Action to perform when button is tapped
-                    }) {
-                        Image(systemName: "xmark.circle")
-                            .font(.system(size: 45))
-                            .foregroundColor(.gray.opacity(0.6))
-                    } */
 
+                HStack {
+                    
+                    VStack(alignment: .leading) {
+                        HStack{
+                            Image(systemName: context.attributes.jobIcon)
+                                .foregroundStyle(.white)
+                                .font(.title3)
+                                .padding(10)
+                                .background{
+                                    Circle()
+                                        .foregroundStyle(jobColor.gradient)
+                                }
+                                .shadow(color: jobColor, radius: 3)
+                            VStack(alignment: .leading, spacing: 1){
+                                Text(context.attributes.jobName)
+                                    .fontDesign(.rounded)
+                                    .bold()
+                                HStack(spacing: 0){
+                                    Text("\(context.state.isOnBreak ? "Break s" : "S")tarted at ")
+                                    Text(context.state.startTime, style: .time)
+                                }
+                                .font(.footnote)
+                                .fontDesign(.rounded)
+                                .foregroundStyle(.gray)
+                            }
+                            
+                            
+                        }.padding(.vertical, 5)
+                    }
+                    
+                    Spacer()
+                    
+                }
+                HStack{
+                    Button(action: {
+                        
+                        // start the break or end the break if on break
+                        
+                    }){
+                        Text(context.state.isOnBreak ? "End Break" : "Break")
+                            .fontDesign(.rounded)
+                            .bold()
+                            .padding(3)
+                        
+                    }.tint(.indigo)
+                    
+                    Button(action: {
+                        // end the shift, do nothing if on break
+                        
+                    }){
+                        Text("End Shift")
+                            .fontDesign(.rounded)
+                            .bold()
+                            .padding(3)
+                        
+                    }.tint(context.state.isOnBreak ? .gray : .red)
+                    
+                    
+                    Text(context.state.startTime, style: .timer)
+                        .fontDesign(.rounded)
+                        .multilineTextAlignment(.trailing)
+                        .font(.title)
+                        .bold()
+                    
+                        .foregroundStyle(jobColor)
+                     
+                
                 
             }
-            .padding()
-        }
-    
+        }.padding()
+            .background(.ultraThinMaterial)
+        
     }
 }
 
 
 
 struct ShiftTrackerActivityTimerLiveActivity_Previews: PreviewProvider {
-    static let attributes = LiveActivityAttributes(jobName: "Apple", jobTitle: "CEO", jobIcon: "briefcase.circle", jobColorRed: 1.0, jobColorGreen: 1.0, jobColorBlue: 1.0, hourlyPay: 0)
-    static let contentState = LiveActivityAttributes.ContentState(startTime: Date(), totalPay: 220, isOnBreak: false)
-
+    static let attributes = LiveActivityAttributes(jobName: "Apple Incorporated", jobTitle: "CEO", jobIcon: "briefcase.fill", jobColorRed: 0.5, jobColorGreen: 0.1, jobColorBlue: 1.0, hourlyPay: 0)
+    static let contentState = LiveActivityAttributes.ContentState(startTime: Date().addingTimeInterval(-3200), totalPay: 220, isOnBreak: false)
+    
     static var previews: some View {
         if #available(iOS 16.2, *) {
             attributes

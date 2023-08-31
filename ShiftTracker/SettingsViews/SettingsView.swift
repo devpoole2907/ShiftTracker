@@ -561,8 +561,7 @@ struct AppearanceView: View {
                         
                         
                     }.padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
-                        .background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                        .glassModifier()
                         .onTapGesture {
                             withAnimation {
                                 userColorScheme = value

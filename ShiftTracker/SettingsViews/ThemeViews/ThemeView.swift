@@ -35,15 +35,7 @@ struct ThemeView: View {
                         // CustomThemePicker()
                         
                         HStack(alignment: .top){
-                           /* TempGraph()
-                               // .padding()
-                               // .frame(width: 200, height: 300)
-                                .background(Color("SquaresColor"))
-                                .cornerRadius(12) */
-                            
-                           
-                                
-                                    
+                        
                                      
 
                                     SelectableButton(id: 6, selectedButton: $themeManager.selectedButton, content: {
@@ -57,6 +49,7 @@ struct ThemeView: View {
                                             .padding(.horizontal)
                                             
                                     }, action: {themeManager.selectedColorToChange = .customUIColorPicker})
+                                    .glassModifier(cornerRadius: 20)
                                     
                                     
                                 

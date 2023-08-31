@@ -20,31 +20,17 @@ struct PreviewTimerView: View {
     
     
     var body: some View {
-        
-        
-        
-        
-        
-        ZStack {
+      
             VStack(alignment: .center, spacing: 5) {
-                
-                
-                
-                SelectableButton(id: 0, selectedButton: $themeColors.selectedButton, content: {
                 Text("$555.05")
-                   // .padding(.horizontal, 20)
                     .font(.system(size: 60).monospacedDigit())
                     .fontWeight(.bold)
                     .lineLimit(1)
                     .allowsTightening(true)
                 
                     .foregroundColor(textColor)
-                   //
                     
-                    //.padding(.horizontal, 20)
-                  }, action: {
-                      themeColors.selectedColorToChange = .earningsColorPicker
-                  }).padding(.top)
+                 .padding(.top)
                 
                 HStack{
                     SelectableButton(id: 1, selectedButton: $themeColors.selectedButton, content: {
@@ -97,10 +83,9 @@ struct PreviewTimerView: View {
                 }, action: {themeColors.selectedColorToChange = .breaksColorPicker})
                 
             }.frame(maxWidth: .infinity)
-        }
+        
         .padding(.bottom)
-        .background(Color("SquaresColor"))
-        .cornerRadius(12, antialiased: true)
+        .glassModifier()
         .frame(maxWidth: 358)
     }
 }
