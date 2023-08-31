@@ -17,4 +17,7 @@ class NavigationState: ObservableObject {
     
     @Published var hideTabBar = false
     
+    @Published var activeSheet: ActiveSheet?
+
+    
 }

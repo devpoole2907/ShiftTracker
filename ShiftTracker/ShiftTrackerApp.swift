@@ -71,11 +71,37 @@ struct ShiftTrackerApp: App {
                         if url.host == "summary" {
                             navigationState.currentTab = .timesheets
                         }
+                        
+                        if url.host == "endshift" {
+                            navigationState.currentTab = .home
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                                navigationState.activeSheet = .endShiftSheet
+                            }
+                        }
+                   
+                        if url.host == "endbreak" {
+                            navigationState.currentTab = .home
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                                navigationState.activeSheet = .endBreakSheet
+                            }
+                        }
+                        
+                        if url.host == "startbreak" {
+                            navigationState.currentTab = .home
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                                navigationState.activeSheet = .startBreakSheet
+                            }
+                        }
+                   
+                     
+                        
+                        
+                        
+                       
+                        
                     }
                 }
-                .onAppear {
-              //      locationManager.startMonitoringAllLocations()
-                }
+            
                 
 
 

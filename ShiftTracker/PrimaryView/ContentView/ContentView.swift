@@ -113,7 +113,7 @@ struct ContentView: View {
                                     
                                     
                                     //  DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    viewModel.activeSheet = .detailSheet
+                                    navigationState.activeSheet = .detailSheet
                                     
                                 }
                                 
@@ -180,13 +180,16 @@ struct ContentView: View {
                 }
         }
         
-        .sheet(item: $viewModel.activeSheet){ sheet in
+  
+   
+        
+        .sheet(item: $navigationState.activeSheet){ sheet in
             // CHANGE UISCREEN CONDITIONAL DETENTS TO GLOBAL VARIABLE
             switch sheet {
             case .detailSheet:
                 if let thisShift = viewModel.lastEndedShift {
                     NavigationStack{
-                        DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $viewModel.activeSheet).navigationBarTitle("Shift Ended")
+                        DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $navigationState.activeSheet).navigationBarTitle("Shift Ended")
                             .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
                             .environment(\.managedObjectContext, context)
                     }.presentationDetents([ .large])

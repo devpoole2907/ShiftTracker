@@ -33,12 +33,43 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                         .padding(.trailing, 35)
                 }.contentMargins(.vertical, 0)
                 
+                DynamicIslandExpandedRegion(.leading){
+                 
+                    if context.state.isOnBreak {
+                        HStack(spacing: 0){
+                            Image(systemName: context.state.unpaidBreak ? "bed.double.fill" : "cup.and.saucer.fill")
+                                .foregroundStyle(.white)
+                                .font(.system(size: 10))
+                                .padding(12)
+                                .background{
+                                    Circle()
+                                        .foregroundStyle(.indigo.gradient)
+                                        .frame(width: 20, height: 20)
+                                }
+                            
+                            Text(context.state.unpaidBreak ? "Unpaid" : "Paid")
+                                .font(.footnote)
+                                .foregroundStyle(.gray)
+                                .bold()
+                                .fontDesign(.rounded)
+                            
+                            
+                        }
+                        
+                        .padding([.top], 10)
+                        
+                      //  .padding(.leading, 35)
+                        
+                    }
+                    
+                }.contentMargins(.vertical, 0)
+                
 
                 DynamicIslandExpandedRegion(.bottom, priority: 1) {
                     
                     HStack {
                         
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 3) {
                             HStack{
                                 Image(systemName: context.attributes.jobIcon)
                                     .foregroundStyle(.white)
@@ -46,7 +77,7 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                                     .padding(10)
                                     .background{
                                         Circle()
-                                            .foregroundStyle(jobColor(from: context).gradient)
+                                            .foregroundStyle(Color(red: context.attributes.jobColorRed, green: context.attributes.jobColorGreen, blue: context.attributes.jobColorBlue).gradient)
                                     }
                                     .shadow(color: jobColor(from: context), radius: 3)
                                 VStack(alignment: .leading, spacing: 1){
@@ -63,13 +94,13 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                                 }
                                 
                                 
-                            }.padding(.vertical, 5)
+                            }.padding(.vertical, 0)
                         }
                         
                         Spacer()
                         
                     }
-                    HStack{
+                    HStack(spacing: 3){
                         Button(action: {
                             
                             // start the break or end the break if on break
@@ -78,7 +109,7 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                             Text(context.state.isOnBreak ? "End Break" : "Break")
                                 .fontDesign(.rounded)
                                 .bold()
-                                .padding(3)
+                                .padding(2)
                             
                         }.tint(.indigo)
                         
@@ -89,7 +120,7 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                             Text("End Shift")
                                 .fontDesign(.rounded)
                                 .bold()
-                                .padding(3)
+                                .padding(2)
                             
                         }.tint(context.state.isOnBreak ? .gray : .red)
                         
@@ -102,7 +133,7 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                         
                             .foregroundStyle(jobColor(from: context))
                          
-                    }
+                    }.padding(.leading, 2)
                     
                 }
                 
@@ -119,8 +150,8 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                     .multilineTextAlignment(.trailing)
                     .foregroundStyle(jobColor(from: context))
                     .fontDesign(.rounded)
-                    .font(.caption)
-                    .frame(width: 60)
+                    .font(.footnote)
+                    .frame(width: 55)
             } minimal: {
                 
                 Image(systemName: context.attributes.jobIcon)
@@ -156,14 +187,25 @@ struct ShiftActivityView: View{
         
         VStack(alignment: .leading, spacing: 8){
       
+            
+            
             HStack(spacing: 2){
+                
+              
+                
+                
                 Text("ShiftTracker")
                     .bold()
                 Text("PRO")
                     .font(.title2)
                     .foregroundStyle(.orange.gradient)
                     .fontWeight(.heavy)
-            }
+                
+   
+                
+               
+                
+            } .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
 
                 HStack {
                     
@@ -175,7 +217,7 @@ struct ShiftActivityView: View{
                                 .padding(10)
                                 .background{
                                     Circle()
-                                        .foregroundStyle(jobColor.gradient)
+                                        .foregroundStyle(Color(red: context.attributes.jobColorRed, green: context.attributes.jobColorGreen, blue: context.attributes.jobColorBlue).gradient)
                                 }
                                 .shadow(color: jobColor, radius: 3)
                             VStack(alignment: .leading, spacing: 1){
@@ -191,37 +233,69 @@ struct ShiftActivityView: View{
                                 .foregroundStyle(.gray)
                             }
                             
+                            if context.state.isOnBreak {
+                                Spacer()
+                                HStack(spacing: 0){
+                                    Image(systemName: context.state.unpaidBreak ? "bed.double.fill" : "cup.and.saucer.fill")
+                                        .foregroundStyle(.white)
+                                        .font(.system(size: 12))
+                                        .padding(12)
+                                        .background{
+                                            Circle()
+                                                .foregroundStyle(.indigo.gradient)
+                                                .frame(width: 25, height: 25)
+                                        }
+                                    
+                                    Text(context.state.unpaidBreak ? "Unpaid" : "Paid")
+                                        .font(.caption)
+                                        .foregroundStyle(.gray)
+                                        .bold()
+                                        .fontDesign(.rounded)
+                                    
+                                    
+                                }
+                                
+                        
+                                
+                            }
                             
-                        }.padding(.vertical, 5)
+                        }  .widgetURL(URL(string: "shifttrackerapp://endshift"))
+                        
+                        
+                        
+                        
                     }
                     
                     Spacer()
                     
                 }
-                HStack{
-                    Button(action: {
-                        
-                        // start the break or end the break if on break
-                        
-                    }){
+            HStack(spacing: 3){
+                    
                         Text(context.state.isOnBreak ? "End Break" : "Break")
+                    .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
                             .fontDesign(.rounded)
                             .bold()
-                            .padding(3)
+                            .padding(10)
+                            .background(.indigo.opacity(0.3))
+                            .cornerRadius(20)
                         
-                    }.tint(.indigo)
+                    .foregroundStyle(.indigo)
+         
+                    .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
                     
-                    Button(action: {
-                        // end the shift, do nothing if on break
-                        
-                    }){
-                        Text("End Shift")
+                  
+                        Text("End Shift") .widgetURL(URL(string: "shifttrackerapp://endshift"))
                             .fontDesign(.rounded)
                             .bold()
-                            .padding(3)
+                            .padding(10)
+                            .background(context.state.isOnBreak ? .gray.opacity(0.3) : .red.opacity(0.3))
+                            .cornerRadius(20)
                         
-                    }.tint(context.state.isOnBreak ? .gray : .red)
+                    .foregroundStyle(context.state.isOnBreak ? .gray : .red)
+                    .widgetURL(URL(string: "shifttrackerapp://endshift"))
+                
                     
+                
                     
                     Text(context.state.startTime, style: .timer)
                         .fontDesign(.rounded)
@@ -244,7 +318,7 @@ struct ShiftActivityView: View{
 
 struct ShiftTrackerActivityTimerLiveActivity_Previews: PreviewProvider {
     static let attributes = LiveActivityAttributes(jobName: "Apple Incorporated", jobTitle: "CEO", jobIcon: "briefcase.fill", jobColorRed: 0.5, jobColorGreen: 0.1, jobColorBlue: 1.0, hourlyPay: 0)
-    static let contentState = LiveActivityAttributes.ContentState(startTime: Date().addingTimeInterval(-3200), totalPay: 220, isOnBreak: false)
+    static let contentState = LiveActivityAttributes.ContentState(startTime: Date().addingTimeInterval(-3200), totalPay: 220, isOnBreak: true, unpaidBreak: true)
     
     static var previews: some View {
         if #available(iOS 16.2, *) {

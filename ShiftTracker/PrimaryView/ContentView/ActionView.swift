@@ -16,6 +16,7 @@ struct ActionView: View {
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var navigationState: NavigationState
     
     
     @Environment(\.dismiss) var dismiss
@@ -192,7 +193,7 @@ struct ActionView: View {
                             dismiss()
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                viewModel.activeSheet = .detailSheet
+                                navigationState.activeSheet = .detailSheet
                             }
                             
                         }

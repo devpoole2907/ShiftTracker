@@ -30,7 +30,7 @@ struct ContentViewButtonsView: View {
         HStack(spacing: 0){
             if viewModel.shiftState == .notStarted {
                 AnimatedButton(
-                    action: { viewModel.activeSheet = .startShiftSheet }, title: "Start Shift",
+                    action: { navigationState.activeSheet = .startShiftSheet }, title: "Start Shift",
                     backgroundColor: buttonColor,
                     isDisabled: viewModel.hourlyPay == 0 || jobSelectionViewModel.selectedJobUUID == nil
                 )
@@ -70,7 +70,7 @@ struct ContentViewButtonsView: View {
             } else if viewModel.shiftState == .inProgress {
                 if !viewModel.isOnBreak{
                     AnimatedButton(
-                        action: { viewModel.activeSheet = .startBreakSheet },
+                        action: { navigationState.activeSheet = .startBreakSheet },
                         title: "Start Break",
                         backgroundColor: !viewModel.isEditing ? buttonColor : disabledButtonColor,
                         isDisabled: viewModel.isEditing
@@ -79,14 +79,14 @@ struct ContentViewButtonsView: View {
                 else {
                     AnimatedButton(
                         action:  viewModel.breakTimeElapsed <= 60 ? { viewModel.cancelBreak()
-                            breakCanceled.toggle() } : { viewModel.activeSheet = .endBreakSheet } ,
+                            breakCanceled.toggle() } : { navigationState.activeSheet = .endBreakSheet } ,
                         title: viewModel.breakTimeElapsed <= 60 ? "Cancel Break" : "End Break",
                         backgroundColor: buttonColor,
                         isDisabled: viewModel.isEditing
                     )
                 }
                 AnimatedButton(
-                    action: { viewModel.activeSheet = .endShiftSheet },
+                    action: { navigationState.activeSheet = .endShiftSheet },
                     title: "End Shift",
                     backgroundColor: (viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
                     isDisabled: viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing
@@ -95,7 +95,7 @@ struct ContentViewButtonsView: View {
             
             
         }.haptics(onChangeOf: payShakeTimes, type: .error)
-            .haptics(onChangeOf: viewModel.activeSheet, type: .light)
+            .haptics(onChangeOf: navigationState.activeSheet, type: .light)
             .haptics(onChangeOf: jobShakeTimes, type: .error)
             .haptics(onChangeOf: breakCanceled, type: .error)
         

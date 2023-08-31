@@ -25,13 +25,13 @@ class ContentViewModel: ObservableObject {
             savePayMultiplier()
         }
     }
-
+    
     @Published var isMultiplierEnabled: Bool = false {
         didSet {
             saveIsMultiplierEnabled()
         }
     }
-
+    
     
     @Published var shiftState: ShiftState = .notStarted
     
@@ -72,7 +72,6 @@ class ContentViewModel: ObservableObject {
     @Published  var overtimeTimer: Timer?
     @Published  var isFirstLaunch = false
     @Published  var isPresented = false
-    @Published var activeSheet: ActiveSheet?
     @Published var activityEnabled = false
     
     @Published  var showEndAlert = false
@@ -93,9 +92,9 @@ class ContentViewModel: ObservableObject {
     @Published  var breakStartDate: Date?
     @Published  var breakEndDate: Date?
     @Published  var overtimeStartDate: Date?
-    #if os(iOS)
+#if os(iOS)
     @Published  var engine: CHHapticEngine?
-    #endif
+#endif
     
     @AppStorage("shiftsTracked") var shiftsTracked = 0
     
@@ -122,10 +121,10 @@ class ContentViewModel: ObservableObject {
     @Published  var shiftStartDate: Date = Date()// this needs to be the date the shift started, not Date()
     
     //  @State private var activity: Activity<ShiftTrackerWidgetAttributes>? = nil
-    #if os(iOS)
+#if os(iOS)
     @Published  var isActivityEnabled: Bool = true
     @Published  var currentActivity: Activity<LiveActivityAttributes>?
-    #endif
+#endif
     
     @Published  var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
@@ -144,7 +143,7 @@ class ContentViewModel: ObservableObject {
         let request: NSFetchRequest<Job> = Job.fetchRequest()
         request.predicate = NSPredicate(format: "uuid == %@", uuidToFetch as CVarArg)
         request.fetchLimit = 1
-
+        
         do {
             let results = try context.fetch(request)
             return results.first
@@ -169,11 +168,11 @@ class ContentViewModel: ObservableObject {
             }
         }
     }
-
+    
     func minimumStartDate(for breakItem: TempBreak) -> Date {
         if let previousBreak = tempBreaks
-                                .prefix(while: { $0.id != breakItem.id })
-                                .last(where: { $0.endDate != nil }),
+            .prefix(while: { $0.id != breakItem.id })
+            .last(where: { $0.endDate != nil }),
            let previousEndDate = previousBreak.endDate {
             return previousEndDate
         } else {
@@ -203,7 +202,7 @@ class ContentViewModel: ObservableObject {
         
         
         // overtime stuff
-      
+        
         // multiplier stuff
         
         self._payMultiplier = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.payMultiplierKey))
@@ -222,7 +221,7 @@ class ContentViewModel: ObservableObject {
         } else {
             self._selectedJobUUID = .init(initialValue: nil)
         }
-
+        
         
     }
     
@@ -230,23 +229,23 @@ class ContentViewModel: ObservableObject {
         guard let breakStartDate = breakStartDate, let breakEndDate = breakEndDate else { return 0 }
         return breakEndDate.timeIntervalSince(breakStartDate)
     }
- /* // original totalPay and taxedPay excluding overtime
-    var totalPay: Double {
-        guard let shift = shift else { return 0 }
-        let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
-        let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
-        return pay
-    }
-    
-    var taxedPay: Double {
-        guard let shift = shift else { return 0 }
-        let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
-        let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
-        let afterTax = pay - (pay * Double(taxPercentage) / 100.0)
-        return afterTax
-    }
-  
-  */
+    /* // original totalPay and taxedPay excluding overtime
+     var totalPay: Double {
+     guard let shift = shift else { return 0 }
+     let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
+     let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
+     return pay
+     }
+     
+     var taxedPay: Double {
+     guard let shift = shift else { return 0 }
+     let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
+     let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
+     let afterTax = pay - (pay * Double(taxPercentage) / 100.0)
+     return afterTax
+     }
+     
+     */
     
     // NEW totalPay and taxedPay factoring in overtime
     
@@ -267,15 +266,15 @@ class ContentViewModel: ObservableObject {
         } else {
             print("not overtime yet")
         }
-
+        
         let basePay = (timeElapsedUntilOvertime > 0 ? timeElapsedUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
         let overtimePay = overtimeEnabled ? (elapsed - timeElapsedUntilOvertime) / 3600.0 * Double(shift.hourlyPay) * overtimeRate : 0
         
         let pay = basePay + overtimePay
-
+        
         return isMultiplierEnabled ? pay * payMultiplier : pay
     }
-
+    
     
     var taxedPay: Double {
         let pay = totalPay
@@ -286,25 +285,25 @@ class ContentViewModel: ObservableObject {
     // this func is used for calculating the total pay when the shift is ended, as the user may provide a custom end date
     func computeTotalPay(for endDate: Date) -> Double {
         guard let shift = shift else { return 0 }
-
+        
         let elapsed = endDate.timeIntervalSince(shift.startDate) - totalBreakDuration()
         
         var computeOvertimeEnabled = false
-
+        
         if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 {
             timeElapsedUntilOvertime = elapsed
             computeOvertimeEnabled = true
         }
-
+        
         let basePay = (timeElapsedUntilOvertime > 0 ? timeElapsedUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
         let overtimePay = computeOvertimeEnabled ? (elapsed - timeElapsedUntilOvertime) / 3600.0 * Double(shift.hourlyPay) * overtimeRate : 0
-
+        
         let pay = basePay + overtimePay
-
+        
         return isMultiplierEnabled ? pay * payMultiplier : pay
     }
-
-
+    
+    
     
     func totalBreakDuration() -> TimeInterval {
         let totalDuration = tempBreaks.reduce(0) { (result, tempBreak) -> TimeInterval in
@@ -315,8 +314,8 @@ class ContentViewModel: ObservableObject {
                 return result
             }
         }
-            return totalDuration
-        }
+        return totalDuration
+    }
     
     func breakLength(startDate: Date?, endDate: Date?) -> Int {
         guard let start = startDate, let end = endDate else { return 0 }
@@ -324,7 +323,7 @@ class ContentViewModel: ObservableObject {
         let minutes = Int(duration) / 60
         return minutes
     }
-
+    
     func breakLengthInMinutes(startDate: Date?, endDate: Date?) -> String {
         let minutes = breakLength(startDate: startDate, endDate: endDate)
         if minutes == 0 {
@@ -338,11 +337,11 @@ class ContentViewModel: ObservableObject {
             return "\(minutes) minutes"
         }
     }
-
+    
     
     func deleteBreaks(at offsets: IndexSet) {
-            tempBreaks.remove(atOffsets: offsets)
-        }
+        tempBreaks.remove(atOffsets: offsets)
+    }
     
     func deleteSpecificBreak(breakItem: TempBreak) {
         if let index = tempBreaks.firstIndex(where: { $0 == breakItem }) {
@@ -357,44 +356,44 @@ class ContentViewModel: ObservableObject {
         }
         return nil
     }
-        
-        func saveHourlyPay() {
-            sharedUserDefaults.set(hourlyPay, forKey: shiftKeys.hourlyPayKey)
-        }
-        func saveLastPay() {
-            sharedUserDefaults.set(lastPay, forKey: shiftKeys.lastPayKey)
-            //saved last pay to userdefaults
-        }
-        func saveLastTaxedPay() {
-            sharedUserDefaults.set(lastTaxedPay, forKey: shiftKeys.lastTaxedPayKey)
-            //saved last taxed pay to userdefaults
-        }
-        
-        func saveTaxPercentage() {
-            sharedUserDefaults.set(taxPercentage, forKey: shiftKeys.taxPercentageKey)
-            //saved tax percentage to userdefaults
-        }
-        
-        public func saveLastBreak() {
-            sharedUserDefaults.set(lastBreakElapsed, forKey: shiftKeys.lastBreakElapsedKey)
-            //saved last break to userdefaults
-        }
-        
-        func saveOvertimeMultiplier() {
-            sharedUserDefaults.set(overtimeMultiplier, forKey: shiftKeys.overtimeMultiplierKey)
-            //saved tax percentage to userdefaults
-        }
+    
+    func saveHourlyPay() {
+        sharedUserDefaults.set(hourlyPay, forKey: shiftKeys.hourlyPayKey)
+    }
+    func saveLastPay() {
+        sharedUserDefaults.set(lastPay, forKey: shiftKeys.lastPayKey)
+        //saved last pay to userdefaults
+    }
+    func saveLastTaxedPay() {
+        sharedUserDefaults.set(lastTaxedPay, forKey: shiftKeys.lastTaxedPayKey)
+        //saved last taxed pay to userdefaults
+    }
+    
+    func saveTaxPercentage() {
+        sharedUserDefaults.set(taxPercentage, forKey: shiftKeys.taxPercentageKey)
+        //saved tax percentage to userdefaults
+    }
+    
+    public func saveLastBreak() {
+        sharedUserDefaults.set(lastBreakElapsed, forKey: shiftKeys.lastBreakElapsedKey)
+        //saved last break to userdefaults
+    }
+    
+    func saveOvertimeMultiplier() {
+        sharedUserDefaults.set(overtimeMultiplier, forKey: shiftKeys.overtimeMultiplierKey)
+        //saved tax percentage to userdefaults
+    }
     
     func savePayMultiplier() {
         sharedUserDefaults.set(payMultiplier, forKey: shiftKeys.payMultiplierKey)
     }
-
+    
     func saveIsMultiplierEnabled() {
         sharedUserDefaults.set(isMultiplierEnabled, forKey: shiftKeys.multiplierEnabledKey)
     }
-
     
-     func saveSelectedTags() {
+    
+    func saveSelectedTags() {
         let tagsData = try? JSONEncoder().encode(selectedTags)
         sharedUserDefaults.set(tagsData, forKey: shiftKeys.selectedTags)
     }
@@ -407,134 +406,139 @@ class ContentViewModel: ObservableObject {
     func removeSelectedTags() {
         sharedUserDefaults.removeObject(forKey: shiftKeys.selectedTags)
     }
-
-
+    
+    
+    
+    func saveTempBreaksToUserDefaults() {
+        let tempBreaksDictionaries = tempBreaksToDictionaries(tempBreaks: tempBreaks)
+        sharedUserDefaults.set(tempBreaksDictionaries, forKey: shiftKeys.tempBreaksKey)
         
-        func saveTempBreaksToUserDefaults() {
-            let tempBreaksDictionaries = tempBreaksToDictionaries(tempBreaks: tempBreaks)
-            sharedUserDefaults.set(tempBreaksDictionaries, forKey: shiftKeys.tempBreaksKey)
+        print("after saving breaks the count is: \(tempBreaksDictionaries.count)")
+        
+    }
+    
+    func clearTempBreaksFromUserDefaults() {
+        sharedUserDefaults.removeObject(forKey: shiftKeys.tempBreaksKey)
+    }
+    
+    func loadTempBreaksFromUserDefaults() {
+        if let tempBreaksDictionaries = sharedUserDefaults.array(forKey: shiftKeys.tempBreaksKey) as? [[String: Any]] {
+            let loadedBreaks = dictionariesToTempBreaks(dictionaries: tempBreaksDictionaries)
             
-            print("after saving breaks the count is: \(tempBreaksDictionaries.count)")
-            
-        }
-        
-        func clearTempBreaksFromUserDefaults() {
-            sharedUserDefaults.removeObject(forKey: shiftKeys.tempBreaksKey)
-        }
-        
-        func loadTempBreaksFromUserDefaults() {
-            if let tempBreaksDictionaries = sharedUserDefaults.array(forKey: shiftKeys.tempBreaksKey) as? [[String: Any]] {
-                let loadedBreaks = dictionariesToTempBreaks(dictionaries: tempBreaksDictionaries)
-                
-                for tempBreak in loadedBreaks {
-                            if tempBreak.endDate == nil {
-                                startBreak(startDate: tempBreak.startDate, isUnpaid: tempBreak.isUnpaid)
-                            } else {
-                                tempBreaks.append(tempBreak)
-                            }
-                        }
-                
+            for tempBreak in loadedBreaks {
+                if tempBreak.endDate == nil {
+                    startBreak(startDate: tempBreak.startDate, isUnpaid: tempBreak.isUnpaid)
+                } else {
+                    tempBreaks.append(tempBreak)
+                }
             }
             
-            print("after loading breaks the count is: \(tempBreaks.count)")
         }
         
-        func saveCurrentBreakIndexToUserDefaults() {
-            sharedUserDefaults.set(tempBreaks.count - 1, forKey: "currentBreakIndex")
-        }
-        
-        func loadCurrentBreakIndexFromUserDefaults() -> Int? {
-            return sharedUserDefaults.object(forKey: "currentBreakIndex") as? Int
-        }
-        
-        func clearCurrentBreakIndexFromUserDefaults() {
-            sharedUserDefaults.removeObject(forKey: "currentBreakIndex")
-        }
+        print("after loading breaks the count is: \(tempBreaks.count)")
+    }
+    
+    func saveCurrentBreakIndexToUserDefaults() {
+        sharedUserDefaults.set(tempBreaks.count - 1, forKey: "currentBreakIndex")
+    }
+    
+    func loadCurrentBreakIndexFromUserDefaults() -> Int? {
+        return sharedUserDefaults.object(forKey: "currentBreakIndex") as? Int
+    }
+    
+    func clearCurrentBreakIndexFromUserDefaults() {
+        sharedUserDefaults.removeObject(forKey: "currentBreakIndex")
+    }
     
     func indexOfTempBreak(withId id: UUID) -> Int? {
         return tempBreaks.firstIndex(where: { $0.id == id })
     }
-
+    
     func updateBreak(oldBreak: TempBreak, newBreak: TempBreak) {
         if let index = tempBreaks.firstIndex(of: oldBreak) {
             tempBreaks[index] = newBreak
         }
     }
-
-        
+    
+    
     func startBreak(startDate: Date? = nil, isUnpaid: Bool) {
-            print("Starting break")
-            //   breakStartDate = startDate
-            
-            // add the break to tempBreaks
-            
-            let breakStartDate = startDate ?? Date()
-            let currentBreak = TempBreak(startDate: breakStartDate, endDate: nil, isUnpaid: isUnpaid)
-            tempBreaks.append(currentBreak)
-            
-            saveTempBreaksToUserDefaults()
-            saveCurrentBreakIndexToUserDefaults()
-            isOnBreak = true
-            sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
-            
-         //   sharedUserDefaults.set(timeElapsed, forKey: shiftKeys.timeElapsedBeforeBreakKey)
-            
-         /*   if sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) == nil {
-                sharedUserDefaults.set(timeElapsed, forKey: shiftKeys.timeElapsedBeforeBreakKey)
-            } */
-      
-            #if os(iOS)
-            updateActivity(startDate: currentBreak.startDate, isUnpaid: isUnpaid)
-            #endif
-           // stopTimer(timer: &timer, timeElapsed: &timeElapsed)
-            
+        print("Starting break")
+        //   breakStartDate = startDate
+        
+        // add the break to tempBreaks
+        
+        let breakStartDate = startDate ?? Date()
+        let currentBreak = TempBreak(startDate: breakStartDate, endDate: nil, isUnpaid: isUnpaid)
+        tempBreaks.append(currentBreak)
+        
+        saveTempBreaksToUserDefaults()
+        saveCurrentBreakIndexToUserDefaults()
+        isOnBreak = true
+        sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
+        
+        //   sharedUserDefaults.set(timeElapsed, forKey: shiftKeys.timeElapsedBeforeBreakKey)
+        
+        /*   if sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) == nil {
+         sharedUserDefaults.set(timeElapsed, forKey: shiftKeys.timeElapsedBeforeBreakKey)
+         } */
+        
+#if os(iOS)
+        updateActivity(startDate: currentBreak.startDate, isUnpaid: isUnpaid)
+#endif
+        // stopTimer(timer: &timer, timeElapsed: &timeElapsed)
+        
         if isUnpaid {
             
             totalPayAtBreakStart = totalPay
             
-           // timeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as! TimeInterval
+            // timeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as! TimeInterval
         }
-            startBreakTimer(startDate: currentBreak.startDate)
-            
-        }
+        startBreakTimer(startDate: currentBreak.startDate)
+        
+    }
     
     func cancelBreak() {
         print("Cancelling break")
-
+        
         // Remove the last added break from tempBreaks if one exists
         if !tempBreaks.isEmpty {
             tempBreaks.removeLast()
             saveTempBreaksToUserDefaults()
         }
-
+        
         // Reset the totalPayAtBreakStart to revert the pay calculation
         totalPayAtBreakStart = 0.0
-
+        
         // Reset isOnBreak
         isOnBreak = false
         sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
-
+        
         stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
+        
+#if os(iOS)
+        updateActivity(startDate: shift?.startDate ?? Date())
+#endif
+        
         
         
     }
-
     
-   
+    
+    
+    
+    func stopTimer(timer: inout Timer?, timeElapsed: inout TimeInterval) {
+        timer?.invalidate()
+        timer = nil
+        timeElapsed = 0
+    }
+    
+    func startBreakTimer(startDate: Date) {
         
-        func stopTimer(timer: inout Timer?, timeElapsed: inout TimeInterval) {
-            timer?.invalidate()
-            timer = nil
-            timeElapsed = 0
+        breakTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            self.breakTimeElapsed = Date().timeIntervalSince(startDate)
         }
-        
-        func startBreakTimer(startDate: Date) {
-            
-            breakTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                self.breakTimeElapsed = Date().timeIntervalSince(startDate)
-            }
-        }
-        
+    }
+    
     func endShift(using viewContext: NSManagedObjectContext, endDate: Date, job: Job) -> OldShift? {
 #if os(iOS)
         stopActivity()
@@ -551,7 +555,7 @@ class ContentViewModel: ObservableObject {
         breakTaken = false
         isOvertime = false
         
-      
+        
         
         shiftEnded = true
         sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
@@ -566,377 +570,377 @@ class ContentViewModel: ObservableObject {
         var latestShift: OldShift? = nil
         if shiftState != .countdown {
             
-        if let shift = shift {
-            self.lastPay = totalPay
-            self.lastTaxedPay = taxedPay
-            saveLastPay() // Save the value of lastPay to UserDefaults
-            saveLastTaxedPay()
-            self.lastBreakElapsed = breakElapsed
-            saveLastBreak()
-            
-            let newTotalPay = computeTotalPay(for: endDate)
-            let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
-            
-            latestShift = OldShift(context: viewContext)
-            latestShift!.hourlyPay = shift.hourlyPay
-            latestShift!.shiftStartDate = shift.startDate
-            latestShift!.shiftEndDate = endDate
-            latestShift!.totalPay = newTotalPay
-            latestShift!.taxedPay = newTaxedPay
-            latestShift!.tax = Double(taxPercentage)
-            latestShift!.breakElapsed = breakElapsed
-            latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
-            latestShift!.overtimeDuration = overtimeElapsed
-            latestShift!.timeBeforeOvertime = timeElapsedUntilOvertime
-            latestShift!.overtimeRate = overtimeRate
-            latestShift!.multiplierEnabled = isMultiplierEnabled
-            latestShift!.payMultiplier = payMultiplier
-            
-            latestShift!.breakDuration = totalBreakDuration()
-            
-            latestShift!.shiftID = UUID()
-            
-            latestShift!.job = job
-            
-            let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "tagID IN %@", selectedTags)
-            let selectedTagEntities = try? viewContext.fetch(fetchRequest)
-            
-            latestShift!.tags = NSSet(array: selectedTagEntities ?? [])
-            
-            // empty the selected tags
-            selectedTags = Set<UUID>()
-            removeSelectedTags()
-            
-            
-            for tempBreak in tempBreaks {
-                if let breakEndDate = tempBreak.endDate {
-                    breaksManager.createBreak(oldShift: latestShift!, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
+            if let shift = shift {
+                self.lastPay = totalPay
+                self.lastTaxedPay = taxedPay
+                saveLastPay() // Save the value of lastPay to UserDefaults
+                saveLastTaxedPay()
+                self.lastBreakElapsed = breakElapsed
+                saveLastBreak()
+                
+                let newTotalPay = computeTotalPay(for: endDate)
+                let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
+                
+                latestShift = OldShift(context: viewContext)
+                latestShift!.hourlyPay = shift.hourlyPay
+                latestShift!.shiftStartDate = shift.startDate
+                latestShift!.shiftEndDate = endDate
+                latestShift!.totalPay = newTotalPay
+                latestShift!.taxedPay = newTaxedPay
+                latestShift!.tax = Double(taxPercentage)
+                latestShift!.breakElapsed = breakElapsed
+                latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
+                latestShift!.overtimeDuration = overtimeElapsed
+                latestShift!.timeBeforeOvertime = timeElapsedUntilOvertime
+                latestShift!.overtimeRate = overtimeRate
+                latestShift!.multiplierEnabled = isMultiplierEnabled
+                latestShift!.payMultiplier = payMultiplier
+                
+                latestShift!.breakDuration = totalBreakDuration()
+                
+                latestShift!.shiftID = UUID()
+                
+                latestShift!.job = job
+                
+                let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "tagID IN %@", selectedTags)
+                let selectedTagEntities = try? viewContext.fetch(fetchRequest)
+                
+                latestShift!.tags = NSSet(array: selectedTagEntities ?? [])
+                
+                // empty the selected tags
+                selectedTags = Set<UUID>()
+                removeSelectedTags()
+                
+                
+                for tempBreak in tempBreaks {
+                    if let breakEndDate = tempBreak.endDate {
+                        breaksManager.createBreak(oldShift: latestShift!, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
+                    }
                 }
-            }
-            
-            //PersistenceController.shared.save()
-            if latestShift!.duration > 0 {
-                do {
-                    try viewContext.save()
-                    
-                } catch {
-                    print("Error saving new shift: \(error)")
+                
+                //PersistenceController.shared.save()
+                if latestShift!.duration > 0 {
+                    do {
+                        try viewContext.save()
+                        
+                    } catch {
+                        print("Error saving new shift: \(error)")
+                    }
                 }
+                
+                
             }
-            
-            
         }
-    }
-            
+        
         shiftState = .notStarted
         
-            sharedUserDefaults.removeObject(forKey: shiftKeys.lastBreakElapsedKey)
-            shift = nil
-            shiftEnded = true
-            overtimeDuration = 0
+        sharedUserDefaults.removeObject(forKey: shiftKeys.lastBreakElapsedKey)
+        shift = nil
+        shiftEnded = true
+        overtimeDuration = 0
         
         timeElapsedUntilOvertime = 0 // reset time elapsed until overtime if it exists
         
-            isPresented = true
-            //   breakStartDate = nil
-            //  breakEndDate = nil
-            
-            tempBreaks.removeAll()
-            clearTempBreaksFromUserDefaults()
-            isMultiplierEnabled = false
-            payMultiplier = 1.0
-        overtimeEnabled = false
-            
-        return latestShift
-        }
+        isPresented = true
+        //   breakStartDate = nil
+        //  breakEndDate = nil
         
+        tempBreaks.removeAll()
+        clearTempBreaksFromUserDefaults()
+        isMultiplierEnabled = false
+        payMultiplier = 1.0
+        overtimeEnabled = false
+        
+        return latestShift
+    }
+    
     func endBreak(endDate: Date? = nil, viewContext: NSManagedObjectContext) {
-            
-            tempBreaks[tempBreaks.count - 1].endDate = endDate ?? Date()
-            
-            saveTempBreaksToUserDefaults()
-            
-            
-            print("UPDATING ACTIVITY \(breakTimeElapsed)")
-         
-            isOnBreak = false
-            #if os(iOS)
-         updateActivity(startDate: shift?.startDate ?? Date())
-            #endif
-            
-            
-            stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
-            
-            sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
-            
+        
+        tempBreaks[tempBreaks.count - 1].endDate = endDate ?? Date()
+        
+        saveTempBreaksToUserDefaults()
+        
+        
+        print("UPDATING ACTIVITY \(breakTimeElapsed)")
+        
+        isOnBreak = false
+#if os(iOS)
+        updateActivity(startDate: shift?.startDate ?? Date())
+#endif
+        
+        
+        stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
+        
+        sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
+        
         totalPayAtBreakStart = 0.0
         
+        
+        
+        // TEMP DISABLED UNTIL MULTIPLE BREAKS WORKING
+        
+        
+        //    guard let breakStartDate = breakStartDate else { return } // Check if break has started
+        print("ending break")
+        // breakEndDate = Date()
+        // sharedUserDefaults.set(breakEndDate, forKey: shiftKeys.breakEndedDateKey)
+        
+        
+        
+        
+        // lastBreakElapsed = breakTimeElapsed
+        
+        
+        // stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
+        
+        sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey)
+        
+        
+        isOnBreak = false
+        sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
+        // saveLastBreak()
+        // print(lastBreakElapsed)
+        
+        if tempBreaks[tempBreaks.count - 1].isUnpaid{
+            // startTimer(startDate: Date(), viewContext: viewContext)
+        }
+    }
+    
+    func startTimer(startDate: Date, viewContext: NSManagedObjectContext) {
+        
+        if shift != nil{
             
-              
-            // TEMP DISABLED UNTIL MULTIPLE BREAKS WORKING
+            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                self.timeElapsed = Date().timeIntervalSince(startDate)// - self.totalBreakDuration()
+                
+                if self.shiftState == .countdown && self.timeElapsed >= 0 {
+                    self.shiftState = .inProgress
+                }
+                
+                
+                
+            }
+#if os(iOS)
+            startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
+#endif
+        }
+        else {
+            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                self.timeElapsed = Date().timeIntervalSince(startDate)
+                
+                if self.shiftState == .countdown && self.timeElapsed >= 0 {
+                    self.shiftState = .inProgress
+                }
+                
+                
+            }
+#if os(iOS)
+            startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
+#endif
+        }
+        
+    }
+#if os(iOS)
+    func startActivity(startDate: Date, hourlyPay: Double, viewContext: NSManagedObjectContext){
+        
+        guard let job = fetchJob(with: self.selectedJobUUID, in: viewContext) else { return }
+        
+        
+        
+        let attributes = LiveActivityAttributes(jobName: job.name ?? "Unnamed", jobTitle: job.title ?? "No Title", jobIcon: job.icon ?? "briefcase.circle", jobColorRed: Double(job.colorRed), jobColorGreen: Double(job.colorGreen), jobColorBlue: Double(job.colorBlue), hourlyPay: hourlyPay)
+        let state = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
+        
+        let activityContent = ActivityContent(state: state, staleDate: nil)
+        
+        if (self.currentActivity == nil && self.activityEnabled){
             
             
-            //    guard let breakStartDate = breakStartDate else { return } // Check if break has started
-            print("ending break")
-            // breakEndDate = Date()
-            // sharedUserDefaults.set(breakEndDate, forKey: shiftKeys.breakEndedDateKey)
+            self.currentActivity = try? Activity.request(attributes: attributes, content: activityContent, pushType: nil)
             
+            print("Created activity")
+        }
+        
+        
+        
+        
+        
+    }
+    
+    func stopActivity(){
+        
+        let newState = LiveActivityAttributes.TimerStatus(startTime: Date(), totalPay: 0, isOnBreak: false)
+        let finalContent = ActivityContent(state: newState, staleDate: nil)
+        
+        Task{
             
-            
-            
-            // lastBreakElapsed = breakTimeElapsed
-            
-            
-            // stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
-            
-            sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey)
-            
-            
-            isOnBreak = false
-            sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
-            // saveLastBreak()
-            // print(lastBreakElapsed)
-            
-            if tempBreaks[tempBreaks.count - 1].isUnpaid{
-               // startTimer(startDate: Date(), viewContext: viewContext)
+            for activity in Activity<LiveActivityAttributes>.activities {
+                
+                await activity.end(finalContent, dismissalPolicy: .immediate)
+                
             }
         }
         
-    func startTimer(startDate: Date, viewContext: NSManagedObjectContext) {
-            
-            if shift != nil{
-                
-                timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                    self.timeElapsed = Date().timeIntervalSince(startDate)// - self.totalBreakDuration()
-                    
-                    if self.shiftState == .countdown && self.timeElapsed >= 0 {
-                                    self.shiftState = .inProgress
-                                }
-                    
-                    
+        self.currentActivity = nil
         
-                }
-                #if os(iOS)
-                startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
-                #endif
+    }
+    
+    func updateActivity(startDate: Date, isUnpaid: Bool = false){
+        Task{
+            
+            let updatedState = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak, unpaidBreak: isUnpaid)
+            
+            let updatedContent = ActivityContent(state: updatedState, staleDate: nil)
+            
+            await currentActivity?.update(updatedContent, alertConfiguration: nil)
+            
+        }
+    }
+#endif
+    
+    
+    func startShift(using viewContext: NSManagedObjectContext, startDate: Date, job: Job) {
+        if shift == nil{ // PERHAPS YOU DONT NEED THIS?
+            if(hourlyPay == 0){
+                return
             }
             else {
-                timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                    self.timeElapsed = Date().timeIntervalSince(startDate)
-                    
-                    if self.shiftState == .countdown && self.timeElapsed >= 0 {
-                                   self.shiftState = .inProgress
-                               }
-                    
-                 
-                }
-                #if os(iOS)
-                startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
-                #endif
-            }
-            
-        }
-    #if os(iOS)
-    func startActivity(startDate: Date, hourlyPay: Double, viewContext: NSManagedObjectContext){
-            
-        guard let job = fetchJob(with: self.selectedJobUUID, in: viewContext) else { return }
-            
-            
-            
-        let attributes = LiveActivityAttributes(jobName: job.name ?? "Unnamed", jobTitle: job.title ?? "No Title", jobIcon: job.icon ?? "briefcase.circle", jobColorRed: Double(job.colorRed), jobColorGreen: Double(job.colorGreen), jobColorBlue: Double(job.colorBlue), hourlyPay: hourlyPay)
-            let state = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
-            
-            let activityContent = ActivityContent(state: state, staleDate: nil)
-            
-            if (self.currentActivity == nil && self.activityEnabled){
- 
                 
-                self.currentActivity = try? Activity.request(attributes: attributes, content: activityContent, pushType: nil)
-                
-                print("Created activity")
-            }
-            
-            
-            
-            
-            
-        }
-        
-        func stopActivity(){
-            
-            let newState = LiveActivityAttributes.TimerStatus(startTime: Date(), totalPay: 0, isOnBreak: false)
-            let finalContent = ActivityContent(state: newState, staleDate: nil)
-            
-            Task{
-                
-                for activity in Activity<LiveActivityAttributes>.activities {
-                    
-                    await activity.end(finalContent, dismissalPolicy: .immediate)
-                    
-                }
-            }
-            
-            self.currentActivity = nil
-            
-        }
-        
-    func updateActivity(startDate: Date, isUnpaid: Bool = false){
-            Task{
-                
-                let updatedState = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak, unpaidBreak: isUnpaid)
-                
-                let updatedContent = ActivityContent(state: updatedState, staleDate: nil)
-                
-                await currentActivity?.update(updatedContent, alertConfiguration: nil)
-                
-            }
-        }
-    #endif
-        
-
-    func startShift(using viewContext: NSManagedObjectContext, startDate: Date, job: Job) {
-            if shift == nil{ // PERHAPS YOU DONT NEED THIS?
-                if(hourlyPay == 0){
-                    return
-                }
-                else {
-                    
-                    if startDate > Date() {
-                            shiftState = .countdown
-                            // Setup countdown
-                        } else {
-                            shiftState = .inProgress
-                            // Setup timer
-                        }
-                    
-                    
-                    // lol this isnt actually using the hourly pay here...
-                    shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
-                    sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
-                    
-                    print("starting shift, time elapsed until overtime started was: \(timeElapsedUntilOvertime)")
-                    
-                    if job.overtimeEnabled {
-                        print("overtime is enabled when the shift started")
-                        self.applyOvertimeAfter = job.overtimeAppliedAfter
-                        print("Overtime will be applied after: \(applyOvertimeAfter)")
-                        self.overtimeRate = job.overtimeRate
-                    } else {
-                        self.applyOvertimeAfter = 0
-                        self.overtimeRate = 1.0
-                    }
-                    
-                    
-                    if let savedTimeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as? TimeInterval {
-                       // timeElapsed = savedTimeElapsed
-                    }
-                    
-                    startTimer(startDate: startDate, viewContext: viewContext)
-                    
-                    shiftsTracked += 1
+                if startDate > Date() {
+                    shiftState = .countdown
+                    // Setup countdown
+                } else {
+                    shiftState = .inProgress
+                    // Setup timer
                 }
                 
-                if isMultiplierEnabled {
-                    print("multiplier is enabled")
-                    
-                    print("multiplier rate is: \(payMultiplier)")
-                    
-                    
+                
+                // lol this isnt actually using the hourly pay here...
+                shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
+                sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
+                
+                print("starting shift, time elapsed until overtime started was: \(timeElapsedUntilOvertime)")
+                
+                if job.overtimeEnabled {
+                    print("overtime is enabled when the shift started")
+                    self.applyOvertimeAfter = job.overtimeAppliedAfter
+                    print("Overtime will be applied after: \(applyOvertimeAfter)")
+                    self.overtimeRate = job.overtimeRate
+                } else {
+                    self.applyOvertimeAfter = 0
+                    self.overtimeRate = 1.0
                 }
                 
-                loadTempBreaksFromUserDefaults()
-               
                 
-                print("temp break count after starting break is now: \(tempBreaks.count)")
+                if let savedTimeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as? TimeInterval {
+                    // timeElapsed = savedTimeElapsed
+                }
+                
+                startTimer(startDate: startDate, viewContext: viewContext)
+                
+                shiftsTracked += 1
+            }
             
-                shiftEnded = false
-                sharedUserDefaults.set(false, forKey: shiftKeys.shiftEndedKey)
-                shiftStartDate = startDate // sets the picker value to startDate of the shift every time
+            if isMultiplierEnabled {
+                print("multiplier is enabled")
+                
+                print("multiplier rate is: \(payMultiplier)")
+                
+                
             }
-        }
-        
-        private var shiftStartDateString: String? {
-            guard let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date else {
-                return nil
-            }
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .none
-            dateFormatter.timeStyle = .short
-            return dateFormatter.string(from: shiftStartDate)
-        }
-    #if os(iOS)
-        func prepareHaptics() {
-            guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
             
-            do {
-                engine = try CHHapticEngine()
-                try engine?.start()
-            } catch {
-                print("There was an error creating the engine: \(error.localizedDescription)")
-            }
+            loadTempBreaksFromUserDefaults()
+            
+            
+            print("temp break count after starting break is now: \(tempBreaks.count)")
+            
+            shiftEnded = false
+            sharedUserDefaults.set(false, forKey: shiftKeys.shiftEndedKey)
+            shiftStartDate = startDate // sets the picker value to startDate of the shift every time
         }
-    #endif
+    }
+    
+    private var shiftStartDateString: String? {
+        guard let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date else {
+            return nil
+        }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
+        return dateFormatter.string(from: shiftStartDate)
+    }
+#if os(iOS)
+    func prepareHaptics() {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
         
+        do {
+            engine = try CHHapticEngine()
+            try engine?.start()
+        } catch {
+            print("There was an error creating the engine: \(error.localizedDescription)")
+        }
+    }
+#endif
+    
     func startShiftButtonAction(using viewContext: NSManagedObjectContext, startDate: Date, job: Job) {
         startShift(using: viewContext, startDate: startDate, job: job)
-            shiftStartDate = startDate
-            // Add notification logic
+        shiftStartDate = startDate
+        // Add notification logic
+        
+#if os(iOS)
+        if hourlyPay != 0 {
+            let content = UNMutableNotificationContent()
+            content.title = "ShiftTracker"
+            content.subtitle = "Let the money roll in! Enjoy your shift."
+            content.sound = UNNotificationSound.default
             
-        #if os(iOS)
-            if hourlyPay != 0 {
-                let content = UNMutableNotificationContent()
-                content.title = "ShiftTracker"
-                content.subtitle = "Let the money roll in! Enjoy your shift."
-                content.sound = UNNotificationSound.default
-                
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 8, repeats: false)
-                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-                
-                UNUserNotificationCenter.current().add(request)
-            }
-        #endif
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 8, repeats: false)
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request)
         }
+#endif
+    }
+    
+    func startBreakButtonAction() {
+        showStartBreakAlert = true
+        //  let tempElapsed = timeElapsed
+        // stopTimer(timer: &timer, timeElapsed: &timeElapsed)
+        //  timeElapsed = tempElapsed
+    }
+    
+    func endBreakButtonAction() {
+        showEndBreakAlert = true
+        /*      let tempBreakElapsed = breakTimeElapsed
+         stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
+         breakTimeElapsed = tempBreakElapsed */
+    }
+    
+    func endShiftButtonAction(){
+        showEndAlert = true
         
-        func startBreakButtonAction() {
-            showStartBreakAlert = true
-          //  let tempElapsed = timeElapsed
-           // stopTimer(timer: &timer, timeElapsed: &timeElapsed)
-          //  timeElapsed = tempElapsed
-        }
-        
-        func endBreakButtonAction() {
-            showEndBreakAlert = true
-      /*      let tempBreakElapsed = breakTimeElapsed
-            stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
-            breakTimeElapsed = tempBreakElapsed */
-        }
-        
-        func endShiftButtonAction(){
-            showEndAlert = true
-
-        }
-        
-        
-        // multiple breaks stuff:
-        
-        func tempBreaksToDictionaries(tempBreaks: [TempBreak]) -> [[String: Any]] {
-            let encoder = JSONEncoder()
-            let data = try? encoder.encode(tempBreaks)
-            let jsonArray = (try? JSONSerialization.jsonObject(with: data!, options: [])) as? [[String: Any]]
-            return jsonArray ?? []
-        }
-        
-        func dictionariesToTempBreaks(dictionaries: [[String: Any]]) -> [TempBreak] {
-            let decoder = JSONDecoder()
-            let jsonData = try? JSONSerialization.data(withJSONObject: dictionaries, options: [])
-            let tempBreaks = try? decoder.decode([TempBreak].self, from: jsonData!)
-            return tempBreaks ?? []
-        }
-        
+    }
+    
+    
+    // multiple breaks stuff:
+    
+    func tempBreaksToDictionaries(tempBreaks: [TempBreak]) -> [[String: Any]] {
+        let encoder = JSONEncoder()
+        let data = try? encoder.encode(tempBreaks)
+        let jsonArray = (try? JSONSerialization.jsonObject(with: data!, options: [])) as? [[String: Any]]
+        return jsonArray ?? []
+    }
+    
+    func dictionariesToTempBreaks(dictionaries: [[String: Any]]) -> [TempBreak] {
+        let decoder = JSONDecoder()
+        let jsonData = try? JSONSerialization.data(withJSONObject: dictionaries, options: [])
+        let tempBreaks = try? decoder.decode([TempBreak].self, from: jsonData!)
+        return tempBreaks ?? []
+    }
+    
     
     // used for auto rounding a job start date:
-
+    
     func roundDate(_ date: Date) -> Date {
         let calendar = Calendar.current
         
@@ -946,10 +950,10 @@ class ContentViewModel: ObservableObject {
         guard let hour = components.hour, let minute = components.minute else {
             fatalError("Invalid date components")
         }
-
+        
         var roundedHour = hour
         var roundedMinute: Int
-
+        
         switch minute {
         case 0...7:
             roundedMinute = 0
@@ -965,7 +969,7 @@ class ContentViewModel: ObservableObject {
         default:
             fatalError("Invalid minute component")
         }
-
+        
         var newComponents = DateComponents()
         newComponents.year = components.year
         newComponents.month = components.month
@@ -974,7 +978,7 @@ class ContentViewModel: ObservableObject {
         newComponents.minute = roundedMinute
         return calendar.date(from: newComponents) ?? date
     }
-        
-        
-    }
+    
+    
+}
 
