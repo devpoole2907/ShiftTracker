@@ -131,7 +131,7 @@ struct WidgetStatsView: View {
             }
             
             
-        }
+        } .widgetURL(URL(string: "shifttrackerapp://summary"))
     }
     
     

@@ -29,8 +29,7 @@ struct JobChartEarningsWidgetEntryView : View {
             
          
         .padding(.horizontal)
-        
-        .widgetURL(URL(string: "shifttrackerapp://summary"))
+      
     }
 }
 

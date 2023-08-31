@@ -147,7 +147,7 @@ struct UpcomingShiftWidgetEntryView : View {
                     }
                 }.padding(.vertical, 3)
                 
-            }
+            } .widgetURL(URL(string: "shifttrackerapp://schedule"))
         } else {
             VStack(alignment: .leading) {
                 
@@ -166,8 +166,10 @@ struct UpcomingShiftWidgetEntryView : View {
                     .padding(.vertical, 2)
                     .fontDesign(.rounded)
                 
-            }
+            } .widgetURL(URL(string: "shifttrackerapp://schedule"))
         }
+        
+           
         
         
         
