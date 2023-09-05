@@ -107,7 +107,8 @@ struct MainWithSideBarView: View {
                                 
                                 if shiftManager.showModePicker {
                                     
-                                    CustomSegmentedPicker(selection: $shiftManager.statsMode, cornerRadius: 20)
+                                    CustomSegmentedPicker(selection: $shiftManager.statsMode, items: StatsMode.allCases)
+
                                         .frame(maxHeight: 30)
                                     
                                         .glassModifier(cornerRadius: 20)

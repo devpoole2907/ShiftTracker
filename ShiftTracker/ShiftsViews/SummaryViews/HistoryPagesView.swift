@@ -76,7 +76,7 @@ struct HistoryPagesView: View {
             return dateFormatter.string(from: startDate)
         }
     }
-
+    
     
     func getDateRange(startDate: Date) -> ClosedRange<Date> {
         
@@ -133,208 +133,279 @@ struct HistoryPagesView: View {
         }
         return calendar.startOfDay(for: calendar.date(from: calendar.dateComponents(components, from: shift.shiftStartDate!))!)
     }
-
-
-
+    
+    
+    
     
     
     var body: some View {
-
+        
         
         
         let groupedShifts = Dictionary(grouping: shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })) { shift in
             getGroupingKey(for: shift)
         }.sorted { $0.key < $1.key }
         
-       
-
         
+        
+        ZStack(alignment: .bottomTrailing){
         ZStack(alignment: .bottomLeading){
-        ScrollView {
             
-            VStack {
+            
+            List(selection: $selection) {
                 
-                
-                
-                
-                ZStack(alignment: .bottomTrailing){
-                TabView(selection: $selectedTab) {
+                Section {
                     
-                    ForEach(groupedShifts.indices, id: \.self) { index in
-                        VStack{
+                    TabView(selection: $selectedTab.animation(.default)) {
+                        
+                        ForEach(groupedShifts.indices, id: \.self) { index in
+                            let startDate = groupedShifts[index].key
+                            let dateRange = getDateRange(startDate: startDate)
+                            let totalEarnings = groupedShifts[index].value.reduce(0) { $0 + $1.totalPay }
+                            let totalHours = groupedShifts[index].value.reduce(0) { $0 + ($1.duration / 3600.0) }
+                            let totalBreaks = groupedShifts[index].value.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
                             
-                            List(selection: $selection) {
-                                let startDate = groupedShifts[index].key
-                                let dateRange = getDateRange(startDate: startDate)
-                                
-                                VStack {
-                                    HStack{
-                                        VStack(alignment: .leading){
-                                            Text("Total")
-                                                .font(.headline)
-                                                .bold()
-                                                .fontDesign(.rounded)
-                                                .foregroundColor(.gray)
-                                            
-                                            Text(
-                                                shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: 22)) ?? "0")" :
-                                                    shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: 12) :
-                                                    shiftManager.formatTime(timeInHours: 1)
-                                            )
-                                            .font(.title2)
+                            VStack {
+                                HStack{
+                                    VStack(alignment: .leading){
+                                        Text("Total")
+                                            .font(.headline)
                                             .bold()
-                                            
-                                            
-                                        }
-                                        Spacer()
-                                    }.padding(.top, 5)
+                                            .fontDesign(.rounded)
+                                            .foregroundColor(.gray)
+                                        
+                                        Text(
+                                            shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: totalEarnings)) ?? "0")" :
+                                                shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: totalHours) :
+                                                shiftManager.formatTime(timeInHours: totalBreaks)
+                                        )
+                                        .font(.title2)
+                                        .bold()
+                                        
+                                        
+                                    }
+                                    Spacer()
                                     
-                                    Chart {
+                                    HStack(spacing: 20) {
                                         
-                                        ForEach(groupedShifts[index].value, id: \.self) { shift in
-                                            
-                                            
-                                            BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
-                                                    y: .value(shiftManager.statsMode.description, shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
-                                                              
-                                                             ), width: barWidth
-                                            )
-                                            .foregroundStyle(shiftManager.statsMode.gradient)
-                                            .cornerRadius(shiftManager.statsMode.cornerRadius)
-                                            
-                                            
-                                        }
-                                        
-                                        
-                                    } .chartXScale(domain: dateRange, type: .linear)
-                                    
-                                        .chartXAxis {
-                                            
-                                            
-                                            if historyRange == .month {
-                                                
-                                                AxisMarks(values: .stride(by: .day, count: 6)) { value in
-                                                    if let date = value.as(Date.self) {
-                                                        
-                                                        AxisValueLabel(format: .dateTime.day(), centered: true, collisionResolution: .disabled)
-                                                        
-                                                        
-                                                    } else {
-                                                        AxisValueLabel()
-                                                    }
-                                                    
-                                                }
-                                                
-                                            } else {
-                                                AxisMarks(values: .stride(by: historyRange == .week ? .day : .month, count: 1)) { value in
-                                                    if let date = value.as(Date.self) {
-                                                        
-                                                        if historyRange == .week {
-                                                            AxisValueLabel(shiftManager.dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
-                                                            
-                                                        } else {
-                                                            AxisValueLabel(format: .dateTime.month(), centered: true, collisionResolution: .disabled)
-                                                        }
-                                                        
-                                                        
-                                                    } else {
-                                                        AxisValueLabel()
-                                                    }
-                                                    
-                                                }
+                                        Button(action: {
+                                            if selectedTab != 0 {
+                                            withAnimation{
+                                                selectedTab = selectedTab - 1
                                             }
                                         }
-                                    
-                                        .padding(.vertical)
-                                    
-                                        .frame(minHeight: 200)
-                                    
-                           
-                                } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-                                
-                                
-                                Section {
-                                    ForEach(groupedShifts[index].value, id: \.objectID) { shift in
-                                        NavigationLink(value: shift) {
-                                            ShiftDetailRow(shift: shift)
-                                            
+                                        }){
+                                            Image(systemName: "chevron.left").bold()
+                                                .foregroundStyle(.gray)
+                                                .font(.title2)
                                         }
+                                        
+                                        Button(action: {
+                                            if selectedTab != groupedShifts.count - 1 {
+                                                withAnimation {
+                                                    selectedTab = selectedTab + 1
+                                                }
+                                            }
+                                        }){
+                                            Image(systemName: "chevron.right").bold()
+                                                .foregroundStyle(.gray)
+                                                .font(.title2)
+                                        }
+                                        
+                                        
+                                        
+                                    }.padding(.horizontal)
+                                    
+                                }.padding(.top, 5)
+                                
+                                Chart {
+                                    
+                                    ForEach(groupedShifts[index].value, id: \.self) { shift in
+                                        
+                                        
+                                        BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
+                                                y: .value(shiftManager.statsMode.description, shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
+                                                          
+                                                         ), width: barWidth
+                                        )
+                                        .foregroundStyle(shiftManager.statsMode.gradient)
+                                        .cornerRadius(shiftManager.statsMode.cornerRadius)
+                                        
+                                        
                                     }
                                     
                                     
-                                    
-                                } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                                } .chartXScale(domain: dateRange, type: .linear)
                                 
-                                Spacer(minLength: 225).listRowBackground(Color.clear)
+                                    .chartXAxis {
+                                        
+                                        
+                                        if historyRange == .month {
+                                            
+                                            AxisMarks(values: .stride(by: .day, count: 6)) { value in
+                                                if let date = value.as(Date.self) {
+                                                    
+                                                    AxisValueLabel(format: .dateTime.day(), centered: true, collisionResolution: .disabled)
+                                                    
+                                                    
+                                                } else {
+                                                    AxisValueLabel()
+                                                }
+                                                
+                                            }
+                                            
+                                        } else {
+                                            AxisMarks(values: .stride(by: historyRange == .week ? .day : .month, count: 1)) { value in
+                                                if let date = value.as(Date.self) {
+                                                    
+                                                    if historyRange == .week {
+                                                        AxisValueLabel(shiftManager.dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
+                                                        
+                                                    } else {
+                                                        AxisValueLabel(format: .dateTime.month(), centered: true, collisionResolution: .disabled)
+                                                    }
+                                                    
+                                                    
+                                                } else {
+                                                    AxisValueLabel()
+                                                }
+                                                
+                                            }
+                                        }
+                                    }
                                 
-                            }.tag(index)
-                            
-                                .scrollContentBackground(.hidden)
-                                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                                .background(Color(.systemGroupedBackground).ignoresSafeArea())
-                            
-                            
+                                    .padding(.vertical)
+                                
+                                    .frame(minHeight: 200)
+                                
+                                
+                            } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                                .tag(index)
                         }
+                        
                     }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .haptics(onChangeOf: selectedTab, type: .light)
                     
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .haptics(onChangeOf: selectedTab, type: .light)
+                    
+                    
+                }.frame(minHeight: 300)
+                    .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                       
                 
-                 //   if #available(iOS 17.0, *){
-                        
-                        VStack{
-                        
-                        HStack(spacing: 10){
+                Section {
+                    if selectedTab >= 0 && selectedTab < groupedShifts.count {
+                        ForEach(groupedShifts[selectedTab].value, id: \.objectID) { shift in
+                            NavigationLink(value: shift) {
+                                ShiftDetailRow(shift: shift)
+                            }
                             
-                            EditButton()
+                            .swipeActions {
+                                Button(role: .destructive) {
+                                    shiftStore.deleteOldShift(shift, in: viewContext)
+                                 
+                                    
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                            }
                             
-                            Divider().frame(height: 10)
-                            
-                            Button(action: {
-                                CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                            }) {
-                                Image(systemName: "trash")
-                                    .bold()
-                                    .foregroundStyle(selection.isEmpty ? .gray.opacity(0.5) : .red.opacity(1.0))
-                            }.disabled(selection.isEmpty)
-                            
-                            
-                            
-                            
-                            
-                            
-                        }.padding()
-                                .glassModifier(cornerRadius: 20)
-                        
-                            .padding()
-               
-                        
-                            Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 200 : 270)
+                        }.transition(.slide)
+                            .animation(.easeInOut, value: selectedTab)
                     }
-                        
-                        
-        
+                }
+                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                
+                
+                
+                
+            }.scrollContentBackground(.hidden)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            
+            
+     
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                
+                PageControlView(currentPage: $selectedTab, numberOfPages: groupedShifts.count)
+                    .frame(maxWidth: 175)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                
+                    .padding()
                 
             }
                 
-            }.frame(height: UIScreen.main.bounds.height)
+              
+                
+                
+            VStack(alignment: .trailing){
+                    
+                    HStack(spacing: 10){
+                        
+                        EditButton()
+                        
+                        Divider().frame(height: 10)
+                        
+                        Button(action: {
+                            CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                        }) {
+                            Image(systemName: "trash")
+                                .bold()
+                                .foregroundStyle(selection.isEmpty ? .gray.opacity(0.5) : .red.opacity(1.0))
+                        }.disabled(selection.isEmpty)
+                        
+                        
+                        
+                        
+                        
+                        
+                    }.padding()
+                        .glassModifier(cornerRadius: 20)
+                    
+                      //  .padding()
+                    
+                    CustomSegmentedPicker(selection: $historyRange, items: HistoryRange.allCases)
+
+                       
+                    
+                        .glassModifier(cornerRadius: 20)
+                    
+                        .frame(width: 165)
+                        .frame(maxHeight: 30)
+                    
+                      
+                  
+                    
+                        .onChange(of: historyRange) { _ in
+                            withAnimation{
+                                selectedTab = groupedShifts.count - 1
+                            }
+                        }
+                    
+                    
+                    Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
+                }  .padding(.horizontal)
+                
+                
+            
+            
+            
+            
             
         }
         
-            PageControlView(currentPage: $selectedTab, numberOfPages: groupedShifts.count)
-                .frame(maxWidth: 175)
-            
-                .padding()
-              
-                     
-            
-           
-    }
-        
         .onAppear {
             
-        
+            
             if shiftManager.showModePicker == true {
                 selectedTab = groupedShifts.count - 1
             }
@@ -349,7 +420,7 @@ struct HistoryPagesView: View {
                     dismiss()
                 }
             }
-        
+            
             
         }
         
@@ -357,34 +428,8 @@ struct HistoryPagesView: View {
         
         
         .navigationTitle(getCurrentDateRangeString(historyRange: historyRange, for: selectedTab, groupedShifts: groupedShifts))
+        
 
-        
-        .toolbar {
-            
-            ToolbarItem(placement: .principal) {
-                Picker(selection: $historyRange, label: Text("Range")) {
-                    
-                    ForEach(HistoryRange.allCases, id: \.self) { range in
-                        
-                        Text(range.shortDescription)
-                        
-                    }
-                    
-                }.pickerStyle(.segmented)
-                    .frame(maxWidth: 170)
-                
-                
-                    .onChange(of: historyRange) { _ in
-                        withAnimation{
-                            selectedTab = groupedShifts.count - 1
-                        }
-                    }
-                
-            }
-            
-        
-            
-        }
         
         
     }

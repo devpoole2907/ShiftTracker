@@ -7,11 +7,14 @@
 
 import SwiftUI
 
-struct CustomSegmentedPicker: View {
+struct CustomSegmentedPicker<Item: SegmentedItem>: View {
     
     @Environment(\.colorScheme) var colorScheme
     
-    @Binding var selection: StatsMode
+    @Binding var selection: Item
+    
+    var items: [Item]
+    
     var cornerRadius: CGFloat = 20.0
     var borderWidth: CGFloat = 2.0
     
@@ -22,36 +25,47 @@ struct CustomSegmentedPicker: View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
                 
-                if let selectedIdx = StatsMode.allCases.firstIndex(of: selection) {
+                if let selectedIdx = items.firstIndex(of: selection) {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .foregroundColor(.white)
                         //.padding(EdgeInsets(top: borderWidth, leading: borderWidth, bottom: borderWidth, trailing: borderWidth))
-                        .frame(width: geo.size.width / CGFloat(StatsMode.allCases.count))
-                        .offset(x: geo.size.width / CGFloat(StatsMode.allCases.count) * CGFloat(selectedIdx), y: 0)
+                        .frame(width: geo.size.width / CGFloat(items.count))
+                        .offset(x: geo.size.width / CGFloat(items.count) * CGFloat(selectedIdx), y: 0)
                       //  .animation(.spring().speed(1.5), value: )
                        
                 }
                 
                 HStack(spacing: 0) {
-                    ForEach(StatsMode.allCases, id: \.self) { mode in
-                        Button(action: {
-                            withAnimation(.spring().speed(1.5)) {
-                                selection = mode
+                                    ForEach(items, id: \.self) { item in
+                                        Button(action: {
+                                            withAnimation(.spring().speed(1.5)) {
+                                                selection = item
+                                            }
+                                        }) {
+                                            switch item.contentType {
+                                            case .image(let imageName):
+                                                Image(systemName: imageName)
+                                                    .foregroundStyle(iconColor)
+                                                    .frame(minWidth: geo.size.width / CGFloat(items.count), maxWidth: .infinity)
+                                            case .text(let text):
+                                                Text(text)
+                                                    .bold()
+                                                    .fontDesign(.rounded)
+                                                    .font(.footnote)
+                                                    .foregroundColor(iconColor)
+                                                    .frame(minWidth: geo.size.width / CGFloat(items.count), maxWidth: .infinity)
+                                               
+                                            }
+                                        
+                                        }
+                                    }
+                                }
+                                .frame(height: 30)
+                                
                             }
-                        }) {
-                            Image(systemName: mode.image)
-                              
-                                .foregroundStyle(iconColor)
-                                .frame(minWidth: 0, maxWidth: .infinity)
-                              //  .padding()
+                            .frame(maxHeight: 30)
+                            
                         }
-                    }
-                }.frame(height: 30)
-                
-                
-            } .frame(maxHeight: 30)
-                
-        }
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+                        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
 }

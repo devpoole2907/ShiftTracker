@@ -12,6 +12,16 @@ public enum Field: Hashable {
     case field1, field2, field3
 }
 
+public enum SegmentedContentType {
+    case image(String)
+    case text(String)
+}
+
+protocol SegmentedItem: Hashable {
+    var contentType: SegmentedContentType { get }
+}
+
+
 public enum StatsMode: Int, CaseIterable {
     case earnings
     case hours
@@ -112,8 +122,32 @@ public enum HistoryRange: Int, CaseIterable {
         }
     }
     
+    var initial: String {
+        switch self {
+        case .week:
+            return "W"
+        case .month:
+            return "M"
+        case .year:
+            return "Y"
+        }
+    }
+    
     
 }
+
+extension StatsMode: SegmentedItem {
+    var contentType: SegmentedContentType {
+        .image(image) 
+    }
+}
+
+extension HistoryRange: SegmentedItem {
+    var contentType: SegmentedContentType {
+        .text(initial)
+    }
+}
+
 
 
 
