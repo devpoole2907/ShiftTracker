@@ -133,6 +133,10 @@
 		7C2A18F52AA038CF00518789 /* WidgetStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A18F42AA038CF00518789 /* WidgetStatsView.swift */; };
 		7C2A18F62AA0395100518789 /* WidgetStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A18F42AA038CF00518789 /* WidgetStatsView.swift */; };
 		7C2A18F72AA0395500518789 /* WidgetStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2A18F42AA038CF00518789 /* WidgetStatsView.swift */; };
+		7C2C2F852AA6CB0A0074E32E /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2C2F842AA6CB0A0074E32E /* SettingsViewModel.swift */; };
+		7C2C2F872AA6CD580074E32E /* SettingsCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2C2F862AA6CD580074E32E /* SettingsCheckView.swift */; };
+		7C2C2F892AA6CD710074E32E /* AppearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2C2F882AA6CD710074E32E /* AppearanceView.swift */; };
+		7C2C2F8B2AA6CD9D0074E32E /* SettingsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2C2F8A2AA6CD9D0074E32E /* SettingsRow.swift */; };
 		7C4D82D52A8A183B006D54F9 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7C4D82D62A8A183B006D54F9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C4D82D92A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D82D82A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift */; };
@@ -377,6 +381,10 @@
 		7C2A18E72AA0278A00518789 /* NavigationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationState.swift; sourceTree = "<group>"; };
 		7C2A18EA2AA027C400518789 /* GlassModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassModifier.swift; sourceTree = "<group>"; };
 		7C2A18F42AA038CF00518789 /* WidgetStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetStatsView.swift; sourceTree = "<group>"; };
+		7C2C2F842AA6CB0A0074E32E /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		7C2C2F862AA6CD580074E32E /* SettingsCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCheckView.swift; sourceTree = "<group>"; };
+		7C2C2F882AA6CD710074E32E /* AppearanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceView.swift; sourceTree = "<group>"; };
+		7C2C2F8A2AA6CD9D0074E32E /* SettingsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRow.swift; sourceTree = "<group>"; };
 		7C4D82D42A8A183B006D54F9 /* UpcomingShiftWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UpcomingShiftWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C4D82D82A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftWidgetBundle.swift; sourceTree = "<group>"; };
 		7C4D82DA2A8A183B006D54F9 /* UpcomingShiftWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftWidget.swift; sourceTree = "<group>"; };
@@ -785,6 +793,9 @@
 				BF8191402A5A70E70079E449 /* ThemeViews */,
 				1A22EFFE29C6559100A23F33 /* SettingsView.swift */,
 				BFB683562A7255A100A2A54B /* PurchaseSuccessView.swift */,
+				7C2C2F862AA6CD580074E32E /* SettingsCheckView.swift */,
+				7C2C2F882AA6CD710074E32E /* AppearanceView.swift */,
+				7C2C2F8A2AA6CD9D0074E32E /* SettingsRow.swift */,
 			);
 			path = SettingsViews;
 			sourceTree = "<group>";
@@ -816,6 +827,7 @@
 				7CAB87192A59762D00A08219 /* SchedulingViewModel.swift */,
 				7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */,
 				7C2A18E72AA0278A00518789 /* NavigationState.swift */,
+				7C2C2F842AA6CB0A0074E32E /* SettingsViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -1253,6 +1265,7 @@
 				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
 				1A13F18A29CE56CD009BE6B0 /* Location.swift in Sources */,
 				1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */,
+				7C2C2F8B2AA6CD9D0074E32E /* SettingsRow.swift in Sources */,
 				7C2A18E82AA0278A00518789 /* NavigationState.swift in Sources */,
 				1A1914192A15D43B000D0F8B /* UpcomingShiftView.swift in Sources */,
 				1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */,
@@ -1290,6 +1303,7 @@
 				BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */,
 				1A13F19529D02914009BE6B0 /* ProView.swift in Sources */,
 				7C2A18E22AA026FA00518789 /* NotificationManager.swift in Sources */,
+				7C2C2F852AA6CB0A0074E32E /* SettingsViewModel.swift in Sources */,
 				7CD8A3282A8831B80011A1C0 /* TagSortView.swift in Sources */,
 				1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
 				1A4E611229C84DF2008AC8ED /* TipView.swift in Sources */,
@@ -1299,6 +1313,7 @@
 				7CD8A32A2A8831D20011A1C0 /* SortSelectionView.swift in Sources */,
 				7C2A18E62AA0275A00518789 /* AddressManager.swift in Sources */,
 				1A83C61A2A5794F90054E3B1 /* BreakTimerView.swift in Sources */,
+				7C2C2F872AA6CD580074E32E /* SettingsCheckView.swift in Sources */,
 				7CAB87162A5878C900A08219 /* ShiftStore.swift in Sources */,
 				1A1914212A185281000D0F8B /* ShiftManager.swift in Sources */,
 				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,
@@ -1312,6 +1327,7 @@
 				1AB7D6AD29FC097700326AAA /* CustomIndicatorView.swift in Sources */,
 				1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */,
 				1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */,
+				7C2C2F892AA6CD710074E32E /* AppearanceView.swift in Sources */,
 				1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */,
 				7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */,

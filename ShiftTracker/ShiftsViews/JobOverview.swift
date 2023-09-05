@@ -322,7 +322,7 @@ struct JobOverview: View {
             }
             
    
-                loadShiftData()
+              //  loadShiftData()
                 print("on appear called")
             
             
@@ -332,7 +332,7 @@ struct JobOverview: View {
   
         .onReceive(shiftManager.$shiftAdded) { _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                loadShiftData()
+              //  loadShiftData()
                 print("shift recieved called")
             }
         }
@@ -340,7 +340,7 @@ struct JobOverview: View {
         .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                 
-                loadShiftData()
+              //  loadShiftData()
                 print("selected job called")
             }
         }

@@ -163,6 +163,7 @@ struct MainWithSideBarView: View {
                             SettingsView(navPath: $settingsPath)
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(navigationState)
+                                .environmentObject(SettingsViewModel.shared)
                                 .navigationBarTitleDisplayMode(.inline)
                             
                                 .tag(Tab.settings)

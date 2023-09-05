@@ -71,14 +71,6 @@ struct UpcomingShiftWidgetEntryView : View {
     }()
     
     var body: some View {
-        /*   VStack {
-         Text("Time:")
-         
-         
-         Text(shift.startDate ?? Date(), style: .timer)
-         Text(shift.startDate ?? Date(), style: .date)
-         } */
-        
         
         
         if let upcomingShift = entry.upcomingShift{

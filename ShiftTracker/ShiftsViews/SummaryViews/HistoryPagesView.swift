@@ -110,6 +110,17 @@ struct HistoryPagesView: View {
         
     }
     
+    var barWidth: MarkDimension {
+        switch historyRange {
+        case .week:
+            return 25
+        case .month:
+            return 25
+        case .year:
+            return 15
+        }
+    }
+    
     func getGroupingKey(for shift: OldShift) -> Date {
         let components: Set<Calendar.Component>
         switch historyRange {
@@ -134,6 +145,8 @@ struct HistoryPagesView: View {
         let groupedShifts = Dictionary(grouping: shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })) { shift in
             getGroupingKey(for: shift)
         }.sorted { $0.key < $1.key }
+        
+       
 
         
         ZStack(alignment: .bottomLeading){
@@ -175,19 +188,20 @@ struct HistoryPagesView: View {
                                         }
                                         Spacer()
                                     }.padding(.top, 5)
-                                    // .padding(.leading)
                                     
                                     Chart {
                                         
                                         ForEach(groupedShifts[index].value, id: \.self) { shift in
                                             
+                                            
                                             BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
                                                     y: .value(shiftManager.statsMode.description, shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
                                                               
-                                                             )
+                                                             ), width: barWidth
                                             )
                                             .foregroundStyle(shiftManager.statsMode.gradient)
                                             .cornerRadius(shiftManager.statsMode.cornerRadius)
+                                            
                                             
                                         }
                                         
@@ -199,15 +213,15 @@ struct HistoryPagesView: View {
                                             
                                             if historyRange == .month {
                                                 
-                                                AxisMarks { value in
-                                                    
-                                                    
-                                                    
-                                                    
-                                                    if value.as(Date.self) != nil {
+                                                AxisMarks(values: .stride(by: .day, count: 6)) { value in
+                                                    if let date = value.as(Date.self) {
+                                                        
                                                         AxisValueLabel(format: .dateTime.day(), centered: true, collisionResolution: .disabled)
+                                                        
+                                                        
+                                                    } else {
+                                                        AxisValueLabel()
                                                     }
-                                                    
                                                     
                                                 }
                                                 
@@ -294,27 +308,26 @@ struct HistoryPagesView: View {
                                 .glassModifier(cornerRadius: 20)
                         
                             .padding()
-                           // .shadow(radius: 1)
+               
                         
                             Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 200 : 270)
                     }
                         
                         
-                    //}
+        
                 
             }
                 
             }.frame(height: UIScreen.main.bounds.height)
             
-        }//.background(Color(.secondarySystemGroupedBackground))
+        }
         
             PageControlView(currentPage: $selectedTab, numberOfPages: groupedShifts.count)
                 .frame(maxWidth: 175)
             
                 .padding()
               
-                           // .frame(maxWidth: 0, maxHeight: 0)
-                           // .padding(22)
+                     
             
            
     }
@@ -339,7 +352,6 @@ struct HistoryPagesView: View {
         
             
         }
-      //  .padding(.top, -10)
         
         
         
