@@ -29,6 +29,8 @@ struct HistoryPagesView: View {
     @State private var selectedTab: Int = 0 // To keep track of the selected tab
     let calendar = Calendar.current
     
+    @State private var chartSelection: Date?
+    
     @State private var selection = Set<NSManagedObjectID>()
     
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
@@ -110,12 +112,26 @@ struct HistoryPagesView: View {
         
     }
     
+    func chartSelectionComponent(date: Date?) -> DateComponents {
+        
+        switch historyRange {
+        case .week:
+            return calendar.dateComponents([.year, .month, .day], from: date ?? .distantPast)
+        case .month:
+            return calendar.dateComponents([.year, .month, .day], from: date ?? .distantPast)
+        case .year:
+            return calendar.dateComponents([.year, .month], from: date ?? .distantPast)
+        }
+        
+    }
+    
+    
     var barWidth: MarkDimension {
         switch historyRange {
         case .week:
             return 25
         case .month:
-            return 25
+            return 15
         case .year:
             return 15
         }
@@ -196,7 +212,7 @@ struct HistoryPagesView: View {
                                         }
                                         }){
                                             Image(systemName: "chevron.left").bold()
-                                                .foregroundStyle(.gray)
+                                          
                                                 .font(.title2)
                                         }
                                         
@@ -208,7 +224,7 @@ struct HistoryPagesView: View {
                                             }
                                         }){
                                             Image(systemName: "chevron.right").bold()
-                                                .foregroundStyle(.gray)
+                                      
                                                 .font(.title2)
                                         }
                                         
@@ -217,10 +233,59 @@ struct HistoryPagesView: View {
                                     }.padding(.horizontal)
                                     
                                 }.padding(.top, 5)
-                                
+                                    .opacity(chartSelection == nil ? 1.0 : 0.0)
                                 Chart {
                                     
+                                    
+                                    
+                                    
                                     ForEach(groupedShifts[index].value, id: \.self) { shift in
+                                        
+                                        
+                                        
+                                        if let chartSelection = chartSelection {
+                                            
+                                            let chartSelectionDateComponents = chartSelectionComponent(date: chartSelection)
+                                            let shiftStartDateComponents = chartSelectionComponent(date: shift.shiftStartDate)
+                                 
+                                            
+                                            
+                                            if chartSelectionDateComponents == shiftStartDateComponents {
+                                                
+                                                
+                                                if #available(iOS 17.0, *){
+                                                    RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
+                                                        .foregroundStyle(Color(.black))
+                                                    
+                                           
+                                                        .annotation(alignment: .top, overflowResolution: .init(x: .fit, y: .disabled)){
+                                                            
+                                                            
+                                                            ChartAnnotation(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: shiftManager.dateFormatter.string(from: shift.shiftStartDate ?? Date()))
+                                                            
+                                                            
+                                                            
+                                                            
+                                                        }
+                                                    
+                                                } else {
+                                                    RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
+                                                        .foregroundStyle(Color(.black))
+                                                    
+                                                    // overflowResolution: .init(x: .fit, y: .disabled)
+                                                        .annotation(alignment: .top){
+                                                            
+                                                            
+                                                            ChartAnnotation(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: shiftManager.dateFormatter.string(from: shift.shiftStartDate ?? Date()))
+                                                            
+                                                            
+                                                            
+                                                            
+                                                        }
+                                                }
+                                                
+                                            }
+                                        }
                                         
                                         
                                         BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
@@ -236,6 +301,8 @@ struct HistoryPagesView: View {
                                     
                                     
                                 } .chartXScale(domain: dateRange, type: .linear)
+                                
+                                    .customChartXSelectionModifier(selection: $chartSelection.animation(.default))
                                 
                                     .chartXAxis {
                                         
@@ -279,7 +346,7 @@ struct HistoryPagesView: View {
                                     .frame(minHeight: 200)
                                 
                                 
-                            } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                            } .padding(.horizontal)
                                 .tag(index)
                         }
                         
@@ -290,6 +357,7 @@ struct HistoryPagesView: View {
                     
                     
                 }.frame(minHeight: 300)
+                    .listRowInsets(.init(top: 20, leading: 0, bottom: 20, trailing: 0))
                     .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                        
                 

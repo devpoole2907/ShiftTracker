@@ -14,6 +14,7 @@ import MapKit
 import CoreData
 import Haptics
 import UserNotifications
+import Charts
 
 
 extension TimeInterval {
@@ -282,7 +283,29 @@ extension View {
     }
 }
 
+struct CustomChartXSelection: ViewModifier {
+    
+    @Binding var selection: Date?
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            
+            content.chartXSelection(value: $selection)
+            
+        } else {
+            content
+        }
+    }
+    
+    
+    
+}
 
+extension View {
+    func customChartXSelectionModifier(selection: Binding<Date?>) -> some View {
+        self.modifier(CustomChartXSelection(selection: selection))
+    }
+}
 
 
 
