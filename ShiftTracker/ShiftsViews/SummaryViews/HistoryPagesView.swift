@@ -24,84 +24,15 @@ struct HistoryPagesView: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
-    
-    @State private var historyRange: HistoryRange = .week
-    @State private var selectedTab: Int = 0 // To keep track of the selected tab
-    let calendar = Calendar.current
-    
-    @State private var chartSelection: Date?
-    
-    @State private var selection = Set<NSManagedObjectID>()
+    @StateObject var historyModel = HistoryViewModel()
     
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
     
-    func generateSampleShifts() -> [OldShift] {
-        var shifts: [OldShift] = []
-        let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -2, to: Date()) ?? Date()
-        
-        for i in 0..<64 {
-            let shift = OldShift(context: PersistenceController.preview.container.viewContext) // Assuming you have a PersistenceController.preview for preview purposes
-            shift.shiftStartDate = Calendar.current.date(byAdding: .day, value: i, to: oneMonthAgo)
-            shift.totalPay = Double(100 + (i * 5))
-            shifts.append(shift)
-        }
-        return shifts
-    }
-    
-    func getCurrentDateRangeString(historyRange: HistoryRange, for index: Int, groupedShifts: [(key: Date, value: [OldShift])]) -> String {
-        
-        let dateFormatter = DateFormatter()
-        
-        switch historyRange {
-        case .week:
-            guard groupedShifts.count > 0 else { return "" }
-            guard index < groupedShifts.count else { return "" }
-            let startDate = groupedShifts[index].key
-            let endDate = calendar.date(byAdding: .day, value: 6, to: startDate)!
-            dateFormatter.dateFormat = "MMM d"
-            let startDateString = dateFormatter.string(from: startDate)
-            dateFormatter.dateFormat = "d"
-            let endDateString = dateFormatter.string(from: endDate)
-            return "\(startDateString) - \(endDateString)"
-            
-        case .month:
-            guard index < groupedShifts.count else { return "" }
-            let startDate = groupedShifts[index].key
-            dateFormatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
-            return dateFormatter.string(from: startDate)
-            
-        case .year:
-            guard index < groupedShifts.count else { return "" }
-            let startDate = groupedShifts[index].key
-            dateFormatter.setLocalizedDateFormatFromTemplate("yyyy")
-            return dateFormatter.string(from: startDate)
-        }
-    }
-    
-    
-    func getDateRange(startDate: Date) -> ClosedRange<Date> {
-        
-        var endDate = Date()
-        
-        switch historyRange {
-            
-        case .week:
-            endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate)!
-        case .month:
-            endDate = Calendar.current.date(byAdding: .month, value: 1, to: startDate)!
-        case .year:
-            endDate = Calendar.current.date(byAdding: .year, value: 1, to: startDate)!
-        }
-        
-        
-        
-        return startDate...endDate
-    }
     
     var chartUnit: Calendar.Component {
         
-        switch historyRange {
+        switch historyModel.historyRange {
         case .week:
             return .weekday
         case .month:
@@ -112,22 +43,27 @@ struct HistoryPagesView: View {
         
     }
     
-    func chartSelectionComponent(date: Date?) -> DateComponents {
-        
-        switch historyRange {
+
+    
+    var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+
+        switch historyModel.historyRange {
         case .week:
-            return calendar.dateComponents([.year, .month, .day], from: date ?? .distantPast)
+            formatter.dateFormat = "EEE"
         case .month:
-            return calendar.dateComponents([.year, .month, .day], from: date ?? .distantPast)
+            formatter.dateFormat = "dd/M"
         case .year:
-            return calendar.dateComponents([.year, .month], from: date ?? .distantPast)
+            formatter.dateFormat = "MM/yy" 
         }
-        
+
+        return formatter
     }
+
     
     
     var barWidth: MarkDimension {
-        switch historyRange {
+        switch historyModel.historyRange {
         case .week:
             return 25
         case .month:
@@ -137,18 +73,7 @@ struct HistoryPagesView: View {
         }
     }
     
-    func getGroupingKey(for shift: OldShift) -> Date {
-        let components: Set<Calendar.Component>
-        switch historyRange {
-        case .week:
-            components = [.yearForWeekOfYear, .weekOfYear]
-        case .month:
-            components = [.year, .month]
-        case .year:
-            components = [.year]
-        }
-        return calendar.startOfDay(for: calendar.date(from: calendar.dateComponents(components, from: shift.shiftStartDate!))!)
-    }
+
     
     
     
@@ -159,7 +84,7 @@ struct HistoryPagesView: View {
         
         
         let groupedShifts = Dictionary(grouping: shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })) { shift in
-            getGroupingKey(for: shift)
+            historyModel.getGroupingKey(for: shift)
         }.sorted { $0.key < $1.key }
         
         
@@ -168,15 +93,15 @@ struct HistoryPagesView: View {
         ZStack(alignment: .bottomLeading){
             
             
-            List(selection: $selection) {
+            List(selection: $historyModel.selection) {
                 
                 Section {
                     
-                    TabView(selection: $selectedTab.animation(.default)) {
+                    TabView(selection: $historyModel.selectedTab.animation(.default)) {
                         
                         ForEach(groupedShifts.indices, id: \.self) { index in
                             let startDate = groupedShifts[index].key
-                            let dateRange = getDateRange(startDate: startDate)
+                            let dateRange = historyModel.getDateRange(startDate: startDate)
                             let totalEarnings = groupedShifts[index].value.reduce(0) { $0 + $1.totalPay }
                             let totalHours = groupedShifts[index].value.reduce(0) { $0 + ($1.duration / 3600.0) }
                             let totalBreaks = groupedShifts[index].value.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
@@ -205,11 +130,7 @@ struct HistoryPagesView: View {
                                     HStack(spacing: 20) {
                                         
                                         Button(action: {
-                                            if selectedTab != 0 {
-                                            withAnimation{
-                                                selectedTab = selectedTab - 1
-                                            }
-                                        }
+                                            historyModel.backButtonAction()
                                         }){
                                             Image(systemName: "chevron.left").bold()
                                           
@@ -217,11 +138,7 @@ struct HistoryPagesView: View {
                                         }
                                         
                                         Button(action: {
-                                            if selectedTab != groupedShifts.count - 1 {
-                                                withAnimation {
-                                                    selectedTab = selectedTab + 1
-                                                }
-                                            }
+                                            historyModel.forwardButtonAction(groupedShifts: groupedShifts)
                                         }){
                                             Image(systemName: "chevron.right").bold()
                                       
@@ -233,7 +150,7 @@ struct HistoryPagesView: View {
                                     }.padding(.horizontal)
                                     
                                 }.padding(.top, 5)
-                                    .opacity(chartSelection == nil ? 1.0 : 0.0)
+                                    .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
                                 Chart {
                                     
                                     
@@ -243,10 +160,10 @@ struct HistoryPagesView: View {
                                         
                                         
                                         
-                                        if let chartSelection = chartSelection {
+                                        if let chartSelection = historyModel.chartSelection {
                                             
-                                            let chartSelectionDateComponents = chartSelectionComponent(date: chartSelection)
-                                            let shiftStartDateComponents = chartSelectionComponent(date: shift.shiftStartDate)
+                                            let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
+                                            let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
                                  
                                             
                                             
@@ -261,7 +178,7 @@ struct HistoryPagesView: View {
                                                         .annotation(alignment: .top, overflowResolution: .init(x: .fit, y: .disabled)){
                                                             
                                                             
-                                                            ChartAnnotation(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: shiftManager.dateFormatter.string(from: shift.shiftStartDate ?? Date()))
+                                                            ChartAnnotationView(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
                                                             
                                                             
                                                             
@@ -276,7 +193,7 @@ struct HistoryPagesView: View {
                                                         .annotation(alignment: .top){
                                                             
                                                             
-                                                            ChartAnnotation(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: shiftManager.dateFormatter.string(from: shift.shiftStartDate ?? Date()))
+                                                            ChartAnnotationView(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
                                                             
                                                             
                                                             
@@ -302,12 +219,12 @@ struct HistoryPagesView: View {
                                     
                                 } .chartXScale(domain: dateRange, type: .linear)
                                 
-                                    .customChartXSelectionModifier(selection: $chartSelection.animation(.default))
+                                    .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
                                 
                                     .chartXAxis {
                                         
                                         
-                                        if historyRange == .month {
+                                        if historyModel.historyRange == .month {
                                             
                                             AxisMarks(values: .stride(by: .day, count: 6)) { value in
                                                 if let date = value.as(Date.self) {
@@ -322,10 +239,10 @@ struct HistoryPagesView: View {
                                             }
                                             
                                         } else {
-                                            AxisMarks(values: .stride(by: historyRange == .week ? .day : .month, count: 1)) { value in
+                                            AxisMarks(values: .stride(by: historyModel.historyRange == .week ? .day : .month, count: 1)) { value in
                                                 if let date = value.as(Date.self) {
                                                     
-                                                    if historyRange == .week {
+                                                    if historyModel.historyRange == .week {
                                                         AxisValueLabel(shiftManager.dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
                                                         
                                                     } else {
@@ -352,7 +269,7 @@ struct HistoryPagesView: View {
                         
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
-                    .haptics(onChangeOf: selectedTab, type: .light)
+                    .haptics(onChangeOf: historyModel.selectedTab, type: .light)
                     
                     
                     
@@ -362,8 +279,8 @@ struct HistoryPagesView: View {
                        
                 
                 Section {
-                    if selectedTab >= 0 && selectedTab < groupedShifts.count {
-                        ForEach(groupedShifts[selectedTab].value, id: \.objectID) { shift in
+                    if historyModel.selectedTab >= 0 && historyModel.selectedTab < groupedShifts.count {
+                        ForEach(groupedShifts[historyModel.selectedTab].value, id: \.objectID) { shift in
                             NavigationLink(value: shift) {
                                 ShiftDetailRow(shift: shift)
                             }
@@ -379,7 +296,7 @@ struct HistoryPagesView: View {
                             }
                             
                         }.transition(.slide)
-                            .animation(.easeInOut, value: selectedTab)
+                            .animation(.easeInOut, value: historyModel.selectedTab)
                     }
                 }
                 .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
@@ -404,7 +321,7 @@ struct HistoryPagesView: View {
             
             
                 
-                PageControlView(currentPage: $selectedTab, numberOfPages: groupedShifts.count)
+            PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: groupedShifts.count)
                     .frame(maxWidth: 175)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                 
@@ -428,8 +345,8 @@ struct HistoryPagesView: View {
                         }) {
                             Image(systemName: "trash")
                                 .bold()
-                                .foregroundStyle(selection.isEmpty ? .gray.opacity(0.5) : .red.opacity(1.0))
-                        }.disabled(selection.isEmpty)
+                                .foregroundStyle(historyModel.selection.isEmpty ? .gray.opacity(0.5) : .red.opacity(1.0))
+                        }.disabled(historyModel.selection.isEmpty)
                         
                         
                         
@@ -441,7 +358,7 @@ struct HistoryPagesView: View {
                     
                       //  .padding()
                     
-                    CustomSegmentedPicker(selection: $historyRange, items: HistoryRange.allCases)
+                CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
 
                        
                     
@@ -453,9 +370,9 @@ struct HistoryPagesView: View {
                       
                   
                     
-                        .onChange(of: historyRange) { _ in
+                        .onChange(of: historyModel.historyRange) { _ in
                             withAnimation{
-                                selectedTab = groupedShifts.count - 1
+                                historyModel.selectedTab = groupedShifts.count - 1
                             }
                         }
                     
@@ -475,7 +392,7 @@ struct HistoryPagesView: View {
             
             
             if shiftManager.showModePicker == true {
-                selectedTab = groupedShifts.count - 1
+                historyModel.selectedTab = groupedShifts.count - 1
             }
             
             withAnimation {
@@ -495,7 +412,7 @@ struct HistoryPagesView: View {
         
         
         
-        .navigationTitle(getCurrentDateRangeString(historyRange: historyRange, for: selectedTab, groupedShifts: groupedShifts))
+        .navigationTitle(historyModel.getCurrentDateRangeString(groupedShifts: groupedShifts))
         
 
         
@@ -505,14 +422,14 @@ struct HistoryPagesView: View {
     
     private func deleteItems() {
         withAnimation {
-            selection.forEach { objectID in
+            historyModel.selection.forEach { objectID in
                 let itemToDelete = viewContext.object(with: objectID)
                 viewContext.delete(itemToDelete)
             }
             
             do {
                 try viewContext.save()
-                selection.removeAll()
+                historyModel.selection.removeAll()
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")

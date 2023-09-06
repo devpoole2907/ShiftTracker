@@ -122,12 +122,7 @@ struct ChartSquare: View {
                         }
                        // Spacer(minLength: 55)
                     }
-                 /*   .onTapGesture {
-                        withAnimation{
-                            isChartViewPrimary.toggle()
-                        }
-                    }
-                    */
+
                     Spacer()
                 
                                    
@@ -178,13 +173,13 @@ struct ChartSquare: View {
                                     .annotation(position: .top){
                                         if shiftManager.statsMode == .earnings {
                                             
-                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
+                                            ChartAnnotationView(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
                                         } else if shiftManager.statsMode == .hours {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
+                                            ChartAnnotationView(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
                                         } else {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
+                                            ChartAnnotationView(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
                                                 .opacity(showSelectionBar ? 1.0 : 0.0)
                                         }
                                         
@@ -216,26 +211,7 @@ struct ChartSquare: View {
                         
                         ForEach(shiftManager.monthlyShifts) { shift in
                             
-                            if let currentActiveShift, currentActiveShift.id == shift.id{
-                       
-                                RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .day))
-                                    .foregroundStyle(Color(.systemGray6))
-                                    .annotation(position: .top){
-                                        if shiftManager.statsMode == .earnings {
-                                            
-                                            ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else if shiftManager.statsMode == .hours {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        } else {
-                                            ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
-                                                .opacity(showSelectionBar ? 1.0 : 0.0)
-                                        }
-                                        
-                                    }
-                                
-                            }
+                     
                             
                             
                             
@@ -262,26 +238,7 @@ struct ChartSquare: View {
                     case .year:
                         
                         ForEach(shiftManager.yearlyShifts) { shift in
-                        if let currentActiveShift, currentActiveShift.id == shift.id{
-                 
-                            RuleMark(x: .value("Day", currentActiveShift.shiftStartDate, unit: .month))
-                                .foregroundStyle(Color(.systemGray6))
-                                .annotation(position: .top){
-                                    if shiftManager.statsMode == .earnings {
-                                        
-                                        ChartAnnotation(value: "$\(String(format: "%.2f", currentActiveShift.totalPay))", date: currentActiveShift.date)
-                                            .opacity(showSelectionBar ? 1.0 : 0.0)
-                                    } else if shiftManager.statsMode == .hours {
-                                        ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.hoursCount))h", date: currentActiveShift.date)
-                                            .opacity(showSelectionBar ? 1.0 : 0.0)
-                                    } else {
-                                        ChartAnnotation(value: "\(String(format: "%.2f", currentActiveShift.breakDuration))h", date: currentActiveShift.date)
-                                            .opacity(showSelectionBar ? 1.0 : 0.0)
-                                    }
-                                    
-                                }
-                            
-                        }
+             
                         
                         
                         
@@ -519,41 +476,4 @@ struct ChartSquare: View {
 }
 
 
-struct ChartAnnotation: View {
-    
-     var value: String
-     var date: String
-    
-    var body: some View{
-        HStack{
-        VStack(alignment: .leading){
-            
-            Text("TOTAL")
-                .font(.footnote)
-                .bold()
-                .foregroundStyle(.gray)
-                .fontDesign(.rounded)
-            
-            Text(value)
-                .font(.title)
-                .bold()
-            
-            Text(date)
-                .font(.headline)
-                .bold()
-                .foregroundColor(.gray)
-                .fontDesign(.rounded)
-        
-                
-           
-        }.padding(.leading, 8)
-                .padding(.trailing)
-        Spacer()
-        }
-            .padding(.vertical, 4)
-            .background(Color(.systemGray6))
-            .cornerRadius(6)
-        
-        
-    }
-}
+
