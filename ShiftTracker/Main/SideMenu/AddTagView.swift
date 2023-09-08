@@ -50,15 +50,18 @@ struct AddTagView: View {
                         ForEach(tags, id: \.self) { tag in
                             Button(action: {
                                 if selectedTag == tag {
-                                    selectedTag = nil
-                                    tagName = ""
-                          
-                                    
+                                    withAnimation {
+                                        selectedTag = nil
+                                        tagName = ""
+                                        
+                                    }
                                     
                                 } else {
-                                    selectedTag = tag
-                                    tagName = tag.name ?? ""
-                                    tagColor = Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue)
+                                    withAnimation {
+                                        selectedTag = tag
+                                        tagName = tag.name ?? ""
+                                        tagColor = Color(red: tag.colorRed, green: tag.colorGreen, blue: tag.colorBlue)
+                                    }
                                 }
                             }) {
                                 Text("#\(tag.name ?? "")")
@@ -76,7 +79,7 @@ struct AddTagView: View {
                     
                     .haptics(onChangeOf: selectedTag, type: .soft)
              
-                    
+                    .scaleEffect(buttonScale)
                     
                     
                     
@@ -113,34 +116,29 @@ struct AddTagView: View {
             HStack{
                 
                 if let selectedTag = selectedTag {
-                    Button(action: {
-                        
-                        deleteTag(selectedTag)
-                        clearSelection()
-                        hideKeyboard()
-                        
-                    }) {
-                        
-                        
-                        HStack{
-                            Image(systemName: "trash")
-                            Text("Delete")
-                                .bold()
-                        } .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(!selectedTag.editable ? .gray : .red)
-                        
-                            .foregroundColor(.white)
-                            .cornerRadius(20)
-                            .opacity(!selectedTag.editable ? 0.5 : 1.0)
-                    }.listRowSeparator(.hidden)
                     
-                        .disabled(!selectedTag.editable)
+                    ActionButtonView(title: "Delete", backgroundColor: colorScheme == .dark ? .white : .black, textColor: !selectedTag.editable ? .gray : .red, icon: "trash.fill", buttonWidth: .infinity, action: {
+                        withAnimation {
+                            deleteTag(selectedTag)
+                            clearSelection()
+                            hideKeyboard()
+                        }
+                        
+                    })   .disabled(!selectedTag.editable)
+                        .opacity(!selectedTag.editable ? 0.5 : 1.0)
+                  
+                    
                        
                 }
+                 
+                    
+                    
+                    
+                    
                 
                 
-                Button(action: {
+                
+                ActionButtonView(title: buttonTitle, backgroundColor: colorScheme == .dark ? .white : .black, textColor: colorScheme == .dark ? .white : .black, icon: "tag.fill", buttonWidth: .infinity, action: {
                     
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6, blendDuration: 0.5)) {
                             buttonScale = 1.2
@@ -151,14 +149,17 @@ struct AddTagView: View {
                     if tagName != "" && tagName.count <= 8 && !isTagNameDuplicate() { // prevents empty tags & long names, duplicate names
                    
                         if let selectedTag = selectedTag {
-                            
-                            updateTag(selectedTag)
-                            tagAdded.toggle()
-                            clearSelection()
+                            withAnimation {
+                                updateTag(selectedTag)
+                                tagAdded.toggle()
+                                clearSelection()
+                            }
                         } else {
-                            addTag()
-                            tagAdded.toggle()
-                            clearSelection()
+                            withAnimation {
+                                addTag()
+                                tagAdded.toggle()
+                                clearSelection()
+                            }
                         }
                         
                         
@@ -180,22 +181,7 @@ struct AddTagView: View {
                         }
                     
                     
-                }) {
-                    Text(buttonTitle)
-                        .bold()
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(colorScheme == .dark ? .white : .black)
-                        .foregroundColor(colorScheme == .dark ? .black : .white)
-                        .cornerRadius(20)
-                        .contentShape(Rectangle())
-                }.listRowSeparator(.hidden)
-                    
-                    
-                    
-                    .scaleEffect(buttonScale)
-                    .buttonStyle(.plain)
-                    
+                }).buttonStyle(.plain)
                     .haptics(onChangeOf: tagAdded, type: .success)
                     .haptics(onChangeOf: tagShakeTimes, type: .error)
                 

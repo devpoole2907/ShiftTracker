@@ -60,8 +60,7 @@ struct BreakInputView: View {
                 
             }.padding(.horizontal)
                 .padding(.vertical, 10)
-                .background(.thinMaterial .opacity(0.5),in:
-                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .glassModifier(cornerRadius: 20)
             
             
             

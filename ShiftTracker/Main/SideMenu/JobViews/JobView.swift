@@ -521,10 +521,11 @@ struct JobView: View {
                         case .symbolSheet:
                             JobIconPicker(selectedIcon: $selectedIcon, iconColor: selectedColor)
                                 .environment(\.managedObjectContext, viewContext)
-                                .presentationDetents([ .medium, .large])
+                                .presentationDetents([ .medium, .fraction(0.7)])
                                 .presentationDragIndicator(.visible)
                                 .presentationBackground(.ultraThinMaterial)
                                 .presentationCornerRadius(35)
+                                .presentationBackgroundInteraction(.enabled)
                             
                             
                         }
@@ -775,7 +776,9 @@ struct JobIconPicker: View {
                 LazyVGrid(columns: Array(repeating: GridItem(.adaptive(minimum: 50)), count: 4), spacing: 50) {
                     ForEach(jobIcons, id: \.self) { icon in
                         Button(action: {
-                            selectedIcon = icon
+               
+                                selectedIcon = icon
+                            
                             dismiss()
                         }) {
                             VStack {

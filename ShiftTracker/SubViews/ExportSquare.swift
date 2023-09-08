@@ -63,13 +63,12 @@ struct ExportSquare: View {
                         
                     }
                     .bold()
-                    .foregroundStyle(colorScheme == .dark ? .black : .white)
+                   // .foregroundStyle(colorScheme == .dark ? .black : .white)
                     .font(.subheadline)
                 }
                 .padding(.horizontal, 26)
                     .padding(.vertical, 10)
-                .background(colorScheme == .dark ? .white : .black)
-                    .cornerRadius(16)
+                    .glassModifier(cornerRadius: 12, applyPadding: false)
                     .contentShape(Rectangle())
             }
             .frame(maxWidth: .infinity)

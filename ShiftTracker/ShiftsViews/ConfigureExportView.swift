@@ -20,30 +20,47 @@ struct ConfigureExportView: View {
     var body: some View {
         
         let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
-        let textColor: Color = colorScheme == .dark ? .black : .white
+        let textColor: Color = colorScheme == .dark ? .white : .black
         
         NavigationStack {
-            List{
-                Section(header: Text("Include Columns").bold().textCase(nil).fontDesign(.rounded)) {
+            
+            ZStack(alignment: .bottom) {
+            ScrollView{
+                VStack(alignment: .leading) {
+                    
+                    Text("Include Columns").bold().textCase(nil).fontDesign(.rounded).padding(.leading)
+                    
                     ForEach(viewModel.selectedColumns.indices, id: \.self) { index in
                         Toggle(viewModel.selectedColumns[index].title, isOn: $viewModel.selectedColumns[index].isSelected).toggleStyle(CustomToggleStyle())
                             .bold()
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color("SquaresColor"))
-                }
+                    }
+                        .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .glassModifier(cornerRadius: 20)
+            
                 
-                Section {
-                    Picker("Date Range", selection: $viewModel.selectedDateRange) {
-                        ForEach(ExportViewModel.DateRange.allCases, id: \.self) { range in
-                            Text(range.title).tag(range)
-                        }
-                    }.bold()
-                    .listRowSeparator(.hidden)
-                        .listRowBackground(Color("SquaresColor"))
-                }.listRowSeparator(.hidden)
-                    .listRowBackground(Color("SquaresColor"))
+            
+                    HStack {
+                        Text("Date Range").bold()
+                        Spacer()
+                        Picker("Date Range", selection: $viewModel.selectedDateRange) {
+                            ForEach(ExportViewModel.DateRange.allCases, id: \.self) { range in
+                                Text(range.title).tag(range)
+                            }
+                        }.bold()
+                            .pickerStyle(.menu)
+                    }
+                        .padding(.horizontal)
+                        .padding(.vertical, 7)
+                        .glassModifier(cornerRadius: 20)
+                    
                 
                 
+                }.padding(.horizontal)
+            
+                
+            }.scrollContentBackground(.hidden)
+            
                 ActionButtonView(title: "Export", backgroundColor: buttonColor, textColor: textColor, icon: "square.and.arrow.up.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
                     
                     dismiss()
@@ -53,11 +70,12 @@ struct ConfigureExportView: View {
                     }
                     
                     
-                }.listRowSeparator(.hidden)
-                    .listRowBackground(Color("SquaresColor"))
-                
-            } //.scrollContentBackground(.hidden)
+                }
+            
+        }
+            
                 .navigationTitle("Export")
+                .navigationBarTitleDisplayMode(.inline)
             
             
                 .toolbar{
