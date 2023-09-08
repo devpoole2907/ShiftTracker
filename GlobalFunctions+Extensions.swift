@@ -307,6 +307,44 @@ extension View {
     }
 }
 
+struct CustomChartOverlayModifier<V: View>: ViewModifier {
+    
+    // this overlay enabled is somewhat redudant now that we've discovered we can't use the gestures with tab view.
+    
+    @Binding var overlayEnabled: Bool
+    let overlayContent: (ChartProxy) -> V
+    
+    func body(content: Content) -> some View {
+        
+        if #available(iOS 17.0, *) {
+            // do nothing, use built-in modifier .chartXselection
+            
+            content
+            
+        } else {
+            
+            if overlayEnabled {
+                content.chartOverlay(content: overlayContent)
+            } else {
+                content
+            }
+            
+        }
+    }
+    
+    
+}
+
+extension View {
+    
+    func conditionalChartOverlay<V: View>(overlayEnabled: Binding<Bool>, content: @escaping (ChartProxy) -> V) -> some View {
+        
+        self.modifier(CustomChartOverlayModifier(overlayEnabled: overlayEnabled, overlayContent: content))
+        
+    }
+    
+}
+
 
 
 

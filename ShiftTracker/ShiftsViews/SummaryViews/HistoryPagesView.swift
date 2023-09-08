@@ -75,7 +75,10 @@ struct HistoryPagesView: View {
     
 
     
-    
+    @State private var isLongPressDetected: Bool = false
+
+
+    @State private var isOverlayEnabled: Bool = true
     
     
     
@@ -88,8 +91,7 @@ struct HistoryPagesView: View {
         }.sorted { $0.key < $1.key }
         
         
-        
-        ZStack(alignment: .bottomTrailing){
+       ZStack(alignment: .bottomTrailing){
         ZStack(alignment: .bottomLeading){
             
             
@@ -164,11 +166,12 @@ struct HistoryPagesView: View {
                                             
                                             let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
                                             let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
-                                 
+                                            
                                             
                                             
                                             if chartSelectionDateComponents == shiftStartDateComponents {
                                                 
+                                          
                                                 
                                                 if #available(iOS 17.0, *){
                                                     RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
@@ -188,8 +191,6 @@ struct HistoryPagesView: View {
                                                 } else {
                                                     RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
                                                         .foregroundStyle(Color(.black))
-                                                    
-                                                    // overflowResolution: .init(x: .fit, y: .disabled)
                                                         .annotation(alignment: .top){
                                                             
                                                             
@@ -198,7 +199,7 @@ struct HistoryPagesView: View {
                                                             
                                                             
                                                             
-                                                        }
+                                                       }
                                                 }
                                                 
                                             }
@@ -217,7 +218,11 @@ struct HistoryPagesView: View {
                                     }
                                     
                                     
-                                } .chartXScale(domain: dateRange, type: .linear)
+                                }
+                                
+                                
+                                
+                                .chartXScale(domain: dateRange, type: .linear)
                                 
                                     .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
                                 
@@ -258,6 +263,46 @@ struct HistoryPagesView: View {
                                         }
                                     }
                                 
+                                   
+                                
+                                    .conditionalChartOverlay(overlayEnabled: $isOverlayEnabled)  { proxy in
+                                            GeometryReader { innerProxy in
+                                                
+                                                Rectangle()
+                                                    .fill(.clear).contentShape(Rectangle())
+                                                    .gesture(
+                                                        DragGesture()
+                                                            .onChanged{ value in
+                                                                
+                                                                
+                                                                
+                                                                let location = value.location
+                                                                
+                                                                if let date: Date = proxy.value(atX: location.x){
+                                                                    let calendar = Calendar.current
+                                                                    print("date is \(date)")
+                                                                    
+                                                                    historyModel.chartSelection = date
+                                                                }
+                                                                
+                                                                
+                                                            } .onEnded{ value in
+                                                                
+                                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                                                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                                                        
+                                                                        
+                                                                        historyModel.chartSelection = nil
+                                                                        
+                                                                    }
+                                                                }
+                                                            }
+                                                    )
+                                                
+                                            }
+                                        
+                                    }
+                                
                                     .padding(.vertical)
                                 
                                     .frame(minHeight: 200)
@@ -265,6 +310,9 @@ struct HistoryPagesView: View {
                                 
                             } .padding(.horizontal)
                                 .tag(index)
+                            
+                     
+                            
                         }
                         
                     }
@@ -408,7 +456,7 @@ struct HistoryPagesView: View {
             
             
         }
-        
+         
         
         
         
