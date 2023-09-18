@@ -111,13 +111,13 @@ struct JobOverview: View {
                                         
                                         isWithinLastWeek(date: shift.shiftStartDate!)
                                         
-                                    }) // only want to show this week
+                                    })
                                        .environmentObject(shiftManager)
                                      
                                 }
                     
                                     
-                                    ExportSquare(action: {
+                                ExportSquare(totalShifts: thisJobShifts.count, action: {
                                         activeSheet = .configureExportSheet
                                     })
                                     .environmentObject(shiftManager)
@@ -333,30 +333,9 @@ struct JobOverview: View {
                 shiftManager.showModePicker = true
             }
             
-   
-              //  loadShiftData()
-                print("on appear called")
-            
-            
         }
             
-            
-  
-        .onReceive(shiftManager.$shiftAdded) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-              //  loadShiftData()
-                print("shift recieved called")
-            }
-        }
-            
-        .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                
-              //  loadShiftData()
-                print("selected job called")
-            }
-        }
-            
+
             
             
 
@@ -387,49 +366,10 @@ struct JobOverview: View {
         
     }
     
-    private func loadShiftData() {
-        
-        if let selectedJob = jobSelectionViewModel.selectedJobUUID {
-            shifts.nsPredicate = NSPredicate(format: "job.uuid == %@", selectedJob as CVarArg)
-        } else {
-            shifts.nsPredicate = nil
-        }
-        
-        let weeklyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .week)
-        shiftManager.recentShifts = weeklyShifts
-        shiftManager.weeklyTotalPay = shiftManager.getTotalPay(from: weeklyShifts)
-        shiftManager.weeklyTotalHours = shiftManager.getTotalHours(from: weeklyShifts)
-        shiftManager.weeklyTotalBreaksHours = shiftManager.getTotalBreaksHours(from: weeklyShifts)
-
-        shiftManager.monthlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .month)
-        shiftManager.yearlyShifts = shiftManager.getLastShifts(from: shifts, jobModel: jobSelectionViewModel, dateRange: .year)
-        
-        shiftManager.totalPay = shiftManager.addAllPay(shifts: shifts, jobModel: jobSelectionViewModel)
-        shiftManager.totalHours = shiftManager.addAllHours(shifts: shifts, jobModel: jobSelectionViewModel)
-        shiftManager.totalShifts = shiftManager.getShiftCount(from: shifts, jobModel: jobSelectionViewModel)
-        shiftManager.totalBreaksHours = shiftManager.addAllBreaksHours(shifts: shifts, jobModel: jobSelectionViewModel)
-        
-        shiftManager.shiftDataLoaded.send(())
-    }
     
     
 
 
     
 }
-/*
-struct JobOverview_Previews: PreviewProvider {
-    static var previews: some View {
-        let mockShiftManager = ShiftDataManager() // provide mock implementation
-        let mockNavigationState = NavigationState() // provide mock implementation
-        let mockJobSelectionViewModel = JobSelectionViewModel() // provide mock implementation
-        let mockManagedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType) // provide mock implementation
 
-        JobOverview(navPath: <#Binding<[OldShift]>#>)
-            .environmentObject(mockShiftManager)
-            .environmentObject(mockNavigationState)
-            .environmentObject(mockJobSelectionViewModel)
-            .environment(\.managedObjectContext, mockManagedObjectContext)
-    }
-}
-*/
