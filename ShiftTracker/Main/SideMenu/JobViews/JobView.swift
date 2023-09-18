@@ -58,6 +58,8 @@ struct JobView: View {
     
     @State private var activeSheet: ActiveSheet?
     
+    @State private var editToggle: Bool = false
+    
     @State private var showProSheet = false
     
     @State private var hasAppeared = false // used to animate the background fading out when appearing as a fullscreencover due to a system glitch with black/white backgrounds no transparency
@@ -164,8 +166,11 @@ struct JobView: View {
                                 Spacer()
                                 ZStack {
                                     Image(systemName: selectedIcon)
+                                     
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
+                                        .customAnimatedSymbol(value: $selectedIcon)
+                                        .customAnimatedSymbol(value: $editToggle)
                                         .foregroundStyle(.white)
                                         .padding(20)
                                         .background {
@@ -178,7 +183,7 @@ struct JobView: View {
                                         .shadow(color: selectedColor, radius: 4, x: 0, y: 0)
                                     VStack(alignment: .trailing){
                                         Spacer()
-                                        Image(systemName: "pencil")
+                                        Image(systemName: "pencil") .customAnimatedSymbol(value: $editToggle)
                                             .font(.caption)
                                         //  .foregroundStyle(.white)
                                             .padding(8)
@@ -199,6 +204,7 @@ struct JobView: View {
                                 .scaleEffect(1 + (offset / 1000))
                                 .onTapGesture {
                                     activeSheet = .symbolSheet
+                                    editToggle.toggle()
                                 }
                                 .frame(maxWidth: .infinity)
                             }

@@ -52,11 +52,10 @@ struct IntroMainView: View {
                     } label: {
                         Text("Continue")
                             .fontWeight(.semibold)
-                            .foregroundColor(colorScheme == .dark ? .black : .white)
+                            
                             .padding(.vertical, 15)
                             .frame(maxWidth: .infinity)
-                            .background(colorScheme == .dark ? .white : .black)
-                            .cornerRadius(20)
+                            .glassModifier(cornerRadius: 20)
                     }
                     
                 }.padding(.top, 25)
