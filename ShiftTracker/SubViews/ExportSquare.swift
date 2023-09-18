@@ -40,7 +40,7 @@ struct ExportSquare: View {
             
             Button(action: {
                 
-                
+                isTapped.toggle()
                 
                 if purchaseManager.hasUnlockedPro {
                     action()
@@ -55,7 +55,7 @@ struct ExportSquare: View {
             }){
                 HStack{
                     Group {
-                        Image(systemName: "square.and.arrow.up.fill")
+                        Image(systemName: "square.and.arrow.up.fill").customAnimatedSymbol(value: $isTapped)
                         
                         
                         Text("Export")

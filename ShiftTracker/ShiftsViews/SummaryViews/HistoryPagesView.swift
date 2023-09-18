@@ -137,6 +137,7 @@ struct HistoryPagesView: View {
                                             Image(systemName: "chevron.left").bold()
                                           
                                                 .font(.title2)
+                                                .customAnimatedSymbol(value: $historyModel.selectedTab)
                                         }
                                         
                                         Button(action: {
@@ -145,6 +146,7 @@ struct HistoryPagesView: View {
                                             Image(systemName: "chevron.right").bold()
                                       
                                                 .font(.title2)
+                                                .customAnimatedSymbol(value: $historyModel.selectedTab)
                                         }
                                         
                                         
@@ -393,9 +395,10 @@ struct HistoryPagesView: View {
                         }) {
                             Image(systemName: "trash")
                                 .bold()
-                                .foregroundStyle(historyModel.selection.isEmpty ? .gray.opacity(0.5) : .red.opacity(1.0))
+                               
+                                .customAnimatedSymbol(value: $historyModel.selection)
                         }.disabled(historyModel.selection.isEmpty)
-                        
+                            .tint(.red)
                         
                         
                         

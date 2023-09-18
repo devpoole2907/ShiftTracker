@@ -64,6 +64,8 @@ struct JobView: View {
     
     @State private var selectedAddress: String?
     
+    @State private var buttonBounce: Bool = false
+    
     
     @Binding var selectedJobForEditing: Job?
     @Binding var isEditJobPresented: Bool
@@ -543,6 +545,8 @@ struct JobView: View {
                     
                     Button(action: {
                         
+                        buttonBounce.toggle()
+                        
                         if name.isEmpty {
                             withAnimation(.linear(duration: 0.4)) {
                                 nameShakeTimes += 2
@@ -570,7 +574,7 @@ struct JobView: View {
                         
                         
                     }) {
-                        Image(systemName: "folder.badge.plus")
+                        Image(systemName: "folder.badge.plus").customAnimatedSymbol(value: $buttonBounce)
                             .bold()
                     }
                     

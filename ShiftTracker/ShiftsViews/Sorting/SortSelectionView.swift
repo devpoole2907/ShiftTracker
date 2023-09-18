@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SortSelectionView: View {
     
+    
+    
     @Binding var selectedSortItem: ShiftNSSort
     let sorts: [ShiftNSSort]
     
@@ -30,6 +32,6 @@ struct SortSelectionView: View {
             
         
             
-        }
+        }.customAnimatedSymbol(value: $selectedSortItem)
     }
 }

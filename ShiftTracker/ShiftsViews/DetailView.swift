@@ -672,7 +672,7 @@ struct DetailView: View {
                             }
                         }) {
                             
-                            Image(systemName: "pencil").bold()
+                            Image(systemName: "pencil").bold().customAnimatedSymbol(value: $viewModel.isEditing)
                         }
                     }
                     
@@ -691,10 +691,10 @@ struct DetailView: View {
                         
                         
                     }) {
-                        Image(systemName: "trash")
+                        Image(systemName: "trash").customAnimatedSymbol(value: $viewModel.showingDeleteAlert)
                             .bold()
                     }
-                    .foregroundColor(.red)
+                    .tint(.red)
                     
                     
                 }
@@ -809,7 +809,7 @@ struct DetailView: View {
             
         
             if presentedAsSheet{
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     CloseButton {
                         dismiss()
                     }

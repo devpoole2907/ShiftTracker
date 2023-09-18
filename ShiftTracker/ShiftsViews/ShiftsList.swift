@@ -132,9 +132,10 @@ struct ShiftsList: View {
                         Button(action: {
                             CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
                         }) {
-                            Image(systemName: "trash")
+                            Image(systemName: "trash").customAnimatedSymbol(value: $selection)
                                 .bold()
                         }.disabled(selection.isEmpty)
+                            .tint(.red)
                         
                     } else {
                         

@@ -94,7 +94,7 @@ struct SideMenu: View {
                                         showUpgradeScreen = true
                                     }
                                 }) {
-                                    Image(systemName: "plus")
+                                    Image(systemName: "plus").customAnimatedSymbol(value: $showAddJobView)
                                         .bold()
                                 }.padding(.trailing)
                             }
@@ -208,14 +208,14 @@ struct SideMenu: View {
                                 .renderingMode(.template)
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 20, height: 20)
-                            
+                                .customAnimatedSymbol(value: $showingTagSheet)
                             
                             Text("Tags")
                                 .font(.title2)
                                 .bold()
                             
                             
-                            Image(systemName: "plus")
+                            Image(systemName: "plus").customAnimatedSymbol(value: $showingTagSheet)
                                 .bold()
                             
                             

@@ -25,7 +25,7 @@ struct ActionButtonView: View {
             action()
         }) {
             VStack(spacing: 10) {
-                Image(systemName: icon)
+                Image(systemName: icon).customAnimatedSymbol(value: $isActionButtonTapped)
                    .foregroundColor(textColor)
                 Text(title)
                     .font(.subheadline)

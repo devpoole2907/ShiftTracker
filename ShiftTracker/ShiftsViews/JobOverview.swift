@@ -255,7 +255,7 @@ struct JobOverview: View {
                             activeSheet = .addShiftSheet
                         }){
                             
-                            Image(systemName: "plus")
+                            Image(systemName: "plus").customAnimatedSymbol(value: $activeSheet)
                             .bold()
                             
                         }.disabled(jobSelectionViewModel.selectedJobUUID == nil)

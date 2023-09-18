@@ -204,7 +204,7 @@ struct ScheduleView: View {
                                 
                             }) {
                                 
-                                Image(systemName: "plus")
+                                Image(systemName: "plus").customAnimatedSymbol(value: $activeSheet)
                                     .bold()
                                 
                             }
@@ -304,7 +304,7 @@ struct ScheduleView: View {
                                 }
                                 
                             }) {
-                                Image(systemName: "plus")
+                                Image(systemName: "plus").customAnimatedSymbol(value: $activeSheet)
                                     .bold()
                             }
                             .disabled(showAllScheduledShiftsView)
@@ -327,6 +327,7 @@ struct ScheduleView: View {
                             }
                         }) {
                             Image(systemName: "list.bullet")
+                                .customAnimatedSymbol(value: $showAllScheduledShiftsView)
                                 .foregroundColor(showAllScheduledShiftsView ? (colorScheme == .dark ? .black : .white) : Color.accentColor)
                                 .bold()
                                 .background(
@@ -393,6 +394,7 @@ struct ScheduleView: View {
                             .presentationDetents([.large])
                             .presentationCornerRadius(35)
                             .presentationBackground(.ultraThinMaterial)
+                            .interactiveDismissDisabled()
                         
                         
                     case .pastShiftSheet:
