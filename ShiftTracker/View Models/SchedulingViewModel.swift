@@ -18,6 +18,10 @@ class SchedulingViewModel: ObservableObject {
     @Published var notifyMe = true
     @Published var selectedReminderTime: ReminderTime = .fifteenMinutes
     
+    
+    
+    
+    
     private let notificationManager = ShiftNotificationManager.shared
     
     func fetchScheduledShift(id: UUID, in viewContext: NSManagedObjectContext) -> ScheduledShift? {

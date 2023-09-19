@@ -342,7 +342,7 @@ struct AddressConfirmView: View {
         NavigationStack {
             VStack(alignment: .leading){
                 HStack{
-                    Text(formattedStreetAddress)
+                    Text(address?.name ?? formattedStreetAddress)
                         .font(.title)
                         .bold()
                         .padding(.leading, 15)
@@ -352,32 +352,22 @@ struct AddressConfirmView: View {
             }
             
             ScrollView{
-                LazyVStack(alignment: .leading){
-                Section{
+                LazyVStack(alignment: .leading, spacing: 20){
+                VStack{
                     
                     HStack{
                         
-                        Button(action: {
+                        ActionButtonView(title: "Set work address", backgroundColor: .white, textColor: .gray, icon: "briefcase.fill", buttonWidth: .infinity, action: {
+                            
                             if let address = address {
                                 onConfirm?(address)
                                 dismiss()
                             }
-                        }) {
-                            HStack(spacing: 5){
-                                Image(systemName: "briefcase.fill")
-                                Text("Set work address")
-                                    .font(.subheadline)
-                                
-                                
-                            }
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .padding(.vertical, 15)
-                            .frame(maxWidth: .infinity)
-                            .background(.black)
-                            .cornerRadius(20)
                             
-                        }
+                            
+                        })
+                        
+                     
                     }
                     
                 }.listRowBackground(Color.clear)
@@ -419,8 +409,7 @@ struct AddressConfirmView: View {
                         }.padding()
                     
                         
-                    }.background(Color("SquaresColor"))
-                        .cornerRadius(12)
+                    }.glassModifier(cornerRadius: 20)
                         .padding(.horizontal, 18)
                 
             }
@@ -428,15 +417,10 @@ struct AddressConfirmView: View {
             
 
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
+            .toolbar{
+                ToolbarItem(placement: .topBarTrailing) {
+                    CloseButton {
                         dismiss()
-                    }) {
-                        Spacer()
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(.gray.opacity(0.6))
                     }
                 }
             }

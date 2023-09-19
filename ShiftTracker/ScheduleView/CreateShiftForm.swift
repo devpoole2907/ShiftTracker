@@ -164,23 +164,23 @@ struct CreateShiftForm: View {
                                             .bold()
                                     }.toggleStyle(CustomToggleStyle())
                                         .frame(height: 40)
-                                    //  .padding(.vertical)
+                    
                                         .padding(.horizontal)
                                         .frame(maxWidth: .infinity)
                                         .glassModifier(cornerRadius: 20)
-                                    //  .padding()
+                      
                                     
                                     
                                     RepeatEndPicker(dateSelected: $dateSelected, selectedRepeatEnd: $selectedRepeatEnd)
                                         .frame(height: 40)
-                                    //  .padding(.vertical)
+                             
                                         .padding(.horizontal)
                                         .frame(maxWidth: .infinity)
                                         .disabled(!enableRepeat)
                                     
                                         .glassModifier(cornerRadius: 20)
                                     
-                                    // .padding()
+                      
                                 }.padding(.horizontal)
                                 
                                 
@@ -205,7 +205,7 @@ struct CreateShiftForm: View {
                                                 .font((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? .caption : .callout)
                                                 .bold()
                                         }
-                                        //  .padding()
+                                 
                                         .background(scheduleModel.selectedDays[i] ? (colorScheme == .dark ? .white : .black) : Color.clear)
                                         .foregroundColor(colorScheme == .dark ? .black : .white)
                                         .cornerRadius(8)
@@ -292,14 +292,14 @@ struct CreateShiftForm: View {
                                     
                                 }
                                 .frame(maxWidth: .infinity, alignment: .center)
-                                //.padding(.horizontal)
+                       
                             }.listRowSeparator(.hidden)
                                 .padding(.top)
                             
                             scheduleSlider()
-                            //  .frame(maxWidth: .infinity, alignment: .center)
+                    
                                 .frame(minHeight: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? screenBounds().height / 2 : screenBounds().height / 3)
-                            // .frame(minWidth: screenBounds().width - 40)
+                      
                                 .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 20 : 30)
                                 .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? -85 : -10)
                                 .onAppear {
@@ -427,11 +427,9 @@ struct CreateShiftForm: View {
                 
             }
             
-           // .background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
-            
                 .toolbar{
                     
-                    ToolbarItem(placement: .navigationBarLeading){
+                    ToolbarItem(placement: .navigationBarTrailing){
                         CloseButton{
                             dismiss()
                         }

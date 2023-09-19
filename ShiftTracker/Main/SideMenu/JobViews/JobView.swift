@@ -363,6 +363,54 @@ struct JobView: View {
                                 .padding(.horizontal)
                                 .padding(.bottom, 10)
                                 
+                                if #available(iOS 17.0, *){
+                                    
+                                    NavigationLink(destination: AddressFinderMap(selectedAddressString: $selectedAddress, selectedRadius: $selectedRadius, iconColor: selectedColor, icon: selectedIcon)
+                                        .onDisappear {
+                                            self.miniMapRegion = self.mapRegion
+                                        }){
+                                            VStack(alignment: .leading){
+                                                
+                                                Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
+                                                    MapAnnotation(coordinate: annotation.coordinate) {
+                                                        VStack {
+                                                            Image(systemName: selectedIcon)
+                                                                .font(.title2)
+                                                                .foregroundStyle(.white)
+                                                                .padding(10)
+                                                                .background{
+                                                                    Circle()
+                                                                        .foregroundStyle(selectedColor.gradient)
+                                                                    
+                                                                }
+                                                            
+                                                        }
+                                                    }
+                                                }
+                                                .onAppear{
+                                                    //locationManager.requestAuthorization()
+                                                    addressManager.loadSavedAddress(selectedAddressString: selectedAddress) { region, annotation in
+                                                        self.miniMapRegion = region ?? self.miniMapRegion
+                                                        self.miniMapAnnotation = annotation
+                                                    }
+                                                }
+                                                HStack{
+                                                    Text("Work Location")
+                                                    
+                                                    Spacer()
+                                                    Image(systemName: "chevron.right")
+                                                }.bold()
+                                                    .padding(.bottom, 10)
+                                                    .padding(.horizontal)
+                                            }
+                                        }.frame(minHeight: 120)
+                                        .background(Color.clear,in:
+                                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                        .cornerRadius(20)
+                                    
+                                } else {
+                                    
+                                
                                 
                                 NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, icon: selectedIcon, iconColor: selectedColor)
                                     .onDisappear {
@@ -406,6 +454,8 @@ struct JobView: View {
                                     .background(Color.clear,in:
                                                     RoundedRectangle(cornerRadius: 12, style: .continuous))
                                     .cornerRadius(20)
+                                
+                            }
                                 
                             }
                             
@@ -637,7 +687,7 @@ struct JobView: View {
                     
                  
                     
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .navigationBarTrailing) {
                         CloseButton {
                             dismiss()
                         }
