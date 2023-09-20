@@ -260,6 +260,115 @@ func createTags(in viewContext: NSManagedObjectContext) {
     }
 }
 
+func createDefaultTheme(in viewContext: NSManagedObjectContext, with themeManager: ThemeDataManager){
+    
+    let fetchRequest: NSFetchRequest<Theme> = Theme.fetchRequest()
+    fetchRequest.predicate = NSPredicate(format: "name == %@", "Default")
+    
+    do {
+        
+        let existingDefault = try viewContext.fetch(fetchRequest)
+        
+        if existingDefault.isEmpty {
+            
+            let earningsColor = Color.green
+            let customTextColor = Color.black
+            let taxColor = Color.pink
+            let timerColor = Color.orange
+            let breaksColor = Color.indigo
+            let customUIColor = Color.cyan
+            let tipsColor = Color.teal
+            
+            let newTheme = Theme(context: viewContext)
+            
+            newTheme.name = "Default"
+            
+            let breaksComponents = UIColor(breaksColor).rgbComponents
+            newTheme.breaksColorBlue = Double(breaksComponents.2)
+            newTheme.breaksColorGreen = Double(breaksComponents.1)
+            newTheme.breaksColorRed = Double(breaksComponents.0)
+            
+            let taxComponents = UIColor(taxColor).rgbComponents
+            newTheme.taxColorRed = Double(taxComponents.0)
+            newTheme.taxColorGreen = Double(taxComponents.1)
+            newTheme.taxColorBlue = Double(taxComponents.2)
+            
+            let timerComponents = UIColor(timerColor).rgbComponents
+            newTheme.timerColorRed = Double(timerComponents.0)
+            newTheme.timerColorGreen = Double(timerComponents.1)
+            newTheme.timerColorBlue = Double(timerComponents.2)
+            
+            let tipsComponents = UIColor(tipsColor).rgbComponents
+            newTheme.tipsColorRed = Double(tipsComponents.0)
+            newTheme.tipsColorGreen = Double(tipsComponents.1)
+            newTheme.tipsColorBlue = Double(tipsComponents.2)
+            
+            let earningsComponents = UIColor(earningsColor).rgbComponents
+            newTheme.earningsColorRed = Double(earningsComponents.0)
+            newTheme.earningsColorGreen = Double(earningsComponents.1)
+            newTheme.earningsColorBlue = Double(earningsComponents.2)
+            
+            let customUIComponents = UIColor(customUIColor).rgbComponents
+            newTheme.customUIColorRed = Double(customUIComponents.0)
+            newTheme.customUIColorGreen = Double(customUIComponents.1)
+            newTheme.customUIColorBlue = Double(customUIComponents.2)
+            
+            
+            newTheme.isSelected = true
+            
+            try viewContext.save()
+            
+            // for in future
+            // themeManager.loadDefaultTheme()
+            
+            themeManager.selectTheme(theme: newTheme, context: viewContext)
+            
+        } else {
+            
+            // select the theme marked as selected in core data
+            
+            let fetchRequest: NSFetchRequest<Theme> = Theme.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "isSelected == %@", NSNumber(value: true))
+
+         
+                
+            if let theme = try viewContext.fetch(fetchRequest).first {
+                
+                
+                themeManager.selectTheme(theme: theme, context: viewContext)
+                
+            }
+                
+            
+            
+            
+        }
+    } catch {
+        let nsError = error as NSError
+        fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+    }
+}
+
+struct CustomDisableListSelectionModifier: ViewModifier {
+    
+    var disabled: Bool
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *){
+            content.selectionDisabled(disabled)
+        } else {
+            content // just allow selection on ios 16, not as clean but still will be undeletable
+        }
+    }
+    
+}
+
+extension View {
+    func customDisableListSelection(disabled: Bool) -> some View{
+        self.modifier(CustomDisableListSelectionModifier(disabled: disabled))
+    }
+}
+
 
 // applies hidden scroll background only if in dark mode
 

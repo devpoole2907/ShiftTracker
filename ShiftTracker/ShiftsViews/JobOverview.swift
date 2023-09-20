@@ -78,12 +78,7 @@ struct JobOverview: View {
     
     @State var animate = false
     
-    func isWithinLastWeek(date: Date) -> Bool {
-        let calendar = Calendar.current
-        let now = Date()
-        let oneWeekAgo = calendar.date(byAdding: .weekOfYear, value: -1, to: now) ?? now
-        return date >= oneWeekAgo
-    }
+
 
     
     var body: some View {
@@ -92,6 +87,12 @@ struct JobOverview: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         
         let thisJobShifts = shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })
+        
+        let shiftsThisWeek = thisJobShifts.filter { shift in
+            
+            shiftManager.isWithinLastWeek(date: shift.shiftStartDate!)
+            
+        }
         
         NavigationStack(path: $navPath){
             ZStack(alignment: .bottomTrailing){
@@ -102,16 +103,12 @@ struct JobOverview: View {
                             HStack(spacing: 8){
                                 VStack(spacing: 0) {
                                   
-                                        StatsSquare()
+                                    StatsSquare(shifts: thisJobShifts, shiftsThisWeek: shiftsThisWeek)
                                             .environmentObject(shiftManager)
                                 
                                         Spacer()
                                
-                                    ChartSquare(shifts: thisJobShifts.filter { shift in
-                                        
-                                        isWithinLastWeek(date: shift.shiftStartDate!)
-                                        
-                                    })
+                                    ChartSquare(shifts: shiftsThisWeek)
                                        .environmentObject(shiftManager)
                                      
                                 }

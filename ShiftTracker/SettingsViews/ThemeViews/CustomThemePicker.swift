@@ -9,33 +9,33 @@ import SwiftUI
 
 struct CustomThemePicker: View {
     
-    @EnvironmentObject var themeColors: ThemeDataManager
+    @EnvironmentObject var themeManager: ThemeDataManager
 
     var body: some View {
         
         VStack{
             
-            switch themeColors.selectedColorToChange {
+            switch themeManager.selectedColorToChange {
             case .customUIColorPicker:
-                ThemeColorPicker (selectedColor: $themeColors.customUIColor)
+                ThemeColorPicker (selectedColor: $themeManager.editingCustomUIColor)
                 
             case .customTextColorPicker:
-                ThemeColorPicker (selectedColor: $themeColors.customTextColor)
+                ThemeColorPicker (selectedColor: $themeManager.editingCustomTextColor)
                 
             case .earningsColorPicker:
-                ThemeColorPicker (selectedColor: $themeColors.earningsColor)
+                ThemeColorPicker (selectedColor: $themeManager.editingEarningsColor)
                 
             case .taxColorPicker:
-                ThemeColorPicker (selectedColor: $themeColors.taxColor)
+                ThemeColorPicker (selectedColor: $themeManager.editingTaxColor)
                 
             case .timerColorPicker:
-                ThemeColorPicker (selectedColor: $themeColors.timerColor)
+                ThemeColorPicker (selectedColor: $themeManager.editingTimerColor)
                 
             case .breaksColorPicker:
-                ThemeColorPicker (selectedColor: $themeColors.breaksColor)
+                ThemeColorPicker (selectedColor: $themeManager.editingBreaksColor)
                 
             case .tipsColorPicker:
-                ThemeColorPicker (selectedColor: $themeColors.tipsColor)
+                ThemeColorPicker (selectedColor: $themeManager.editingTipsColor)
             }
     
         }

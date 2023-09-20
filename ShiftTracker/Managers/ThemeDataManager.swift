@@ -1,17 +1,19 @@
 //
-//  GlobalColor.swift
-//  testEnvironment
+//  ThemeDataManager.swift
+//  ShiftTracker
 //
 //  Created by Louis Kolodzinski on 4/07/23.
+//  Updated by James Poole on 20/09/23.
 //
 
 import SwiftUI
+import CoreData
 
 class ThemeDataManager: ObservableObject {
     @AppStorage("earningsColorRed") var earningsColorRed: Double = 1.0
     @AppStorage("earningsColorGreen") var earningsColorGreen: Double = 1.0
     @AppStorage("earningsColorBlue") var earningsColorBlue: Double = 1.0
-
+    
     @AppStorage("customTextColorRed") var customTextColorRed: Double = 0.0
     @AppStorage("customTextColorGreen") var customTextColorGreen: Double = 0.0
     @AppStorage("customTextColorBlue") var customTextColorBlue: Double = 0.0
@@ -19,7 +21,7 @@ class ThemeDataManager: ObservableObject {
     @AppStorage("taxColorRed") var taxColorRed: Double = 1.0
     @AppStorage("taxColorGreen") var taxColorGreen: Double = 0.1764706
     @AppStorage("taxColorBlue") var taxColorBlue: Double = 0.33333334
-
+    
     @AppStorage("timerColorRed") var timerColorRed: Double = 1.0
     @AppStorage("timerColorGreen") var timerColorGreen: Double = 0.58431375
     @AppStorage("timerColorBlue") var timerColorBlue: Double = 0.0
@@ -39,9 +41,27 @@ class ThemeDataManager: ObservableObject {
     @Environment(\.colorScheme) var colorScheme
     
     
+    
     @Published var selectedColorToChange: CustomColor = .customUIColorPicker
     @Published var selectedButton: Int? = nil
     @Published var showDetail = false
+    
+    @Published var currentThemeName: String = "Default"
+    
+    var originalEditingThemeName: String? // used for allowing the saving of a 'duplicate' theme if a theme is edited but the name is not changed
+    
+    // used for editing/creating new theme
+    
+    @Published var editingEarningsColor: Color = .green
+    @Published var editingCustomTextColor: Color = .black
+    @Published var editingTaxColor: Color = .pink
+    @Published var editingTimerColor: Color = .orange
+    @Published var editingBreaksColor: Color = .indigo
+    @Published var editingCustomUIColor: Color = .cyan
+    @Published var editingTipsColor: Color = .cyan
+    
+    @Published var editingThemeName: String = "Theme Name"
+    
     
     @Published var earningsColor: Color {
         didSet {
@@ -84,24 +104,15 @@ class ThemeDataManager: ObservableObject {
             saveColor()
         }
     }
-    
-    @Published var isCustom: Bool = false {
-        didSet {
-            print("setting iscustom to: \(isCustom)")
-            UserDefaults.standard.set(isCustom, forKey: "isCustomTheme")
-            
-        }
-        
-        
-    }
-    
-    
 
+    
+    
+    
     init() {
         let earningsRed = UserDefaults.standard.double(forKey: "earningsColorRed")
         let earningsGreen = UserDefaults.standard.double(forKey: "earningsColorGreen")
         let earningsBlue = UserDefaults.standard.double(forKey: "earningsColorBlue")
-
+        
         let textRed = UserDefaults.standard.double(forKey: "customTextColorRed")
         let textGreen = UserDefaults.standard.double(forKey: "customTextColorGreen")
         let textBlue = UserDefaults.standard.double(forKey: "customTextColorBlue")
@@ -125,7 +136,7 @@ class ThemeDataManager: ObservableObject {
         let tipsRed = UserDefaults.standard.double(forKey: "tipsColorRed")
         let tipsGreen = UserDefaults.standard.double(forKey: "tipsColorGreen")
         let tipsBlue = UserDefaults.standard.double(forKey: "tipsColorBlue")
-
+        
         earningsColor = Color(red: earningsRed, green: earningsGreen, blue: earningsBlue)
         customTextColor = Color(red: textRed, green: textGreen, blue: textBlue)
         taxColor = Color(red: taxRed, green: taxGreen, blue: taxBlue)
@@ -135,20 +146,33 @@ class ThemeDataManager: ObservableObject {
         tipsColor = Color(red: tipsRed, green: tipsGreen, blue: tipsBlue)
         
         
-        isCustom = UserDefaults.standard.bool(forKey: "isCustomTheme")
-        
         //resetColorsToDefaults()
     }
+    
+    func loadEditingColors(from theme: Theme) {
+        editingEarningsColor = Color(red: theme.earningsColorRed, green: theme.earningsColorGreen, blue: theme.earningsColorBlue)
+        editingTaxColor = Color(red: theme.taxColorRed, green: theme.taxColorGreen, blue: theme.taxColorBlue)
+        editingTimerColor = Color(red: theme.timerColorRed, green: theme.timerColorGreen, blue: theme.timerColorBlue)
+        editingBreaksColor = Color(red: theme.breaksColorRed, green: theme.breaksColorGreen, blue: theme.breaksColorBlue)
+        editingCustomUIColor = Color(red: theme.customUIColorRed, green: theme.customUIColorGreen, blue: theme.customUIColorBlue)
+        editingTipsColor = Color(red: theme.tipsColorRed, green: theme.tipsColorGreen, blue: theme.tipsColorBlue)
+        editingThemeName = theme.name ?? "Unnamed Theme"
+        
+        originalEditingThemeName = editingThemeName
+        
+    }
 
+    
+    
     private func saveColor() {
         
-        self.isCustom = true
+    
         
         let earningsComponents = UIColor(earningsColor).rgbComponents
         earningsColorRed = Double(earningsComponents.0)
         earningsColorGreen = Double(earningsComponents.1)
         earningsColorBlue = Double(earningsComponents.2)
-
+        
         let textComponents = UIColor(customTextColor).rgbComponents
         customTextColorRed = Double(textComponents.0)
         customTextColorGreen = Double(textComponents.1)
@@ -179,7 +203,7 @@ class ThemeDataManager: ObservableObject {
         tipsColorGreen = Double(tipsComponents.1)
         tipsColorBlue = Double(tipsComponents.2)
     }
-
+    
     
     func resetColorsToDefaults() {
         
@@ -202,9 +226,104 @@ class ThemeDataManager: ObservableObject {
         print("tipsColor default: \(UIColor(tipsColor).rgbComponents)")
         
         
-        self.isCustom = false
+
         
     }
+    
+    func updateOrCreateTheme(_ theme: Theme? = nil, in viewContext: NSManagedObjectContext) {
+        
+        let newTheme = theme ?? Theme(context: viewContext)
+        newTheme.name = editingThemeName
+        
+        let breaksComponents = UIColor(editingBreaksColor).rgbComponents
+        newTheme.breaksColorBlue = Double(breaksComponents.2)
+        newTheme.breaksColorGreen = Double(breaksComponents.1)
+        newTheme.breaksColorRed = Double(breaksComponents.0)
+        
+        let taxComponents = UIColor(editingTaxColor).rgbComponents
+        newTheme.taxColorRed = Double(taxComponents.0)
+        newTheme.taxColorGreen = Double(taxComponents.1)
+        newTheme.taxColorBlue = Double(taxComponents.2)
+        
+        let timerComponents = UIColor(editingTimerColor).rgbComponents
+        newTheme.timerColorRed = Double(timerComponents.0)
+        newTheme.timerColorGreen = Double(timerComponents.1)
+        newTheme.timerColorBlue = Double(timerComponents.2)
+        
+        let tipsComponents = UIColor(editingTipsColor).rgbComponents
+        newTheme.tipsColorRed = Double(tipsComponents.0)
+        newTheme.tipsColorGreen = Double(tipsComponents.1)
+        newTheme.tipsColorBlue = Double(tipsComponents.2)
+        
+        let earningsComponents = UIColor(editingEarningsColor).rgbComponents
+        newTheme.earningsColorRed = Double(earningsComponents.0)
+        newTheme.earningsColorGreen = Double(earningsComponents.1)
+        newTheme.earningsColorBlue = Double(earningsComponents.2)
+        
+        let customUIComponents = UIColor(editingCustomUIColor).rgbComponents
+        newTheme.customUIColorRed = Double(customUIComponents.0)
+        newTheme.customUIColorGreen = Double(customUIComponents.1)
+        newTheme.customUIColorBlue = Double(customUIComponents.2)
+        
+        if theme == nil {
+            newTheme.isSelected = false
+        }
+        
+       
+        
+        do {
+            try viewContext.save()
+            
+            if newTheme.isSelected == true {
+                selectTheme(theme: newTheme, context: viewContext)
+            } else {
+                CustomConfirmationAlert(action: {
+                    
+                    self.selectTheme(theme: newTheme, context: viewContext)
+                    
+                }, cancelAction: nil, title: "Apply this theme?").showAndStack()
+            }
+            
+        } catch {
+            print("Error saving theme: \(error)")
+        }
+    }
+    
+    // used to select a theme/load it
+    
+    func selectTheme(theme: Theme, context: NSManagedObjectContext) {
+        
+        
+        earningsColor = Color(red: theme.earningsColorRed, green: theme.earningsColorGreen, blue: theme.earningsColorBlue)
+
+        taxColor = Color(red: theme.taxColorRed, green: theme.taxColorGreen, blue: theme.taxColorBlue)
+        timerColor = Color(red: theme.timerColorRed, green: theme.timerColorGreen, blue: theme.timerColorBlue)
+        breaksColor = Color(red: theme.breaksColorRed, green: theme.breaksColorGreen, blue: theme.breaksColorBlue)
+        customUIColor = Color(red: theme.customUIColorRed, green: theme.customUIColorGreen, blue: theme.customUIColorBlue)
+        tipsColor = Color(red: theme.tipsColorRed, green: theme.tipsColorGreen, blue: theme.tipsColorBlue)
+   
+        
+        
+        let fetchRequest: NSFetchRequest<Theme> = Theme.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isSelected == %@", NSNumber(value: true))
+        
+        do {
+            let previouslySelectedThemes = try context.fetch(fetchRequest)
+            for oldTheme in previouslySelectedThemes {
+                oldTheme.isSelected = false
+            }
+            
+            theme.isSelected = true
+            try context.save()
+        } catch let error as NSError {
+            print("Failed to fetch or save: \(error), \(error.userInfo)")
+        }
+        
+        self.currentThemeName = theme.name ?? "Error"
+    
+    }
+    
+    
 }
 
 

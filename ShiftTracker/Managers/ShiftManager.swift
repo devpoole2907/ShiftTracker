@@ -57,6 +57,12 @@ class ShiftDataManager: ObservableObject {
         return formatter
     }
     
+    func isWithinLastWeek(date: Date) -> Bool {
+        let calendar = Calendar.current
+        let now = Date()
+        let oneWeekAgo = calendar.date(byAdding: .weekOfYear, value: -1, to: now) ?? now
+        return date >= oneWeekAgo
+    }
     
     
     func deleteShift(_ shift: OldShift, in viewContext: NSManagedObjectContext) {

@@ -335,6 +335,9 @@ struct MainWithSideBarView: View {
                 
                 createTags(in: context)
                 
+                // creates default theme and applies it if it doesnt exist
+                createDefaultTheme(in: context, with: themeManager)
+                
                 
                 // sets all jobs with auto clock in & out to false if subscription gone
                 if !purchaseManager.hasUnlockedPro {

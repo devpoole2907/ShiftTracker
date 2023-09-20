@@ -80,7 +80,7 @@ struct SettingsView: View {
                         
                         NavigationLink(value: 0){
                             
-                            SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.isCustom ? "Custom" : "Default")
+                            SettingsRow(icon: "paintpalette", title: "Theme", secondaryInfo: themeManager.currentThemeName)
                             
                             
                         }.padding()
@@ -254,7 +254,10 @@ struct SettingsView: View {
                     
                     if i == 0 {
                         
-                        ThemeView(showingProView: $viewModel.showingProView) .background(Color(.systemGroupedBackground))
+                     //   ThemeView(showingProView: $viewModel.showingProView)
+                        
+                        ThemesList(showingProView: $viewModel.showingProView) .background(Color(.systemGroupedBackground))
+                        
                         
                     }
                     else if i == 1 {

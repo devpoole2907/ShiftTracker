@@ -10,7 +10,7 @@ import SwiftUI
 
 struct PreviewTimerView: View {
     
-    @EnvironmentObject var themeColors: ThemeDataManager
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -33,7 +33,7 @@ struct PreviewTimerView: View {
                  .padding(.top)
                 
                 HStack{
-                    SelectableButton(id: 1, selectedButton: $themeColors.selectedButton, content: {
+                    SelectableButton(id: 1, selectedButton: $themeManager.selectedButton, content: {
                         HStack(spacing: 10) {
                             Image(systemName: "chart.line.downtrend.xyaxis")
                                 .font(.system(size: 15).monospacedDigit())
@@ -42,11 +42,11 @@ struct PreviewTimerView: View {
                                 .font(.system(size: 20).monospacedDigit())
                                 .bold()
                                 .lineLimit(1)
-                        }.foregroundColor(themeColors.taxColor)
+                        }.foregroundColor(themeManager.editingTaxColor)
                     }, action: {
-                        themeColors.selectedColorToChange = .taxColorPicker
+                        themeManager.selectedColorToChange = .taxColorPicker
                     })
-                    SelectableButton(id: 2, selectedButton: $themeColors.selectedButton, content: {
+                    SelectableButton(id: 2, selectedButton: $themeManager.selectedButton, content: {
                         HStack(spacing: 10) {
                             Image(systemName: "chart.line.uptrend.xyaxis")
                                 .font(.system(size: 15).monospacedDigit())
@@ -55,9 +55,9 @@ struct PreviewTimerView: View {
                                 .font(.system(size: 20).monospacedDigit())
                                 .bold()
                                 .lineLimit(1)
-                        }.foregroundColor(themeColors.tipsColor)
+                        }.foregroundColor(themeManager.editingTipsColor)
                     }, action: {
-                         themeColors.selectedColorToChange = .tipsColorPicker
+                         themeManager.selectedColorToChange = .tipsColorPicker
                     })
                     
                     
@@ -66,21 +66,21 @@ struct PreviewTimerView: View {
                 
                 Divider().frame(maxWidth: 200)
                 
-                SelectableButton(id: 3, selectedButton: $themeColors.selectedButton, content: {
+                SelectableButton(id: 3, selectedButton: $themeManager.selectedButton, content: {
                     HStack {
                         Text("09:41:00")
                             .font(.system(size: 30, weight: .bold).monospacedDigit())
                         
-                    } .foregroundColor(themeColors.timerColor)
-                }, action: {themeColors.selectedColorToChange = .timerColorPicker})
+                    } .foregroundColor(themeManager.editingTimerColor)
+                }, action: {themeManager.selectedColorToChange = .timerColorPicker})
                 
-                SelectableButton(id: 4, selectedButton: $themeColors.selectedButton, content: {
+                SelectableButton(id: 4, selectedButton: $themeManager.selectedButton, content: {
                     HStack(spacing: 0) {
                         Text("00:10:09")
                             .font(.system(size: 12, weight: .bold).monospacedDigit())
                         
-                    }.foregroundColor(themeColors.breaksColor)
-                }, action: {themeColors.selectedColorToChange = .breaksColorPicker})
+                    }.foregroundColor(themeManager.editingBreaksColor)
+                }, action: {themeManager.selectedColorToChange = .breaksColorPicker})
                 
             }.frame(maxWidth: .infinity)
         

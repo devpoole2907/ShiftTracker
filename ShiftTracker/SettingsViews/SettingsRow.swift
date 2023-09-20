@@ -36,6 +36,7 @@ struct SettingsRow: View {
                     Text(secondInfo)
                         .foregroundStyle(.gray)
                         .bold()
+                        .allowsTightening(true)
                     
                     Image(systemName: "chevron.right")
                         .foregroundStyle(.gray)

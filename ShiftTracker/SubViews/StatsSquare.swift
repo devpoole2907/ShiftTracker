@@ -14,10 +14,22 @@ struct StatsSquare: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
+    var shifts: [OldShift]
+    var shiftsThisWeek: [OldShift]
+    
     var body: some View {
         
         let subTextColor: Color = colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)
         let headerColor: Color = colorScheme == .dark ? .white : .black
+        
+        let totalEarnings = shifts.reduce(0) { $0 + $1.totalPay }
+        let totalHours = shifts.reduce(0) { $0 + ($1.duration / 3600.0) }
+        let totalBreaks = shifts.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
+        
+        let weeklyEarnings = shiftsThisWeek.reduce(0) { $0 + $1.totalPay }
+        let weeklyHours = shiftsThisWeek.reduce(0) { $0 + ($1.duration / 3600.0) }
+        let weeklyBreaks = shiftsThisWeek.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
+        
         HStack{
             VStack(alignment: .leading) {
                 
@@ -26,12 +38,12 @@ struct StatsSquare: View {
                     .bold()
                     .foregroundStyle(headerColor)
                 if shiftManager.statsMode == .earnings {
-                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.weeklyTotalPay)) ?? "0")")
+                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: weeklyEarnings)) ?? "0")")
                         .font(.title)
                         .bold()
                         .foregroundStyle(headerColor)
                     
-                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.totalPay)) ?? "0") Total")
+                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: totalEarnings)) ?? "0") Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
@@ -39,13 +51,13 @@ struct StatsSquare: View {
                     
                 } else if shiftManager.statsMode == .breaks {
                     
-                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.weeklyTotalBreaksHours))")
+                    Text("\(shiftManager.formatTime(timeInHours: weeklyHours))")
                     
                         .font(.title)
                         .bold()
                         .foregroundStyle(headerColor)
                     
-                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.totalBreaksHours)) Total")
+                    Text("\(shiftManager.formatTime(timeInHours: totalHours)) Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
@@ -53,13 +65,13 @@ struct StatsSquare: View {
                     
                 } else {
                     
-                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.weeklyTotalHours))")
+                    Text("\(shiftManager.formatTime(timeInHours: weeklyBreaks))")
                     
                         .font(.title)
                         .bold()
                         .foregroundStyle(headerColor)
                     
-                    Text("\(shiftManager.formatTime(timeInHours: shiftManager.totalHours)) Total")
+                    Text("\(shiftManager.formatTime(timeInHours: totalBreaks)) Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
@@ -80,10 +92,4 @@ struct StatsSquare: View {
     }
 }
 
-struct StatsSquare_Previews: PreviewProvider {
-    static var previews: some View {
-        StatsSquare()
-            .previewLayout(.fixed(width: 400, height: 200)) // Change the width and height as per your requirement
-    }
-}
 
