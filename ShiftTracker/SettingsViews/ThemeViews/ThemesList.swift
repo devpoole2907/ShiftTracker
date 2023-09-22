@@ -47,20 +47,21 @@ struct ThemesList: View {
         ZStack(alignment: .bottomTrailing) {
             List(selection: $themeSelection) {
                 
-                ForEach(themes, id: \.objectID) { theme in
+                ForEach(themes, id: \.self) { theme in
                     
                     ThemeRow(theme: theme)
                         .contentShape(Rectangle())
                         .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                     
-                        .customDisableListSelection(disabled: theme.name == "Default")
+                     //   .customDisableListSelection(disabled: theme.name == "Default")
                     
                         .onTapGesture {
                             if !(editMode?.wrappedValue.isEditing ?? false) {
                                 if !theme.isSelected {
                                     CustomConfirmationAlert(action: {
-                                        
-                                        themeManager.selectTheme(theme: theme, context: viewContext)
+                                        withAnimation {
+                                            themeManager.selectTheme(theme: theme, context: viewContext)
+                                        }
                                         
                                     }, cancelAction: nil, title: "Apply this theme?").showAndStack()
                                     
@@ -71,7 +72,10 @@ struct ThemesList: View {
                         .swipeActions {
                             if theme.name != "Default" {
                                 Button(role: .destructive) { 
-                                    deleteTheme(theme)
+                                    DispatchQueue.main.async {
+                                        deleteTheme(theme)
+                                        
+                                    }
                                 } label: {
                                     Image(systemName: "trash")
                                 }
@@ -200,6 +204,13 @@ struct ThemesList: View {
     private func deleteTheme(_ theme: Theme) {
             withAnimation {
                 if theme.name != "Default" {
+                    
+                    if theme.isSelected {
+                        if let defaultTheme = themes.first(where: { $0.name == "Default" }){
+                            themeManager.selectTheme(theme: defaultTheme, context: viewContext)
+                        }
+                    }
+                    
                     viewContext.delete(theme)
                     
                 }
