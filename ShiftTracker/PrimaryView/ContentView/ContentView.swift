@@ -25,9 +25,6 @@ struct ContentView: View {
     
     @EnvironmentObject var navigationState: NavigationState
     
-    // change me to be a binding and take from mainwithsidebar later
-    @State var navPath = NavigationPath()
-    
     @Environment(\.presentationMode) private var presentationMode
     
     @EnvironmentObject var viewModel: ContentViewModel
@@ -53,13 +50,11 @@ struct ContentView: View {
     
     @State private var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
     
-    
-    @available(iOS 16.1, *)
     var body: some View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
         
-        NavigationStack{
+    
             List{
                 VStack(spacing: 20){
                     Group{
@@ -150,6 +145,8 @@ struct ContentView: View {
                 }
             }//.scrollContentBackground(.hidden)
             
+            
+            
             .scrollContentBackground(.hidden)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
             .background(Color(.systemGroupedBackground).ignoresSafeArea())
@@ -178,7 +175,7 @@ struct ContentView: View {
                         .foregroundColor(textColor)
                     }
                 }
-        }
+        
         
   
    

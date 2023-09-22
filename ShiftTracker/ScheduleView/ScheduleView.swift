@@ -102,8 +102,7 @@ struct ScheduleView: View {
     
     
     var body: some View {
-        
-        NavigationStack(path: $navPath) {
+
             ZStack(alignment: .bottomTrailing){
                
                     // note for ios 17: there is a modifier that reduces this spacing
@@ -419,7 +418,7 @@ struct ScheduleView: View {
                 }
             
             
-        }.onAppear{
+        .onAppear{
             
             shiftStore.deleteOldScheduledShifts(in: viewContext)
             

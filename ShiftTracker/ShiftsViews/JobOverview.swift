@@ -94,7 +94,7 @@ struct JobOverview: View {
             
         }
         
-        NavigationStack(path: $navPath){
+
             ZStack(alignment: .bottomTrailing){
             List{
              
@@ -355,7 +355,7 @@ struct JobOverview: View {
             }
         }
             
-    }
+    
         
         
         

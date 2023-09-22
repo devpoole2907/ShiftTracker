@@ -28,8 +28,6 @@ struct MainWithSideBarView: View {
     @State private var path = NavigationPath()
     @State private var schedulePath = NavigationPath()
     
-    
-   // @StateObject var viewModel = ContentViewModel()
     @StateObject var jobSelectionModel = JobSelectionManager()
     @EnvironmentObject var navigationState: NavigationState
     @StateObject var scheduleModel = SchedulingViewModel()
@@ -38,23 +36,13 @@ struct MainWithSideBarView: View {
     @StateObject var shiftManager = ShiftDataManager.shared
     
     @EnvironmentObject var themeManager: ThemeDataManager
-   // @EnvironmentObject var locationManager: LocationDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
-  //  @EnvironmentObject var sortSelection: SortSelection
     
     private let notificationManager = ShiftNotificationManager.shared
     
     @Environment(\.managedObjectContext) private var context
     
-    init(/*currentTab: Binding<Tab>*/) {
-        // self._currentTab = currentTab
-       //  UITabBar.appearance().isHidden = true
-     }
-    
-    //@Binding var currentTab: Tab
-    
-    @State var offset: CGFloat = 0
-    @State var lastStoredOffset: CGFloat = 0
+
     
     @GestureState var gestureOffset: CGFloat = 0
     
@@ -70,23 +58,15 @@ struct MainWithSideBarView: View {
     
     
     var body: some View {
-        
-        let sideBarWidth = getRect().width - 90
-        
-        
-        
-
         ZStack{
-            NavigationView {
-           
-                    
-                    
-                    
-                    
                     ZStack(alignment: .bottom){
                         Group{
                         TabView(selection: $navigationState.currentTab) {
-                            ContentView()
+                            NavigationStack{
+                                ContentView()
+                                    .blur(radius: navigationState.calculatedBlur)
+                                    .allowsHitTesting(!navigationState.showMenu)
+                            }
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(ContentViewModel.shared)
                                 .environmentObject(jobSelectionModel)
@@ -98,7 +78,11 @@ struct MainWithSideBarView: View {
                             
                             
                             ZStack(alignment: .bottomTrailing) {
-                                JobOverview(navPath: $path)
+                                NavigationStack(path: $path){
+                                    JobOverview(navPath: $path)
+                                        .blur(radius: navigationState.calculatedBlur)
+                                        .allowsHitTesting(!navigationState.showMenu)
+                                }
                                     .environment(\.managedObjectContext, context)
                                     .environmentObject(jobSelectionModel)
                                     .environmentObject(navigationState)
@@ -150,8 +134,13 @@ struct MainWithSideBarView: View {
                                 
                             }.tag(Tab.timesheets)
                             
+                              
                             
-                            ScheduleView(navPath: $schedulePath)
+                            NavigationStack(path: $schedulePath){
+                                ScheduleView(navPath: $schedulePath)
+                                    .blur(radius: navigationState.calculatedBlur)
+                                    .allowsHitTesting(!navigationState.showMenu)
+                            }
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(navigationState)
                                 .environmentObject(jobSelectionModel)
@@ -160,8 +149,11 @@ struct MainWithSideBarView: View {
                                 .navigationBarTitleDisplayMode(.inline)
                             
                                 .tag(Tab.schedule)
-                            
-                            SettingsView(navPath: $settingsPath)
+                            NavigationStack(path: $settingsPath){
+                                SettingsView(navPath: $settingsPath)
+                                    .blur(radius: navigationState.calculatedBlur)
+                                    .allowsHitTesting(!navigationState.showMenu)
+                            }
                                 .environment(\.managedObjectContext, context)
                                 .environmentObject(navigationState)
                                 .environmentObject(SettingsViewModel.shared)
@@ -170,7 +162,12 @@ struct MainWithSideBarView: View {
                                 .tag(Tab.settings)
                             
                             
-                        }.ignoresSafeArea(.keyboard)
+                        }
+                        
+                 
+                        .ignoresSafeArea(.keyboard)
+                            
+                           
                         
                             VStack(spacing: 0){
                                 HStack(spacing: 0) {
@@ -224,15 +221,12 @@ struct MainWithSideBarView: View {
                                 .ignoresSafeArea(.keyboard)
                                 
                             }.ignoresSafeArea(.keyboard)
+                            
+                                .blur(radius: Double((navigationState.offset / navigationState.sideBarWidth) * 4))
                         
                     }  .frame(width: getRect().width)
                             .ignoresSafeArea(.keyboard)
-                     
-                            
-                            .blur(radius: Double((offset / sideBarWidth) * 4))
-                        
-                            .allowsHitTesting(!navigationState.showMenu)
-                        
+
                         
                         
                        SideMenu(currentTab: $navigationState.currentTab)
@@ -242,9 +236,9 @@ struct MainWithSideBarView: View {
                             .environmentObject(jobSelectionModel)
                             .environmentObject(themeManager)
                         
-                            .frame(width: getRect().width + 12 + sideBarWidth)
-                           .offset(x: -sideBarWidth / 2)
-                            .offset(x: offset > 0 ? offset + 12 : 0)
+                            .frame(width: getRect().width + 12 + navigationState.sideBarWidth)
+                            .offset(x: -navigationState.sideBarWidth / 2)
+                           .offset(x: navigationState.offset > 0 ? navigationState.offset + 12 : 0)
                         
                         
                         if (navigationState.currentTab == .settings && settingsPath.isEmpty) || (navigationState.currentTab == .home || navigationState.currentTab == .schedule) || (navigationState.currentTab == .timesheets && path.isEmpty) {
@@ -296,17 +290,18 @@ struct MainWithSideBarView: View {
                 
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarHidden(true)
-                
-            }.ignoresSafeArea(.keyboard)
-            .animation(.easeOut, value: offset == 0)
+          
+            .animation(.easeOut, value: navigationState.offset == 0)
             .onChange(of: navigationState.showMenu) { newValue in
-                if navigationState.showMenu && offset == 0{
-                    offset = sideBarWidth
-                    lastStoredOffset = offset
-                }
-                if !navigationState.showMenu && offset == sideBarWidth{
-                    offset = 0
-                    lastStoredOffset = 0
+                withAnimation {
+                    if navigationState.showMenu && navigationState.offset == 0{
+                        navigationState.offset = navigationState.sideBarWidth
+                        navigationState.lastStoredOffset = navigationState.offset
+                    }
+                    if !navigationState.showMenu && navigationState.offset == navigationState.sideBarWidth{
+                        navigationState.offset = 0
+                        navigationState.lastStoredOffset = 0
+                    }
                 }
             }
             .onChange(of: gestureOffset) { newValue in
@@ -374,14 +369,6 @@ struct MainWithSideBarView: View {
                 
             }
             
-            /*     .onAppear{ authModel.checkUserLoginStatus()
-             if !isSubscriptionChecked {
-             checkSubscriptionStatus()
-             isSubscriptionChecked = true
-             }
-             
-             } */
-            
             if isFirstLaunch {
                 IntroMainView(isFirstLaunch: $isFirstLaunch).environmentObject(ContentViewModel.shared).environmentObject(jobSelectionModel)
                     .onAppear {
@@ -394,16 +381,12 @@ struct MainWithSideBarView: View {
                 
             }
         }.ignoresSafeArea(.keyboard)
-            //.onAppear{ authModel.checkUserLoginStatus() }
-        
-        
-        
-        
+ 
     }
     
     func onChange(){
         let sideBarWidth = getRect().width - 90
-        offset = (gestureOffset != 0 ) ? (gestureOffset + lastStoredOffset < sideBarWidth ? gestureOffset + lastStoredOffset : offset) : offset
+        navigationState.offset = (gestureOffset != 0 ) ? (gestureOffset + navigationState.lastStoredOffset < sideBarWidth ? gestureOffset + navigationState.lastStoredOffset : navigationState.offset) : navigationState.offset
     }
     
 func onEnd(value: DragGesture.Value) {
@@ -413,15 +396,15 @@ func onEnd(value: DragGesture.Value) {
 
     withAnimation {
         if (translation + velocity / 2 > sideBarWidth / 2) {
-            offset = sideBarWidth
+            navigationState.offset = sideBarWidth
             navigationState.showMenu = true
         } else {
-            offset = 0
+            navigationState.offset = 0
             navigationState.showMenu = false
         }
     }
 
-    lastStoredOffset = offset
+    navigationState.lastStoredOffset = navigationState.offset
 }
     
     @ViewBuilder

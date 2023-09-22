@@ -32,12 +32,7 @@ struct SettingsView: View {
         
         let backgroundColor: Color = colorScheme == .dark ? .white : .black
         let textColor: Color = colorScheme == .dark ? .black : .white
-        
-        
-        
-        
-        
-        NavigationStack(path: $navPath){
+
             ScrollView{
                 VStack{
                     if !purchaseManager.hasUnlockedPro{
@@ -312,7 +307,7 @@ struct SettingsView: View {
                     }
                 }
             
-        }
+        
     }
     
 

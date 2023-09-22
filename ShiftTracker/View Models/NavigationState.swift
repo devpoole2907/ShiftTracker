@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 class NavigationState: ObservableObject {
     static let shared = NavigationState()
@@ -18,6 +19,26 @@ class NavigationState: ObservableObject {
     @Published var hideTabBar = false
     
     @Published var activeSheet: ActiveSheet?
+    
+    @Published var offset: CGFloat = 0
+    @Published var lastStoredOffset: CGFloat = 0
+    
+    @Published var sideBarWidth = UIScreen.main.bounds.width - 90
+    
+    
+    @Published var calculatedBlur: Double = 0
+        
+        // Initialize or setup your publisher chain
+        init() {
+            // Your existing initialization code
+            
+            // Recalculate blur whenever offset or sideBarWidth changes
+            Publishers.CombineLatest($offset, $sideBarWidth)
+                .map { offset, sideBarWidth in
+                    return Double((offset / sideBarWidth) * 4)
+                }
+                .assign(to: &$calculatedBlur)
+        }
 
     
 }

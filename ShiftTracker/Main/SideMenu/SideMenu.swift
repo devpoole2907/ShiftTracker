@@ -43,9 +43,6 @@ struct SideMenu: View {
     
     var body: some View {
         
-        
-        let jobBackground: Color = colorScheme == .dark ? Color(.systemGray5) : .black
-        
         let proColor: Color = colorScheme == .dark ? .orange : .cyan
         
         
@@ -345,10 +342,6 @@ struct SideMenu_Previews: PreviewProvider {
     }
 }
 
-extension View {
-    func getRect()->CGRect {
-        return UIScreen.main.bounds
-    }
-}
+
 
 
