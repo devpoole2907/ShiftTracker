@@ -20,6 +20,8 @@ struct JobView: View {
     
     var job: Job?
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     @EnvironmentObject private var locationManager: LocationDataManager
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
@@ -154,7 +156,7 @@ struct JobView: View {
             ZStack(alignment: .bottomTrailing){
                 // Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 
-                backgroundColor.opacity(hasAppeared ? 0 : 1)
+                themeManager.contentDynamicBackground.opacity(hasAppeared ? 0 : 1)
                     
                     .edgesIgnoringSafeArea(.all)
                 

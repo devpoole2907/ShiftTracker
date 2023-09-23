@@ -46,7 +46,7 @@ struct SettingsCheckView: View {
             
         }.scrollContentBackground(.hidden)
         
-            .background(themeManager.settingsGradient)
+            .background(themeManager.settingsDynamicBackground.ignoresSafeArea())
     }
     
     

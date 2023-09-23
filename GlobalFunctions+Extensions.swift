@@ -497,3 +497,55 @@ extension View {
         return UIScreen.main.bounds
     }
 }
+
+
+struct DynamicBackgroundModifier: ViewModifier {
+    
+   // this unfortunately causes severe visual bugs when changing tabs. will leave the code here for potential future fix but dont use it for now
+    
+    @EnvironmentObject var themeManager: ThemeDataManager
+    @EnvironmentObject var navigationState: NavigationState
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    func body(content: Content) -> some View {
+        
+        if themeManager.pureDark  {
+            
+            content.background{
+               Color.clear.ignoresSafeArea()
+            }
+            
+        } else {
+            
+            switch navigationState.currentTab {
+                
+            case .home:
+                content.background {
+                    themeManager.contentViewGradient.ignoresSafeArea()
+                }
+            case .timesheets:
+                content.background {
+                    themeManager.jobOverviewGradient.ignoresSafeArea()
+                }
+            case .schedule:
+                content.background {
+                    themeManager.scheduleGradient.ignoresSafeArea()
+                }
+            case .settings:
+                content.background {
+                    themeManager.settingsGradient.ignoresSafeArea()
+                }
+            }
+            
+        }
+        
+       
+    }
+}
+
+extension View {
+    func dynamicBackground(colorScheme: ColorScheme? = nil) -> some View {
+        self.modifier(DynamicBackgroundModifier())
+    }
+}

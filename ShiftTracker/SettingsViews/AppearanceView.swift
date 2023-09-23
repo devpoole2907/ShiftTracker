@@ -48,6 +48,18 @@ struct AppearanceView: View {
                         }
                     
                 }
+                
+                Toggle(isOn: $themeManager.pureDark) {
+                
+                SettingsRow(icon: "moon.haze.fill", title: "Pure Dark Mode")
+                
+                
+            }.toggleStyle(CustomToggleStyle())
+                   
+                .padding()
+                .glassModifier()
+                
+                
             }.padding(.horizontal)
         }//.scrollContentBackground(.hidden)
             

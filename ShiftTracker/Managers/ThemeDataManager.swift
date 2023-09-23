@@ -86,6 +86,42 @@ class ThemeDataManager: ObservableObject {
         endPoint: .bottomTrailing
     )
     
+    @AppStorage("pureDarkMode") var pureDark: Bool = false
+    
+    // just doing it this way instead of using the modifier, the modifier causes black screen issues when changing tabs.
+    
+    var settingsDynamicBackground: AnyView {
+            if pureDark {
+                return AnyView(Color.clear)
+            } else {
+                return AnyView(settingsGradient)
+            }
+        }
+    
+    var contentDynamicBackground: AnyView {
+        if pureDark {
+            return AnyView(Color.clear)
+        } else {
+            return AnyView(contentViewGradient)
+        }
+    }
+    
+    var scheduleDynamicBackground: AnyView {
+        if pureDark {
+            return AnyView(Color.clear)
+        } else {
+            return AnyView(scheduleGradient)
+        }
+    }
+    
+    var overviewDynamicBackground: AnyView {
+        if pureDark {
+            return AnyView(Color.clear)
+        } else {
+            return AnyView(jobOverviewGradient)
+        }
+    }
+    
     
     @Published var earningsColor: Color {
         didSet {

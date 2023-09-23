@@ -9,6 +9,7 @@ import SwiftUI
 import UserNotifications
 import CoreData
 import Haptics
+import SwiftUIIntrospect
 
 struct MainWithSideBarView: View {
     
@@ -69,12 +70,8 @@ struct MainWithSideBarView: View {
                                 .allowsHitTesting(!navigationState.showMenu)
                             
                                 .background {
-                                    Rectangle().foregroundStyle(
-                                        
-                                        themeManager.contentViewGradient
                                     
-                                    
-                                    ).blur(radius: 50).ignoresSafeArea()
+                                    themeManager.contentDynamicBackground.ignoresSafeArea()
                                 }
                             
                         
@@ -98,12 +95,8 @@ struct MainWithSideBarView: View {
                                     .allowsHitTesting(!navigationState.showMenu)
                                 
                                     .background {
-                                        Rectangle().foregroundStyle(
-                                            
-                                            themeManager.jobOverviewGradient
                                         
-                                        
-                                        ).blur(radius: 50).ignoresSafeArea()
+                                        themeManager.overviewDynamicBackground.ignoresSafeArea()
                                     }
                                 
                                 
@@ -167,12 +160,8 @@ struct MainWithSideBarView: View {
                                 .allowsHitTesting(!navigationState.showMenu)
                             
                                 .background {
-                                    Rectangle().foregroundStyle(
-                                        
-                                        themeManager.scheduleGradient
                                     
-                                    
-                                    ).blur(radius: 50).ignoresSafeArea()
+                                    themeManager.scheduleDynamicBackground.ignoresSafeArea()
                                 }
                             
                         }
@@ -190,12 +179,8 @@ struct MainWithSideBarView: View {
                                 .allowsHitTesting(!navigationState.showMenu)
                                
                                 .background {
-                                    Rectangle().foregroundStyle(
-                                        
-                                        themeManager.settingsGradient
                                     
-                                    
-                                    ).blur(radius: 50).ignoresSafeArea()
+                                    themeManager.settingsDynamicBackground.ignoresSafeArea()
                                 }
                             
                         }

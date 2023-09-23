@@ -601,9 +601,7 @@ struct DetailView: View {
                 
                     .background {
                         if !presentedAsSheet {
-                            Rectangle().foregroundStyle( themeManager.jobOverviewGradient).ignoresSafeArea()
-                            
-                                .blur(radius: 50)
+                            themeManager.overviewDynamicBackground.ignoresSafeArea()
                         } else {
                             Color.clear.ignoresSafeArea()
                         }
@@ -616,7 +614,7 @@ struct DetailView: View {
                 
                 HStack(alignment: .center){
                     
-                    if let shift = shift {
+                    if shift != nil {
                         
                         Menu {
                             
