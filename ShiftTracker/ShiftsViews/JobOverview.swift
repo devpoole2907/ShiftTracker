@@ -240,15 +240,7 @@ struct JobOverview: View {
                 
             }.scrollContentBackground(.hidden)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                    .background {
-                        
-                       
-             
-                        Rectangle().foregroundStyle( activeSheet != nil ? Color.black : Color.clear).ignoresSafeArea()
-                            
-                         
-                       
-                    }
+                   
                 
             .customSectionSpacing()
             
