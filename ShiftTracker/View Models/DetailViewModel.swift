@@ -38,6 +38,8 @@ class DetailViewModel: ObservableObject {
     
     @Published var showingDeleteAlert = false
     
+    var originalJob: Job? = nil // used to determine if the job associated with the shift is changed/different from initialisation
+    
     
     
     // for adding shift:
@@ -62,6 +64,7 @@ class DetailViewModel: ObservableObject {
         self.shiftID = shiftID
         self.isEditing = isEditing
         self.job = job
+        self.originalJob = job
     }
     
     init(shift: OldShift){
@@ -85,6 +88,7 @@ class DetailViewModel: ObservableObject {
         self.overtimeRate = shift.overtimeRate
         self.overtimeAppliedAfter = shift.timeBeforeOvertime
         self.job = shift.job
+        self.originalJob = shift.job
         
     }
     

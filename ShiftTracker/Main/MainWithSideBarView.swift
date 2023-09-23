@@ -350,7 +350,7 @@ struct MainWithSideBarView: View {
                         navigationState.offset = 0
                         navigationState.lastStoredOffset = 0
                     }
-                }
+               }
             }
             .onChange(of: gestureOffset) { newValue in
                 onChange()
@@ -434,6 +434,7 @@ struct MainWithSideBarView: View {
     
     func onChange(){
         let sideBarWidth = getRect().width - 90
+        
         navigationState.offset = (gestureOffset != 0 ) ? (gestureOffset + navigationState.lastStoredOffset < sideBarWidth ? gestureOffset + navigationState.lastStoredOffset : navigationState.offset) : navigationState.offset
     }
     

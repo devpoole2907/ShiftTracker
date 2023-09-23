@@ -66,7 +66,8 @@ struct ExportSquare: View {
                     .bold()
                     .font(.subheadline)
                 }
-                .padding(.horizontal, 26)
+                .frame(maxWidth: .infinity)
+              //  .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .glassModifier(cornerRadius: 12, applyPadding: false)
                 .contentShape(Rectangle())

@@ -19,6 +19,8 @@ struct DetailView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     
+    @EnvironmentObject var jobSelectionManager: JobSelectionManager
+    
     // we need to fire this when we save a shift, as that will tell shiftslist to update sorts when a shift is saved
     @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     
@@ -627,17 +629,24 @@ struct DetailView: View {
                                 }
                             }
                             
-                            Picker("Change Job", selection: $viewModel.job){
-                                ForEach(jobs, id: \.self) { job in
-                                    HStack{
-                                        Image(systemName: job.icon ?? "briefcase.circle")
-                                        Text(job.name ?? "Unknown")
-                                        Text("Cockadoodle")
+                            Menu {
+                                
+                                ForEach(jobs, id: \.objectID) { job in
+                                    Button(action: {viewModel.job = job}) {
+                                        HStack{
+                                            Image(systemName: job.icon ?? "briefcase.circle")
+                                            Text(job.name ?? "Unknown")
+                                        }.tag(job)
                                     }
                                     
                                     
                                 }
-                            }.pickerStyle(.menu)
+                                
+                            } label: {
+                                Text("Change Job")
+                            }
+                            
+                          
                             
                                         
                                         } label: {
@@ -667,6 +676,27 @@ struct DetailView: View {
                                     viewModel.saveShift(shift, in: viewContext)
                                     
                                     savedShift = true
+                                    
+                                    if viewModel.job != viewModel.originalJob {
+                                        // if the job has been changed, dismiss the view then change selected job to the new one
+                                        
+                                        withAnimation {
+                                            dismiss()
+                                            
+                                            guard let job = viewModel.job else { return }
+                                            
+                                            CustomConfirmationAlert(action: {
+                                                
+                                                jobSelectionManager.selectJob(job, with: jobs, shiftViewModel: ContentViewModel.shared)
+                                                
+                                            }, cancelAction: nil, title: "Switch to this job?").showAndStack()
+                                            
+                                           
+                                            
+                                        }
+                                        
+                                    }
+                                    
                                     
                                 }) {
                                     Text("Done").bold()
@@ -721,7 +751,7 @@ struct DetailView: View {
                         }) {
                             Image(systemName: "folder.badge.plus")
                                 .bold()
-                            // .padding()
+                    
                         }
                         .disabled(viewModel.totalPay <= 0 || !viewModel.areAllTempBreaksWithin)
                     }
