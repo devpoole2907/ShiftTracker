@@ -96,7 +96,6 @@
 		1AE3845B29D444800002378F /* TabBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845A29D444800002378F /* TabBottomView.swift */; };
 		1AE3845D29D447DE0002378F /* CustomTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AE3845C29D447DE0002378F /* CustomTabView.swift */; };
 		1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AEBFE002A5132B900884DBF /* StatsSquare.swift */; };
-		1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */ = {isa = PBXBuildFile; productRef = 1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */; };
 		1AF3A96329E2773F00D1A7B5 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		7C0AC12A2A88EB360016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
 		7C0AC12B2A88EB3F0016456E /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
@@ -466,7 +465,6 @@
 			files = (
 				1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */,
 				1A4E611029C843ED008AC8ED /* SlideOverCard in Frameworks */,
-				1AEBFE042A51669900884DBF /* ScalingHeaderScrollView in Frameworks */,
 				1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */,
 				1A4E610B29C8081B008AC8ED /* SwiftUICharts in Frameworks */,
 				1A12241029C92D2E0036D04C /* TabBar in Frameworks */,
@@ -1003,7 +1001,6 @@
 				1A57D1F829CA751500305001 /* Haptics */,
 				1A34588629D18D8800CADDD8 /* SwiftCSV */,
 				1A4AB18629FCFE6D00AA62BC /* PopupView */,
-				1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */,
 			);
 			productName = ShiftTracker;
 			productReference = 1A9855D029C55F8A003F512C /* ShiftTracker.app */;
@@ -1164,8 +1161,6 @@
 				1A34588529D18D8800CADDD8 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
 				1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */,
 				1A4AB18529FCFE6D00AA62BC /* XCRemoteSwiftPackageReference "PopupView" */,
-				1AEBFE022A51669800884DBF /* XCRemoteSwiftPackageReference "ScalingHeaderScrollView" */,
-				7C52437A2ABEAD6100356B6C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 1A9855D129C55F8A003F512C /* Products */;
 			projectDirPath = "";
@@ -2236,22 +2231,6 @@
 				minimumVersion = 0.2.1;
 			};
 		};
-		1AEBFE022A51669800884DBF /* XCRemoteSwiftPackageReference "ScalingHeaderScrollView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/exyte/ScalingHeaderScrollView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.5;
-			};
-		};
-		7C52437A2ABEAD6100356B6C /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2289,11 +2268,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */;
 			productName = WatchDatePicker;
-		};
-		1AEBFE032A51669900884DBF /* ScalingHeaderScrollView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1AEBFE022A51669800884DBF /* XCRemoteSwiftPackageReference "ScalingHeaderScrollView" */;
-			productName = ScalingHeaderScrollView;
 		};
 /* End XCSwiftPackageProductDependency section */
 

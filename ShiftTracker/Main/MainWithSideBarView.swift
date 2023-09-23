@@ -9,7 +9,6 @@ import SwiftUI
 import UserNotifications
 import CoreData
 import Haptics
-import Introspect
 
 struct MainWithSideBarView: View {
     
