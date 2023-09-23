@@ -210,6 +210,7 @@
 		7CD8A3412A88A48F0011A1C0 /* JobChartWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7CD8A3342A88A48C0011A1C0 /* JobChartWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7CD8A3472A88A5650011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
+		7CD907482ABEB36200D2862D /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 7CD907472ABEB36200D2862D /* SwiftUIIntrospect */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -463,6 +464,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CD907482ABEB36200D2862D /* SwiftUIIntrospect in Frameworks */,
 				1A34588729D18D8800CADDD8 /* SwiftCSV in Frameworks */,
 				1A4E611029C843ED008AC8ED /* SlideOverCard in Frameworks */,
 				1A4AB18729FCFE6D00AA62BC /* PopupView in Frameworks */,
@@ -1001,6 +1003,7 @@
 				1A57D1F829CA751500305001 /* Haptics */,
 				1A34588629D18D8800CADDD8 /* SwiftCSV */,
 				1A4AB18629FCFE6D00AA62BC /* PopupView */,
+				7CD907472ABEB36200D2862D /* SwiftUIIntrospect */,
 			);
 			productName = ShiftTracker;
 			productReference = 1A9855D029C55F8A003F512C /* ShiftTracker.app */;
@@ -1161,6 +1164,7 @@
 				1A34588529D18D8800CADDD8 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
 				1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */,
 				1A4AB18529FCFE6D00AA62BC /* XCRemoteSwiftPackageReference "PopupView" */,
+				7CD907462ABEB36200D2862D /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 1A9855D129C55F8A003F512C /* Products */;
 			projectDirPath = "";
@@ -2231,6 +2235,14 @@
 				minimumVersion = 0.2.1;
 			};
 		};
+		7CD907462ABEB36200D2862D /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2268,6 +2280,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1AB7C88629FA5B1E0008B3B3 /* XCRemoteSwiftPackageReference "watch-date-picker" */;
 			productName = WatchDatePicker;
+		};
+		7CD907472ABEB36200D2862D /* SwiftUIIntrospect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7CD907462ABEB36200D2862D /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = SwiftUIIntrospect;
 		};
 /* End XCSwiftPackageProductDependency section */
 

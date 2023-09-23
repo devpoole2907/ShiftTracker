@@ -71,15 +71,13 @@ struct MainWithSideBarView: View {
                                 .background {
                                     Rectangle().foregroundStyle(
                                         
-                                        LinearGradient(
-                                                    gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
-                                                    startPoint: .bottomLeading,
-                                                    endPoint: .topTrailing
-                                                )
+                                        themeManager.contentViewGradient
                                     
                                     
                                     ).blur(radius: 50).ignoresSafeArea()
                                 }
+                            
+                        
                         }
                         .environment(\.managedObjectContext, context)
                         .environmentObject(ContentViewModel.shared)
@@ -102,11 +100,7 @@ struct MainWithSideBarView: View {
                                     .background {
                                         Rectangle().foregroundStyle(
                                             
-                                            LinearGradient(
-                                                        gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
-                                                        startPoint: .top,
-                                                        endPoint: .bottom
-                                                    )
+                                            themeManager.jobOverviewGradient
                                         
                                         
                                         ).blur(radius: 50).ignoresSafeArea()
@@ -175,11 +169,7 @@ struct MainWithSideBarView: View {
                                 .background {
                                     Rectangle().foregroundStyle(
                                         
-                                        LinearGradient(
-                                                    gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                )
+                                        themeManager.scheduleGradient
                                     
                                     
                                     ).blur(radius: 50).ignoresSafeArea()
@@ -202,11 +192,7 @@ struct MainWithSideBarView: View {
                                 .background {
                                     Rectangle().foregroundStyle(
                                         
-                                        LinearGradient(
-                                                    gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
-                                                    startPoint: .bottomLeading,
-                                                    endPoint: .topTrailing
-                                                )
+                                        themeManager.settingsGradient
                                     
                                     
                                     ).blur(radius: 50).ignoresSafeArea()

@@ -16,6 +16,7 @@ struct TipView: View {
     @State private var showingProView = false
     
     @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     @State private var products: [Product] = []
     
@@ -73,7 +74,8 @@ struct TipView: View {
                 }
 
                 .listRowSeparator(.hidden)
-                }
+                }.scrollContentBackground(.hidden)
+                    .background(themeManager.settingsGradient)
                 .task {
                     do {
                         try await self.loadProducts()

@@ -26,6 +26,8 @@ struct HistoryPagesView: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
     @StateObject var historyModel = HistoryViewModel()
     
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
@@ -356,7 +358,15 @@ struct HistoryPagesView: View {
                 
             }.scrollContentBackground(.hidden)
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+  
+                .background {
+                    Rectangle().foregroundStyle(
+                        
+                        themeManager.jobOverviewGradient
+                    
+                    
+                    ).blur(radius: 50).ignoresSafeArea()
+                }
             
             // custom modifier to reduce section spacing on 17 only, commented out due to the bug mentioned above
       //  .customSectionSpacing()

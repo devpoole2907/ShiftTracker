@@ -62,6 +62,30 @@ class ThemeDataManager: ObservableObject {
     
     @Published var editingThemeName: String = "Theme Name"
     
+    let settingsGradient = LinearGradient(
+        gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
+    
+    let contentViewGradient = LinearGradient(
+        gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
+    
+    let jobOverviewGradient = LinearGradient(
+        gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
+        startPoint: .top,
+        endPoint: .bottom
+    )
+    
+    let scheduleGradient =  LinearGradient(
+        gradient: Gradient(colors: [Color(.systemGray6), Color(.systemGray5), Color(.systemGray4)]),
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+    
     
     @Published var earningsColor: Color {
         didSet {

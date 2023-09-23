@@ -17,6 +17,7 @@ struct ShiftsList: View {
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var shiftStore: ShiftStore
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     
@@ -102,7 +103,15 @@ struct ShiftsList: View {
             
             .scrollContentBackground(.hidden)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+          
+                    .background {
+                        Rectangle().foregroundStyle(
+                            
+                            themeManager.jobOverviewGradient
+                        
+                        
+                        ).blur(radius: 50).ignoresSafeArea()
+                    }
 
             .onAppear {
                 

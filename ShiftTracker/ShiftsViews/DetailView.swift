@@ -599,7 +599,7 @@ struct DetailView: View {
                 
                     .background {
                         if !presentedAsSheet {
-                            Rectangle().foregroundStyle( Color(.systemGray6).gradient).ignoresSafeArea()
+                            Rectangle().foregroundStyle( themeManager.jobOverviewGradient).ignoresSafeArea()
                             
                                 .blur(radius: 50)
                         } else {

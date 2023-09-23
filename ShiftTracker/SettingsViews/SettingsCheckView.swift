@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsCheckView: View {
     
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     var image: String
     var headline: String
@@ -43,7 +44,9 @@ struct SettingsCheckView: View {
                 .padding(.horizontal, 40)
                 .listRowBackground(Color.clear)
             
-        }
+        }.scrollContentBackground(.hidden)
+        
+            .background(themeManager.settingsGradient)
     }
     
     

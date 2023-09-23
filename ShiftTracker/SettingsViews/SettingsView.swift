@@ -251,7 +251,7 @@ struct SettingsView: View {
                         
                      //   ThemeView(showingProView: $viewModel.showingProView)
                         
-                        ThemesList(showingProView: $viewModel.showingProView) .background(Color(.systemGroupedBackground))
+                        ThemesList(showingProView: $viewModel.showingProView) .background(themeManager.settingsGradient)
                         
                         
                     }
@@ -259,24 +259,24 @@ struct SettingsView: View {
                         
                         SettingsCheckView(image: locationManager.authorizationStatus != .authorizedAlways ? "exclamationmark.triangle" : "checkmark.circle", headline: locationManager.authorizationStatus != .authorizedAlways ? "Location settings are not set to always." : "You're all set.", subheadline: locationManager.authorizationStatus != .authorizedAlways ? "Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker." : "Location settings are set to always.", checkmarkColor: locationManager.authorizationStatus != .authorizedAlways ? .orange : .green)
                     
-                        .navigationTitle("Location") .background(Color(.systemGroupedBackground))
+                        .navigationTitle("Location") .background(themeManager.settingsGradient)
                         
                     } else if i == 2 {
                         
-                        SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notifications are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange) .background(Color(.systemGroupedBackground))  .navigationTitle("Notifications")
+                        SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notifications are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange) .background(themeManager.settingsGradient) .navigationTitle("Notifications")
                         
                     } else if i == 3 {
                         
-                        AppearanceView() .background(Color(.systemGroupedBackground))
+                        AppearanceView().background(themeManager.settingsGradient)
                         
                     } else if i == 4 {
                         
-                        TipView() .background(Color(.systemGroupedBackground))
+                        TipView() .background(themeManager.settingsGradient)
                         
                         
                     } else {
                         
-                        AppIconView().environmentObject(iconManager) .background(Color(.systemGroupedBackground))
+                        AppIconView().environmentObject(iconManager) .background(themeManager.settingsGradient)
                         
                     }
                     
