@@ -64,7 +64,7 @@ struct SettingsView: View {
                                                 .foregroundColor(textColor)
                                         }
                                     }
-                                    .frame(maxWidth: UIScreen.main.bounds.width - 20)
+                                    .frame(maxWidth: getRect().width - 20)
                                 }
                             }
                         }
@@ -235,8 +235,8 @@ struct SettingsView: View {
                 Spacer()
                 
                 
-            }//.scrollContentBackground(.hidden)
-            .background(Color(.systemGroupedBackground))
+            }.scrollContentBackground(.hidden)
+          //  .background(Color(.systemGroupedBackground))
        
             
                 .onAppear {
@@ -263,7 +263,7 @@ struct SettingsView: View {
                         
                     } else if i == 2 {
                         
-                        SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notification are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange) .background(Color(.systemGroupedBackground))  .navigationTitle("Notifications")
+                        SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notifications are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange) .background(Color(.systemGroupedBackground))  .navigationTitle("Notifications")
                         
                     } else if i == 3 {
                         

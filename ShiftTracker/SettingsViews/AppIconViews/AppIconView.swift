@@ -55,7 +55,7 @@ struct AppIconView: View {
                                                 .foregroundColor(textColor)
                                         }
                                     }
-                                    .frame(maxWidth: UIScreen.main.bounds.width - 20)
+                                    .frame(maxWidth: getRect().width - 20)
                                 }
                             }
                         }

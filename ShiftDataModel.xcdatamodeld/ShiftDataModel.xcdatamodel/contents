@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="23A339" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="23A344" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="Break" representedClassName="Break" syncable="YES" codeGenerationType="class">
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isUnpaid" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -38,6 +38,7 @@
         <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="locations" inverseEntity="Job"/>
     </entity>
     <entity name="OldShift" representedClassName="OldShift" syncable="YES" codeGenerationType="class">
+        <attribute name="addTipsToTotal" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="breakDuration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="breakElapsed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="breakEndDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

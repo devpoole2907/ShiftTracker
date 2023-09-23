@@ -90,14 +90,14 @@ struct TimerView: View {
                 .fill(Material.ultraThinMaterial)
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                 .overlay {
-                    //if colorScheme == .light {
+               
                         RoundedRectangle(cornerRadius: 12)
                          .stroke(LinearGradient(colors: gradientColors,
                          startPoint: .topLeading,
                          endPoint: .bottomTrailing))
-                   // }
+              
                 }
-                .frame(width: UIScreen.main.bounds.width - 60)
+                .frame(width: getRect().width - 60)
                
         VStack(alignment: .center, spacing: 5) {
             ZStack {
@@ -118,7 +118,7 @@ struct TimerView: View {
                             .font(.caption)
                             .foregroundColor(.gray)
                             .bold()
-                    }.frame(maxWidth: UIScreen.main.bounds.width / 1.5 )
+                    }.frame(maxWidth: getRect().width / 1.5 )
                 }
             }
             .frame(maxWidth: .infinity)

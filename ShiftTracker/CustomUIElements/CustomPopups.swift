@@ -40,6 +40,8 @@ struct OkButtonPopup: CentrePopup {
         
         .glassModifier(cornerRadius: 30)
         .triggersHapticFeedbackWhenAppear()
+        
+   //     .frame(maxWidth: getRect().width - 50)
     }
     
     func createTitle() -> some View {
@@ -101,6 +103,10 @@ struct CustomConfirmationAlert: CentrePopup {
         .glassModifier(cornerRadius: 30)
        // .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
+        
+     //   .frame(maxWidth: getRect().width - 50)
+        
+        
     }
     
     func createCancelButton() -> some View {

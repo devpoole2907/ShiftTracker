@@ -106,8 +106,7 @@ struct ContentView: View {
                                 DispatchQueue.main.async {
                                     self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(86400), job: jobSelectionViewModel.fetchJob(in: context)!)
                                     
-                                    
-                                    //  DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+               
                                     navigationState.activeSheet = .detailSheet
                                     
                                 }
@@ -143,13 +142,18 @@ struct ContentView: View {
                 if viewModel.shift != nil && !viewModel.tempBreaks.isEmpty {
                     CurrentBreaksListView()
                 }
-            }//.scrollContentBackground(.hidden)
+            }
             
             
             
             .scrollContentBackground(.hidden)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+                    .background {
+                        
+                        Color.clear
+                       
+                       
+                    }
             
                 .toolbar{
                     ToolbarItemGroup(placement: .keyboard){

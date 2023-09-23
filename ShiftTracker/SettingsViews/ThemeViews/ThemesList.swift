@@ -94,7 +94,7 @@ struct ThemesList: View {
                 
                 .sheet(item: $activeSheet, onDismiss: { themeToEdit = nil }) { sheet in
                     switch sheet {
-                    case .infoSheet:
+                    case .infoSheet: // old
                         ThemesGuideView()
                             .presentationDetents([.fraction(0.8)])
                             .presentationBackground(.ultraThinMaterial)
@@ -157,22 +157,7 @@ struct ThemesList: View {
             
             
         } .navigationTitle("Themes")
-        
-            .toolbar {
-                
-                ToolbarItem(placement: .topBarTrailing){
-                    Button(action: {
-                        
-                        activeSheet = .infoSheet
-                        
-                    }){
-                        Image(systemName: "info.circle").customAnimatedSymbol(value: $activeSheet)
-                            .bold()
-                            
-                    }
-                }
-                
-            }
+    
         
         
             .onAppear {
@@ -186,16 +171,6 @@ struct ThemesList: View {
                     
                 }
                 
-                else if isFirstAppear {
-                    
-                  
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
-                        activeSheet = .infoSheet
-                        
-                        isFirstAppear = false
-                    }
-                    
-                }
             }
         
     }

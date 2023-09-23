@@ -473,6 +473,24 @@ extension View {
     }
 }
 
+struct CustomListSectionSpacingModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *){
+            content.listSectionSpacing(.compact)
+        } else {
+            content
+        }
+    }
+}
+
+extension View {
+    
+    func customSectionSpacing() -> some View {
+        self.modifier(CustomListSectionSpacingModifier())
+    }
+    
+}
+
 
 extension View {
     func getRect()->CGRect {

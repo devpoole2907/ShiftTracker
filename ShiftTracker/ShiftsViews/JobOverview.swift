@@ -210,9 +210,11 @@ struct JobOverview: View {
                             
                         } else if value == 2 {
                             
-                            
-                            HistoryPagesView(navPath: $navPath)
-                            
+                            if #available(iOS 17.0, *){
+                                UpdatedHistoryPagesView(navPath: $navPath)
+                            } else {
+                                HistoryPagesView(navPath: $navPath)
+                            }
                             
                             
                             
@@ -238,9 +240,17 @@ struct JobOverview: View {
                 
             }.scrollContentBackground(.hidden)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+                    .background {
+                        
+                       
+             
+                        Rectangle().foregroundStyle( activeSheet != nil ? Color.black : Color.clear).ignoresSafeArea()
+                            
+                         
+                       
+                    }
                 
-           
+            .customSectionSpacing()
             
                 VStack{
                     
@@ -249,7 +259,9 @@ struct JobOverview: View {
                         
                         
                         Button(action: {
-                            activeSheet = .addShiftSheet
+                            withAnimation(.spring) {
+                                activeSheet = .addShiftSheet
+                            }
                         }){
                             
                             Image(systemName: "plus").customAnimatedSymbol(value: $activeSheet)

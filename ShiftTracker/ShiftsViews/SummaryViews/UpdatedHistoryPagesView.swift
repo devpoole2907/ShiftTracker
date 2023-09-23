@@ -1,8 +1,8 @@
 //
-//  HistoryPagesView.swift
+//  UpdatedHistoryPagesView.swift
 //  ShiftTracker
 //
-//  Created by James Poole on 26/08/23.
+//  Created by James Poole on 23/09/23.
 //
 
 import SwiftUI
@@ -10,10 +10,9 @@ import Charts
 import CoreData
 import Haptics
 
-// available for ios 16, had to split the views into HistoryPagesView and UpdatedHistoryPagesView due to a system bug in iOS 16
-// where it won't read the check for iOS 17 only code when apply annotation overlays. see the commented block of code below.
+// duplicated historypagesview due to a system bug (I think)
 
-struct HistoryPagesView: View {
+struct UpdatedHistoryPagesView: View {
     
     @Binding var navPath: NavigationPath
     
@@ -56,7 +55,7 @@ struct HistoryPagesView: View {
         case .month:
             formatter.dateFormat = "dd/M"
         case .year:
-            formatter.dateFormat = "MM/yy" 
+            formatter.dateFormat = "MM/yy"
         }
 
         return formatter
@@ -179,24 +178,20 @@ struct HistoryPagesView: View {
                                                 
                                                 let annotationView = ChartAnnotationView(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
                                           
-                                                
-                                                // ios 16 crashes when opening this page, ignoring the availability check below for some unknown reason.
-                                                // As a result this view has had to be duplicated until a future fix
-                                                
-                                           /*     if #available(iOS 17.0, *){
-                                                    ruleMark
-                                                        .annotation(alignment: .top, overflowResolution: .init(x: .fit, y: .disabled)){
+                                                    if #available(iOS 17.0, *){
+                                                        ruleMark
+                                                            .annotation(alignment: .top, overflowResolution: .init(x: .fit, y: .disabled)){
+                                                                
+                                                                annotationView
+                                                                
+                                                            }
+                                                    } else {
+                                                        ruleMark.annotation(alignment: .top){
                                                             
                                                             annotationView
                                                             
                                                         }
-                                                } else { */
-                                                    ruleMark.annotation(alignment: .top){
-                                                        
-                                                        annotationView
-                                                        
                                                     }
-                                              //  }
                                                 
                                                 
                                             }
@@ -221,8 +216,7 @@ struct HistoryPagesView: View {
                                 
                                 .chartXScale(domain: dateRange, type: .linear)
                                 
-                                  // old check to disable selection on 17 only, commented out due to the bug mentioned above
-                                //.customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
+                                    .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
                                 
                                     .chartXAxis {
                                         
@@ -260,50 +254,7 @@ struct HistoryPagesView: View {
                                             }
                                         }
                                     }
-                                
-                                   
-                                // this was initially made when this view was available for both iOS 17 and 16 to conditionally apply the old overlay method of selecting bars in the chart.
-                                
-                                // Due to a system bug, these views have had to be split into HistoryPagesView and UpdatedHistoryPagesView
-                                // will leave this custom modifier here for if in future the issue is fixed.
-                                
-                                    .conditionalChartOverlay(overlayEnabled: $isOverlayEnabled)  { proxy in
-                                            GeometryReader { innerProxy in
-                                                
-                                                Rectangle()
-                                                    .fill(.clear).contentShape(Rectangle())
-                                                    .gesture(
-                                                        DragGesture()
-                                                            .onChanged{ value in
-                                                                
-                                                                
-                                                                
-                                                                let location = value.location
-                                                                
-                                                                if let date: Date = proxy.value(atX: location.x){
-                                                                    let calendar = Calendar.current
-                                                                    print("date is \(date)")
-                                                                    
-                                                                    historyModel.chartSelection = date
-                                                                }
-                                                                
-                                                                
-                                                            } .onEnded{ value in
-                                                                
-                                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                                                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                                                        
-                                                                        
-                                                                        historyModel.chartSelection = nil
-                                                                        
-                                                                    }
-                                                                }
-                                                            }
-                                                    )
-                                                
-                                            }
-                                        
-                                    }
+            
                                 
                                     .padding(.vertical)
                                 
@@ -358,8 +309,7 @@ struct HistoryPagesView: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
             
-            // custom modifier to reduce section spacing on 17 only, commented out due to the bug mentioned above
-      //  .customSectionSpacing()
+        .customSectionSpacing()
      
 
             PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: groupedShifts.count)
@@ -483,15 +433,4 @@ struct HistoryPagesView: View {
 }
 
 
-struct HistoryPagesView_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        
-        HistoryPagesView(navPath: .constant(NavigationPath()))
-        
-        
-        
-    }
-    
-    
-}
+

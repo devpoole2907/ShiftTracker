@@ -30,6 +30,7 @@ class DetailViewModel: ObservableObject {
     @Published var overtimeAppliedAfter: Double = 0
     
     @Published var shift: OldShift?
+    @Published var job: Job?
     
     
     @Published var isAddingBreak: Bool = false
@@ -45,7 +46,7 @@ class DetailViewModel: ObservableObject {
     
     @Published var isEditing: Bool = false
     
-    init(selectedStartDate: Date = Date(), selectedEndDate: Date = Date().addingTimeInterval(60 * 60), selectedBreakStartDate: Date = Date(), selectedBreakEndDate: Date = Date().addingTimeInterval(10 * 60), selectedTaxPercentage: Double = 0.0, selectedHourlyPay: String = "0.00", shiftDuration: TimeInterval = 0.0, selectedTotalTips: String = "0.00", addTipsToTotal: Bool = false, payMultiplier: Double = 1.0, multiplierEnabled: Bool = false, notes: String = "", selectedTags: Set<Tag> = [], shiftID: UUID = UUID(), isEditing: Bool = false) {
+    init(selectedStartDate: Date = Date(), selectedEndDate: Date = Date().addingTimeInterval(60 * 60), selectedBreakStartDate: Date = Date(), selectedBreakEndDate: Date = Date().addingTimeInterval(10 * 60), selectedTaxPercentage: Double = 0.0, selectedHourlyPay: String = "0.00", shiftDuration: TimeInterval = 0.0, selectedTotalTips: String = "0.00", addTipsToTotal: Bool = false, payMultiplier: Double = 1.0, multiplierEnabled: Bool = false, notes: String = "", selectedTags: Set<Tag> = [], shiftID: UUID = UUID(), isEditing: Bool = false, job: Job? = nil) {
         self.selectedStartDate = selectedStartDate
         self.selectedEndDate = selectedEndDate
         self.selectedBreakStartDate = selectedBreakStartDate
@@ -60,6 +61,7 @@ class DetailViewModel: ObservableObject {
         self.selectedTags = selectedTags
         self.shiftID = shiftID
         self.isEditing = isEditing
+        self.job = job
     }
     
     init(shift: OldShift){
@@ -72,7 +74,7 @@ class DetailViewModel: ObservableObject {
         self.selectedHourlyPay = "\(shift.hourlyPay)"
         self.shiftDuration = shift.duration
         self.selectedTotalTips = "\(shift.totalTips)"
-        self.addTipsToTotal = false
+        self.addTipsToTotal = shift.addTipsToTotal
         self.payMultiplier = shift.payMultiplier
         self.multiplierEnabled = shift.multiplierEnabled
         self.selectedTags = shift.tags as! Set<Tag>
@@ -82,6 +84,7 @@ class DetailViewModel: ObservableObject {
         
         self.overtimeRate = shift.overtimeRate
         self.overtimeAppliedAfter = shift.timeBeforeOvertime
+        self.job = shift.job
         
     }
     
@@ -114,7 +117,21 @@ class DetailViewModel: ObservableObject {
             totalHoursWorked = adaptiveShiftDuration / 3600 - totalBreakDuration(for: shift.breaks as? Set<Break> ?? Set<Break>()) / 3600
         }
         
-        return totalHoursWorked * (Double(selectedHourlyPay) ?? 0.0)
+       
+        
+       var total = totalHoursWorked * (Double(selectedHourlyPay) ?? 0.0)
+        
+        if payMultiplier > 1.0 {
+            total = total * payMultiplier
+        }
+        
+        if addTipsToTotal {
+            total += Double(selectedTotalTips) ?? 0.0
+        }
+        
+       
+        
+        return total
     }
     
     var taxedPay: Double {
@@ -154,6 +171,7 @@ class DetailViewModel: ObservableObject {
         shift.tax = selectedTaxPercentage
         shift.hourlyPay = Double(selectedHourlyPay) ?? 0.0
         shift.totalTips = Double(selectedTotalTips) ?? 0.0
+        shift.addTipsToTotal = addTipsToTotal
         shift.duration = selectedEndDate.timeIntervalSince(selectedStartDate)
         shift.payMultiplier = payMultiplier
         shift.multiplierEnabled = multiplierEnabled
@@ -180,7 +198,14 @@ class DetailViewModel: ObservableObject {
         let overtimePay = (overtimeDuration / 3600.0) * Double(selectedHourlyPay)! * overtimeRate
 
             shift.totalPay = (shift.multiplierEnabled ? (basePay + overtimePay) * payMultiplier : basePay + overtimePay)
+        
+        if shift.addTipsToTotal {
+            shift.totalPay = shift.totalPay + shift.totalTips
+        }
+        
             shift.taxedPay = shift.totalPay - (shift.totalPay * shift.tax / 100.0)
+        
+        shift.job = job
             
             return true
         

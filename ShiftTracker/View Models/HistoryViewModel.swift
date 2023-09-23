@@ -17,6 +17,7 @@ class HistoryViewModel: ObservableObject {
     let calendar = Calendar.current
     
     @Published var chartSelection: Date?
+    @Published var chartYSelection: Double?
     
     @Published var selection = Set<NSManagedObjectID>()
     

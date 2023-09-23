@@ -770,7 +770,7 @@ struct JobView: View {
         if newJob.uuid == jobSelectionViewModel.selectedJobUUID {
             print("its the selected job yes")
             
-            jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
+         //   jobSelectionViewModel.deselectJob(shiftViewModel: viewModel) DOES IT NEED TO BE DESELECTED?
             
             jobSelectionViewModel.updateJob(newJob)
             

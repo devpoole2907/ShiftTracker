@@ -76,14 +76,7 @@ struct ScheduleView: View {
         _scheduledShifts = FetchRequest(fetchRequest: fetchRequest)
         
         _dateSelected = State(initialValue: Date().dateComponents)
-        
-        
-        
-        
-        let appearance = UINavigationBarAppearance()
-        appearance.shadowColor = .clear
-        UINavigationBar.appearance().standardAppearance = appearance
-        //  UINavigationBar.appearance().scrollEdgeAppearance = appearance
+
         _navPath = navPath
         
     }
@@ -102,80 +95,88 @@ struct ScheduleView: View {
     
     
     var body: some View {
-
-            ZStack(alignment: .bottomTrailing){
-               
-                    // note for ios 17: there is a modifier that reduces this spacing
-                    List {
-                        let interval = DateInterval(start: .distantPast, end: .distantFuture)
-                        Section{
-                            CalendarView(interval: interval, shiftStore: shiftStore, dateSelected: $dateSelected, displayEvents: $displayEvents)
-                                .padding()
-                                .tint(colorScheme == .dark ? .white.opacity(0.7) : nil)
-                            
-                        } header: {
-                            
-                            Color.clear
-                            
-                        }
-                        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(.init(top: -10, leading: 10, bottom: -10, trailing: 10))
-                        
-                        
-                        //
-                        .onChange(of: dateSelected) { _ in
-                       
-                            fetchShifts()
-                      
-                        }
-                        
-                        .onAppear {
-                            
-                            if dateSelected == nil {
-                                print("Its nil")
-                            }
-                            
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
-                                print("heres the fucking date before passing to create shift \(dateSelected?.date)")
-                                
-                            }
-                        }
-                        
-                        ScheduledShiftsView(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts).environmentObject(savedPublisher)
-                            .environmentObject(shiftStore)
-                            .environmentObject(scheduleModel)
-                        
-                        
-                        
-                        
-                    }.blur(radius: showAllScheduledShiftsView ? 2 : 0)
-                        .animation(.easeInOut(duration: 0.3), value: showAllScheduledShiftsView)
-              
-                        .scrollContentBackground(.hidden)
-                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        
+        ZStack(alignment: .bottomTrailing){
+            
+            // note for ios 17: there is a modifier that reduces this spacing
+            List {
+                let interval = DateInterval(start: .distantPast, end: .distantFuture)
+                Section{
+                    CalendarView(interval: interval, shiftStore: shiftStore, dateSelected: $dateSelected, displayEvents: $displayEvents)
+                        .padding()
+                        .tint(colorScheme == .dark ? .white.opacity(0.7) : nil)
+                    
+                } header: {
+                    
+                    Color.clear
+                    
+                }
+                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                .listRowSeparator(.hidden)
+                .listRowInsets(.init(top: -10, leading: 0, bottom: -10, trailing: 0))
                 
-                if showAllScheduledShiftsView {
-                    AllScheduledShiftsView(navPath: $navPath).environmentObject(savedPublisher)
-                        .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
-                        .onDisappear{
-                            
-                         
-                            shouldScrollToNextShift = true
-                            
-                        }
+                
+                //
+                .onChange(of: dateSelected) { _ in
+                    
+                    fetchShifts()
                     
                 }
                 
-                VStack{
-                
-                    HStack(spacing: 10){
+                .onAppear {
+                    
+                    if dateSelected == nil {
+                        print("Its nil")
+                    }
+                    
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
+                        print("heres the fucking date before passing to create shift \(dateSelected?.date)")
                         
-                        if !showAllScheduledShiftsView {
-                            
-                       
+                    }
+                }
+                
+                ScheduledShiftsView(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts).environmentObject(savedPublisher)
+                    .environmentObject(shiftStore)
+                    .environmentObject(scheduleModel)
+                
+                
+                
+                
+            }.blur(radius: showAllScheduledShiftsView ? 2 : 0)
+                .animation(.easeInOut(duration: 0.3), value: showAllScheduledShiftsView)
+            
+                .scrollContentBackground(.hidden)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+               
+                .background {
+                    
+                 
+                    Color.clear
+                   
+                }
+            
+      
+            
+            if showAllScheduledShiftsView {
+                AllScheduledShiftsView(navPath: $navPath).environmentObject(savedPublisher)
+                    .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
+                    .onDisappear{
+                        
+                        
+                        shouldScrollToNextShift = true
+                        
+                    }
+                
+            }
+            
+            VStack{
+                
+                HStack(spacing: 10){
+                    
+                    if !showAllScheduledShiftsView {
+                        
+                        
                         
                         
                         let dateSelectedDate = dateSelected?.date ?? Date()
@@ -318,147 +319,137 @@ struct ScheduleView: View {
                     }
                     
                     
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.4)) {
-                                scheduleModel.shouldScrollToNextShift = true
-                                showAllScheduledShiftsView.toggle()
-                                
-                            }
-                        }) {
-                            Image(systemName: "list.bullet")
-                                .customAnimatedSymbol(value: $showAllScheduledShiftsView)
-                                .foregroundColor(showAllScheduledShiftsView ? (colorScheme == .dark ? .black : .white) : Color.accentColor)
-                                .bold()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .fill(showAllScheduledShiftsView ? (colorScheme == .dark ? .white : .black) : .clear)
-                                        .padding(-5)
-                                )
-                        }    // .disabled(true)
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            scheduleModel.shouldScrollToNextShift = true
+                            showAllScheduledShiftsView.toggle()
+                            
+                        }
+                    }) {
+                        Image(systemName: "list.bullet")
+                            .customAnimatedSymbol(value: $showAllScheduledShiftsView)
+                            .foregroundColor(showAllScheduledShiftsView ? (colorScheme == .dark ? .black : .white) : Color.accentColor)
+                            .bold()
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(showAllScheduledShiftsView ? (colorScheme == .dark ? .white : .black) : .clear)
+                                    .padding(-5)
+                            )
+                    }    // .disabled(true)
                     
                     
-                  
+                    
                     
                     
                     
                     
                 }.padding()
-                        .glassModifier(cornerRadius: 20)
+                    .glassModifier(cornerRadius: 20)
                 
                     .padding()
-                   // .shadow(radius: 3)
-      
-                 //   Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 65 : 55)
-                    
-                }//.padding()
+                // .shadow(radius: 3)
                 
-                    
+                //   Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 65 : 55)
                 
-                    
-                
-            }.onAppear {
-                
-                navigationState.gestureEnabled = true
-                
-                
-                fetchShifts()
-                
-            }
+            }//.padding()
             
             
-            .navigationBarTitle("Schedule", displayMode: .inline)
-            .toolbar{
-             
-                ToolbarItem(placement: .navigationBarLeading){
-                    Button{
-                        withAnimation{
-                            navigationState.showMenu.toggle()
-                        }
-                    } label: {
-                        Image(systemName: "line.3.horizontal")
-                            .bold()
-                        
-                    }
-                }
-            }.haptics(onChangeOf: showAllScheduledShiftsView, type: .light)
             
             
-                .sheet(item: $activeSheet){ item in
-                    
-                    switch item {
-                    case .scheduleSheet:
-                        
-                        CreateShiftForm(dateSelected: $dateSelected)
-                        
-                            .presentationDetents([.large])
-                            .presentationCornerRadius(35)
-                            .presentationBackground(.ultraThinMaterial)
-                            .interactiveDismissDisabled()
-                        
-                        
-                    case .pastShiftSheet:
-                        
-                        NavigationStack{
-                            DetailView(job: jobSelectionViewModel.fetchJob(in: viewContext)!, dateSelected: dateSelected, presentedAsSheet: true)
-                        }
-                   
-                            .environmentObject(shiftManager)
-                            .onDisappear {
-                                
-                                fetchShifts()
-                                
-                            }
-                        
-                            .presentationDetents([.large])
-                            .presentationCornerRadius(35)
-                            .presentationBackground(.ultraThinMaterial)
-                        
-                        
-                    }
-                }
+            
+        }.onAppear {
+            
+            navigationState.gestureEnabled = true
             
             
-        .onAppear{
-            
-            shiftStore.deleteOldScheduledShifts(in: viewContext)
-            
-            DispatchQueue.main.async{
-                shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
-            }
-            
-            print("selected job is \(jobSelectionViewModel.fetchJob(in: viewContext)?.name)")
-            
-            
+            fetchShifts()
             
         }
         
-        .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
+        
+        .navigationBarTitle("Schedule", displayMode: .inline)
+        .toolbar{
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                withAnimation {
+            ToolbarItem(placement: .navigationBarLeading){
+                Button{
+                    withAnimation{
+                        navigationState.showMenu.toggle()
+                    }
+                } label: {
+                    Image(systemName: "line.3.horizontal")
+                        .bold()
+                    
+                }
+            }
+        }.haptics(onChangeOf: showAllScheduledShiftsView, type: .light)
+        
+        
+            .sheet(item: $activeSheet){ item in
+                
+                switch item {
+                case .scheduleSheet:
+                    
+                    CreateShiftForm(dateSelected: $dateSelected)
+                    
+                        .presentationDetents([.large])
+                        .presentationCornerRadius(35)
+                        .presentationBackground(.ultraThinMaterial)
+                        .interactiveDismissDisabled()
+                    
+                    
+                case .pastShiftSheet:
+                    
+                    NavigationStack{
+                        DetailView(job: jobSelectionViewModel.fetchJob(in: viewContext)!, dateSelected: dateSelected, presentedAsSheet: true)
+                    }
+                    
+                    .environmentObject(shiftManager)
+                    .onDisappear {
+                        
+                        fetchShifts()
+                        
+                    }
+                    
+                    .presentationDetents([.large])
+                    .presentationCornerRadius(35)
+                    .presentationBackground(.ultraThinMaterial)
+                    
+                    
+                }
+            }
+        
+        
+            .onAppear{
+                
+                shiftStore.deleteOldScheduledShifts(in: viewContext)
+                
+                DispatchQueue.main.async{
                     shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
                 }
+                
+                print("selected job is \(jobSelectionViewModel.fetchJob(in: viewContext)?.name)")
+                
+                
+                
             }
-            
-            print("Changed job")
-            shiftStore.changedJob = jobSelectionViewModel.fetchJob(in: viewContext)
-            
-        }
         
-       
+            .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    withAnimation {
+                        shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
+                    }
+                }
+                
+                print("Changed job")
+                shiftStore.changedJob = jobSelectionViewModel.fetchJob(in: viewContext)
+                
+            }
+        
+        
         
     }
     
     
     
 }
-/*
- struct ScheduleView_Previews: PreviewProvider {
- static var previews: some View {
- ScheduleView()
- }
- }
- 
- 
- 
- */
