@@ -239,7 +239,7 @@ struct DetailView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding(.bottom,
                                              
-                                             ((shift != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
+                                             ((shift != nil && shift?.breaks != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
                                              
                                              
                                     )
@@ -249,7 +249,7 @@ struct DetailView: View {
                                     
                                     
                                     
-                                    if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (shift != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) {
+                                    if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (shift != nil && shift?.breaks != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) {
                                         HStack(spacing: 0) {
                                             ForEach(0..<breakDigits.count, id: \.self) { index in
                                                 RollingDigit(digit: breakDigits[index])
@@ -723,6 +723,8 @@ struct DetailView: View {
                                 
                                 CustomConfirmationAlert(action: {
                                     shiftStore.deleteOldShift(shift, in: viewContext)
+                                    dismiss()
+                                    
                                 }, cancelAction: { presentedAsSheet ? activeSheet = .detailSheet : nil}, title: "Are you sure you want to delete this shift?").showAndStack()
                                 
                                 
