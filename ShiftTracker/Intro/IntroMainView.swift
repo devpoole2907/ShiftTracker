@@ -121,15 +121,27 @@ struct IntroView<ActionView: View>: View {
             GeometryReader{
                 let size = $0.size
                 
-                Image(intro.introAssetImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    //.padding(15)
-                    .frame(width: size.width, height: size.height)
-                    .cornerRadius(12)
                 
-                  
+                if intro.displaysView {
+                    
+                    VStack {
+                        
+                        MockupLockscreenView().frame(maxWidth: .infinity)
+                            .padding(.top, 80)
+                        
+                        
+                    }
+                    
+                } else {
+                    Image(intro.introAssetImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    //.padding(15)
+                        .frame(width: size.width, height: size.height)
+                        .cornerRadius(12)
+                    
+                }
                 
             }.offset(y: showView ? 0 : -size.height / 2)
                 .opacity(showView ? 1 : 0)

@@ -200,6 +200,7 @@
 		7CAC9B742A762AAC0048F818 /* LockscreenWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */; };
 		7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B752A762D410048F818 /* ShiftEntry.swift */; };
 		7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7CBEB11C2AC02B4D002DC7D6 /* MockupLockscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */; };
 		7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */; };
 		7CD8A31F2A882AED0011A1C0 /* ScaleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */; };
 		7CD8A3222A882EE70011A1C0 /* TagFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3212A882EE70011A1C0 /* TagFilter.swift */; };
@@ -436,6 +437,7 @@
 		7CAC9B712A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerLockscreenPayWidgets.swift; sourceTree = "<group>"; };
 		7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockscreenWidgetProvider.swift; sourceTree = "<group>"; };
 		7CAC9B752A762D410048F818 /* ShiftEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftEntry.swift; sourceTree = "<group>"; };
+		7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupLockscreenView.swift; sourceTree = "<group>"; };
 		7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleButtonStyle.swift; sourceTree = "<group>"; };
 		7CD8A3212A882EE70011A1C0 /* TagFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagFilter.swift; sourceTree = "<group>"; };
@@ -689,6 +691,7 @@
 				1AB7D6AA29FC059500326AAA /* IntroMainView.swift */,
 				1AB7D6AC29FC097700326AAA /* CustomIndicatorView.swift */,
 				1AB7D6AE29FCAA1B00326AAA /* CustomTextField.swift */,
+				7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */,
 			);
 			path = Intro;
 			sourceTree = "<group>";
@@ -1331,6 +1334,7 @@
 				BF81914A2A5A75300079E449 /* ThemesGuideView.swift in Sources */,
 				1A13F19529D02914009BE6B0 /* ProView.swift in Sources */,
 				7C2A18E22AA026FA00518789 /* NotificationManager.swift in Sources */,
+				7CBEB11C2AC02B4D002DC7D6 /* MockupLockscreenView.swift in Sources */,
 				7C2C2F852AA6CB0A0074E32E /* SettingsViewModel.swift in Sources */,
 				7CD8A3282A8831B80011A1C0 /* TagSortView.swift in Sources */,
 				1A1DEC8E29EFEEB70002D9E4 /* Date+Extension.swift in Sources */,
