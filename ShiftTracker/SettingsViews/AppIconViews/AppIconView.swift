@@ -113,7 +113,7 @@ struct AppIconView: View {
                     .fullScreenCover(isPresented: $showingProView) {
                         
                             ProView()
-                            .presentationBackground(.ultraThinMaterial)
+                            .customSheetBackground()
                         
                     }
                 

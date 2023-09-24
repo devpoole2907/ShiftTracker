@@ -37,25 +37,25 @@ struct OvertimeView: View{
                         self.updateTimeInterval()
                     }
                 )
-
+     
             HStack {
                 Picker(selection: hourBinding, label: Text("Hour")) {
                     ForEach(0..<24) { hour in
                         Text("\(hour)h").tag(hour)
                     }
                 }
-                .pickerStyle(WheelPickerStyle())
-
+                .pickerStyle(WheelPickerStyle()).frame(maxWidth: 200)
+                
                 Picker(selection: minuteBinding, label: Text("Minute")) {
                     ForEach(0..<60) { minute in
                         Text("\(minute)m").tag(minute)
                     }
                 }
-                .pickerStyle(WheelPickerStyle())
-
+                .pickerStyle(WheelPickerStyle()).frame(maxWidth: 200)
+                
             }
-          
-        
+            
+         
     }
     
     private func updateTimeInterval() {

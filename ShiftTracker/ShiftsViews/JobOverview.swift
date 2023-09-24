@@ -115,7 +115,7 @@ struct JobOverview: View {
         ZStack(alignment: .bottomTrailing){
             List{
                 
-                
+             
                 VStack(alignment: .leading, spacing: 0){
                     HStack(spacing: 8){
                         VStack(spacing: 0) {
@@ -149,7 +149,7 @@ struct JobOverview: View {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                     .listRowInsets(.init(top: 20, leading: 0, bottom: 30, trailing: 0))
-                    .haptics(onChangeOf: isChartViewPrimary, type: .light)
+                 
                 
                 
                 Section{
@@ -311,15 +311,15 @@ struct JobOverview: View {
                             
                             ConfigureExportView(shifts: shifts, job: job)
                                 .presentationDetents([.large])
-                                .presentationCornerRadius(35)
-                                .presentationBackground(.ultraThinMaterial)
+                                .customSheetRadius(35)
+                                .customSheetBackground()
                   
                         }
                         else {
                             ConfigureExportView(shifts: shifts)
                                 .presentationDetents([.large])
-                                .presentationCornerRadius(35)
-                                .presentationBackground(.ultraThinMaterial)
+                                .customSheetRadius(35)
+                                .customSheetBackground()
                         }
                    
                         
@@ -334,8 +334,8 @@ struct JobOverview: View {
                             }
                             
                             .presentationDetents([.large])
-                            .presentationCornerRadius(35)
-                            .presentationBackground(.ultraThinMaterial)
+                            .customSheetBackground()
+                            .customSheetRadius(35)
                         } else {
                             Text("Error")
                         }
@@ -345,8 +345,8 @@ struct JobOverview: View {
                             .environment(\.managedObjectContext, viewContext)
                             .presentationDetents([ .medium, .fraction(0.7)])
                             .presentationDragIndicator(.visible)
-                            .presentationBackground(.ultraThinMaterial)
-                            .presentationCornerRadius(35)
+                            .customSheetBackground()
+                            .customSheetRadius(35)
                       
                     }
                     
@@ -419,7 +419,7 @@ struct JobOverview: View {
         
         .fullScreenCover(isPresented: $isEditJobPresented) {
             JobView(job: job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $job).environmentObject(ContentViewModel.shared)
-                    .presentationBackground(.ultraThinMaterial)
+                .customSheetBackground()
            
         }
             
@@ -529,7 +529,7 @@ struct JobIconView: View {
     
     var body: some View {
         
-        let dimension: CGFloat = isLarge ? 30 : 20
+        let dimension: CGFloat = isLarge ? 25 : 15
         
         Image(systemName: icon)
            

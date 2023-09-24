@@ -28,7 +28,7 @@ struct ConfigureExportView: View {
             ScrollView{
                 VStack(alignment: .leading) {
                     
-                    Text("Include Columns").bold().textCase(nil).fontDesign(.rounded).padding(.leading)
+                    Text("Include Columns").bold().textCase(nil) .roundedFontDesign().padding(.leading)
                     
                     ForEach(viewModel.selectedColumns.indices, id: \.self) { index in
                         Toggle(viewModel.selectedColumns[index].title, isOn: $viewModel.selectedColumns[index].isSelected).toggleStyle(CustomToggleStyle())

@@ -149,12 +149,10 @@ struct JobView: View {
     
     
     var body: some View {
-        
-        let backgroundColor = colorScheme == .dark ? Color(.systemGray6) : Color.white
+    
         
         NavigationStack{
             ZStack(alignment: .bottomTrailing){
-                // Color(.systemBackground).edgesIgnoringSafeArea(.all)
                 
                 themeManager.contentDynamicBackground.opacity(hasAppeared ? 0 : 1)
                     
@@ -217,7 +215,7 @@ struct JobView: View {
                            
                             .font(.title)
                             .bold()
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .foregroundStyle(selectedColor.gradient)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
@@ -242,19 +240,16 @@ struct JobView: View {
                     
                     VStack(spacing: 15){
                         
-                        //  Group{
-                        
-                        
                         
                         TextField("Job Title", text: $title)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .padding(.horizontal)
                             .padding(.vertical, 10)
                             .glassModifier(cornerRadius: 20)
                             .shake(times: titleShakeTimes)
                         
                         CurrencyTextField(placeholder: "Hourly Pay", text: $hourlyPay)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .padding(.horizontal)
                             .padding(.vertical, 10)
                             .glassModifier(cornerRadius: 20)
@@ -412,52 +407,52 @@ struct JobView: View {
                                     
                                 } else {
                                     
-                                
-                                
-                                NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, icon: selectedIcon, iconColor: selectedColor)
-                                    .onDisappear {
-                                        self.miniMapRegion = self.mapRegion
-                                    }) {
-                                        VStack(alignment: .leading){
-                                            
-                                            Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
-                                                MapAnnotation(coordinate: annotation.coordinate) {
-                                                    VStack {
-                                                        Image(systemName: selectedIcon)
-                                                            .font(.title2)
-                                                            .foregroundStyle(.white)
-                                                            .padding(10)
-                                                            .background{
-                                                                Circle()
-                                                                    .foregroundStyle(selectedColor.gradient)
-                                                                
-                                                            }
-                                                        
+                                    
+                                    
+                                    NavigationLink(destination: AddressFinderView(selectedAddress: $selectedAddress, mapRegion: $mapRegion, selectedRadius: $selectedRadius, icon: selectedIcon, iconColor: selectedColor)
+                                        .onDisappear {
+                                            self.miniMapRegion = self.mapRegion
+                                        }) {
+                                            VStack(alignment: .leading){
+                                                
+                                                Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: miniMapAnnotation != nil ? [miniMapAnnotation!] : []) { annotation in
+                                                    MapAnnotation(coordinate: annotation.coordinate) {
+                                                        VStack {
+                                                            Image(systemName: selectedIcon)
+                                                                .font(.title2)
+                                                                .foregroundStyle(.white)
+                                                                .padding(10)
+                                                                .background{
+                                                                    Circle()
+                                                                        .foregroundStyle(selectedColor.gradient)
+                                                                    
+                                                                }
+                                                            
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            .onAppear{
-                                                //locationManager.requestAuthorization()
-                                                addressManager.loadSavedAddress(selectedAddressString: selectedAddress) { region, annotation in
-                                                    self.miniMapRegion = region ?? self.miniMapRegion
-                                                    self.miniMapAnnotation = annotation
+                                                .onAppear{
+                                                    //locationManager.requestAuthorization()
+                                                    addressManager.loadSavedAddress(selectedAddressString: selectedAddress) { region, annotation in
+                                                        self.miniMapRegion = region ?? self.miniMapRegion
+                                                        self.miniMapAnnotation = annotation
+                                                    }
                                                 }
+                                                HStack{
+                                                    Text("Work Location")
+                                                    
+                                                    Spacer()
+                                                    Image(systemName: "chevron.right")
+                                                }.bold()
+                                                    .padding(.bottom, 10)
+                                                    .padding(.horizontal)
                                             }
-                                            HStack{
-                                                Text("Work Location")
-                                                
-                                                Spacer()
-                                                Image(systemName: "chevron.right")
-                                            }.bold()
-                                                .padding(.bottom, 10)
-                                                .padding(.horizontal)
-                                        }
-                                    }.frame(minHeight: 120)
-                                    .background(Color.clear,in:
-                                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                    .cornerRadius(20)
-                                
-                            }
+                                        }.frame(minHeight: 120)
+                                        .background(Color.clear,in:
+                                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                        .cornerRadius(20)
+                                    
+                                }
                                 
                             }
                             
@@ -514,6 +509,8 @@ struct JobView: View {
                             
                         }.glassModifier(cornerRadius: 20)
                         
+                    
+                        
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $overtimeEnabled) {
                                 HStack {
@@ -529,39 +526,61 @@ struct JobView: View {
                                 
                             }.disabled(!overtimeEnabled)
                             
-                            HStack {
+                            if #available(iOS 16.1, *){
                                 
+                                HStack {
+                                    
+                                    
+                                    
+                                    Image(systemName: "calendar.badge.clock")
+                                    Text("Apply after:")
+                                    OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
+                                        .frame(maxHeight: 75)
+                                        .frame(maxWidth: getRect().width - 100)
+                                    
+                                }
+                                .disabled(!overtimeEnabled)
+                                .opacity(overtimeEnabled ? 1.0 : 0.5)
+                                .shake(times: overtimeShakeTimes)
                                 
+                            } else {
                                 
-                                Image(systemName: "calendar.badge.clock")
-                                Text("Apply after:")
-                                OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
-                                    .frame(maxHeight: 75)
+                                // due to a frame issue with overtime views pickers on iOS 16 or lower, overtime view is a sheet in those versions
                                 
+                                Button(action: { activeSheet = .overtimeSheet }){
+                                    HStack {
+                                        Image(systemName: "calendar.badge.clock")
+                                        Text("Apply after: ")
+                                        Spacer()
+                                        Text("\(formattedTimeInterval(overtimeAppliedAfter))")
+                                        
+                                        
+                                    }
+                                }
                             }
-                            .disabled(!overtimeEnabled)
-                            .opacity(overtimeEnabled ? 1.0 : 0.5)
-                            .shake(times: overtimeShakeTimes)
+                            
+                            
                         }.padding(.horizontal)
                             .padding(.vertical, 10)
                             .glassModifier(cornerRadius: 20)
                         
-                          /*  .background(.thinMaterial .opacity(0.5))
-                            .cornerRadius(20)*/
+                        
                         
                         
                         
                     }
-                    .frame(maxHeight: .infinity, alignment: .top)
+                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding()
-                    .navigationBarTitle(job != nil ? "Edit Job" : "Add Job", displayMode: .inline)
+                    .navigationTitle(job != nil ? "Edit Job" : "Add Job")
+                    
+                    .navigationBarTitleDisplayMode(.inline)
                     
                     .fullScreenCover(isPresented: $showProSheet){
                         
                         
                         ProView()
                         
-                            .presentationBackground(.ultraThinMaterial)
+                            .customSheetBackground()
                         
                         
                     }
@@ -570,12 +589,15 @@ struct JobView: View {
                         
                         switch item {
                         case .overtimeSheet:
+                         
                             OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
                                 .environment(\.managedObjectContext, viewContext)
-                                .presentationDetents([ .fraction(0.4)])
-                                .presentationBackground(Color("allSheetBackground"))
+                                
+                           
                                 .presentationDragIndicator(.visible)
-                                .presentationCornerRadius(35)
+                                .presentationDetents([ .fraction(0.4)])
+                             
+                            
                             
                             
                         case .symbolSheet:
@@ -583,9 +605,9 @@ struct JobView: View {
                                 .environment(\.managedObjectContext, viewContext)
                                 .presentationDetents([ .medium, .fraction(0.7)])
                                 .presentationDragIndicator(.visible)
-                                .presentationBackground(.ultraThinMaterial)
-                                .presentationCornerRadius(35)
-                                .presentationBackgroundInteraction(.enabled)
+                                .customSheetBackground()
+                                .customSheetRadius(35)
+                                .customSheetBackgroundInteraction()
                             
                             
                         }
@@ -594,9 +616,8 @@ struct JobView: View {
                     
                     
                     
-                }
-                //.background(colorScheme == .dark ? Color.black : Color(.systemGroupedBackground))
-                
+                }//.frame(maxWidth: getRect().width - 200)
+                 //   .frame(maxHeight: getRect().height)
                 HStack(spacing: 10){
                     
              

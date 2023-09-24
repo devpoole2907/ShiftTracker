@@ -73,7 +73,7 @@ struct WidgetStatsView: View {
                 
                 VStack(alignment: .leading, spacing: 3){
                     Text("\(job?.name ?? "Summary")")
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                         .bold()
                     
                     
@@ -82,7 +82,7 @@ struct WidgetStatsView: View {
                     
                     Text(statsMode == .earnings ? "\(currencyFormatter.string(from: NSNumber(value: totalEarnings)) ?? "0.00") this week" : "\(formatTime(timeInHours: totalDurationInHours)) this week")
                         .foregroundStyle(.gray)
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                         .bold()
                         .font(.subheadline)
                         .padding(.leading, 1.4)

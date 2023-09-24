@@ -30,14 +30,14 @@ struct CurrentBreaksListView: View {
                                     .font(.subheadline)
                                     .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : themeManager.breaksColor)
                                     .bold()
-                                    .fontDesign(.rounded)
+                                    .roundedFontDesign()
                             }
                             else {
                                 Text("Paid")
                                     .font(.subheadline)
                                     .foregroundColor(viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" ? textColor : themeManager.breaksColor)
                                     .bold()
-                                    .fontDesign(.rounded)
+                                    .roundedFontDesign()
                             }
                             if viewModel.breakLengthInMinutes(startDate: breakItem.startDate, endDate: breakItem.endDate) == "N/A" {
                                 BreakTimerView(timeElapsed: $viewModel.breakTimeElapsed)
@@ -48,7 +48,7 @@ struct CurrentBreaksListView: View {
                                    // .listRowSeparator(.hidden)
                                     .font(.subheadline)
                                     .bold()
-                                    .fontDesign(.rounded)
+                                    .roundedFontDesign()
                             }
                         }
                         Spacer()

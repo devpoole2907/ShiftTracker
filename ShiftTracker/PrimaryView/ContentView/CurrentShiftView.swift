@@ -34,7 +34,7 @@ struct CurrentShiftView: View {
                         Text("Starting Soon")
                             .font(.subheadline)
                             .foregroundColor(.gray)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .bold()
                             .padding(.bottom, -1)
                     }
@@ -67,7 +67,7 @@ struct CurrentShiftView: View {
                         
                         Text("\(startDate,formatter: Self.dateFormatter)")
                             .foregroundColor(.gray)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .bold()
                             .font(.footnote)
                             .padding(.leading, 1.4)

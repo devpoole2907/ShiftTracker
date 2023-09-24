@@ -20,7 +20,7 @@ struct ChartAnnotationView: View {
                 .font(.footnote)
                 .bold()
                 .foregroundStyle(.gray)
-                .fontDesign(.rounded)
+                .roundedFontDesign()
             
             Text(value)
                 .font(.title)
@@ -30,7 +30,7 @@ struct ChartAnnotationView: View {
                 .font(.headline)
                 .bold()
                 .foregroundColor(.gray)
-                .fontDesign(.rounded)
+                .roundedFontDesign()
         
                 
            

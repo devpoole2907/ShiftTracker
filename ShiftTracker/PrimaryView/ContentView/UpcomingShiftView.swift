@@ -155,7 +155,7 @@ struct UpcomingShiftView: View {
                                     "Today at " :
                                         "\(upcomingShift.startDate ?? Date(), formatter: Self.dateFormatter) at "
                                 )
-                                .fontDesign(.rounded)
+                                .roundedFontDesign()
                                 .foregroundColor(.gray)
                                 .bold()
                                 .font(.footnote)
@@ -166,7 +166,7 @@ struct UpcomingShiftView: View {
                                             Calendar.current.date(byAdding: .hour, value: 1, to: Date())! > upcomingShift.startDate ?? Date() ? .orange :
                                                 .gray
                                     )
-                                    .fontDesign(.rounded)
+                                    .roundedFontDesign()
                                     .bold()
                                     .font(.footnote)
                             }
@@ -198,7 +198,7 @@ struct UpcomingShiftView: View {
                     .font(.footnote)
                     .bold()
                     .padding(.vertical, 2)
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                 
             }.onTapGesture {
              

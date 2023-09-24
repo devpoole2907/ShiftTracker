@@ -75,7 +75,6 @@ struct AddressFinderView: View {
         
         
         NavigationStack{
-            if #available(iOS 16.4, *) {
                 VStack(spacing: 10) {
                     ZStack(alignment: .topTrailing){
                         
@@ -153,25 +152,29 @@ struct AddressFinderView: View {
                     }
                     .presentationDetents([.fraction(0.35), .fraction(0.45), .fraction(0.8)])
                     .presentationDragIndicator(hideDragIndicator ? .hidden : .visible)
-                    // .presentationBackground(.thinMaterial)
-                    .presentationCornerRadius(12)
-                    .presentationBackgroundInteraction(.enabled)
+
+                    .customSheetRadius(12)
+                    .customSheetBackgroundInteraction()
                     .interactiveDismissDisabled()
                     
                     .sheet(isPresented: $addressConfirmSheet){
                         AddressConfirmView(address: $selectedAddress, radius: $selectedRadius, onConfirm: setSelectedAddress)
                             .presentationDetents([ .fraction(0.4), .medium])
-                        // .presentationBackground(.thinMaterial)
-                            .presentationCornerRadius(12)
+                
+                            .customSheetRadius(12)
                             .presentationDragIndicator(.visible)
-                            .presentationBackgroundInteraction(.enabled)
+                            .customSheetBackgroundInteraction()
                         // .interactiveDismissDisabled()
                     }
                     
                 }
                 
-            }
-            else {
+            
+            
+            
+            // holy shit this is some original code from way back!!
+            
+      /*      else {
                 List{
                     Section{
                         RoundedRectangle(cornerRadius: 20)
@@ -240,7 +243,7 @@ struct AddressFinderView: View {
                 .padding(.bottom, 50)
                 .background(bottomBackgroundColor)
                 
-            }
+            } */
         }.toolbarRole(.editor)
         
             .onAppear{

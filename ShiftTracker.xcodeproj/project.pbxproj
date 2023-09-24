@@ -139,6 +139,12 @@
 		7C2C2F872AA6CD580074E32E /* SettingsCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2C2F862AA6CD580074E32E /* SettingsCheckView.swift */; };
 		7C2C2F892AA6CD710074E32E /* AppearanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2C2F882AA6CD710074E32E /* AppearanceView.swift */; };
 		7C2C2F8B2AA6CD9D0074E32E /* SettingsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2C2F8A2AA6CD9D0074E32E /* SettingsRow.swift */; };
+		7C337B682ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */; };
+		7C337B692ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */; };
+		7C337B6A2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */; };
+		7C337B6B2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */; };
+		7C337B6C2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */; };
+		7C337B6D2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */; };
 		7C4D82D52A8A183B006D54F9 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7C4D82D62A8A183B006D54F9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C4D82D92A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D82D82A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift */; };
@@ -393,6 +399,7 @@
 		7C2C2F862AA6CD580074E32E /* SettingsCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCheckView.swift; sourceTree = "<group>"; };
 		7C2C2F882AA6CD710074E32E /* AppearanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceView.swift; sourceTree = "<group>"; };
 		7C2C2F8A2AA6CD9D0074E32E /* SettingsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsRow.swift; sourceTree = "<group>"; };
+		7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedFontDesignModifier.swift; sourceTree = "<group>"; };
 		7C4D82D42A8A183B006D54F9 /* UpcomingShiftWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = UpcomingShiftWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C4D82D82A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftWidgetBundle.swift; sourceTree = "<group>"; };
 		7C4D82DA2A8A183B006D54F9 /* UpcomingShiftWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftWidget.swift; sourceTree = "<group>"; };
@@ -601,6 +608,7 @@
 		1A9855C729C55F8A003F512C = {
 			isa = PBXGroup;
 			children = (
+				7C337B672ABFE77600A535CE /* RoundedFontDesignModifier.swift */,
 				7C2A18DC2AA026CC00518789 /* WidgetBackgroundModifier.swift */,
 				7C4D82E72A8A1CBF006D54F9 /* UpcomingShiftWidgetExtension.entitlements */,
 				7CD8A3452A88A4B10011A1C0 /* JobChartWidgetExtension.entitlements */,
@@ -1314,6 +1322,7 @@
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
 				1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
+				7C337B682ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				7CD8A3262A882F350011A1C0 /* ShiftSorts.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
@@ -1400,6 +1409,7 @@
 				7C2A18DB2AA0267000518789 /* BreaksManager.swift in Sources */,
 				7CAC9B4F2A75159B0048F818 /* TempBreak.swift in Sources */,
 				7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */,
+				7C337B692ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				7CAC9B552A75169D0048F818 /* PersistenceController.swift in Sources */,
 				7CAC9B542A7516890048F818 /* Shift.swift in Sources */,
 				7C1AA4592A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift in Sources */,
@@ -1418,6 +1428,7 @@
 				7C2A18EF2AA0297000518789 /* WidgetBackgroundModifier.swift in Sources */,
 				7C4D82DB2A8A183B006D54F9 /* UpcomingShiftWidget.swift in Sources */,
 				7C4D82E52A8A1A52006D54F9 /* ShiftDataModel.xcdatamodeld in Sources */,
+				7C337B6C2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				7C4D82D92A8A183B006D54F9 /* UpcomingShiftWidgetBundle.swift in Sources */,
 				7C4D82E62A8A1A7D006D54F9 /* PersistenceController.swift in Sources */,
 			);
@@ -1436,6 +1447,7 @@
 				7C4D82F02A8B6944006D54F9 /* IntentHandler.swift in Sources */,
 				7C4D83002A8B6ACC006D54F9 /* ShiftDataModel.xcdatamodeld in Sources */,
 				7C4D83022A8B6BCF006D54F9 /* ChartWidgetProvider.swift in Sources */,
+				7C337B6D2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				7C4D82FF2A8B6AC9006D54F9 /* PersistenceController.swift in Sources */,
 				7C2A18F62AA0395100518789 /* WidgetStatsView.swift in Sources */,
 				7C2A18F32AA0330B00518789 /* Enums.swift in Sources */,
@@ -1449,6 +1461,7 @@
 				7CAC9B652A7604EB0048F818 /* ShiftTrackerLockscreenDurationWidgets.swift in Sources */,
 				7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */,
 				7CAC9B742A762AAC0048F818 /* LockscreenWidgetProvider.swift in Sources */,
+				7C337B6A2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				7CAC9B722A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift in Sources */,
 				7C2A18F12AA0297100518789 /* WidgetBackgroundModifier.swift in Sources */,
 				7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */,
@@ -1470,6 +1483,7 @@
 				7CD8A3392A88A48C0011A1C0 /* JobChartWidgetBundle.swift in Sources */,
 				7C4D83012A8B6AEB006D54F9 /* IntentHandler.swift in Sources */,
 				7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */,
+				7C337B6B2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				7C0AC1372A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,
 				7C2A18F22AA0330500518789 /* Enums.swift in Sources */,
 				7C2A18F72AA0395500518789 /* WidgetStatsView.swift in Sources */,
@@ -1558,7 +1572,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1612,7 +1626,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1648,7 +1662,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1688,7 +1702,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1786,7 +1800,7 @@
 				INFOPLIST_FILE = ShiftTrackerActivityTimer/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerActivityTimer;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1820,7 +1834,7 @@
 				INFOPLIST_FILE = ShiftTrackerActivityTimer/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerActivityTimer;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1853,7 +1867,7 @@
 				INFOPLIST_FILE = UpcomingShiftWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = UpcomingShiftWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1887,7 +1901,7 @@
 				INFOPLIST_FILE = UpcomingShiftWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = UpcomingShiftWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1918,7 +1932,7 @@
 				INFOPLIST_FILE = SelectJobIntentExtent/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SelectJobIntentExtent;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1950,7 +1964,7 @@
 				INFOPLIST_FILE = SelectJobIntentExtent/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SelectJobIntentExtent;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1983,7 +1997,7 @@
 				INFOPLIST_FILE = ShiftTrackerLockscreenWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerLockscreenWidgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2017,7 +2031,7 @@
 				INFOPLIST_FILE = ShiftTrackerLockscreenWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShiftTrackerLockscreenWidgets;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2050,7 +2064,7 @@
 				INFOPLIST_FILE = JobChartWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = JobChartWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2084,7 +2098,7 @@
 				INFOPLIST_FILE = JobChartWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = JobChartWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

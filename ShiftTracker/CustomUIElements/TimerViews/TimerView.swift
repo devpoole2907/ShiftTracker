@@ -136,7 +136,7 @@ struct TimerView: View {
                         .lineLimit(1)
                         .allowsTightening(true)
                 }.foregroundStyle(themeManager.taxColor)
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                 
                 
                     .padding(.horizontal, 20)
@@ -155,7 +155,7 @@ struct TimerView: View {
                         .mask(FadeMask())
                     if index == 1 || index == 3 {
                         Text(":")
-                            .font(.system(size: 30, weight: .bold).monospacedDigit()).fontDesign(.rounded)
+                            .font(.system(size: 30, weight: .bold).monospacedDigit()) .roundedFontDesign()
                     }
                 }
             }

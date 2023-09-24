@@ -118,7 +118,7 @@ struct HistoryPagesView: View {
                                         Text("Total")
                                             .font(.headline)
                                             .bold()
-                                            .fontDesign(.rounded)
+                                            .roundedFontDesign()
                                             .foregroundColor(.gray)
                                         
                                         Text(

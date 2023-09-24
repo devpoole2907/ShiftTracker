@@ -71,7 +71,7 @@ struct IntroMainView: View {
                     }
                 
                 
-                    .presentationBackground(.ultraThinMaterial)
+                    .customSheetBackground()
                 
             }
             

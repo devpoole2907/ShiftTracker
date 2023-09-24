@@ -43,7 +43,7 @@ struct SettingsRow: View {
                         .bold()
                         .font(.caption)
                         .padding(.top, 1)
-                }.fontDesign(.rounded)
+                } .roundedFontDesign()
                 
             } else if let secondImage = secondaryImage {
                 

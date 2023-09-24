@@ -313,7 +313,7 @@ struct CreateShiftForm: View {
                                 Text("\(getTimeDifference().1) m")
                                 
                             }.font(.title.bold())
-                                .fontDesign(.rounded)
+                                .roundedFontDesign()
                                 .padding(.bottom)
                                 .padding(.top, -10)
                             

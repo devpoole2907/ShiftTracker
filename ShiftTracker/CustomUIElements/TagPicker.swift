@@ -31,7 +31,7 @@ struct TagPicker: View {
                                         Text("#\(tag.name ?? "")")
                                             .bold()
                                             .font(.system(size: 15))
-                                            .fontDesign(.rounded)
+                                            .roundedFontDesign()
                                             //.frame(maxWidth: tag.name?.lowercased() == "overtime" ? 100 : .infinity)
                                             .frame(width: 75)
                                         

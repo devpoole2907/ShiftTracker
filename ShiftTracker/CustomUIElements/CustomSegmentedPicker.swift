@@ -50,7 +50,7 @@ struct CustomSegmentedPicker<Item: SegmentedItem>: View {
                                             case .text(let text):
                                                 Text(text)
                                                     .bold()
-                                                    .fontDesign(.rounded)
+                                                    .roundedFontDesign()
                                                     .font(.footnote)
                                                     .foregroundColor(iconColor)
                                                     .frame(minWidth: geo.size.width / CGFloat(items.count), maxWidth: .infinity)

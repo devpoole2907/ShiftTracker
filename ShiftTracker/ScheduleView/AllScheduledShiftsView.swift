@@ -223,10 +223,10 @@ struct ScheduledShiftRow: View {
             VStack(alignment: .leading) {
                 Text(shift.job?.name ?? "")
                     .bold()
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                 Text(shift.job?.title ?? "")
                     .foregroundStyle(.gray)
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                     .bold()
             }
             Spacer()
@@ -236,13 +236,13 @@ struct ScheduledShiftRow: View {
                     Text(timeFormatter.string(from: shift.startDate))
                         .font(.subheadline)
                         .bold()
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                 
               
                 Text(timeFormatter.string(from: shift.endDate))
                         .font(.subheadline)
                         .bold()
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                         .foregroundStyle(.gray)
             }
         }

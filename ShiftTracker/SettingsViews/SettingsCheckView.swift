@@ -35,7 +35,7 @@ struct SettingsCheckView: View {
                     .multilineTextAlignment(.center)
                 Text(subheadline)
                     .multilineTextAlignment(.center)
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                     .font(.callout)
                     .padding()
             }.padding()

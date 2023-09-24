@@ -47,7 +47,7 @@ struct StatsSquare: View {
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                     
                 } else if shiftManager.statsMode == .hours {
                     
@@ -61,7 +61,7 @@ struct StatsSquare: View {
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                     
                 } else {
                     
@@ -75,7 +75,7 @@ struct StatsSquare: View {
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                     
                 }
                 

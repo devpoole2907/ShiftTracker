@@ -88,7 +88,7 @@ struct ShiftDetailRow: View {
                                 .allowsTightening(true)
                         }.foregroundStyle(themeManager.taxColor)
                             .font(.subheadline)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                     }
                     
                     
@@ -107,7 +107,7 @@ struct ShiftDetailRow: View {
                 HStack(spacing: 6){
                 Text(shiftManager.formatTime(timeInHours: duration))
                     .foregroundStyle(themeManager.timerColor)
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                     .font(.subheadline)
                     .bold()
                 
@@ -117,7 +117,7 @@ struct ShiftDetailRow: View {
                     Text("\(payMultiplier)x")
                         .font(.caption)
                         .bold()
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                         .padding(.horizontal, 6)
                         .padding(.vertical, 3)
                         .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
@@ -128,7 +128,7 @@ struct ShiftDetailRow: View {
                 
                 
                 Text(showTime ? "\(timeFormatter.string(from: shiftStartDate )) - \(timeFormatter.string(from: shiftEndDate ))" : dateString)
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                     .foregroundColor(.gray)
                     .font(.footnote)
                     .bold()
@@ -184,7 +184,7 @@ struct ShiftDetailRow: View {
                     HStack(spacing: 6){
                         Text(shiftManager.formatTime(timeInHours: duration))
                             .foregroundStyle(.gray)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .font(.subheadline)
                             .bold()
                         
@@ -192,7 +192,7 @@ struct ShiftDetailRow: View {
                             Text("\(payMultiplier)x")
                                 .font(.caption)
                                 .bold()
-                                .fontDesign(.rounded)
+                                .roundedFontDesign()
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 3)
                                 .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
@@ -200,7 +200,7 @@ struct ShiftDetailRow: View {
                         }
                     }
                     Text(showTime ? "\(timeFormatter.string(from: shiftStartDate )) - \(timeFormatter.string(from: shiftEndDate ))" : dateString)
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                         .foregroundColor(.gray)
                         .font(.footnote)
                         .bold()
@@ -217,7 +217,7 @@ struct ShiftDetailRow: View {
                         .foregroundColor(textColor)
                         .font(.title3)
                         .bold()
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                     //.padding(.ver)
                     
                     if shift.taxedPay > 0 {
@@ -229,7 +229,7 @@ struct ShiftDetailRow: View {
                                 .allowsTightening(true)
                         }.foregroundStyle(themeManager.taxColor)
                             .font(.caption)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                     }
                     
                     

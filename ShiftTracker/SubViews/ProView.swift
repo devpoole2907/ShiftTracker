@@ -208,7 +208,7 @@ struct ProView: View {
                 }) {
                     Text("Restore")
                         .bold()
-                        .fontDesign(.rounded)
+                        .roundedFontDesign()
                 }.padding()
                 
             }
@@ -227,8 +227,8 @@ struct ProView: View {
                 
                 PurchaseSuccessView()
                 
-                    .presentationBackground(.ultraThinMaterial)
-                    .presentationCornerRadius(25)
+                    .customSheetBackground()
+                    .customSheetRadius()
                 
             }
             

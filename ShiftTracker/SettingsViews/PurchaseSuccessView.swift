@@ -24,7 +24,7 @@ struct PurchaseSuccessView: View {
                     Text("Thanks for going")
                     
          
-                }    .fontDesign(.rounded)
+                }   .roundedFontDesign()
                     .font(.title).bold()
                 
                     

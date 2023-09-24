@@ -164,7 +164,7 @@ struct SideMenu: View {
                                         .onDisappear {
                                             selectedJobForEditing = nil
                                         }
-                                        .presentationBackground(.ultraThinMaterial)
+                                        .customSheetBackground()
                                 }
                                 
                                 
@@ -229,8 +229,8 @@ struct SideMenu: View {
                     
                     AddTagView()
                         .presentationDetents([.medium])
-                        .presentationCornerRadius(35)
-                        .presentationBackground(.ultraThinMaterial)
+                        .customSheetRadius(35)
+                        .customSheetBackground()
                     
                 }
             
@@ -285,7 +285,7 @@ struct SideMenu: View {
         .fullScreenCover(isPresented: $showAddJobView){
             JobView(isEditJobPresented: $isEditJobPresented, selectedJobForEditing: .constant(nil))
             
-                .presentationBackground(.ultraThinMaterial)
+                .customSheetBackground()
             
         }
         
@@ -293,7 +293,7 @@ struct SideMenu: View {
       
             ProView()
                
-                .presentationBackground(.ultraThinMaterial)
+                .customSheetBackground()
         
         }
         

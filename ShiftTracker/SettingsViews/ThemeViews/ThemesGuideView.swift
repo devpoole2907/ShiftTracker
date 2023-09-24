@@ -41,7 +41,7 @@ struct ThemesGuideView: View {
                         
                         Text("Creating Your Own Theme")
                             .font(.headline)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .bold()
                             
                    

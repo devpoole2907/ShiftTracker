@@ -153,7 +153,7 @@ struct ScheduledShiftsView: View {
                     Section{
                         Text("You have no shifts scheduled on this date.")
                             .bold()
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                             .padding()
                     } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 }
@@ -162,7 +162,7 @@ struct ScheduledShiftsView: View {
                     
                     Text("No previous shifts found for this date.")
                     .bold()
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                         .padding()
                         .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 }
@@ -178,8 +178,8 @@ struct ScheduledShiftsView: View {
             
             CreateShiftForm(dateSelected: $dateSelected, scheduledShift: shift)
                 .presentationDetents([.large])
-                .presentationCornerRadius(35)
-                .presentationBackground(.ultraThinMaterial)
+                .customSheetRadius(35)
+                .customSheetBackground()
             
         }
 
@@ -227,7 +227,7 @@ struct ScheduledShiftListRow: View {
     var body: some View {
         Section(header: Text("\(dateFormatter.string(from: shift.startDate )) - \(dateFormatter.string(from: shift.endDate ))")
             .bold()
-            .fontDesign(.rounded)
+            .roundedFontDesign()
             .textCase(nil)){
                 
                 ZStack{
@@ -275,7 +275,7 @@ struct ScheduledShiftListRow: View {
                                     .foregroundColor(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)))
                                     .font(.subheadline)
                                     .bold()
-                                    .fontDesign(.rounded)
+                                    .roundedFontDesign()
                                 
                                 
                                 
@@ -327,7 +327,7 @@ struct ScheduledShiftListRow: View {
                             .foregroundStyle(.gray)
                             .bold()
                             .padding(.bottom)
-                            .fontDesign(.rounded)
+                            .roundedFontDesign()
                     }
                     
                     

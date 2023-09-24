@@ -392,8 +392,8 @@ struct ScheduleView: View {
                     CreateShiftForm(dateSelected: $dateSelected)
                     
                         .presentationDetents([.large])
-                        .presentationCornerRadius(35)
-                        .presentationBackground(.ultraThinMaterial)
+                        .customSheetRadius(35)
+                        .customSheetBackground()
                         .interactiveDismissDisabled()
                     
                     
@@ -411,8 +411,8 @@ struct ScheduleView: View {
                     }
                     
                     .presentationDetents([.large])
-                    .presentationCornerRadius(35)
-                    .presentationBackground(.ultraThinMaterial)
+                    .customSheetRadius(35)
+                    .customSheetBackground()
                     
                     
                 }

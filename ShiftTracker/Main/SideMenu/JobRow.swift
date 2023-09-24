@@ -43,7 +43,7 @@ struct JobRow: View {
             Text(job.name ?? "")
                 .bold()
                 .foregroundStyle(textColor)
-                .fontDesign(.rounded)
+                .roundedFontDesign()
                 .lineLimit(1)
                 .allowsTightening(true)
             Spacer()

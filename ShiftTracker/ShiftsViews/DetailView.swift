@@ -148,7 +148,8 @@ struct DetailView: View {
                                 HStack {
                                     
                                     Image(systemName: "exclamationmark.triangle.fill")
-                                    Text("Breaks are not within the shift start & end dates.").bold().fontDesign(.rounded)
+                                    Text("Breaks are not within the shift start & end dates.").bold()
+                                        .roundedFontDesign()
                                     
                                 }
                                 .padding()
@@ -196,7 +197,7 @@ struct DetailView: View {
                                                     .lineLimit(1)
                                                     .allowsTightening(true)
                                             }.foregroundStyle(themeManager.taxColor)
-                                                .fontDesign(.rounded)
+                                                .roundedFontDesign()
                                         }
                                         if Double(viewModel.selectedTotalTips) ?? 0 > 0 {
                                             HStack(spacing: 2){
@@ -208,7 +209,7 @@ struct DetailView: View {
                                                     .bold()
                                                     .lineLimit(1)
                                             }.foregroundStyle(themeManager.tipsColor)
-                                                .fontDesign(.rounded)
+                                                .roundedFontDesign()
                                         }
                                     }
                                     
@@ -435,6 +436,7 @@ struct DetailView: View {
                                             Text("Add to Total") .bold()
                                             
                                         }.toggleStyle(CustomToggleStyle())
+                                            .disabled(!viewModel.isEditing)
                                         
                                     }.padding(.horizontal)
                                         .padding(.vertical)
@@ -558,8 +560,8 @@ struct DetailView: View {
                                 
                                 
                                     .presentationDetents([ .fraction(0.35)])
-                                    .presentationBackground(.ultraThinMaterial)
-                                    .presentationCornerRadius(35)
+                                    .customSheetRadius(35)
+                                    .customSheetBackground()
                                 
                             } else {
                                 
@@ -571,8 +573,8 @@ struct DetailView: View {
                                 
                                 
                                     .presentationDetents([ .fraction(0.35)])
-                                    .presentationBackground(.ultraThinMaterial)
-                                    .presentationCornerRadius(35)
+                                    .customSheetRadius(35)
+                                    .customSheetBackground()
                                 
                                 
                             }
@@ -766,7 +768,8 @@ struct DetailView: View {
                 
                 .fullScreenCover(isPresented: $isEditJobPresented) {
                     JobView(job: viewModel.job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $viewModel.job).environmentObject(ContentViewModel.shared)
-                            .presentationBackground(.ultraThinMaterial)
+                 
+                        .customSheetBackground()
                    
                 }
                
@@ -904,14 +907,14 @@ struct JobForShiftView: View {
                             Text(job.name ?? "No Job Found")
                                 .bold()
                                 .font(.subheadline)
-                                .fontDesign(.rounded)
+                                .roundedFontDesign()
                             
                             Divider().frame(maxWidth: 300)
                             
                             
                             Text(job.title ?? "No Job Title")
                                 .foregroundStyle(jobColor)
-                                .fontDesign(.rounded)
+                                .roundedFontDesign()
                                 .bold()
                                 .font(.caption)
                                 .padding(.leading, 1.4)

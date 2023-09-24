@@ -65,23 +65,40 @@ struct ActionView: View {
                                 .bold()
                         }.toggleStyle(CustomToggleStyle())
                         
+                        
+                        
                             .onChange(of: viewModel.activityEnabled) { value in
-                                if value {
+                                
+                                if #available(iOS 16.2, *) {
                                     
-                                    if !(shiftsTracked >= 1) {
+                                    
+                                    if value {
                                         
+                                        if !(shiftsTracked >= 1) {
+                                            
+                                            
+                                            //viewModel.activityEnabled = true
+                                            
+                                        }
                                         
-                                        //viewModel.activityEnabled = true
-                                        
+                                        else if !purchaseManager.hasUnlockedPro {
+                                            
+                                            showProSheet.toggle()
+                                            viewModel.activityEnabled = false
+                                            
+                                        }
                                     }
-                                    
-                                    else if !purchaseManager.hasUnlockedPro {
-                                        
-                                        showProSheet.toggle()
+                                } else {
+                                    dismiss()
+                                    OkButtonPopup(title: "Update to iOS 16.2 to use Live Activities.", action: {
                                         viewModel.activityEnabled = false
-                                        
-                                    }
+                                        navigationState.activeSheet = .startShiftSheet
+                                    }).showAndStack()
+                                   
                                 }
+                                
+                                
+                                
                             }
                         
                     .padding(.horizontal)
@@ -107,9 +124,11 @@ struct ActionView: View {
                             
                             viewModel.payMultiplier = 1.0
                             
+                           
                             if purchaseManager.hasUnlockedPro || shiftsTracked < 1 {
-                                
-                                viewModel.activityEnabled = true
+                                if #available(iOS 16.2, *) {
+                                    viewModel.activityEnabled = true
+                                }
                                 
                             } else {
                                 
@@ -215,7 +234,7 @@ struct ActionView: View {
         
                     ProView()
              
-                    .presentationBackground(.ultraThinMaterial)
+                    .customSheetBackground()
                 
                 
             }

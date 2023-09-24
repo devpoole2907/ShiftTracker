@@ -123,7 +123,24 @@ class ContentViewModel: ObservableObject {
     //  @State private var activity: Activity<ShiftTrackerWidgetAttributes>? = nil
 #if os(iOS)
     @Published  var isActivityEnabled: Bool = true
-    @Published  var currentActivity: Activity<LiveActivityAttributes>?
+ //  @Published var currentActivity: Activity<LiveActivityAttributes>?
+    
+    private var activityStore: [String: Any] = [:]
+    
+    var currentActivity: Any? {
+            get {
+                if #available(iOS 16.2, *) {
+                    return activityStore["currentActivity"]
+                }
+                return nil
+            }
+            set {
+                if #available(iOS 16.2, *) {
+                    activityStore["currentActivity"] = newValue
+                }
+            }
+        }
+
 #endif
     
     @Published  var sharedUserDefaults = UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")!
@@ -743,57 +760,64 @@ class ContentViewModel: ObservableObject {
     }
 #if os(iOS)
     func startActivity(startDate: Date, hourlyPay: Double, viewContext: NSManagedObjectContext){
-        
-        guard let job = fetchJob(with: self.selectedJobUUID, in: viewContext) else { return }
-        
-        
-        
-        let attributes = LiveActivityAttributes(jobName: job.name ?? "Unnamed", jobTitle: job.title ?? "No Title", jobIcon: job.icon ?? "briefcase.circle", jobColorRed: Double(job.colorRed), jobColorGreen: Double(job.colorGreen), jobColorBlue: Double(job.colorBlue), hourlyPay: hourlyPay)
-        let state = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
-        
-        let activityContent = ActivityContent(state: state, staleDate: nil)
-        
-        if (self.currentActivity == nil && self.activityEnabled){
+        if #available(iOS 16.2, *) {
+            guard let job = fetchJob(with: self.selectedJobUUID, in: viewContext) else { return }
             
             
-            self.currentActivity = try? Activity.request(attributes: attributes, content: activityContent, pushType: nil)
             
-            print("Created activity")
+            let attributes = LiveActivityAttributes(jobName: job.name ?? "Unnamed", jobTitle: job.title ?? "No Title", jobIcon: job.icon ?? "briefcase.circle", jobColorRed: Double(job.colorRed), jobColorGreen: Double(job.colorGreen), jobColorBlue: Double(job.colorBlue), hourlyPay: hourlyPay)
+            let state = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: totalPay, isOnBreak: false)
+            
+            let activityContent = ActivityContent(state: state, staleDate: nil)
+            
+            if (self.currentActivity == nil && self.activityEnabled){
+                
+                
+                self.currentActivity = try? Activity.request(attributes: attributes, content: activityContent, pushType: nil)
+                
+                print("Created activity")
+            }
+            
+            
         }
-        
-        
-        
         
         
     }
     
     func stopActivity(){
-        
+        if #available(iOS 16.2, *) {
         let newState = LiveActivityAttributes.TimerStatus(startTime: Date(), totalPay: 0, isOnBreak: false)
-        let finalContent = ActivityContent(state: newState, staleDate: nil)
         
-        Task{
+            let finalContent = ActivityContent(state: newState, staleDate: nil)
             
-            for activity in Activity<LiveActivityAttributes>.activities {
+            
+            Task{
                 
-                await activity.end(finalContent, dismissalPolicy: .immediate)
-                
+                for activity in Activity<LiveActivityAttributes>.activities {
+                    
+                    await activity.end(finalContent, dismissalPolicy: .immediate)
+                    
+                }
             }
+            
+            self.currentActivity = nil
+            
         }
-        
-        self.currentActivity = nil
         
     }
     
     func updateActivity(startDate: Date, isUnpaid: Bool = false){
-        Task{
-            
-            let updatedState = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak, unpaidBreak: isUnpaid)
-            
-            let updatedContent = ActivityContent(state: updatedState, staleDate: nil)
-            
-            await currentActivity?.update(updatedContent, alertConfiguration: nil)
-            
+        if #available(iOS 16.2, *) {
+            Task{
+                
+                let updatedState = LiveActivityAttributes.TimerStatus(startTime: startDate, totalPay: 0, isOnBreak: isOnBreak, unpaidBreak: isUnpaid)
+                
+                let updatedContent = ActivityContent(state: updatedState, staleDate: nil)
+                
+                if let activity = currentActivity as? Activity<LiveActivityAttributes> {
+                                await activity.update(updatedContent, alertConfiguration: nil)
+                            }
+            }
         }
     }
 #endif

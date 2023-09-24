@@ -291,7 +291,7 @@ struct SettingsView: View {
                     
                         ProView()
                     // this one must be thin material due to the button behind it causing contrasting issues
-                        .presentationBackground(.thinMaterial)
+                        .customSheetBackground(ultraThin: false)
                     
                 }
                 .toolbar{

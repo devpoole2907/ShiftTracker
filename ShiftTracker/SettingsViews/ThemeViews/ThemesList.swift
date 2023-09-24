@@ -97,16 +97,16 @@ struct ThemesList: View {
                     case .infoSheet: // old
                         ThemesGuideView()
                             .presentationDetents([.fraction(0.8)])
-                            .presentationBackground(.ultraThinMaterial)
-                        .presentationCornerRadius(25)
+                            .customSheetBackground()
+                            .customSheetRadius()
                     case .addSheet:
                         
                         ThemeView(theme: themeToEdit, errorAction: {
                             activeSheet = .addSheet
                         })
                             .presentationDetents([.fraction(0.72)])
-                            .presentationCornerRadius(25)
-                            .presentationBackground(.ultraThinMaterial)
+                            .customSheetRadius()
+                            .customSheetBackground()
                     }
                 }
                 
@@ -248,7 +248,7 @@ struct ThemeRow: View {
                 Text(theme.name ?? "Theme")
                     .font(.largeTitle)
                     .bold()
-                    .fontDesign(.rounded)
+                    .roundedFontDesign()
                     .allowsTightening(true)
                 
                 Divider().frame(maxWidth: 150)
