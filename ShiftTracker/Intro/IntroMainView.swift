@@ -140,18 +140,18 @@ struct IntroView<ActionView: View>: View {
                 
                 
                     Text(intro.title)
-                        .font(.largeTitle)
+                    .font((getRect().height == 667 || getRect().height == 736) ? .title2 : .largeTitle)
                         .fontWeight(.black)
-                        .lineLimit(2, reservesSpace: true)
+               
                         .allowsTightening(true)
                     
                     
                     
                     Text(intro.subTitle)
-                        .font(.headline)
+                        .font(.subheadline)
                         .foregroundColor(.gray)
-                        .padding(.top, 15)
-                        .lineLimit(3, reservesSpace: true)
+                        .roundedFontDesign()
+         
                         .allowsTightening(true)
                   
                
