@@ -90,7 +90,7 @@ struct MainWithSideBarView: View {
                         
                         ZStack(alignment: .bottomTrailing) {
                             NavigationStack(path: $path){
-                                JobOverview(navPath: $path)
+                                JobOverview(navPath: $path, job: jobSelectionModel.fetchJob(in: context))
                                     .blur(radius: navigationState.calculatedBlur)
                                     .allowsHitTesting(!navigationState.showMenu)
                                 

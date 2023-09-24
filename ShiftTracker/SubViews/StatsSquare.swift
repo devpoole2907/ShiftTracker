@@ -39,7 +39,7 @@ struct StatsSquare: View {
                     .foregroundStyle(headerColor)
                 if shiftManager.statsMode == .earnings {
                     Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: weeklyEarnings)) ?? "0")")
-                        .font(.title)
+                        .font(.title2)
                         .bold()
                         .foregroundStyle(headerColor)
                     
@@ -49,11 +49,11 @@ struct StatsSquare: View {
                         .foregroundStyle(subTextColor)
                         .fontDesign(.rounded)
                     
-                } else if shiftManager.statsMode == .breaks {
+                } else if shiftManager.statsMode == .hours {
                     
                     Text("\(shiftManager.formatTime(timeInHours: weeklyHours))")
                     
-                        .font(.title)
+                        .font(.title2)
                         .bold()
                         .foregroundStyle(headerColor)
                     
@@ -67,7 +67,7 @@ struct StatsSquare: View {
                     
                     Text("\(shiftManager.formatTime(timeInHours: weeklyBreaks))")
                     
-                        .font(.title)
+                        .font(.title2)
                         .bold()
                         .foregroundStyle(headerColor)
                     
