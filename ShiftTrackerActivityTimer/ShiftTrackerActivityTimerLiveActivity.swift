@@ -100,31 +100,41 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                         Spacer()
                         
                     }
+                 
+                    
                     HStack(spacing: 3){
-                        Button(action: {
                             
-                            // start the break or end the break if on break
+                        Link(destination: URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak")!){
                             
-                        }){
+                            
+                            
                             Text(context.state.isOnBreak ? "End Break" : "Break")
+                            //  .widgetURL()
                                 .fontDesign(.rounded)
                                 .bold()
-                                .padding(2)
+                                .padding(10)
+                                .background(.indigo.opacity(0.3))
+                                .cornerRadius(20)
                             
-                        }.tint(.indigo)
-                        
-                        Button(action: {
-                            // end the shift, do nothing if on break
+                                .foregroundStyle(.indigo)
                             
-                        }){
+                        }
+                          
+                        Link(destination: URL(string: context.state.isOnBreak ? "shifttrackerapp://" : "shifttrackerapp://endshift")!){
+                            
                             Text("End Shift")
                                 .fontDesign(.rounded)
                                 .bold()
-                                .padding(2)
+                                .padding(10)
+                                .background(context.state.isOnBreak ? .gray.opacity(0.3) : .red.opacity(0.3))
+                                .cornerRadius(20)
                             
-                        }.tint(context.state.isOnBreak ? .gray : .red)
+                                .foregroundStyle(context.state.isOnBreak ? .gray : .red)
+                        }
                         
+                            
                         
+                            
                         Text(context.state.startTime, style: .timer)
                             .fontDesign(.rounded)
                             .multilineTextAlignment(.trailing)
@@ -132,8 +142,10 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                             .bold()
                         
                             .foregroundStyle(jobColor(from: context))
-                         
-                    }.padding(.leading, 2)
+                             
+                        
+                        
+                    }.padding(.leading, 5)
                     
                 }
                 
@@ -205,7 +217,7 @@ struct ShiftActivityView: View{
                 
                
                 
-            } .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
+            }// .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
 
                 HStack {
                     
@@ -259,7 +271,7 @@ struct ShiftActivityView: View{
                                 
                             }
                             
-                        }  .widgetURL(URL(string: "shifttrackerapp://endshift"))
+                        } // .widgetURL(URL(string: "shifttrackerapp://endshift"))
                         
                         
                         
@@ -271,28 +283,33 @@ struct ShiftActivityView: View{
                 }
             HStack(spacing: 3){
                     
-                        Text(context.state.isOnBreak ? "End Break" : "Break")
-                    .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
-                            .fontDesign(.rounded)
-                            .bold()
-                            .padding(10)
-                            .background(.indigo.opacity(0.3))
-                            .cornerRadius(20)
-                        
-                    .foregroundStyle(.indigo)
-         
-                    .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
+                Link(destination: URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak")!){
                     
+                    
+                    
+                    Text(context.state.isOnBreak ? "End Break" : "Break")
+                    //  .widgetURL()
+                        .fontDesign(.rounded)
+                        .bold()
+                        .padding(10)
+                        .background(.indigo.opacity(0.3))
+                        .cornerRadius(20)
+                    
+                        .foregroundStyle(.indigo)
+                    
+                }
                   
-                        Text("End Shift") .widgetURL(URL(string: "shifttrackerapp://endshift"))
-                            .fontDesign(.rounded)
-                            .bold()
-                            .padding(10)
-                            .background(context.state.isOnBreak ? .gray.opacity(0.3) : .red.opacity(0.3))
-                            .cornerRadius(20)
-                        
-                    .foregroundStyle(context.state.isOnBreak ? .gray : .red)
-                    .widgetURL(URL(string: "shifttrackerapp://endshift"))
+                Link(destination: URL(string: context.state.isOnBreak ? "shifttrackerapp://" : "shifttrackerapp://endshift")!){
+                    
+                    Text("End Shift")
+                        .fontDesign(.rounded)
+                        .bold()
+                        .padding(10)
+                        .background(context.state.isOnBreak ? .gray.opacity(0.3) : .red.opacity(0.3))
+                        .cornerRadius(20)
+                    
+                        .foregroundStyle(context.state.isOnBreak ? .gray : .red)
+                }
                 
                     
                 

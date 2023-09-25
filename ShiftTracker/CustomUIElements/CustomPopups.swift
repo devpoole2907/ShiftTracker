@@ -137,3 +137,20 @@ struct CustomConfirmationAlert: CentrePopup {
     }
     
 }
+
+struct CustomTopPopup: TopPopup {
+    func createContent() -> some View {
+        HStack(spacing: 0){
+            Text("Cheese")
+        } .padding(.vertical, 20)
+            .padding(.leading, 24)
+            .padding(.trailing, 16)
+    }
+    
+    func configurePopup(popup: TopPopupConfig) -> TopPopupConfig {
+        popup.horizontalPadding(20)
+            .topPadding(42)
+            .cornerRadius(16)
+    }
+    
+}

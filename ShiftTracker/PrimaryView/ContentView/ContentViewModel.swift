@@ -480,6 +480,9 @@ class ContentViewModel: ObservableObject {
     
     func startBreak(startDate: Date? = nil, isUnpaid: Bool) {
         print("Starting break")
+        
+        
+        
         //   breakStartDate = startDate
         
         // add the break to tempBreaks
@@ -518,19 +521,28 @@ class ContentViewModel: ObservableObject {
         print("Cancelling break")
         
         // Remove the last added break from tempBreaks if one exists
-        if !tempBreaks.isEmpty {
-            tempBreaks.removeLast()
-            saveTempBreaksToUserDefaults()
+        
+        withAnimation(.spring(duration: 1.0)) {
+            
+            if !tempBreaks.isEmpty {
+                
+                    tempBreaks.removeLast()
+                
+                saveTempBreaksToUserDefaults()
+            }
+            
+            // Reset the totalPayAtBreakStart to revert the pay calculation
+            totalPayAtBreakStart = 0.0
+            
+            // Reset isOnBreak
+    
+            isOnBreak = false
+            
+            sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
+            
+            stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
+            
         }
-        
-        // Reset the totalPayAtBreakStart to revert the pay calculation
-        totalPayAtBreakStart = 0.0
-        
-        // Reset isOnBreak
-        isOnBreak = false
-        sharedUserDefaults.set(isOnBreak, forKey: shiftKeys.isOnBreakKey)
-        
-        stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
         
 #if os(iOS)
         updateActivity(startDate: shift?.startDate ?? Date())

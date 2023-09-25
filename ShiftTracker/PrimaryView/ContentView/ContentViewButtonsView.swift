@@ -75,6 +75,14 @@ struct ContentViewButtonsView: View {
                         backgroundColor: !viewModel.isEditing ? buttonColor : disabledButtonColor,
                         isDisabled: viewModel.isEditing
                     )
+                    
+                    AnimatedButton(
+                        action: { navigationState.activeSheet = .endShiftSheet },
+                        title: "End Shift",
+                        backgroundColor: (viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
+                        isDisabled: viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing
+                    )
+                    
                 }
                 else {
                     AnimatedButton(
@@ -85,12 +93,7 @@ struct ContentViewButtonsView: View {
                         isDisabled: viewModel.isEditing
                     )
                 }
-                AnimatedButton(
-                    action: { navigationState.activeSheet = .endShiftSheet },
-                    title: "End Shift",
-                    backgroundColor: (viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
-                    isDisabled: viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing
-                )
+               
             }
             
             
