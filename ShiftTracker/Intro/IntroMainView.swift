@@ -122,18 +122,18 @@ struct IntroView<ActionView: View>: View {
                 let size = $0.size
                 
                 
-                if intro.displaysView {
+                if intro.customView != nil {
                     
                     VStack {
                         
-                        MockupLockscreenView().frame(maxWidth: .infinity)
+                        intro.customView.frame(maxWidth: .infinity)
                             .padding(.top, 80)
                         
                         
                     }
                     
-                } else {
-                    Image(intro.introAssetImage)
+                }/*else {
+                    Image(intro.introAssetImage ?? "")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -141,7 +141,7 @@ struct IntroView<ActionView: View>: View {
                         .frame(width: size.width, height: size.height)
                         .cornerRadius(12)
                     
-                }
+                }*/
                 
             }.offset(y: showView ? 0 : -size.height / 2)
                 .opacity(showView ? 1 : 0)

@@ -170,6 +170,11 @@
 		7C5243792ABE70FE00356B6C /* UpdatedHistoryPagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5243782ABE70FE00356B6C /* UpdatedHistoryPagesView.swift */; };
 		7C5F735E2ABA59CF00F698A1 /* ThemesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
+		7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B52AC1624D00D87140 /* MockupContentView.swift */; };
+		7C7B46B82AC166AB00D87140 /* MockupSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */; };
+		7C7B46BA2AC1689700D87140 /* MockupMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B92AC1689700D87140 /* MockupMapView.swift */; };
+		7C7B46BC2AC16DF800D87140 /* MockupScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46BB2AC16DF800D87140 /* MockupScheduleView.swift */; };
+		7C7B46BE2AC170F300D87140 /* MockupStatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46BD2AC170F300D87140 /* MockupStatisticsView.swift */; };
 		7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C82D8CB2A6222FF004DF369 /* JobRow.swift */; };
 		7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */; };
 		7C8CEA962A5D29B1006C833F /* ContentViewButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8CEA952A5D29B1006C833F /* ContentViewButtonsView.swift */; };
@@ -415,6 +420,11 @@
 		7C5243782ABE70FE00356B6C /* UpdatedHistoryPagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatedHistoryPagesView.swift; sourceTree = "<group>"; };
 		7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesList.swift; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
+		7C7B46B52AC1624D00D87140 /* MockupContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupContentView.swift; sourceTree = "<group>"; };
+		7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupSideMenu.swift; sourceTree = "<group>"; };
+		7C7B46B92AC1689700D87140 /* MockupMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupMapView.swift; sourceTree = "<group>"; };
+		7C7B46BB2AC16DF800D87140 /* MockupScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupScheduleView.swift; sourceTree = "<group>"; };
+		7C7B46BD2AC170F300D87140 /* MockupStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupStatisticsView.swift; sourceTree = "<group>"; };
 		7C82D8CB2A6222FF004DF369 /* JobRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobRow.swift; sourceTree = "<group>"; };
 		7C8CEA932A5D2528006C833F /* CurrentBreaksListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentBreaksListView.swift; sourceTree = "<group>"; };
 		7C8CEA952A5D29B1006C833F /* ContentViewButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewButtonsView.swift; sourceTree = "<group>"; };
@@ -687,11 +697,11 @@
 		1AB7D6A729FC03F400326AAA /* Intro */ = {
 			isa = PBXGroup;
 			children = (
+				7C7B46B42AC1623700D87140 /* MockupViews */,
 				1AB7D6A829FC040500326AAA /* PageIntro.swift */,
 				1AB7D6AA29FC059500326AAA /* IntroMainView.swift */,
 				1AB7D6AC29FC097700326AAA /* CustomIndicatorView.swift */,
 				1AB7D6AE29FCAA1B00326AAA /* CustomTextField.swift */,
-				7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */,
 			);
 			path = Intro;
 			sourceTree = "<group>";
@@ -909,6 +919,19 @@
 				7C4D82F12A8B6944006D54F9 /* Info.plist */,
 			);
 			path = SelectJobIntentExtent;
+			sourceTree = "<group>";
+		};
+		7C7B46B42AC1623700D87140 /* MockupViews */ = {
+			isa = PBXGroup;
+			children = (
+				7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */,
+				7C7B46B52AC1624D00D87140 /* MockupContentView.swift */,
+				7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */,
+				7C7B46B92AC1689700D87140 /* MockupMapView.swift */,
+				7C7B46BB2AC16DF800D87140 /* MockupScheduleView.swift */,
+				7C7B46BD2AC170F300D87140 /* MockupStatisticsView.swift */,
+			);
+			path = MockupViews;
 			sourceTree = "<group>";
 		};
 		7CAC9B612A7604EB0048F818 /* ShiftTrackerLockscreenWidgets */ = {
@@ -1274,11 +1297,13 @@
 				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
 				7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */,
 				7C0AC12A2A88EB360016456E /* JobEntry.swift in Sources */,
+				7C7B46B82AC166AB00D87140 /* MockupSideMenu.swift in Sources */,
 				7C4D82F92A8B6992006D54F9 /* SelectJobIntent.intentdefinition in Sources */,
 				1A8D4AD62A4EDE0D00EEB334 /* AnimatedButton.swift in Sources */,
 				1A9855D629C55F8A003F512C /* ContentView.swift in Sources */,
 				BFFEF1FA2A691C3D00E3F406 /* AppIconView.swift in Sources */,
 				1A5B0BA12A55001E0021572B /* CustomPopups.swift in Sources */,
+				7C7B46BA2AC1689700D87140 /* MockupMapView.swift in Sources */,
 				BF857D972A6A21EE00D02C5C /* CustomCheckbox.swift in Sources */,
 				7C1BB6842AA8376E00957BF5 /* ChartAnnotationView.swift in Sources */,
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
@@ -1346,6 +1371,7 @@
 				7C2A18E62AA0275A00518789 /* AddressManager.swift in Sources */,
 				1A83C61A2A5794F90054E3B1 /* BreakTimerView.swift in Sources */,
 				7C2C2F872AA6CD580074E32E /* SettingsCheckView.swift in Sources */,
+				7C7B46BE2AC170F300D87140 /* MockupStatisticsView.swift in Sources */,
 				7CAB87162A5878C900A08219 /* ShiftStore.swift in Sources */,
 				1A1914212A185281000D0F8B /* ShiftManager.swift in Sources */,
 				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,
@@ -1364,6 +1390,7 @@
 				1AC9DDF429F7AFA900C15008 /* WatchConnectivityManager.swift in Sources */,
 				1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */,
 				7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */,
+				7C7B46BC2AC16DF800D87140 /* MockupScheduleView.swift in Sources */,
 				7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */,
 				1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
@@ -1381,6 +1408,7 @@
 				7C0AC1362A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,
 				BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */,
 				1AE3845B29D444800002378F /* TabBottomView.swift in Sources */,
+				7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */,
 				BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */,
 				BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */,
 			);

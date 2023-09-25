@@ -69,6 +69,8 @@ struct MockupLockscreenView: View {
                 }
                 
             }     .foregroundStyle(.gray)
+        
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
             
             .onAppear {
                 Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { _ in

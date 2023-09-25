@@ -43,7 +43,10 @@ struct ToyShape: Identifiable {
 var data: [ToyShape] = [
     .init(type: "Mon", count: 5),
     .init(type: "Tue", count: 3),
-    .init(type: "Wed", count: 4)
+    .init(type: "Wed", count: 4),
+    .init(type: "Thu", count: 5),
+    .init(type: "Fri", count: 6),
+    .init(type: "Sat", count: 2)
 ]
 
     struct TempGraph_Previews: PreviewProvider {
