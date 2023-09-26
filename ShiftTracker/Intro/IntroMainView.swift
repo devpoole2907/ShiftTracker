@@ -13,9 +13,8 @@ import CoreLocation
 struct IntroMainView: View {
     
     @State private var activeIntro: PageIntro = pageIntros[0]
-    
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
-    @EnvironmentObject var viewModel: ContentViewModel
+
+    @EnvironmentObject var navigationState: NavigationState
     
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.colorScheme) private var colorScheme
@@ -39,16 +38,15 @@ struct IntroMainView: View {
             IntroView(intro: $activeIntro, size: size){
                 VStack(spacing: 10){
                     Button{
+                       
+                        navigationState.activeCover = .jobView
                         
-                        
-                        showAddJobView = true
-                        
-                       // withAnimation(.easeOut(duration: 0.8)){
-                            
-                            
-                            
-                            //isFirstLaunch = false
-                        //}
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
+                            withAnimation {
+                                isFirstLaunch = false
+                                
+                            }
+                        }
                     } label: {
                         Text("Continue")
                             .fontWeight(.semibold)
@@ -60,20 +58,17 @@ struct IntroMainView: View {
                     
                 }.padding(.top, 25)
             }
-            .fullScreenCover(isPresented: $showAddJobView){
-                JobView(isEditJobPresented: .constant(true), selectedJobForEditing: .constant(nil))
-                    .environmentObject(viewModel)
-                    .environmentObject(jobSelectionViewModel)
-                    .onDisappear{
-                        withAnimation {
-                            isFirstLaunch = false
-                        }
-                    }
+            
+        
+            
+           
+               
+                       
                 
                 
-                    .customSheetBackground()
+                    
                 
-            }
+            
             
             
             

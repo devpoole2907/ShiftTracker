@@ -21,6 +21,14 @@ protocol SegmentedItem: Hashable {
     var contentType: SegmentedContentType { get }
 }
 
+enum ActiveCover: Identifiable {
+    public var id: Int {
+        hashValue
+    }
+    
+    case lockedView, jobView
+}
+
 
 public enum StatsMode: Int, CaseIterable {
     case earnings

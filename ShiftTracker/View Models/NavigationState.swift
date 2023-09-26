@@ -11,6 +11,8 @@ import Combine
 class NavigationState: ObservableObject {
     static let shared = NavigationState()
     
+    
+    
     @Published var gestureEnabled: Bool = true
     @Published var showMenu: Bool = false
     
@@ -18,6 +20,7 @@ class NavigationState: ObservableObject {
     
     @Published var hideTabBar = false
     
+    @Published var activeCover: ActiveCover?
     @Published var activeSheet: ActiveSheet?
     
     @Published var offset: CGFloat = 0

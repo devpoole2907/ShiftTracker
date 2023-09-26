@@ -45,6 +45,7 @@ struct MainWithSideBarView: View {
     
 
     
+    
     @GestureState var gestureOffset: CGFloat = 0
     
     @State private var isSubscriptionChecked: Bool = false
@@ -67,6 +68,7 @@ struct MainWithSideBarView: View {
                         NavigationStack{
                             ContentView()
                                 .blur(radius: navigationState.calculatedBlur)
+                                .blur(radius: isFirstLaunch ? 50 : 0)
                                 .allowsHitTesting(!navigationState.showMenu)
                             
                                 .background {
@@ -345,11 +347,19 @@ struct MainWithSideBarView: View {
                 jobId = jobs.first(where: { $0.uuid == newUUID })?.objectID
             }
             
-            
-            .fullScreenCover(isPresented: $showingLockedView) {
-                LockedView(isAuthenticated: $showingLockedView)
-                    .interactiveDismissDisabled()
+            .fullScreenCover(item: $navigationState.activeCover){ cover in
+                switch cover {
+                case .lockedView:
+                    LockedView(isAuthenticated: $showingLockedView)
+                case .jobView:
+                    JobView(isEditJobPresented: .constant(true), selectedJobForEditing: .constant(nil))
+                        .environmentObject(ContentViewModel.shared)
+                        .environmentObject(jobSelectionModel)
+                        .customSheetBackground()
+                }
             }
+            
+         
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
                 checkIfLocked()
             }
@@ -403,7 +413,7 @@ struct MainWithSideBarView: View {
             }
             
             if isFirstLaunch {
-                IntroMainView(isFirstLaunch: $isFirstLaunch).environmentObject(ContentViewModel.shared).environmentObject(jobSelectionModel)
+                IntroMainView(isFirstLaunch: $isFirstLaunch)
                     .onAppear {
                         
                         themeManager.resetColorsToDefaults()
