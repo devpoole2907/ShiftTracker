@@ -191,7 +191,6 @@ struct ContentView: View {
                 if let thisShift = viewModel.lastEndedShift {
                     NavigationStack{
                         DetailView(shift: thisShift, presentedAsSheet: true, activeSheet: $navigationState.activeSheet).navigationBarTitle("Shift Ended")
-                            .toolbarBackground(colorScheme == .dark ? .black : .white, for: .navigationBar)
                             .environment(\.managedObjectContext, context)
                     }.presentationDetents([ .large])
                         .customSheetRadius(35)
