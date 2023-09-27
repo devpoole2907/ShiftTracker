@@ -266,7 +266,7 @@ class ContentViewModel: ObservableObject {
     
     // NEW totalPay and taxedPay factoring in overtime
     
-    var totalPay: Double {
+  var totalPay: Double {
         guard let shift = shift else { return 0 }
         
         let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
@@ -301,24 +301,38 @@ class ContentViewModel: ObservableObject {
     
     // this func is used for calculating the total pay when the shift is ended, as the user may provide a custom end date
     func computeTotalPay(for endDate: Date) -> Double {
-        guard let shift = shift else { return 0 }
+        guard let shift = shift else {
+            
+            print("im returning 0")
+            
+            return 0 }
         
         let elapsed = endDate.timeIntervalSince(shift.startDate) - totalBreakDuration()
         
         var computeOvertimeEnabled = false
         
-        if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 {
-            timeElapsedUntilOvertime = elapsed
-            computeOvertimeEnabled = true
+        var elapsedTimeUntilOvertime = timeElapsedUntilOvertime
+        
+        if applyOvertimeAfter > 0 {
+            if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 {
+                
+                // this was modifying the global variable. this may have been fine for when calling this when ending a shift, but now that we call it upon starting a break
+                // we will make a local copy instead and use that
+                
+                
+                  elapsedTimeUntilOvertime = elapsed
+                computeOvertimeEnabled = true
+            }
         }
         
-        let basePay = (timeElapsedUntilOvertime > 0 ? timeElapsedUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
-        let overtimePay = computeOvertimeEnabled ? (elapsed - timeElapsedUntilOvertime) / 3600.0 * Double(shift.hourlyPay) * overtimeRate : 0
+        let basePay = (elapsedTimeUntilOvertime > 0 ? elapsedTimeUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
+        let overtimePay = computeOvertimeEnabled ? (elapsed - elapsedTimeUntilOvertime) / 3600.0 * Double(shift.hourlyPay) * overtimeRate : 0
         
         let pay = basePay + overtimePay
         
         return isMultiplierEnabled ? pay * payMultiplier : pay
     }
+    
     
     
     
@@ -509,13 +523,16 @@ class ContentViewModel: ObservableObject {
         
         if isUnpaid {
             
-            if let startDate = startDate, startDate < Date() {
-                totalPayAtBreakStart = computeTotalPay(for: startDate)
+          /*  if let startDate = startDate, startDate < Date() {
+                let computedPay = computeTotalPay(for: startDate)
+                totalPayAtBreakStart = computedPay
                 } else {
             
             totalPayAtBreakStart = totalPay
             
-            }
+           }*/
+            
+            totalPayAtBreakStart = computeTotalPay(for: currentBreak.startDate)
             
             // timeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as! TimeInterval
         }
@@ -570,7 +587,9 @@ class ContentViewModel: ObservableObject {
     func startBreakTimer(startDate: Date) {
         
         breakTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            self.breakTimeElapsed = Date().timeIntervalSince(startDate)
+            withAnimation{
+                self.breakTimeElapsed = Date().timeIntervalSince(startDate)
+            }
         }
     }
     
@@ -692,6 +711,9 @@ class ContentViewModel: ObservableObject {
     
     func endBreak(endDate: Date? = nil, viewContext: NSManagedObjectContext) {
         
+        print("At endBreak start: totalPay=\(totalPay), totalPayAtBreakStart=\(totalPayAtBreakStart), isOnBreak=\(isOnBreak)")
+
+        
         tempBreaks[tempBreaks.count - 1].endDate = endDate ?? Date()
         
         saveTempBreaksToUserDefaults()
@@ -711,7 +733,7 @@ class ContentViewModel: ObservableObject {
         
         totalPayAtBreakStart = 0.0
         
-        
+        print("total pay at break end is: \(totalPay)")
         
         // TEMP DISABLED UNTIL MULTIPLE BREAKS WORKING
         
@@ -740,6 +762,11 @@ class ContentViewModel: ObservableObject {
         if tempBreaks[tempBreaks.count - 1].isUnpaid{
             // startTimer(startDate: Date(), viewContext: viewContext)
         }
+        
+        print("At endBreak end: totalPay=\(totalPay), totalPayAtBreakStart=\(totalPayAtBreakStart), isOnBreak=\(isOnBreak)")
+
+     
+        
     }
     
     func startTimer(startDate: Date, viewContext: NSManagedObjectContext) {
