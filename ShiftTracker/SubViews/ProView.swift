@@ -291,7 +291,7 @@ struct PurchaseButton: View {
         }){
             
             VStack{
-                Text(product.id == "pro_month" ? "MONTHLY" : "YEARLY")
+                Text(product.id == "pro_month" ? "MONTHLY" : "LIFETIME")
                     .font(.title2)
                     .fontWeight(.heavy)
                     .foregroundColor(upgradeButtonTextColor)

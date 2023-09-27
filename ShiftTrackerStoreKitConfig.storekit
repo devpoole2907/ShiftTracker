@@ -20,6 +20,21 @@
       "type" : "Consumable"
     },
     {
+      "displayPrice" : "29.99",
+      "familyShareable" : true,
+      "internalID" : "6467845893",
+      "localizations" : [
+        {
+          "description" : "Unlimited Jobs, Auto Breaks, Themes & more!",
+          "displayName" : "ShiftTracker PRO LIFETIME",
+          "locale" : "en_AU"
+        }
+      ],
+      "productID" : "pro_lifetime",
+      "referenceName" : "ShiftTracker Lifetime",
+      "type" : "NonConsumable"
+    },
+    {
       "displayPrice" : "9.99",
       "familyShareable" : false,
       "internalID" : "6446510679",
@@ -56,7 +71,7 @@
     "_billingIssuesEnabled" : false,
     "_developerTeamID" : "L9DB7QA9DE",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 711271064.13617897,
+    "_lastSynchronizedDate" : 717492508.871243,
     "_locale" : "en_US",
     "_storefront" : "NZL",
     "_storeKitErrors" : [

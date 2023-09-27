@@ -13,7 +13,7 @@ import CoreData
 class PurchaseManager: ObservableObject {
     
     
-    private let productIds = ["pro_month", "pro_yearly"]
+    private let productIds = ["pro_month", "pro_lifetime"]
     
     @Published
     private(set) var products: [Product] = []
@@ -29,9 +29,15 @@ class PurchaseManager: ObservableObject {
     
     var hasUnlockedPro: Bool {
         
-       // return !self.purchasedProductIDs.isEmpty && (subscriptionExpiryDate ?? Date()) > Date()
-        
         return true // temporary for testflight
+    
+     /*   if self.purchasedProductIDs.contains("pro_lifetime") {
+                    return true
+                }
+        
+        return (subscriptionExpiryDate ?? Date()) > Date()
+        
+     */
         
     }
     
@@ -82,6 +88,11 @@ class PurchaseManager: ObservableObject {
             guard case .verified(let transaction) = result else {
                 continue
             }
+            
+            if transaction.productID == "pro_lifetime" {
+                            self.purchasedProductIDs.insert(transaction.productID)
+                            return
+                        }
 
   
             if let latest = latestTransaction,
