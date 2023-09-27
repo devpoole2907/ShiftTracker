@@ -509,7 +509,13 @@ class ContentViewModel: ObservableObject {
         
         if isUnpaid {
             
+            if let startDate = startDate, startDate < Date() {
+                totalPayAtBreakStart = computeTotalPay(for: startDate)
+                } else {
+            
             totalPayAtBreakStart = totalPay
+            
+            }
             
             // timeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as! TimeInterval
         }
