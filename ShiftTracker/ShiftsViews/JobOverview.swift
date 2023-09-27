@@ -459,14 +459,17 @@ struct JobOverview: View {
                 if job != nil {
                     RenameButton()
                 }
-                Button(action: {
-                    isEditJobPresented.toggle()
-                }){
-                    HStack {
-                        Text("Edit Job")
-                        Image(systemName: "pencil")
-                    }
-                }.disabled(job == nil)
+            
+                    Button(action: {
+                        isEditJobPresented.toggle()
+                    }){
+                        HStack {
+                            Text("Edit Job")
+                            Image(systemName: "pencil")
+                        }
+                    }.disabled(job == nil || ContentViewModel.shared.shift != nil)
+                    
+                
                 
             }
             
