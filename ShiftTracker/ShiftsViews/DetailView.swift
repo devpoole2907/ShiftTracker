@@ -522,7 +522,7 @@ struct DetailView: View {
                                         
                                         Image(systemName: "calendar.badge.clock")
                                         Text("Applied after:")
-                                        OvertimeView(overtimeAppliedAfter: $viewModel.overtimeAppliedAfter)
+                                        TimePicker(timeInterval: $viewModel.overtimeAppliedAfter)
                                             .frame(maxHeight: 75)
                                             .disabled(!viewModel.isEditing)
                                         

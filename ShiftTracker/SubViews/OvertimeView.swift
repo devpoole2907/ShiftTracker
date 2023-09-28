@@ -7,33 +7,33 @@
 
 import SwiftUI
 
-struct OvertimeView: View{
+struct TimePicker: View{
     
-    @Binding var overtimeAppliedAfter: TimeInterval
+    @Binding var timeInterval: TimeInterval
     
-    @State private var selectedOvertimeHour = 8
-    @State private var selectedOvertimeMinute = 30
+    @State private var selectedHour = 8
+    @State private var selectedMinute = 30
     
-    init(overtimeAppliedAfter: Binding<TimeInterval>) {
-            _overtimeAppliedAfter = overtimeAppliedAfter
-            _selectedOvertimeHour = State(initialValue: Int(overtimeAppliedAfter.wrappedValue) / 3600)
-            _selectedOvertimeMinute = State(initialValue: Int(overtimeAppliedAfter.wrappedValue) % 3600 / 60)
+    init(timeInterval: Binding<TimeInterval>) {
+            _timeInterval = timeInterval
+            _selectedHour = State(initialValue: Int(timeInterval.wrappedValue) / 3600)
+            _selectedMinute = State(initialValue: Int(timeInterval.wrappedValue) % 3600 / 60)
         }
 
     var body: some View{
         
         let hourBinding = Binding<Int>(
-                    get: { self.selectedOvertimeHour },
+                    get: { self.selectedHour },
                     set: {
-                        self.selectedOvertimeHour = $0
+                        self.selectedHour = $0
                         self.updateTimeInterval()
                     }
                 )
 
                 let minuteBinding = Binding<Int>(
-                    get: { self.selectedOvertimeMinute },
+                    get: { self.selectedMinute },
                     set: {
-                        self.selectedOvertimeMinute = $0
+                        self.selectedMinute = $0
                         self.updateTimeInterval()
                     }
                 )
@@ -59,6 +59,6 @@ struct OvertimeView: View{
     }
     
     private func updateTimeInterval() {
-            overtimeAppliedAfter = TimeInterval(selectedOvertimeHour * 3600 + selectedOvertimeMinute * 60)
+            timeInterval = TimeInterval(selectedHour * 3600 + selectedMinute * 60)
         }
 }

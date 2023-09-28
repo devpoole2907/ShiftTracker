@@ -56,6 +56,9 @@ struct JobView: View {
     @State private var selectedDay: Int = 1
     @State private var selectedTime: Date
     
+    @State private var breakReminder: Bool = false
+    @State private var breakRemindAfter: TimeInterval
+    
     @State private var selectedRadius: Double = 75
     
     @State private var activeSheet: ActiveSheet?
@@ -78,7 +81,7 @@ struct JobView: View {
     @State private var miniMapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
     enum ActiveSheet: Identifiable {
-        case overtimeSheet, symbolSheet
+        case overtimeSheet, symbolSheet, breakRemindSheet
         
         var id: Int {
             hashValue
@@ -113,7 +116,8 @@ struct JobView: View {
         }
 
         
-        
+        _breakReminder = State(initialValue: job?.breakReminder ?? false)
+        _breakRemindAfter = State(initialValue: job?.breakReminderTime ?? 0)
         _clockInReminder = State(initialValue: job?.clockInReminder ?? false)
         _clockOutReminder = State(initialValue: job?.clockOutReminder ?? false)
         _autoClockIn = State(initialValue: job?.autoClockIn ?? false)
@@ -480,6 +484,8 @@ struct JobView: View {
                             
                         }
                         
+                
+                        
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $rosterReminder){
                                 
@@ -510,6 +516,48 @@ struct JobView: View {
                             
                         }.glassModifier(cornerRadius: 20)
                         
+                        VStack(alignment: .leading, spacing: 10){
+                            Toggle(isOn: $breakReminder){
+                                
+                                Text("Break reminders")
+                                
+                            }.toggleStyle(CustomToggleStyle())
+                           
+                            
+                            if #available(iOS 16.1, *){
+                                
+                                HStack {
+                                   
+                                    Text("When:")
+                                    TimePicker(timeInterval: $breakRemindAfter)
+                                        .frame(maxHeight: 75)
+                                        .frame(maxWidth: getRect().width - 100)
+                                    
+                                }
+                                .disabled(!breakReminder)
+                                .opacity(breakReminder ? 1.0 : 0.5)
+                    
+                                
+                            } else {
+                                
+                                // due to a frame issue with overtime views pickers on iOS 16 or lower, overtime view is a sheet in those versions
+                                
+                                Button(action: { activeSheet = .breakRemindSheet }){
+                                    HStack {
+                                    
+                                        Text("When: ")
+                                        Spacer()
+                                        Text("\(formattedTimeInterval(breakRemindAfter))")
+                                        
+                                        
+                                    }
+                                }
+                            }
+                            
+                            
+                        }.padding(.horizontal)
+                            .padding(.vertical, 10)
+                            .glassModifier(cornerRadius: 20)
                     
                         
                         VStack(alignment: .leading, spacing: 10){
@@ -530,12 +578,9 @@ struct JobView: View {
                             if #available(iOS 16.1, *){
                                 
                                 HStack {
-                                    
-                                    
-                                    
-                                    Image(systemName: "calendar.badge.clock")
+                                 
                                     Text("Apply after:")
-                                    OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
+                                    TimePicker(timeInterval: $overtimeAppliedAfter)
                                         .frame(maxHeight: 75)
                                         .frame(maxWidth: getRect().width - 100)
                                     
@@ -550,7 +595,7 @@ struct JobView: View {
                                 
                                 Button(action: { activeSheet = .overtimeSheet }){
                                     HStack {
-                                        Image(systemName: "calendar.badge.clock")
+                                        
                                         Text("Apply after: ")
                                         Spacer()
                                         Text("\(formattedTimeInterval(overtimeAppliedAfter))")
@@ -564,10 +609,7 @@ struct JobView: View {
                         }.padding(.horizontal)
                             .padding(.vertical, 10)
                             .glassModifier(cornerRadius: 20)
-                        
-                        
-                        
-                        
+                    
                         
                     }
                      .frame(maxHeight: .infinity, alignment: .top)
@@ -591,7 +633,7 @@ struct JobView: View {
                         switch item {
                         case .overtimeSheet:
                          
-                            OvertimeView(overtimeAppliedAfter: $overtimeAppliedAfter)
+                            TimePicker(timeInterval: $overtimeAppliedAfter)
                                 .environment(\.managedObjectContext, viewContext)
                                 
                            
@@ -610,6 +652,14 @@ struct JobView: View {
                                 .customSheetRadius(35)
                                 .customSheetBackgroundInteraction()
                             
+                            
+                        case .breakRemindSheet:
+                            TimePicker(timeInterval: $breakRemindAfter)
+                                .environment(\.managedObjectContext, viewContext)
+                                
+                           
+                                .presentationDragIndicator(.visible)
+                                .presentationDetents([ .fraction(0.4)])
                             
                         }
                         
@@ -748,6 +798,8 @@ struct JobView: View {
         newJob.rosterReminder = rosterReminder
         newJob.rosterTime = selectedTime
         newJob.rosterDayOfWeek = Int16(selectedDay)
+        newJob.breakReminder = breakReminder
+        newJob.breakReminderTime = breakRemindAfter
         
         // replace this code with adding locations later when multiple address system update releases
         if let locationSet = newJob.locations, let location = locationSet.allObjects.first as? JobLocation {

@@ -602,6 +602,9 @@ class ContentViewModel: ObservableObject {
         print("time elapsed until overtime was: \(timeElapsedUntilOvertime)")
         print("ending shift, overtime time elapsed is: \(timeElapsed - timeElapsedUntilOvertime)")
         
+        // cancel any potential upcoming break reminders that may not have been triggered yet
+        cancelBreakReminder()
+        
         
         let overtimeElapsed = timeElapsed - timeElapsedUntilOvertime
         
@@ -967,29 +970,34 @@ class ContentViewModel: ObservableObject {
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
             
             UNUserNotificationCenter.current().add(request)
+            
+            if job.breakReminder { // if job has a break reminder greater than or equal 1 hour
+                
+                scheduleBreakReminder(after: job.breakReminderTime)
+            }
+            
         }
+        
+        
 #endif
     }
     
-    func startBreakButtonAction() {
-        showStartBreakAlert = true
-        //  let tempElapsed = timeElapsed
-        // stopTimer(timer: &timer, timeElapsed: &timeElapsed)
-        //  timeElapsed = tempElapsed
+    func scheduleBreakReminder(after timeInterval: TimeInterval) {
+        let content = UNMutableNotificationContent()
+        content.title = "Break Time!"
+        content.body = "It's time for your break."
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+
+        let request = UNNotificationRequest(identifier: "BreakReminder", content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
     
-    func endBreakButtonAction() {
-        showEndBreakAlert = true
-        /*      let tempBreakElapsed = breakTimeElapsed
-         stopTimer(timer: &breakTimer, timeElapsed: &breakTimeElapsed)
-         breakTimeElapsed = tempBreakElapsed */
-    }
     
-    func endShiftButtonAction(){
-        showEndAlert = true
-        
+    func cancelBreakReminder() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["BreakReminder"])
     }
-    
     
     // multiple breaks stuff:
     
