@@ -237,20 +237,9 @@ struct ScheduledShiftListRow: View {
                             
                             VStack(spacing: 3){
                                 
-                                HStack{
-                                    Image(systemName: shift.job?.icon ?? "briefcase.fill")
-                                        .font(.title3)
-                                        .foregroundStyle(.white)
-                                    
-                                }
-                                .padding(12)
-                                .background {
-                                        
-                                        Circle()
-                                            .foregroundStyle(Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)).gradient)
-                                            .frame(width: 40, height: 40)
-                                        
-                                    }
+                                JobIconView(icon: shift.job?.icon ?? "briefcase.fill", color: Color(red: Double(shift.job?.colorRed ?? 0), green: Double(shift.job?.colorGreen ?? 0), blue: Double(shift.job?.colorBlue ?? 0)), font: .title3, padding: 12)
+                                
+                             
                                 
                                 HStack(spacing: 5){
                                     

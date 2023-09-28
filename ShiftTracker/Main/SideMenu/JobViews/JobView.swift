@@ -172,6 +172,7 @@ struct JobView: View {
                                         .customAnimatedSymbol(value: $selectedIcon)
                                         .customAnimatedSymbol(value: $editToggle)
                                         .foregroundStyle(.white)
+                                        .shadow(color: .white, radius: 0.7)
                                         .padding(20)
                                         .background {
                                             
@@ -867,7 +868,9 @@ struct JobIconPicker: View {
                             VStack {
                                 Image(systemName: icon)
                                     .font(.title2)
+                                
                                     .frame(height: 20)
+                                    .shadow(color: .white, radius: 0.7)
                                     .foregroundStyle(.white)
                                 
                             }.padding()

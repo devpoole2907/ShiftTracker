@@ -302,6 +302,7 @@ struct UpdatedHistoryPagesView: View {
                             .animation(.easeInOut, value: historyModel.selectedTab)
                     }
                 }
+                .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                 .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 
                 
@@ -410,8 +411,6 @@ struct UpdatedHistoryPagesView: View {
         
         
         .navigationTitle(historyModel.getCurrentDateRangeString(groupedShifts: groupedShifts))
-        
-
         
         
     }

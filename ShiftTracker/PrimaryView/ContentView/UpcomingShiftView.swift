@@ -129,21 +129,10 @@ struct UpcomingShiftView: View {
                         .padding(.bottom, -1)
                     Divider().frame(maxWidth: 200)
                     HStack{
-                        Image(systemName: upcomingShift.job?.icon ?? "")
-                            .foregroundStyle(.white)
-                            .font(.callout)
-                            .padding(10)
-                            .background {
-                                
-                                Circle()
-                                   // .foregroundStyle()
-                                
-                                    .foregroundStyle(!purchaseManager.hasUnlockedPro ? (upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID ? Color.gray.gradient : Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient) : Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient)
-                                
-                                
-                                  //  .opacity(!purchaseManager.hasUnlockedPro ? (upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID ? 0.5 : 1.0) : 1.0)
-                                
-                            }
+                        
+                        JobIconView(icon: upcomingShift.job?.icon ?? "", color: !purchaseManager.hasUnlockedPro ? (upcomingShift.job?.uuid?.uuidString != lastSelectedJobUUID ? Color.gray : Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0))) : Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)), font: .callout)
+                        
+                    
                         
                         
                         VStack(alignment: .leading, spacing: 5){

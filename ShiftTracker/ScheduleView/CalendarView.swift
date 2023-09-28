@@ -150,7 +150,7 @@ struct CalendarView: UIViewRepresentable {
                             
             return .image(UIImage(systemName: job?.icon ?? "briefcase.fill"),
                           color: color,
-                                          size: .large)
+                          size: .large)
             
             
         }

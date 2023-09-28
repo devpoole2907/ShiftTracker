@@ -25,19 +25,11 @@ struct JobRow: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         
         HStack(spacing: 10) {
-            HStack {
-                Image(systemName: job.icon ?? "briefcase.circle")
-                    .font(.caption)
-                    .foregroundStyle(.white)
-                    
-            }.padding(10)
-                .background {
-                    
-                    Circle()
-                        .foregroundStyle(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient)
-                    
-                }.frame(width: 25, alignment: .center)
-                .padding(.horizontal, 5)
+            
+                JobIconView(icon: job.icon ?? "briefcase.circle", color: Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)), font: .caption)
+                
+       
+          
                
             
             Text(job.name ?? "")

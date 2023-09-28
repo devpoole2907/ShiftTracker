@@ -146,20 +146,10 @@ struct ShiftDetailRow: View {
             HStack{
                 
                 VStack(spacing: 3){
-                    HStack{
-                        Image(systemName: job?.icon ?? "briefcase.fill")
-                            .font(.title3)
-                            .foregroundStyle(.white)
-                        
-                    }
-                    .padding(12)
-                    .background {
-                        
-                        Circle()
-                            .foregroundStyle(Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0)).gradient)
-                            .frame(width: 40, height: 40)
-                        
-                    }
+                    
+                    JobIconView(icon: job?.icon ?? "briefcase.fill", color: Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0)), font: .title3, padding: 12)
+                    
+              
                     
                     
                     HStack(spacing: 5){

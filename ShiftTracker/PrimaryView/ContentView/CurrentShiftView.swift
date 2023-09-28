@@ -47,19 +47,10 @@ struct CurrentShiftView: View {
             }
             if let job = job {
                 HStack{
-                    Image(systemName: job.icon ?? "")
-                        .font(.callout)
-                        .foregroundStyle(.white)
-                        .padding(10)
-                        .background {
-                            let color = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
-                            Circle()
-                                .foregroundStyle(color)
-                          
-                            
-                                
-                            
-                        }
+                    
+                    let color = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue))
+                    JobIconView(icon: job.icon ?? "", color: color, font: .callout)
+                 
                     
                     VStack(alignment: .leading, spacing: 5){
                         Text(job.name ?? "No Job Found")

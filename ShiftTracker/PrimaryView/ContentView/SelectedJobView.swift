@@ -22,17 +22,9 @@ struct SelectedJobView: View {
             Divider().frame(maxWidth: 300)
             if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
                 HStack{
-                    Image(systemName: job.icon ?? "briefcase.circle")
-                        .font(.callout)
-                        .foregroundStyle(.white)
-                        .padding(10)
-                        .background {
-                            
-                            
-                            Circle()
-                                .foregroundStyle(Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient)
-                            
-                        }
+                    
+                    JobIconView(icon: job.icon ?? "briefcase", color: Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)), font: .callout)
+                
                     VStack(alignment: .leading, spacing: 3){
                         Text(job.name ?? "")
                             .font(.callout)

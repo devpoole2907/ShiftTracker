@@ -390,16 +390,24 @@ struct CreateShiftForm: View {
                         
                     }
                     
+                    Spacer(minLength: 100)
+                    
                 }//.scrollContentBackground(.hidden)
                 // .customScrollBackgroundModifier()
                 
                 HStack(spacing: 10){
                     
+                    let job = jobSelectionViewModel.fetchJob(in: viewContext)
+                    
+                    JobForShiftView(job: job)
+                    
+                    Spacer()
+                    
                     
                     Button {
                         startDate = getTime(angle: startAngle)
                         endDate = getTime(angle: toAngle, isEndDate: true)
-                        selectedJob = jobSelectionViewModel.fetchJob(in: viewContext)
+                        selectedJob = job
                         
                         if let scheduledShift = scheduledShift {
                             
@@ -419,10 +427,12 @@ struct CreateShiftForm: View {
                     }
                         .disabled(getTime(angle: startAngle) < Date())
                     
+                        .padding()
                     
-                    
-                }.padding()
                         .glassModifier(cornerRadius: 20)
+                    
+                }
+                        
                         .padding()
                 
             }

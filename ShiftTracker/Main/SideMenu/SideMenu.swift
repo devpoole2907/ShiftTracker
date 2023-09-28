@@ -121,7 +121,9 @@ struct SideMenu: View {
                                                     jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
                                                     lastSelectedJobUUID = job.uuid?.uuidString
                                                 } else {
-                                                    jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
+                                                    withAnimation {
+                                                        jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
+                                                    }
                                                 }
 
                                                 withAnimation(.easeInOut) {

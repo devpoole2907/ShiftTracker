@@ -374,7 +374,7 @@ struct JobOverview: View {
             
             if showLargeIcon && job != nil {
         
-                JobIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: job?.icon ?? "", color: jobColor)
+                NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: job?.icon ?? "", color: jobColor)
                         .padding(.trailing, 20)
                         .offset(x: 0, y: -60)
                     
@@ -450,7 +450,7 @@ struct JobOverview: View {
                             }
                         }
                     } label: {
-                        JobIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: jobIcon, color: jobColor).frame(maxHeight: 25)
+                        NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: jobIcon, color: jobColor).frame(maxHeight: 25)
                     }
                 }
             }
@@ -523,7 +523,7 @@ struct JobOverview: View {
  
 }
 
-struct JobIconView: View {
+struct NavBarIconView: View {
     
     @Binding var appeared: Bool
     @Binding var isLarge: Bool
@@ -539,6 +539,7 @@ struct JobIconView: View {
             .resizable()
             .scaledToFit()
             .frame(width: dimension, height: dimension)
+            .shadow(color: .white, radius: 1.0)
             .customAnimatedSymbol(value: $appeared)
           
             .padding(isLarge ? 10 : 7)

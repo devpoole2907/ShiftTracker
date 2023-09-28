@@ -885,25 +885,21 @@ struct JobForShiftView: View {
     
     @EnvironmentObject var viewModel: DetailViewModel
     
+    var job: Job? = nil // used for when this view is displayed in the createshiftform where detailviewmodel isnt in the environment
+    
     var body: some View {
+        let jobData = job ?? viewModel.job ?? viewModel.shift?.job
         HStack{
             VStack(alignment: .leading, spacing: 2) {
                 
-                if let job = viewModel.job ?? viewModel.shift?.job {
-                    let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)).gradient
+                if let job = jobData {
+                    let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue))
                     HStack{
-                        Image(systemName: job.icon ?? "")
-                            .font(.subheadline)
                         
-                            .foregroundStyle(.white)
-                            .padding(8)
-                            .background {
-                                
-                                Circle()
-                                    .foregroundStyle(jobColor)
-                                
-                                
-                            }
+                        JobIconView(icon: job.icon ?? "", color: jobColor, font: .subheadline)
+                        
+                        
+                    
                         
                         VStack(alignment: .leading, spacing: 3){
                             Text(job.name ?? "No Job Found")
@@ -915,7 +911,7 @@ struct JobForShiftView: View {
                             
                             
                             Text(job.title ?? "No Job Title")
-                                .foregroundStyle(jobColor)
+                                .foregroundStyle(jobColor.gradient)
                                 .roundedFontDesign()
                                 .bold()
                                 .font(.caption)

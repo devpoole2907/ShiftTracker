@@ -106,6 +106,7 @@
 		7C0AC1362A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */; };
 		7C0AC1372A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */; };
 		7C0F154F2AB8EEA4008D5464 /* AddressFinderMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0F154E2AB8EEA4008D5464 /* AddressFinderMap.swift */; };
+		7C16AEF92AC54C4F00C0B58E /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7C1A507C2A9976C500305171 /* HistoryPagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A507B2A9976C500305171 /* HistoryPagesView.swift */; };
 		7C1A507E2A99F31A00305171 /* PageControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A507D2A99F31900305171 /* PageControlView.swift */; };
 		7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
@@ -383,6 +384,7 @@
 		7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartWidgetProvider.swift; sourceTree = "<group>"; };
 		7C0AC1352A88ECAF0016456E /* JobChartEarningsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobChartEarningsWidget.swift; sourceTree = "<group>"; };
 		7C0F154E2AB8EEA4008D5464 /* AddressFinderMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFinderMap.swift; sourceTree = "<group>"; };
+		7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobIconView.swift; sourceTree = "<group>"; };
 		7C1A507B2A9976C500305171 /* HistoryPagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryPagesView.swift; sourceTree = "<group>"; };
 		7C1A507D2A99F31900305171 /* PageControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControlView.swift; sourceTree = "<group>"; };
 		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -792,6 +794,7 @@
 				7CD8A3232A882F110011A1C0 /* HighlightedText.swift */,
 				7C1A507D2A99F31900305171 /* PageControlView.swift */,
 				1ADA2D1D2A9DB7E00080EBEB /* CustomSegmentedPicker.swift */,
+				7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -1396,6 +1399,7 @@
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
 				1A8D4AD82A4EDE4300EEB334 /* CloseButton.swift in Sources */,
 				1A0D86EC2A51783B00EA4438 /* ChartSquare.swift in Sources */,
+				7C16AEF92AC54C4F00C0B58E /* JobIconView.swift in Sources */,
 				1A803EC829F26ADB008C431B /* AddressFinderView.swift in Sources */,
 				7C2A18EB2AA027C400518789 /* GlassModifier.swift in Sources */,
 				7CD8A3242A882F110011A1C0 /* HighlightedText.swift in Sources */,
