@@ -219,6 +219,66 @@ class SchedulingViewModel: ObservableObject {
         
         saveShifts(in: viewContext)
     }
+    
+    // used to update future repeating shifts if the shift is repeating and is edited
+    
+    func updateRepeatingShiftSeries(shiftToUpdate: SingleScheduledShift, newStartDate: Date, newEndDate: Date, newTags: Set<Tag>, newMultiplierEnabled: Bool, newPayMultiplier: Double, newReminderTime: TimeInterval, newNotifyMe: Bool, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
+        
+        let repeatID = shiftToUpdate.repeatID
+        let shiftDate = shiftToUpdate.startDate
+        
+        let calendar = Calendar.current
+        
+        // day difference between startdate and enddate, because the enddate could be on the following day. this will cause trouble if we ignore the date components when updating (because we donrt want shifts rescheudled to the same day as the one edited)
+        let dayDifference = calendar.dateComponents([.day], from: newStartDate, to: newEndDate).day!
+        
+        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "repeatIdString == %@", repeatID),
+            NSPredicate(format: "startDate >= %@", shiftDate as NSDate)
+        ])
+
+        do {
+            if let shiftsToUpdate = try viewContext.fetch(request) as? [ScheduledShift] {
+                print("Number of repeating shifts found: \(shiftsToUpdate.count)")
+                for shift in shiftsToUpdate {
+                    if let correspondingSingleShift = shiftStore.shifts.first(where: { $0.id == shift.id }) {
+
+                        guard var shiftStartDate = shift.startDate else { print("we got returned ")
+                            return }
+                       
+                        
+                        // Update only time components, keep date components intact (see above)
+                        shiftStartDate = calendar.date(bySettingHour: calendar.component(.hour, from: newStartDate), minute: calendar.component(.minute, from: newStartDate), second: calendar.component(.second, from: newStartDate), of: shiftStartDate)!
+                                           
+                                           // add  day difference to the new end date
+                                           let shiftedEndDate = calendar.date(byAdding: .day, value: dayDifference, to: shiftStartDate)!
+                                           let shiftEndDate = calendar.date(bySettingHour: calendar.component(.hour, from: newEndDate), minute: calendar.component(.minute, from: newEndDate), second: calendar.component(.second, from: newEndDate), of: shiftedEndDate)!
+                        
+                        shift.startDate = shiftStartDate
+                        shift.endDate = shiftEndDate
+                        shift.tags = NSSet(array: Array(newTags))
+                        shift.multiplierEnabled = newMultiplierEnabled
+                        shift.reminderTime = newReminderTime
+                        shift.payMultiplier = newPayMultiplier
+                        shift.notifyMe = newNotifyMe
+
+                        let updatedSingleShift = SingleScheduledShift(shift: shift)
+                        shiftStore.update(updatedSingleShift)
+                    }
+                }
+
+     
+                try viewContext.save()
+                print("Successfully updated the scheduled shifts.")
+                
+            }
+        } catch {
+            print("Failed to update the corresponding shifts.")
+        }
+    }
+
+
 
     
     

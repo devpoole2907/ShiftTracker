@@ -114,9 +114,10 @@ struct ScheduledShiftsView: View {
                                         // edit scheduled shift to go here
                                         
                                         
-                                        if let id = foundShifts.first?.id {  // replace with the ID of the shift to be edited
-                                            selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: id, in: viewContext)
-                                                }
+                                        
+                                      // replace with the ID of the shift to be edited
+                                            selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)
+                                                
                                         
                                        
                                         

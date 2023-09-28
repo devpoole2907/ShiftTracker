@@ -116,7 +116,7 @@ struct CreateShiftForm: View {
         shiftToUpdate.reminderTime = scheduleModel.selectedReminderTime.timeInterval
         shiftToUpdate.payMultiplier = payMultiplier
         shiftToUpdate.notifyMe = scheduleModel.notifyMe
-        shiftToUpdate.isRepeating = false // disables repeat for now and only edits the shift in question
+
         
         
         let singleShift = SingleScheduledShift(shift: shiftToUpdate)
@@ -126,7 +126,16 @@ struct CreateShiftForm: View {
         
         scheduleModel.saveShifts(in: viewContext)
         
+        
+        
         dismiss()
+        
+        CustomConfirmationAlert(action: {
+            
+            scheduleModel.updateRepeatingShiftSeries(shiftToUpdate: singleShift, newStartDate: startDate, newEndDate: endDate, newTags: selectedTags, newMultiplierEnabled: multiplierEnabled, newPayMultiplier: payMultiplier, newReminderTime: shiftToUpdate.reminderTime, newNotifyMe: scheduleModel.notifyMe, with: shiftStore, using: viewContext)
+            
+        }, cancelAction: nil, title: "Update all future repeating shifts too?").showAndStack()
+        
     }
     
     func setupSlider() {
