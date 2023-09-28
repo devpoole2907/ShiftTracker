@@ -68,6 +68,7 @@
         <relationship name="tips" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tip" inverseName="oldShift" inverseEntity="Tip"/>
     </entity>
     <entity name="ScheduledShift" representedClassName="ScheduledShift" syncable="YES" codeGenerationType="class">
+        <attribute name="calendarEventID" optional="YES" attributeType="String"/>
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isRepeating" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>

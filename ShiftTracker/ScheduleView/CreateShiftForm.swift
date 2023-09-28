@@ -401,8 +401,7 @@ struct CreateShiftForm: View {
                     
                     Spacer(minLength: 100)
                     
-                }//.scrollContentBackground(.hidden)
-                // .customScrollBackgroundModifier()
+                }
                 
                 HStack(spacing: 10){
                     
@@ -418,7 +417,7 @@ struct CreateShiftForm: View {
                         endDate = getTime(angle: toAngle, isEndDate: true)
                         selectedJob = job
                         
-                        if let scheduledShift = scheduledShift {
+                        if scheduledShift != nil {
                             
                             updateShift()
                             

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import CoreData
+import EventKit
 
 @MainActor
 class SchedulingViewModel: ObservableObject {
@@ -279,7 +280,136 @@ class SchedulingViewModel: ObservableObject {
     }
 
 
+    // test function for calendar event adding:
+    
+    func addShiftToCalendar(shift: SingleScheduledShift, completion: @escaping (Bool, Error?) -> Void) {
+        let eventStore = EKEventStore()
+        
+        let jobName = shift.job!.name!
+        let eventTitle = "Work shift at \(jobName)"
+        
+        // Request permission to access calendar
+        
+        if #available(iOS 17.0, *) {
+            eventStore.requestFullAccessToEvents() { (granted, error) in
+                
 
+                    if granted {
+                        // Create an event
+                        let event = EKEvent(eventStore: eventStore)
+                    
+                        event.title = eventTitle
+                        event.startDate = shift.startDate
+                        event.endDate = shift.endDate
+                        event.calendar = eventStore.defaultCalendarForNewEvents
+                        event.notes = "Shift Details: \(shift.job!.description)"
+                        
+                        // Save the event
+                        do {
+                            try eventStore.save(event, span: .thisEvent)
+                            completion(true, nil)
+                        } catch let error {
+                            print("Failed to save event: \(error)")
+                            completion(false, error)
+                        }
+                    } else {
+                        print("Calendar access denied.")
+                        completion(false, error)
+                    }
+                }
+                
+                
+                
+            
+        } else {
+            // Fallback on earlier versions
+            
+            eventStore.requestAccess(to: .event) { (granted, error) in
+                if granted {
+                    // Create an event
+                    let event = EKEvent(eventStore: eventStore)
+                    event.title = eventTitle
+                    event.startDate = shift.startDate
+                    event.endDate = shift.endDate
+                    event.calendar = eventStore.defaultCalendarForNewEvents
+                    event.notes = "Shift Details: \(shift.job!.description)"
+                    
+                    // Save the event
+                    do {
+                        try eventStore.save(event, span: .thisEvent)
+                        completion(true, nil)
+                    } catch let error {
+                        print("Failed to save event: \(error)")
+                        completion(false, error)
+                    }
+                } else {
+                    print("Calendar access denied.")
+                    completion(false, error)
+                }
+            }
+            
+        }
+        
+        
+    }
+    
+    // test function for calendar event deletion
+
+    func deleteEventFromCalendar(eventIdentifier: String) {
+        let eventStore = EKEventStore()
+
+
+        if #available(iOS 17.0, *) {
+            eventStore.requestWriteOnlyAccessToEvents { (granted, error) in
+                if !granted {
+                    print("Failed to get write access to calendar: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
+                
+                // Fetch the event using its identifier
+                if let event = eventStore.event(withIdentifier: eventIdentifier) {
+                    do {
+                        // Remove the event from the calendar
+                        try eventStore.remove(event, span: .thisEvent)
+                        print("Successfully removed event from calendar.")
+                    } catch let error as NSError {
+                        print("Failed to remove event: \(error)")
+                    }
+                } else {
+                    print("Event not found")
+                }
+            }
+        } else {
+            // Fallback on earlier versions
+
+            eventStore.requestAccess(to: .event) { (granted, error) in
+                    if !granted {
+                        print("Failed to get write access to calendar: \(error?.localizedDescription ?? "Unknown error")")
+                        return
+                    }
+
+                    // Fetch the event using its identifier
+                    if let event = eventStore.event(withIdentifier: eventIdentifier) {
+                        do {
+                            // Remove the event from the calendar
+                            try eventStore.remove(event, span: .thisEvent)
+                            print("Successfully removed event from calendar.")
+                        } catch let error as NSError {
+                            print("Failed to remove event: \(error)")
+                        }
+                    } else {
+                        print("Event not found")
+                    }
+                }
+            
+            
+        }
+        
+        
+        
+        
+        
+    }
     
     
 }

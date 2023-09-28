@@ -129,6 +129,31 @@ struct ScheduledShiftsView: View {
                                         
                                     }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
                                     
+                                    
+                                        Button(role: .none){
+                                            let selectedShift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)
+                                            if selectedShift?.calendarEventID == nil { // an event doesnt exist in the calendar
+                                                
+                                                scheduleModel.addShiftToCalendar(shift: shift) { (success, error) in
+                                                    if success {
+                                                        print("Successfully added shift to calendar")
+                                                    } else {
+                                                        print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                                                    }
+                                                }
+                                                
+                                            
+                                            
+                                            
+                                    } else { // one does exist
+                                        scheduleModel.deleteEventFromCalendar(eventIdentifier: selectedShift!.calendarEventID ?? "")
+                                        }
+                                            
+                                        } label: {
+                                            Image(systemName: "calendar.badge.plus")
+                                        }.tint(Color.pink)
+                                
+                                    
                                     Button(role: .cancel) {
                                         
                                         CustomConfirmationAlert(action: {

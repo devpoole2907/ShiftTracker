@@ -29,6 +29,8 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>To schedule and cancel work shifts.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>SelectJob</string>
