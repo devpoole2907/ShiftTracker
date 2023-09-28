@@ -971,9 +971,9 @@ class ContentViewModel: ObservableObject {
             
             UNUserNotificationCenter.current().add(request)
             
-            if job.breakReminder { // if job has a break reminder greater than or equal 1 hour
+            if job.breakReminder {
                 
-                scheduleBreakReminder(after: job.breakReminderTime)
+                scheduleBreakReminder(after: job.breakReminderTime, startDate: startDate)
             }
             
         }
@@ -982,16 +982,27 @@ class ContentViewModel: ObservableObject {
 #endif
     }
     
-    func scheduleBreakReminder(after timeInterval: TimeInterval) {
+    func scheduleBreakReminder(after timeInterval: TimeInterval, startDate: Date) {
+        
+        let breakDate = startDate.addingTimeInterval(timeInterval)
+            let currentDateTime = Date()
+        
+        if breakDate < currentDateTime {
+                print("break reminder time already passed")
+                return
+            }
+        
         let content = UNMutableNotificationContent()
         content.title = "Break Time!"
         content.body = "It's time for your break."
 
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+        let calendar = Calendar.current
+            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: breakDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
 
-        let request = UNNotificationRequest(identifier: "BreakReminder", content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "BreakReminder", content: content, trigger: trigger)
 
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
     
     
