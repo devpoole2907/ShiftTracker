@@ -221,7 +221,7 @@ struct ContentView: View {
             case .startShiftSheet:
                 ActionView(navTitle: "Start Shift", actionType: .startShift)
                     .environment(\.managedObjectContext, context)
-                    .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.85 : 0.7)])
+                    .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.96 : 0.8)])
                     .customSheetRadius(35)
                     .customSheetBackground()
             }

@@ -39,7 +39,12 @@ struct ActionView: View {
         
         NavigationStack {
             VStack {
-                if actionType == .startBreak {
+                
+                VStack {
+                switch actionType {
+                    
+                case .startBreak:
+                    
                     if let limitStartDate = pickerStartDate {
                         DatePicker("", selection: $actionDate, in: limitStartDate...Date(), displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.wheel)
@@ -47,18 +52,82 @@ struct ActionView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .disabled(isRounded)
                     }
-                } else {
                     
-                    switch actionType {
-                    case .startShift:
-                        
-                        
-                        
-                        DatePicker("", selection: $actionDate, in: Date().addingTimeInterval(-(24*60*60))...Date().addingTimeInterval(24*60*60),  displayedComponents: [.date, .hourAndMinute])
+                case .startShift:
+                    
+                    
+                    
+                    DatePicker("", selection: $actionDate, in: Date().addingTimeInterval(-(24*60*60))...Date().addingTimeInterval(24*60*60),  displayedComponents: [.date, .hourAndMinute])
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .disabled(isRounded)
+                    
+                case .endShift:
+                    if let limitStartDate = pickerStartDate {
+                        DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
                             .datePickerStyle(.wheel)
                             .labelsHidden()
                             .frame(maxWidth: .infinity, alignment: .center)
                             .disabled(isRounded)
+                    }
+                case .endBreak:
+                    
+                    if let limitStartDate = pickerStartDate {
+                        DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .disabled(isRounded)
+                    }
+                default:
+                    fatalError("Unsupported action type")
+                }
+                
+            }
+                
+                
+                
+                
+                Toggle(isOn: $isRounded){
+                    Text("Auto Round")
+                        .bold()
+                }.toggleStyle(CustomToggleStyle())
+                    
+                    .onChange(of: isRounded) { value in
+                        
+                        if isRounded == true {
+                            actionDate = viewModel.roundDate(actionDate)
+                        } else {
+                            actionDate = Date()
+                        }
+                    }
+            .padding(.horizontal)
+                .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                .padding(.vertical, 10)
+                .glassModifier(cornerRadius: 20)
+                .padding(.bottom, actionType != .startShift ? 10 : 0)
+                
+
+                    
+                    switch actionType {
+                        
+                    case .startBreak:
+                        
+                        HStack {
+                            ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: themeManager.breaksColor, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                                viewModel.startBreak(startDate: actionDate, isUnpaid: true)
+                                dismiss()
+                            }
+                            ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: themeManager.breaksColor, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
+                                viewModel.startBreak(startDate: actionDate, isUnpaid: false)
+                                dismiss()
+                            }
+                        }
+                        
+                        
+                    case .startShift:
+                        
                         
                         Toggle(isOn: $viewModel.activityEnabled){
                             Text("Live Activity")
@@ -94,37 +163,53 @@ struct ActionView: View {
                                         viewModel.activityEnabled = false
                                         navigationState.activeSheet = .startShiftSheet
                                     }).showAndStack()
-                                   
+                                    
                                 }
                                 
                                 
                                 
                             }
                         
-                    .padding(.horizontal)
+                            .padding(.horizontal)
+                            .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                            .padding(.vertical, 10)
+                            .glassModifier(cornerRadius: 20)
+                        
+                      
+                        
+                        Toggle(isOn: $viewModel.breakReminder){
+                            
+                            Text("Break Reminder").bold()
+                            
+                        }.toggleStyle(CustomToggleStyle())
+                            .padding(.horizontal)
+                            .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                            .padding(.vertical, 10)
+                            .glassModifier(cornerRadius: 20)
+                        
+                            .onAppear {
+                                viewModel.breakReminder = jobSelectionViewModel.fetchJob(in: context)?.breakReminder ?? false
+                            }
+                        
+                        Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
+                            Text("Pay Multiplier: x\(viewModel.payMultiplier, specifier: "%.2f")").bold()
+                        }
+                        .onChange(of: viewModel.payMultiplier) { newMultiplier in
+                            viewModel.isMultiplierEnabled = newMultiplier > 1.0
+                            viewModel.savePayMultiplier()
+                        }
+                        .padding(.horizontal)
                         .frame(maxWidth: UIScreen.main.bounds.width - 80)
                         .padding(.vertical, 10)
                         .glassModifier(cornerRadius: 20)
                         
-                        Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
-                            Text("Pay Multiplier: x\(viewModel.payMultiplier, specifier: "%.2f")").bold()
-                                        }
-                                        .onChange(of: viewModel.payMultiplier) { newMultiplier in
-                                            viewModel.isMultiplierEnabled = newMultiplier > 1.0
-                                            viewModel.savePayMultiplier()
-                                        }
-                                        .padding(.horizontal)
-                                            .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                                            .padding(.vertical, 10)
-                                            .glassModifier(cornerRadius: 20)
                         
-
                         
                         .onAppear {
                             
                             viewModel.payMultiplier = 1.0
                             
-                           
+                            
                             if purchaseManager.hasUnlockedPro || shiftsTracked < 1 {
                                 if #available(iOS 16.2, *) {
                                     viewModel.activityEnabled = true
@@ -138,69 +223,9 @@ struct ActionView: View {
                             
                         }
                         
+                            .padding(.bottom, 10)
                         
-                    case .endShift:
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .disabled(isRounded)
-                        }
-                    case .endBreak:
                         
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .disabled(isRounded)
-                        }
-                    default:
-                        fatalError("Unsupported action type")
-                    }
-                    
-                }
-                
-                
-                Toggle(isOn: $isRounded){
-                    Text("Auto Round")
-                        .bold()
-                }.toggleStyle(CustomToggleStyle())
-                    
-                    .onChange(of: isRounded) { value in
-                        
-                        if isRounded == true {
-                            actionDate = viewModel.roundDate(actionDate)
-                        } else {
-                            actionDate = Date()
-                        }
-                    }
-            .padding(.horizontal)
-                .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 20)
-                .padding(.bottom, 10)
-                
-                
-               
-                
-                
-                if actionType == .startBreak {
-                    HStack {
-                        ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: themeManager.breaksColor, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
-                            viewModel.startBreak(startDate: actionDate, isUnpaid: true)
-                            dismiss()
-                        }
-                        ActionButtonView(title: "Paid Break", backgroundColor: themeManager.breaksColor, textColor: themeManager.breaksColor, icon: "cup.and.saucer.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
-                            viewModel.startBreak(startDate: actionDate, isUnpaid: false)
-                            dismiss()
-                        } 
-                    }
-                } else {
-                    
-                    switch actionType {
-                    case .startShift:
                         ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
                             viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
                             dismiss()
@@ -226,7 +251,7 @@ struct ActionView: View {
                         fatalError("Unsupported action type")
                     }
                     
-                }
+                
                 
             }
             .fullScreenCover(isPresented: $showProSheet){
