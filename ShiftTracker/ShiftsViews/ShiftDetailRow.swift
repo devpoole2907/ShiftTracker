@@ -210,7 +210,7 @@ struct ShiftDetailRow: View {
                         .roundedFontDesign()
                     //.padding(.ver)
                     
-                    if shift.taxedPay > 0 {
+                    if shift.taxedPay != shift.totalPay {
                         HStack(spacing: 2){
                             Image(systemName: "chart.line.downtrend.xyaxis")
                             Text("\(currencyFormatter.currencySymbol ?? "")\(taxedPay)")
