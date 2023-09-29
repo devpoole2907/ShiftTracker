@@ -17,6 +17,7 @@ struct ScheduledShiftRowSwipeButtons: View {
     
     @ObservedObject var shift: ScheduledShift
     
+    var showText: Bool = false
     
     var body: some View {
         Button(role: .destructive) {
@@ -25,12 +26,22 @@ struct ScheduledShiftRowSwipeButtons: View {
                 
             }
         } label: {
-            Image(systemName: "trash")
+            HStack {
+                if showText {
+                    Text("Delete")
+                }
+                Image(systemName: "trash")
+            }
         }
         Button(role: .none){
             scheduleModel.selectedShiftToEdit = shift
         } label: {
-            Image(systemName: "pencil")
+            HStack{
+                if showText {
+                    Text("Edit")
+                }
+                Image(systemName: "pencil")
+            }
         }
  
         Button(role: .none){
@@ -53,7 +64,12 @@ struct ScheduledShiftRowSwipeButtons: View {
             }
             
         } label: {
-            Image(systemName: shift.calendarEventID == nil ? "calendar.badge.plus" : "calendar.badge.minus")
+            HStack {
+                if showText {
+                    Text(shift.calendarEventID == nil ? "Add to Calendar" : "Remove from Calendar")
+                }
+                Image(systemName: shift.calendarEventID == nil ? "calendar.badge.plus" : "calendar.badge.minus")
+            }
         }.tint(Color.pink)
         
     
@@ -66,7 +82,12 @@ struct ScheduledShiftRowSwipeButtons: View {
                 }
             }, title: "End all future repeating shifts for this shift?").showAndStack()
         } label: {
-            Image(systemName: "clock.arrow.2.circlepath")
+            HStack {
+                if showText {
+                    Text("End Repeat")
+                }
+                Image(systemName: "clock.arrow.2.circlepath")
+            }
         }.disabled(!shift.isRepeating)
     }
 }

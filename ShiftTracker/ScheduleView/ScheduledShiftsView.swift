@@ -238,36 +238,15 @@ struct ScheduledShiftListRow: View {
                         HStack{
                             Spacer()
                             Menu{
-                                if shift.isRepeating {
-                                    Button(action:{
-                                        CustomConfirmationAlert(action: {
-                                            scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
-                                        }, title: "End all future repeating shifts for this shift?").showAndStack()
-                                    }){
-                                        HStack{
-                                            Image(systemName: "clock.arrow.2.circlepath")
-                                            Spacer()
-                                            Text("End Repeat")
-                                        }
-                                    }
+                                if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {
+                                    ScheduledShiftRowSwipeButtons(shift: shift, showText: true)
                                 }
-                                Button(action:{
-                                  
-                                    scheduleModel.selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)
-                                    
-                                }){
-                                    HStack{
-                                        Image(systemName: "pencil")
-                                        Spacer()
-                                        Text("Edit")
-                                    }
-                                }
-                                
                             } label: {
                                 Image(systemName: "ellipsis")
                                     .bold()
                                     .font(.title3)
                             }.contentShape(Rectangle())
+                            
                             
                         }.padding(.top)
                         Spacer()

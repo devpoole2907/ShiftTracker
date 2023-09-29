@@ -173,7 +173,7 @@ struct CustomTripleActionPopup: CentrePopup {
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.vertical)
-            VStack(spacing: 4) {
+            VStack(spacing: 10) {
                 createFirstButton()
                 createCentreButton()
                 createCancelButton()
@@ -212,7 +212,7 @@ struct CustomTripleActionPopup: CentrePopup {
             
                 .frame(height: 46)
                 .frame(maxWidth: .infinity)
-                .glassModifier(cornerRadius: 20)
+                .glassModifier(cornerRadius: 20, darker: true)
         }
     }
     
