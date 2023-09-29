@@ -65,6 +65,7 @@ struct AllScheduledShiftsView: View {
                                             .environmentObject(scheduleModel)
                                     }
                                     .swipeActions {
+                                        
                                         Button(role: .destructive) {
                                             //scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
                                             
@@ -84,40 +85,7 @@ struct AllScheduledShiftsView: View {
                                                           
                                                           
                                                                     .swipeActions {
-                                                                        Button(role: .destructive) {
-                                                                            scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
-                                                                        } label: {
-                                                                            Image(systemName: "trash")
-                                                                        }
-                                                                        
-                                                                        Button(role: .none){
-                                                                            
-                                                                            // edit scheduled shift to go here
-                                                                            
-                                                                            
-                                                                        } label: {
-                                                                            
-                                                                            Image(systemName: "pencil")
-                                                                                
-                                                                            
-                                                                        }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
-                                                                        
-                                                                        Button(role: .cancel) {
-                                                                            
-                                                                           // scheduleModel.deleteShift(shift, in: scheduledShifts, with: shiftStore, using: viewContext)
-                                                                                //dismiss()
-                                                                                CustomConfirmationAlert(action: {
-                                                                                    scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
-                                                                                }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
-                                                                            
-                                                                            
-                                                                            
-                                                                        } label: {
-                                                                            Image(systemName: "clock.arrow.2.circlepath")
-                                                                        }.disabled(!shift.isRepeating)
-                                                                        
-                                                                        
-                                                                        
+                                                                        ScheduledShiftRowSwipeButtons(shift: shift)
                                                                     }
                                                           
                                                             }

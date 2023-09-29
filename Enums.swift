@@ -269,3 +269,24 @@ public enum ActiveSheet: Identifiable {
         hashValue
     }
 }
+
+enum ReminderTime: String, CaseIterable, Identifiable {
+    case oneMinute = "1m before"
+    case fifteenMinutes = "15m before"
+    case thirtyMinutes = "30m before"
+    case oneHour = "1hr before"
+    
+    var id: String { self.rawValue }
+    var timeInterval: TimeInterval {
+        switch self {
+        case .oneMinute:
+            return 60
+        case .fifteenMinutes:
+            return 15 * 60
+        case .thirtyMinutes:
+            return 30 * 60
+        case .oneHour:
+            return 60 * 60
+        }
+    }
+}

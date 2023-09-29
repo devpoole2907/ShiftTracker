@@ -19,6 +19,7 @@ class SchedulingViewModel: ObservableObject {
     @Published var notifyMe = true
     @Published var selectedReminderTime: ReminderTime = .fifteenMinutes
     
+    @Published var selectedShiftToEdit: ScheduledShift?
     
     
     
@@ -44,6 +45,7 @@ class SchedulingViewModel: ObservableObject {
         
         if let shiftToDelete = fetchScheduledShift(id: shift.id, in: viewContext) {
             cancelNotification(for: shiftToDelete)
+            deleteEventFromCalendar(eventIdentifier: shiftToDelete.calendarEventID ?? "")
             viewContext.delete(shiftToDelete)
             shiftStore.delete(shift)
             
@@ -280,78 +282,48 @@ class SchedulingViewModel: ObservableObject {
     }
 
 
-    // test function for calendar event adding:
+    // function for calendar event adding:
     
-    func addShiftToCalendar(shift: SingleScheduledShift, completion: @escaping (Bool, Error?) -> Void) {
+    func addShiftToCalendar(shift: ScheduledShift, viewContext: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
         let eventStore = EKEventStore()
         
-        let jobName = shift.job!.name!
-        let eventTitle = "Work shift at \(jobName)"
         
-        // Request permission to access calendar
         
-        if #available(iOS 17.0, *) {
-            eventStore.requestFullAccessToEvents() { (granted, error) in
-                
-
-                    if granted {
-                        // Create an event
-                        let event = EKEvent(eventStore: eventStore)
-                    
-                        event.title = eventTitle
-                        event.startDate = shift.startDate
-                        event.endDate = shift.endDate
-                        event.calendar = eventStore.defaultCalendarForNewEvents
-                        event.notes = "Shift Details: \(shift.job!.description)"
-                        
-                        // Save the event
-                        do {
-                            try eventStore.save(event, span: .thisEvent)
-                            completion(true, nil)
-                        } catch let error {
-                            print("Failed to save event: \(error)")
-                            completion(false, error)
-                        }
-                    } else {
-                        print("Calendar access denied.")
-                        completion(false, error)
-                    }
-                }
-                
-                
-                
+        let processEvent: () -> Void = {
+            let event = EKEvent(eventStore: eventStore)
+            event.title = "Work shift at \(shift.job!.name!)"
+            event.startDate = shift.startDate
+            event.endDate = shift.endDate
+            event.calendar = eventStore.defaultCalendarForNewEvents
+            event.notes = "Shift Details: \(shift.job!.description)"
             
-        } else {
-            // Fallback on earlier versions
-            
-            eventStore.requestAccess(to: .event) { (granted, error) in
-                if granted {
-                    // Create an event
-                    let event = EKEvent(eventStore: eventStore)
-                    event.title = eventTitle
-                    event.startDate = shift.startDate
-                    event.endDate = shift.endDate
-                    event.calendar = eventStore.defaultCalendarForNewEvents
-                    event.notes = "Shift Details: \(shift.job!.description)"
-                    
-                    // Save the event
-                    do {
-                        try eventStore.save(event, span: .thisEvent)
-                        completion(true, nil)
-                    } catch let error {
-                        print("Failed to save event: \(error)")
-                        completion(false, error)
-                    }
-                } else {
-                    print("Calendar access denied.")
-                    completion(false, error)
-                }
+            // save event
+            do {
+                try eventStore.save(event, span: .thisEvent)
+                try viewContext.save()
+                completion(true, nil)
+            } catch let error {
+                print("Failed to save event: \(error)")
+                completion(false, error)
             }
-            
         }
         
+        let permissionDenied: (Error?) -> Void = { error in
+            print("Calendar access denied.")
+            completion(false, error)
+        }
         
+        if #available(iOS 17.0, *) {
+            eventStore.requestFullAccessToEvents { (granted, error) in
+                granted ? processEvent() : permissionDenied(error)
+            }
+        } else {
+            eventStore.requestAccess(to: .event) { (granted, error) in
+                granted ? processEvent() : permissionDenied(error)
+            }
+        }
     }
+
     
     // test function for calendar event deletion
 
