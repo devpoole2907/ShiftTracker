@@ -110,6 +110,8 @@ struct CreateShiftForm: View {
                 scheduleModel.addShiftToCalendar(shift: newShift, viewContext: viewContext) { (success, error, eventID) in
                     if success {
                         print("Successfully added shift to calendar")
+                        scheduleModel.addEventKitID(shift: newShift, eventID: eventID)
+                        scheduleModel.saveShifts(in: viewContext)
                     } else {
                         print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
                     }
@@ -129,15 +131,18 @@ struct CreateShiftForm: View {
                         print("Number of repeating shifts found: \(shiftsToSync.count)")
                         for shift in shiftsToSync {
                             
-                            
-                            scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
-                                if success {
-                                    print("Successfully added shift to calendar")
-                                    scheduleModel.addEventKitID(shift: shift, eventID: eventID)
-                                    scheduleModel.saveShifts(in: viewContext)
-                                } else {
-                                    print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
-                                }
+                            if shift.calendarEventID == nil {
+                                
+                                scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
+                                    if success {
+                                        print("Successfully added shift to calendar")
+                                        
+                                        scheduleModel.addEventKitID(shift: shift, eventID: eventID)
+                                        scheduleModel.saveShifts(in: viewContext)
+                                    } else {
+                                        print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                                    }
+                                } 
                             }
                             
                         }

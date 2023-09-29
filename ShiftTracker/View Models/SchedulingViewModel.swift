@@ -72,6 +72,7 @@ class SchedulingViewModel: ObservableObject {
             print("failed to find single shfit")
         }
         
+        saveShifts(in: viewContext)
       
     }
 
@@ -153,6 +154,8 @@ class SchedulingViewModel: ObservableObject {
                                 
                                 batchDeleted.append(correspondingSingleShift)
                                 
+                                
+                               
                             } else {
                                 
                                 shiftStore.delete(correspondingSingleShift)
@@ -208,12 +211,20 @@ class SchedulingViewModel: ObservableObject {
                                 tags: correspondingSingleShift.tags, isComplete: correspondingSingleShift.isComplete))
 
                             batchDeleted.append(correspondingSingleShift)
+                            
+                           
+                            
 
                         } else {
                             shiftStore.delete(correspondingSingleShift)
                             batchDeleted.append(correspondingSingleShift)
                             viewContext.delete(shiftToDelete)
                             cancelNotification(for: shiftToDelete)
+                            if let eventIdentifier = shiftToDelete.calendarEventID {
+                                print("removing calendar event of repeating shift")
+                                    deleteEventFromCalendar(eventIdentifier: eventIdentifier)
+                                
+                            }
                         }
                     }
                 }
@@ -334,16 +345,23 @@ class SchedulingViewModel: ObservableObject {
                         shift.payMultiplier = newPayMultiplier
                         shift.notifyMe = newNotifyMe
                         
-                        deleteEventFromCalendar(eventIdentifier: shift.calendarEventID ?? "")
-                        addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
-                            
-                            if success {
-                                
-                            } else {
-                                print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
-                            }
-                            
+                        
+                        if let eventIdentifier = shift.calendarEventID {
+                            if shift.id != shiftToUpdate.id {
+                                deleteEventFromCalendar(eventIdentifier: eventIdentifier)
+                                addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
+                                    
+                                    
+                                    if success {
+                                        
+                                    } else {
+                                        print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                                    }
+                                    
+                                }}
                         }
+                        
+                          
 
                         let updatedSingleShift = SingleScheduledShift(shift: shift)
                         shiftStore.update(updatedSingleShift)
