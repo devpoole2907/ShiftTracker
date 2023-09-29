@@ -59,6 +59,22 @@ class SchedulingViewModel: ObservableObject {
             print("Failed to fetch the corresponding shift to delete.")
         }
     }
+    
+    func deleteShift(_ shift: ScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
+        
+        let shiftToDelete = shift
+        cancelNotification(for: shiftToDelete)
+        deleteEventFromCalendar(eventIdentifier: shiftToDelete.calendarEventID ?? "")
+        viewContext.delete(shiftToDelete)
+        if let singleShift = shiftStore.findSingleScheduledShift(shift) {
+            shiftStore.delete(singleShift)
+        } else {
+            print("failed to find single shfit")
+        }
+        
+      
+    }
+
 
     
     func deleteOldShift(_ shift: SingleScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext){
@@ -160,6 +176,58 @@ class SchedulingViewModel: ObservableObject {
             
     }
     
+    func cancelRepeatingShiftSeries(shift: ScheduledShift, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
+        let repeatID = shift.repeatIdString ?? ""
+        let shiftDate = shift.startDate ?? Date()
+
+        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "repeatIdString == %@", repeatID),
+            NSPredicate(format: "startDate >= %@", shiftDate as NSDate)
+        ])
+
+        var batchDeleted = [SingleScheduledShift]()
+        
+        do {
+            if let shiftsToDelete = try viewContext.fetch(request) as? [ScheduledShift] {
+                print("Number of repeating shifts found: \(shiftsToDelete.count)")
+                for shiftToDelete in shiftsToDelete {
+                    if let correspondingSingleShift = shiftStore.shifts.first(where: { $0.id == shiftToDelete.id }) {
+                        if shiftToDelete.startDate == shiftDate {
+                            shiftToDelete.isRepeating = false
+                            shiftStore.delete(correspondingSingleShift)
+                            shiftStore.add(SingleScheduledShift(
+                                startDate: correspondingSingleShift.startDate,
+                                endDate: correspondingSingleShift.endDate,
+                                id: correspondingSingleShift.id,
+                                job: correspondingSingleShift.job!,
+                                isRepeating: false,
+                                repeatID: repeatID,
+                                reminderTime: correspondingSingleShift.reminderTime,
+                                notifyMe: correspondingSingleShift.notifyMe,
+                                tags: correspondingSingleShift.tags, isComplete: correspondingSingleShift.isComplete))
+
+                            batchDeleted.append(correspondingSingleShift)
+
+                        } else {
+                            shiftStore.delete(correspondingSingleShift)
+                            batchDeleted.append(correspondingSingleShift)
+                            viewContext.delete(shiftToDelete)
+                            cancelNotification(for: shiftToDelete)
+                        }
+                    }
+                }
+
+                print("Successfully deleted the scheduled shifts.")
+                try viewContext.save()
+                shiftStore.batchDeletedShifts = batchDeleted
+                
+            }
+        } catch {
+            print("Failed to delete the corresponding shifts.")
+        }
+    }
+
     
     func cancelNotification(for scheduledShift: ScheduledShift) {
         let identifier = "ScheduledShift-\(scheduledShift.objectID)"
@@ -265,6 +333,17 @@ class SchedulingViewModel: ObservableObject {
                         shift.reminderTime = newReminderTime
                         shift.payMultiplier = newPayMultiplier
                         shift.notifyMe = newNotifyMe
+                        
+                        deleteEventFromCalendar(eventIdentifier: shift.calendarEventID ?? "")
+                        addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
+                            
+                            if success {
+                                
+                            } else {
+                                print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                            }
+                            
+                        }
 
                         let updatedSingleShift = SingleScheduledShift(shift: shift)
                         shiftStore.update(updatedSingleShift)
@@ -284,10 +363,10 @@ class SchedulingViewModel: ObservableObject {
 
     // function for calendar event adding:
     
-    func addShiftToCalendar(shift: ScheduledShift, viewContext: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
+    func addShiftToCalendar(shift: ScheduledShift, viewContext: NSManagedObjectContext, completion: @escaping (Bool, Error?, String?) -> Void) {
         let eventStore = EKEventStore()
         
-        
+
         
         let processEvent: () -> Void = {
             let event = EKEvent(eventStore: eventStore)
@@ -295,22 +374,26 @@ class SchedulingViewModel: ObservableObject {
             event.startDate = shift.startDate
             event.endDate = shift.endDate
             event.calendar = eventStore.defaultCalendarForNewEvents
-            event.notes = "Shift Details: \(shift.job!.description)"
+            if let jobLocation = shift.job?.locations?.first as? String {
+                event.location = ("\(jobLocation)")
+            } else {
+                print("job had no location")
+            }
             
             // save event
             do {
                 try eventStore.save(event, span: .thisEvent)
-                try viewContext.save()
-                completion(true, nil)
+                let eventID = event.eventIdentifier
+                completion(true, nil, eventID)
             } catch let error {
                 print("Failed to save event: \(error)")
-                completion(false, error)
+                completion(false, error, nil)
             }
         }
         
         let permissionDenied: (Error?) -> Void = { error in
             print("Calendar access denied.")
-            completion(false, error)
+            completion(false, error, nil)
         }
         
         if #available(iOS 17.0, *) {
@@ -324,6 +407,10 @@ class SchedulingViewModel: ObservableObject {
         }
     }
 
+    func addEventKitID(shift: ScheduledShift, eventID: String?) {
+        shift.calendarEventID = eventID
+    }
+    
     
     // test function for calendar event deletion
 

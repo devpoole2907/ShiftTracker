@@ -76,6 +76,12 @@ struct CustomConfirmationAlert: CentrePopup {
     let cancelAction: (() -> Void)?
     let title: String
     
+    init(action: @escaping () -> Void, cancelAction: (() -> Void)? = nil, title: String) {
+        self.action = action
+        self.cancelAction = cancelAction
+        self.title = title
+    }
+    
     func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
         popup.horizontalPadding(10)
             .backgroundColour(Color.clear)
@@ -138,6 +144,95 @@ struct CustomConfirmationAlert: CentrePopup {
     
 }
 
+struct CustomTripleActionPopup: CentrePopup {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    let action: () -> Void
+    let secondAction: () -> Void
+    let cancelAction: (() -> Void)? = nil
+    let title: String
+    
+    let firstActionText: String
+    let secondActionText: String
+    let cancelActionText: String = "Cancel"
+    
+    
+    func configurePopup(popup: CentrePopupConfig) -> CentrePopupConfig {
+        popup.horizontalPadding(10)
+            .backgroundColour(Color.clear)
+           // .cornerRadius(20)
+        
+    }
+    func createContent() -> some View {
+        
+        VStack(spacing: 5) {
+            
+            Text(title)
+                .bold()
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.vertical)
+            VStack(spacing: 4) {
+                createFirstButton()
+                createCentreButton()
+                createCancelButton()
+            }
+        }
+
+        .padding(.top, 12)
+        .padding(.bottom, 24)
+        .padding(.horizontal, 24)
+        .glassModifier(cornerRadius: 30)
+       // .shadow(radius: 10)
+        .triggersHapticFeedbackWhenAppear()
+
+        
+    }
+    
+    func createCancelButton() -> some View {
+        Button(action: {
+            cancelAction?() ?? dismiss()
+            dismiss()
+        }) {
+            Text(cancelActionText)
+            
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .glassModifier(cornerRadius: 20)
+        }
+    }
+    
+    func createCentreButton() -> some View {
+        Button(action: {
+            secondAction()
+            dismiss()
+        }) {
+            Text(secondActionText)
+            
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .glassModifier(cornerRadius: 20)
+        }
+    }
+    
+    func createFirstButton() -> some View {
+        Button(action: {
+            action()
+            dismiss()
+        }) {
+            Text(firstActionText)
+                .bold()
+           
+                .frame(height: 46)
+                .frame(maxWidth: .infinity)
+                .glassModifier(cornerRadius: 20, darker: true)
+           
+        }
+    }
+    
+}
+
 struct CustomTopPopup: TopPopup {
     func createContent() -> some View {
         HStack(spacing: 0){
@@ -154,3 +249,5 @@ struct CustomTopPopup: TopPopup {
     }
     
 }
+
+

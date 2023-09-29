@@ -25,6 +25,14 @@ class ShiftStore: ObservableObject {
     @Published var changedJob: Job?
     let shiftDataLoaded = PassthroughSubject<Void, Never>()
     
+    func findSingleScheduledShift(_ shift: ScheduledShift?) -> SingleScheduledShift? {
+        // looks through the shifts array of SingleScheduledShifts above called shifts, then it finds the one with the matching id and returns it
+        guard let shift = shift else { return nil }
+        guard let shiftID = shift.id else { return nil }
+        return shifts.first { $0.id == shiftID }
+        
+    }
+    
     func shouldIncludeShift(_ shift: ScheduledShift, jobModel: JobSelectionManager) -> Bool {
        if let selectedJobUUID = jobModel.selectedJobUUID {
            return shift.job?.uuid == selectedJobUUID

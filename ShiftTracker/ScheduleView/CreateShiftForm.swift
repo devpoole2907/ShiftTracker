@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct CreateShiftForm: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -103,6 +104,77 @@ struct CreateShiftForm: View {
         scheduleModel.saveShifts(in: viewContext)
         
         dismiss()
+        
+        if newShift.isRepeating {
+            CustomTripleActionPopup(action: {
+                scheduleModel.addShiftToCalendar(shift: newShift, viewContext: viewContext) { (success, error, eventID) in
+                    if success {
+                        print("Successfully added shift to calendar")
+                    } else {
+                        print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                    }
+                }
+            }, secondAction: {
+                
+                // make this its own func
+                
+                let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+                request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                    NSPredicate(format: "repeatIdString == %@", repeatID),
+                    NSPredicate(format: "startDate >= %@", startDate as NSDate)
+                ])
+
+                do {
+                    if let shiftsToSync = try viewContext.fetch(request) as? [ScheduledShift] {
+                        print("Number of repeating shifts found: \(shiftsToSync.count)")
+                        for shift in shiftsToSync {
+                            
+                            
+                            scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
+                                if success {
+                                    print("Successfully added shift to calendar")
+                                    scheduleModel.addEventKitID(shift: shift, eventID: eventID)
+                                    scheduleModel.saveShifts(in: viewContext)
+                                } else {
+                                    print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                                }
+                            }
+                            
+                        }
+                    }
+                
+                    
+                               try viewContext.save()
+                               print("Successfully synced the scheduled shifts with the system calendar.")
+                               
+                           
+                       } catch {
+                           print("Failed to update the corresponding shifts.")
+                       }
+                
+                
+                
+            }, title: "Add shift to calendar?", firstActionText: "Just this one", secondActionText: "All repeating shifts").showAndStack()
+            
+        } else {
+            CustomConfirmationAlert(action: {
+        
+                
+                scheduleModel.addShiftToCalendar(shift: newShift, viewContext: viewContext) { (success, error, eventID) in
+                    if success {
+                        
+                        scheduleModel.addEventKitID(shift: newShift, eventID: eventID)
+                        scheduleModel.saveShifts(in: viewContext)
+                        
+                        print("Successfully added shift to calendar")
+                    } else {
+                        print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                    }
+                }
+                
+            }, title: "Add this shift to your calendar?").showAndStack()
+        }
+        
     }
     
     func updateShift(){
@@ -123,19 +195,29 @@ struct CreateShiftForm: View {
         
         shiftStore.update(singleShift)
         
+        scheduleModel.deleteEventFromCalendar(eventIdentifier: shiftToUpdate.calendarEventID ?? "")
+        scheduleModel.addShiftToCalendar(shift: shiftToUpdate, viewContext: viewContext) { (success, error, eventID) in
+            
+            if success {
+                
+            } else {
+                print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+            }
+            
+        }
         
         scheduleModel.saveShifts(in: viewContext)
         
         
         
         dismiss()
-        
-        CustomConfirmationAlert(action: {
-            
-            scheduleModel.updateRepeatingShiftSeries(shiftToUpdate: singleShift, newStartDate: startDate, newEndDate: endDate, newTags: selectedTags, newMultiplierEnabled: multiplierEnabled, newPayMultiplier: payMultiplier, newReminderTime: shiftToUpdate.reminderTime, newNotifyMe: scheduleModel.notifyMe, with: shiftStore, using: viewContext)
-            
-        }, cancelAction: nil, title: "Update all future repeating shifts too?").showAndStack()
-        
+        if shiftToUpdate.isRepeating {
+            CustomConfirmationAlert(action: {
+                
+                scheduleModel.updateRepeatingShiftSeries(shiftToUpdate: singleShift, newStartDate: startDate, newEndDate: endDate, newTags: selectedTags, newMultiplierEnabled: multiplierEnabled, newPayMultiplier: payMultiplier, newReminderTime: shiftToUpdate.reminderTime, newNotifyMe: scheduleModel.notifyMe, with: shiftStore, using: viewContext)
+                
+            }, title: "Update all future repeating shifts too?").showAndStack()
+        }
     }
     
     func setupSlider() {
@@ -196,6 +278,7 @@ struct CreateShiftForm: View {
                                 
                                 
                                     .onAppear {
+                                        scheduleModel.selectedDays = Array(repeating: false, count: 7)
                                         scheduleModel.selectedDays[getDayOfWeek(date: (dateSelected?.date ?? Date())) - 1] = true
                                         
                                         print("start date is : \(startDate)")
@@ -420,7 +503,7 @@ struct CreateShiftForm: View {
                         if scheduledShift != nil {
                             
                             updateShift()
-                            
+                           
                         } else {
                             
                             createShift()

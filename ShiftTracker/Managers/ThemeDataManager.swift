@@ -341,7 +341,7 @@ class ThemeDataManager: ObservableObject {
                     
                     self.selectTheme(theme: newTheme, context: viewContext)
                     
-                }, cancelAction: nil, title: "Apply this theme?").showAndStack()
+                }, title: "Apply this theme?").showAndStack()
             }
             
         } catch {

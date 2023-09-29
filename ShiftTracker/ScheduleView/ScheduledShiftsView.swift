@@ -94,11 +94,15 @@ struct ScheduledShiftsView: View {
                 if !foundShifts.isEmpty {
                     ForEach(foundShifts) { shift in
                         if shift.endDate > Date() && !shift.isComplete {
-                            ScheduledShiftListRow(shift: shift, selectedShiftToEdit: $scheduleModel.selectedShiftToEdit)
+                            ScheduledShiftListRow(shift: shift)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)
                                 .swipeActions {
-                                    ScheduledShiftRowSwipeButtons(shift: shift)
+                                    
+                                    
+                                    if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {
+                                        ScheduledShiftRowSwipeButtons(shift: shift)
+                                    }
                                 }
                                 .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                                 .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 20))
@@ -162,8 +166,6 @@ struct ScheduledShiftListRow: View {
     @EnvironmentObject var purchaseManager: PurchaseManager
     
     let shift: SingleScheduledShift
-    
-    @Binding var selectedShiftToEdit: ScheduledShift?
     
     @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
     
@@ -240,7 +242,7 @@ struct ScheduledShiftListRow: View {
                                     Button(action:{
                                         CustomConfirmationAlert(action: {
                                             scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
-                                        }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
+                                        }, title: "End all future repeating shifts for this shift?").showAndStack()
                                     }){
                                         HStack{
                                             Image(systemName: "clock.arrow.2.circlepath")
@@ -251,7 +253,7 @@ struct ScheduledShiftListRow: View {
                                 }
                                 Button(action:{
                                   
-                                    selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)
+                                    scheduleModel.selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)
                                     
                                 }){
                                     HStack{

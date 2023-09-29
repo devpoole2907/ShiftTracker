@@ -85,7 +85,7 @@ struct AllScheduledShiftsView: View {
                                                           
                                                           
                                                                     .swipeActions {
-                                                                        ScheduledShiftRowSwipeButtons(shift: shift)
+                                                                        ScheduledShiftRowSwipeButtons(shift: scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)!)
                                                                     }
                                                           
                                                             }

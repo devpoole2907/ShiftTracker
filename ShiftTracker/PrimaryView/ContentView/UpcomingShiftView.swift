@@ -108,12 +108,9 @@ struct UpcomingShiftView: View {
                                 
 
                             }
+
                             
-                            
-                            
-                            
-                            
-                        }, cancelAction: nil, title: "Load this shift and associated tags?").showAndStack()
+                        }, title: "Load this shift and associated tags?").showAndStack()
                         
                         
                     }

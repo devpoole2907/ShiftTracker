@@ -11,44 +11,52 @@ struct ScheduledShiftRowSwipeButtons: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var shiftStore: ShiftStore
     
+    
+    
     @Environment(\.managedObjectContext) var viewContext
     
-    var shift: SingleScheduledShift
+    @ObservedObject var shift: ScheduledShift
+    
     
     var body: some View {
         Button(role: .destructive) {
             withAnimation {
                 scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
+                
             }
         } label: {
             Image(systemName: "trash")
         }
         Button(role: .none){
-            scheduleModel.selectedShiftToEdit = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)
+            scheduleModel.selectedShiftToEdit = shift
         } label: {
             Image(systemName: "pencil")
         }
-        if let selectedShift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext){
+ 
         Button(role: .none){
            
-            if selectedShift.calendarEventID == nil { // an event doesnt exist in the calendar
+            if shift.calendarEventID == nil { // an event doesnt exist in the calendar
                 
-                scheduleModel.addShiftToCalendar(shift: selectedShift, viewContext: viewContext) { (success, error) in
+                scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
                     if success {
                         print("Successfully added shift to calendar")
+                        scheduleModel.addEventKitID(shift: shift, eventID: eventID)
+                        scheduleModel.saveShifts(in: viewContext)
                     } else {
                         print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
                     }
                 }
             } else { // one does exist
-                scheduleModel.deleteEventFromCalendar(eventIdentifier: selectedShift.calendarEventID ?? "")
+                scheduleModel.deleteEventFromCalendar(eventIdentifier: shift.calendarEventID ?? "")
+                shift.calendarEventID = nil
+                scheduleModel.saveShifts(in: viewContext)
             }
             
         } label: {
-            Image(systemName: "calendar.badge.plus")
+            Image(systemName: shift.calendarEventID == nil ? "calendar.badge.plus" : "calendar.badge.minus")
         }.tint(Color.pink)
         
-    }
+    
         
         Button(role: .cancel) {
             
@@ -56,7 +64,7 @@ struct ScheduledShiftRowSwipeButtons: View {
                 withAnimation {
                     scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
                 }
-            }, cancelAction: nil, title: "End all future repeating shifts for this shift?").showAndStack()
+            }, title: "End all future repeating shifts for this shift?").showAndStack()
         } label: {
             Image(systemName: "clock.arrow.2.circlepath")
         }.disabled(!shift.isRepeating)
