@@ -210,8 +210,9 @@
 		7CC2C6C22AC6AC9100F15E74 /* RepeatEndPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */; };
 		7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */; };
 		7CC2C6C52AC78BF900F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
-		7CC2C6C62AC78BFB00F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7CC2C6C72AC78BFE00F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
+		7CC2C6C82AC7A66300F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
+		7CC2C6C92AC7A67700F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */; };
 		7CD8A31F2A882AED0011A1C0 /* ScaleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */; };
 		7CD8A3222A882EE70011A1C0 /* TagFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3212A882EE70011A1C0 /* TagFilter.swift */; };
@@ -1494,6 +1495,7 @@
 				7C4D83042A8B6C76006D54F9 /* JobEntry.swift in Sources */,
 				7C4D82FD2A8B6A08006D54F9 /* JobChartHoursWidget.swift in Sources */,
 				7C4D82F02A8B6944006D54F9 /* IntentHandler.swift in Sources */,
+				7CC2C6C92AC7A67700F15E74 /* JobIconView.swift in Sources */,
 				7C4D83002A8B6ACC006D54F9 /* ShiftDataModel.xcdatamodeld in Sources */,
 				7C4D83022A8B6BCF006D54F9 /* ChartWidgetProvider.swift in Sources */,
 				7C337B6D2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
@@ -1531,7 +1533,7 @@
 				7C2A18F02AA0297100518789 /* WidgetBackgroundModifier.swift in Sources */,
 				7CD8A3392A88A48C0011A1C0 /* JobChartWidgetBundle.swift in Sources */,
 				7C4D83012A8B6AEB006D54F9 /* IntentHandler.swift in Sources */,
-				7CC2C6C62AC78BFB00F15E74 /* JobIconView.swift in Sources */,
+				7CC2C6C82AC7A66300F15E74 /* JobIconView.swift in Sources */,
 				7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */,
 				7C337B6B2ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				7C0AC1372A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,

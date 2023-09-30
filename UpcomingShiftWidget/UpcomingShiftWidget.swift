@@ -157,7 +157,7 @@ struct UpcomingShiftWidgetEntryView : View {
                                             .foregroundColor(.orange)
                                             .roundedFontDesign()
                                             .bold()
-                                            .font(.title)
+                                            .font(.title2)
                                             .multilineTextAlignment(.trailing)
                                         
                                         
@@ -191,7 +191,7 @@ struct UpcomingShiftWidgetEntryView : View {
                                             )
                                             .roundedFontDesign()
                                             .bold()
-                                            .font(.title)
+                                            .font(.title2)
                                         
                                         Text("\(upcomingShift.startDate ?? Date(), formatter: Self.smallFormatter)")
                                             .roundedFontDesign()

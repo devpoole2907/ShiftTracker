@@ -57,19 +57,11 @@ struct WidgetStatsView: View {
         VStack{
             HStack {
                 
-                let jobColor = Color(red: Double(job?.colorRed ?? 0.5), green: Double(job?.colorGreen ?? 0.5), blue: Double(job?.colorBlue ?? 0.5)).gradient
+                let jobColor = Color(red: Double(job?.colorRed ?? 0.5), green: Double(job?.colorGreen ?? 0.5), blue: Double(job?.colorBlue ?? 0.5))
                 
-                Image(systemName: job?.icon ?? "briefcase.fill")
-                    .font(.subheadline)
-                    .foregroundStyle(.white)
-                    .padding(10)
-                    .background {
-                        
-                        Circle()
-                            .foregroundStyle(jobColor)
-                        
-                        
-                    }
+                
+                JobIconView(icon: job?.icon ?? "briefcase.fill", color: jobColor, font: .subheadline)
+         
                 
                 VStack(alignment: .leading, spacing: 3){
                     Text("\(job?.name ?? "Summary")")
@@ -94,6 +86,8 @@ struct WidgetStatsView: View {
                 
             }
             
+            let calendar = Calendar.current
+            
             
             Chart{
                 ForEach(weekShifts.reversed()) { weekShift in
@@ -111,7 +105,18 @@ struct WidgetStatsView: View {
             
             
             
-            .chartXScale(domain: Calendar.current.date(byAdding: .day, value: -7, to: Date())!...Date().addingTimeInterval(36400), type: .linear)
+
+            
+     
+            .chartYAxisLabel(position: .leading, alignment: .center) {
+                Text(yValue).font(.system(size: 14, design: .rounded))
+                    .bold()
+                    
+                   
+                       }
+            
+            .chartXScale(domain: Calendar.current.date(byAdding: .day, value: -8, to: Date())!...calendar.date(bySettingHour: 23, minute: 59, second: 59, of: Date())!.addingTimeInterval(36400), type: .log)
+
           
             .chartXAxis{
                 
