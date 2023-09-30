@@ -54,13 +54,30 @@ struct JobOverview: View {
     }
     
     @FetchRequest var shifts: FetchedResults<OldShift>
+    @FetchRequest var weeklyShifts: FetchedResults<OldShift>
     
     init(navPath: Binding<NavigationPath>, job: Job? = nil){
         print("job overview itself got reinitialised")
+
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
-        fetchRequest.predicate = nil
+        let weekFetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        if let jobID = job?.objectID {
+            fetchRequest.predicate = NSPredicate(format: "job == %@", jobID)
+            
+     
+            let oneWeekAgo = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: Date().endOfDay) ?? Date()
+            
+            let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [NSPredicate(format: "job == %@", jobID), NSPredicate(format: "shiftStartDate >= %@", oneWeekAgo as NSDate)])
+            
+            weekFetchRequest.predicate = compoundPredicate
+            
+            
+        }
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
+        weekFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
         _shifts = FetchRequest(fetchRequest: fetchRequest)
+        _weeklyShifts = FetchRequest(fetchRequest: weekFetchRequest)
+        
         
         
         _navPath = navPath
@@ -102,14 +119,7 @@ struct JobOverview: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
 
         let jobColor = Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0))
-        
-        let thisJobShifts = shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })
-        
-        let shiftsThisWeek = thisJobShifts.filter { shift in
-            
-            shiftManager.isWithinLastWeek(date: shift.shiftStartDate!)
-            
-        }
+
         
         GeometryReader { geo in
         ZStack(alignment: .bottomTrailing){
@@ -120,18 +130,18 @@ struct JobOverview: View {
                     HStack(spacing: 8){
                         VStack(spacing: 0) {
                             
-                            StatsSquare(shifts: thisJobShifts, shiftsThisWeek: shiftsThisWeek)
+                            StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
                                 .environmentObject(shiftManager)
                             
                             Spacer()
                             
-                            ChartSquare(shifts: shiftsThisWeek)
+                            ChartSquare(shifts: weeklyShifts)
                                 .environmentObject(shiftManager)
                             
                         }
                         
                         
-                        ExportSquare(totalShifts: thisJobShifts.count, action: {
+                        ExportSquare(totalShifts: shifts.count, action: {
                             activeSheet = .configureExportSheet
                         })
                         .environmentObject(shiftManager)
@@ -154,7 +164,7 @@ struct JobOverview: View {
                 
                 Section{
                     
-                    ForEach(thisJobShifts.prefix(10), id: \.self) { shift in
+                    ForEach(shifts.prefix(10), id: \.self) { shift in
                         
                         NavigationLink(value: shift) {
                             ShiftDetailRow(shift: shift)

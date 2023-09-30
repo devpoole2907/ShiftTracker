@@ -18,7 +18,7 @@ struct ChartSquare: View {
     
     @Environment(\.colorScheme) var colorScheme
     
-    var shifts: [OldShift]
+    var shifts: FetchedResults<OldShift>
     
     
     var body: some View {
@@ -53,7 +53,7 @@ struct ChartSquare: View {
         
         
         HStack{
-            VStack(alignment: .leading) {
+            VStack(alignment: .center) {
                 HStack(spacing: 5){
                     
                     HStack(spacing: 0){
@@ -100,6 +100,9 @@ struct ChartSquare: View {
                 }.chartXAxis(.hidden)
                     .chartYAxis(.hidden)
                     .padding(.horizontal, 5)
+                
+                    .frame(width: 100)
+                    
              
                 
               

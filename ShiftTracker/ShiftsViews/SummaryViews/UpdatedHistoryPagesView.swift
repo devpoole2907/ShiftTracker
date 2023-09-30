@@ -266,7 +266,7 @@ struct UpdatedHistoryPagesView: View {
                             
                             DispatchQueue.main.async {
                                 
-                                let groupedDictionary = Dictionary(grouping: shifts) { shift in
+                                let groupedDictionary = Dictionary(grouping: shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })) { shift in
                                     historyModel.getGroupingKey(for: shift)
                                 }.sorted { $0.key < $1.key }
                                 
@@ -309,7 +309,7 @@ struct UpdatedHistoryPagesView: View {
             if shiftsEmpty || totalShiftsInGrouped != totalShiftsInFetchedResults {
                 
                 
-                let groupedDictionary = Dictionary(grouping: shifts) { shift in
+                let groupedDictionary = Dictionary(grouping: shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })) { shift in
                     historyModel.getGroupingKey(for: shift)
                 }.sorted { $0.key < $1.key }
                 

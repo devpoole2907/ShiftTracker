@@ -14,8 +14,8 @@ struct StatsSquare: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     
-    var shifts: [OldShift]
-    var shiftsThisWeek: [OldShift]
+     var shifts: FetchedResults<OldShift>
+    var shiftsThisWeek: FetchedResults<OldShift>
     
     var body: some View {
         
