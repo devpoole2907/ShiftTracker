@@ -62,82 +62,212 @@ struct ScheduleEntry: TimelineEntry {
 }
 
 struct UpcomingShiftWidgetEntryView : View {
+    
+    @Environment(\.widgetFamily) var family
+    
     var entry: Provider.Entry
     
-    static let dateFormatter: DateFormatter = {
+    static let medFormatter: DateFormatter = {
         let formatter = DateFormatter()
+
         formatter.dateFormat = "EEEE, d MMMM"
         return formatter
     }()
+    
+    static let smallFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+
+        formatter.dateFormat = "EEEE, d"
+        return formatter
+    }()
+    
+    
     
     var body: some View {
         
         
         if let upcomingShift = entry.upcomingShift{
             VStack(alignment: .leading) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Upcoming Shift")
-                        .font(.title3)
-                        .bold()
-                        .padding(.bottom, -1)
-                    
-                    if let startDate = upcomingShift.startDate,
-                       abs(startDate.timeIntervalSince(Date())) < 86400 {
-                        Text(startDate, style: .timer)
+                
+                switch family {
+                case .systemSmall:
+                    VStack(alignment: .leading) {
+                        Text("Upcoming Shift")
+                            .font(.subheadline)
                             .bold()
-                            .foregroundColor(.orange)
-                            .font(.system(.footnote, design: .rounded))
+                            .padding(.bottom, -1)
+                        
+                        
+                    }.padding(.leading, 4)
+                case .systemMedium:
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Upcoming Shift")
+                            .font(family == .systemMedium ? .title3 : .subheadline)
+                            .bold()
+                            .padding(.bottom, -1)
+                        
+                        if let startDate = upcomingShift.startDate,
+                           abs(startDate.timeIntervalSince(Date())) < 86400 {
+                            Text(startDate, style: .timer)
+                                .bold()
+                                .foregroundColor(.orange)
+                                .font(.system(.footnote, design: .rounded))
+                        }
                     }
+                    
+               
+                @unknown default:
+                    Text("Error")
                 }
                 
-                Divider().frame(maxWidth: 220)
+            
+                
+                
+                Divider().frame(maxWidth: family == .systemSmall ? 100 : 220).padding(.horizontal, family == .systemSmall ? 20 : 0)
                 HStack{
-                    Image(systemName: upcomingShift.job?.icon ?? "")
-                        .foregroundStyle(.white)
-                        .font(.callout)
-                        .padding(10)
-                        .background {
-                            
-                            Circle()
-                            
-                            
-                                .foregroundStyle(Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)).gradient)
-                            
-                            
-                            
-                            
-                        }
+                    
+                    if family != .systemSmall {
+                        
+                        JobIconView(icon: upcomingShift.job?.icon ?? "", color: Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)), font: .callout)
+                        
+                       
+                        
+                    }
                     
                     
-                    VStack(alignment: .leading, spacing: 5){
-                        
-                        Text("\(upcomingShift.job?.name ?? "")")
-                            .bold()
+                    VStack(alignment: .leading, spacing: family == .systemSmall ? 10 : 5){
                         
                         
-                        HStack(alignment: .lastTextBaseline, spacing: 0) {
-                            Text(
-                                Calendar.current.isDateInToday(upcomingShift.startDate ?? Date()) ?
-                                "Today at " :
-                                    "\(upcomingShift.startDate ?? Date(), formatter: Self.dateFormatter) at "
-                            )
-                            .roundedFontDesign()
-                            .foregroundColor(.gray)
-                            .bold()
-                            .font(.footnote)
+                        
+                      
+                        
+                        switch family {
+                        case .systemSmall:
                             
-                            Text(upcomingShift.startDate ?? Date(), style: .time)
-                                .foregroundColor(
-                                    Date() > upcomingShift.startDate ?? Date() ? .red :
-                                        Calendar.current.date(byAdding: .hour, value: 1, to: Date())! > upcomingShift.startDate ?? Date() ? .orange :
-                                            .gray
+                            
+                            
+                            HStack {
+                                Spacer()
+                                VStack(alignment: .trailing){
+                                    
+                                    if let startDate = upcomingShift.startDate,
+                                       abs(startDate.timeIntervalSince(Date())) < 86400 {
+                                        Text(startDate, style: .timer)
+                                        
+                                            .foregroundColor(.orange)
+                                            .roundedFontDesign()
+                                            .bold()
+                                            .font(.title)
+                                            .multilineTextAlignment(.trailing)
+                                        
+                                        
+                                        HStack(spacing: 2) {
+                                            
+                                            Text(upcomingShift.startDate ?? Date(), style: .time)
+                                                .foregroundColor(
+                                                    Date() > upcomingShift.startDate ?? Date() ? .red :
+                                                        Calendar.current.date(byAdding: .hour, value: 1, to: Date())! > upcomingShift.startDate ?? Date() ? .orange :
+                                                            .gray
+                                                )
+                                                .roundedFontDesign()
+                                                .bold()
+                                                .font(.system(size: 14))
+                                            
+                                            Text("Today")
+                                                .roundedFontDesign()
+                                                .foregroundColor(.gray)
+                                                .bold()
+                                                .font(.system(size: 14))
+                                            
+                                        }
+                                        
+                                    } else {
+                                        
+                                        Text(upcomingShift.startDate ?? Date(), style: .time)
+                                            .foregroundColor(
+                                                Date() > upcomingShift.startDate ?? Date() ? .red :
+                                                    Calendar.current.date(byAdding: .hour, value: 1, to: Date())! > upcomingShift.startDate ?? Date() ? .orange :
+                                                        .gray
+                                            )
+                                            .roundedFontDesign()
+                                            .bold()
+                                            .font(.title)
+                                        
+                                        Text("\(upcomingShift.startDate ?? Date(), formatter: Self.smallFormatter)")
+                                            .roundedFontDesign()
+                                            .foregroundColor(.gray)
+                                            .bold()
+                                            .font(.system(size: 14))
+                                        
+                                    }
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    Divider().frame(maxWidth: 100)
+                                    
+                                    HStack {
+                                        
+                                        
+                                        
+                                        
+                                        JobIconView(icon: upcomingShift.job?.icon ?? "", color: Color(red: Double(upcomingShift.job?.colorRed ?? 0), green: Double(upcomingShift.job?.colorGreen ?? 0), blue: Double(upcomingShift.job?.colorBlue ?? 0)), font: .footnote, padding: 8)
+                                        
+                                        
+                                        
+                                        Text("\(upcomingShift.job?.name ?? "")")
+                                            .bold()
+                                            .font(.footnote)
+                                        
+                                        
+                                        
+                                    }.roundedFontDesign()
+                                        .padding(.top, 4)
+                                    
+                                }
+                            }
+                            
+                        case .systemMedium:
+                            
+                            VStack(alignment: .leading, spacing: 3){
+                            Text("\(upcomingShift.job?.name ?? "")")
+                                .bold()
+                                .font(.title2)
+                            
+                            HStack(alignment: .lastTextBaseline, spacing: 0) {
+                                Text(
+                                    Calendar.current.isDateInToday(upcomingShift.startDate ?? Date()) ?
+                                    "Today at " :
+                                        "\(upcomingShift.startDate ?? Date(), formatter: Self.medFormatter) at "
                                 )
                                 .roundedFontDesign()
+                                .foregroundColor(.gray)
                                 .bold()
-                                .font(.footnote)
+                                
+                                
+                                Text(upcomingShift.startDate ?? Date(), style: .time)
+                                    .foregroundColor(
+                                        Date() > upcomingShift.startDate ?? Date() ? .red :
+                                            Calendar.current.date(byAdding: .hour, value: 1, to: Date())! > upcomingShift.startDate ?? Date() ? .orange :
+                                                .gray
+                                    )
+                                    .roundedFontDesign()
+                                    .bold()
+                                
+                            } .font(.footnote)
+                            
                         }
+                 
+                        @unknown default:
+                            Text("Error")
+                        }
+                        
+                        
                     }
-                }.padding(.vertical, 3)
+                }.padding(.leading, family == .systemSmall ? 3 : 0)
+                .padding(.vertical, 3)
                 
             } .widgetURL(URL(string: "shifttrackerapp://schedule"))
         } else {
@@ -184,7 +314,17 @@ struct UpcomingShiftWidget: Widget {
         }
         .configurationDisplayName("Upcoming Shift")
         .description("Displays the next scheduled shift.")
-        .supportedFamilies([.systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
+struct UpcomingShiftWidgetPreviews: PreviewProvider {
+
+    
+    static var previews: some View {
+  
+        UpcomingShiftWidgetEntryView(entry: ScheduleEntry(date: Date(), upcomingShift: nil))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .widgetBackgroundModifier()
+    }
+}

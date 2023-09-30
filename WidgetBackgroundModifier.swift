@@ -16,9 +16,9 @@ struct WidgetBackgroundModifier: ViewModifier {
                 .containerBackground(.ultraThinMaterial, for: .widget)
         } else {
             content
-            .padding(.horizontal, 5)
-    
-            .padding(.vertical, 15)
+                .padding(.vertical, 22)
+                .padding(.horizontal, 8)
+               
         
         }
         
