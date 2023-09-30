@@ -224,11 +224,9 @@ struct JobOverview: View {
                             
                         } else if value == 2 {
                             
-                            if #available(iOS 17.0, *){
+                          
                                 UpdatedHistoryPagesView(navPath: $navPath)
-                            } else {
-                                HistoryPagesView(navPath: $navPath)
-                            }
+                          
                             
                             
                             

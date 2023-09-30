@@ -613,3 +613,23 @@ extension View {
     }
 }
 
+struct CustomChartXScale: ViewModifier {
+    
+    let useScale: Bool
+    let domain: ClosedRange<Date>
+    
+    func body(content: Content) -> some View {
+        if useScale {
+            content
+                .chartXScale(domain: domain, type: .linear)
+        } else {
+            content
+        }
+    }
+}
+
+extension View {
+    func customChartXScale(useScale: Bool = true, domain: ClosedRange<Date>) -> some View {
+        self.modifier(CustomChartXScale(useScale: useScale, domain: domain))
+    }
+}

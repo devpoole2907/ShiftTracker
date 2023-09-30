@@ -14,13 +14,14 @@ struct ChartAnnotationView: View {
     
     var body: some View{
         HStack{
-        VStack(alignment: .leading){
+            VStack(alignment: .leading, spacing: 0){
             
             Text("TOTAL")
                 .font(.footnote)
                 .bold()
                 .foregroundStyle(.gray)
                 .roundedFontDesign()
+                .padding(.top, 1)
             
             Text(value)
                 .font(.title)
@@ -39,9 +40,6 @@ struct ChartAnnotationView: View {
         Spacer()
         }
             .padding(.vertical, 4)
-            .background(Color(.systemGray6))
-            .cornerRadius(6)
-        
-        
+           
     }
 }

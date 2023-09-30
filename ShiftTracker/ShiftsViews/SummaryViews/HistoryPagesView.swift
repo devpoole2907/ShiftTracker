@@ -12,7 +12,7 @@ import Haptics
 
 // available for ios 16, had to split the views into HistoryPagesView and UpdatedHistoryPagesView due to a system bug in iOS 16
 // where it won't read the check for iOS 17 only code when apply annotation overlays. see the commented block of code below.
-
+/*
 struct HistoryPagesView: View {
     
     @Binding var navPath: NavigationPath
@@ -499,3 +499,4 @@ struct HistoryPagesView_Previews: PreviewProvider {
     
     
 }
+*/

@@ -213,6 +213,7 @@
 		7CC2C6C72AC78BFE00F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7CC2C6C82AC7A66300F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7CC2C6C92AC7A67700F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
+		7CC2C6CB2AC7FDBB00F15E74 /* iosSixteenChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6CA2AC7FDBB00F15E74 /* iosSixteenChartView.swift */; };
 		7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */; };
 		7CD8A31F2A882AED0011A1C0 /* ScaleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */; };
 		7CD8A3222A882EE70011A1C0 /* TagFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3212A882EE70011A1C0 /* TagFilter.swift */; };
@@ -458,6 +459,7 @@
 		7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupLockscreenView.swift; sourceTree = "<group>"; };
 		7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatEndPicker.swift; sourceTree = "<group>"; };
 		7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftRowSwipeButtons.swift; sourceTree = "<group>"; };
+		7CC2C6CA2AC7FDBB00F15E74 /* iosSixteenChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosSixteenChartView.swift; sourceTree = "<group>"; };
 		7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleButtonStyle.swift; sourceTree = "<group>"; };
 		7CD8A3212A882EE70011A1C0 /* TagFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagFilter.swift; sourceTree = "<group>"; };
@@ -850,6 +852,7 @@
 			isa = PBXGroup;
 			children = (
 				1A1DEC9629F101040002D9E4 /* ChartView.swift */,
+				7CC2C6CA2AC7FDBB00F15E74 /* iosSixteenChartView.swift */,
 				1A1DEC9929F101770002D9E4 /* ShiftGroups.swift */,
 				7C1A507B2A9976C500305171 /* HistoryPagesView.swift */,
 				7C5243782ABE70FE00356B6C /* UpdatedHistoryPagesView.swift */,
@@ -1344,6 +1347,7 @@
 				7C1A507E2A99F31A00305171 /* PageControlView.swift in Sources */,
 				BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */,
 				7C2A18DD2AA026CC00518789 /* WidgetBackgroundModifier.swift in Sources */,
+				7CC2C6CB2AC7FDBB00F15E74 /* iosSixteenChartView.swift in Sources */,
 				1A8D4ADA2A4EE16400EEB334 /* JobOverview.swift in Sources */,
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,

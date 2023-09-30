@@ -14,12 +14,51 @@ class HistoryViewModel: ObservableObject {
     
     @Published var historyRange: HistoryRange = .week
     @Published var selectedTab: Int = 0 // To keep track of the selected tab
+    @Published var groupedShifts: [GroupedShifts] = []
+    
+    
     let calendar = Calendar.current
     
     @Published var chartSelection: Date?
+    @Published var selectedDate: Date?
+    @Published var aggregateValue: Double = 0.0
+    
+    
+    
     @Published var chartYSelection: Double?
     
     @Published var selection = Set<NSManagedObjectID>()
+    
+    func computeAggregateValue(for selectedDate: Date, in shifts: [OldShift], statsMode: StatsMode) -> Double {
+        var aggregateValue = 0.0
+
+        // Extract the relevant date components of the selected date
+        let selectedDateComponents = chartSelectionComponent(date: selectedDate)
+        
+        // Loop through all shifts to find the ones that match the selected date (or month if the date range is a year)
+        for shift in shifts {
+            
+            // Extract the relevant date components of each shift's start date
+            let shiftStartDateComponents = chartSelectionComponent(date: shift.shiftStartDate ?? Date())
+            
+            // Check if the selected date matches the shift's date
+            if selectedDateComponents == shiftStartDateComponents {
+                
+                // Update the aggregate value based on the current stats mode
+                if statsMode == .earnings {
+                    aggregateValue += shift.totalPay
+                } else if statsMode == .hours {
+                    aggregateValue += shift.duration / 3600.0
+                } else {
+                    aggregateValue += shift.breakDuration / 3600.0
+                }
+            }
+        }
+        
+        return aggregateValue
+    }
+
+    
     
     func generateSampleShifts() -> [OldShift] {
         var shifts: [OldShift] = []
@@ -34,34 +73,50 @@ class HistoryViewModel: ObservableObject {
         return shifts
     }
     
-    func getCurrentDateRangeString(groupedShifts: [(key: Date, value: [OldShift])]) -> String {
+    func convertToGroupedShifts(from dictionary: [(key: Date, value: [OldShift])]) -> [GroupedShifts] {
+
+        var newGroupedShifts: [GroupedShifts] = []
         
-        let dateFormatter = DateFormatter()
-        
-        switch historyRange {
-        case .week:
-            guard groupedShifts.count > 0 else { return "" }
-            guard selectedTab < groupedShifts.count else { return "" }
-            let startDate = groupedShifts[selectedTab].key
-            let endDate = calendar.date(byAdding: .day, value: 6, to: startDate)!
-            dateFormatter.dateFormat = "MMM d"
-            let startDateString = dateFormatter.string(from: startDate)
-            dateFormatter.dateFormat = "d"
-            let endDateString = dateFormatter.string(from: endDate)
-            return "\(startDateString) - \(endDateString)"
+        // Convert to use the GroupedShifts struct.
+        for (key, shifts) in dictionary {
+            var title: String
+            let dateFormatter = DateFormatter()
+            var startDate: Date = Date()
             
-        case .month:
-            guard selectedTab < groupedShifts.count else { return "" }
-            let startDate = groupedShifts[selectedTab].key
-            dateFormatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
-            return dateFormatter.string(from: startDate)
+            switch historyRange {
+            case .week:
+                 startDate = key
+                let endDate = Calendar.current.date(byAdding: .day, value: 6, to: startDate)!
+                dateFormatter.dateFormat = "MMM d"
+                let startDateString = dateFormatter.string(from: startDate)
+                dateFormatter.dateFormat = "d"
+                let endDateString = dateFormatter.string(from: endDate)
+                title = "\(startDateString) - \(endDateString)"
+                
+            case .month:
+                 startDate = key
+                dateFormatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
+                title = dateFormatter.string(from: startDate)
+                
+            case .year:
+                 startDate = key
+                dateFormatter.setLocalizedDateFormatFromTemplate("yyyy")
+                title = dateFormatter.string(from: startDate)
+            }
             
-        case .year:
-            guard selectedTab < groupedShifts.count else { return "" }
-            let startDate = groupedShifts[selectedTab].key
-            dateFormatter.setLocalizedDateFormatFromTemplate("yyyy")
-            return dateFormatter.string(from: startDate)
+            let newGroup = GroupedShifts(title: title, shifts: shifts, startDate: startDate)
+            newGroupedShifts.append(newGroup)
         }
+        
+        return newGroupedShifts
+    }
+
+    
+    func getCurrentDateRangeString() -> String {
+        guard groupedShifts.count > 0 else { return "" }
+        guard selectedTab < groupedShifts.count else { return "" }
+        
+        return groupedShifts[selectedTab].title
     }
     
     
@@ -74,14 +129,14 @@ class HistoryViewModel: ObservableObject {
         case .week:
             endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate)!
         case .month:
-            endDate = Calendar.current.date(byAdding: .month, value: 1, to: startDate)!
+            endDate = Calendar.current.date(byAdding: .day, value: 29, to: startDate)!
         case .year:
             endDate = Calendar.current.date(byAdding: .year, value: 1, to: startDate)!
         }
         
         
         
-        return startDate...endDate
+        return startDate.addingTimeInterval(-10000)...endDate
     }
     
     func chartSelectionComponent(date: Date?) -> DateComponents {
@@ -120,7 +175,7 @@ class HistoryViewModel: ObservableObject {
         
     }
     
-    func forwardButtonAction(groupedShifts: [(key: Date, value: [OldShift])]) {
+    func forwardButtonAction() {
         
         if selectedTab != groupedShifts.count - 1 {
             withAnimation {
@@ -132,4 +187,12 @@ class HistoryViewModel: ObservableObject {
     
     
     
+    
+    
+}
+
+struct GroupedShifts {
+    var title: String
+    var shifts: [OldShift]
+    var startDate: Date
 }

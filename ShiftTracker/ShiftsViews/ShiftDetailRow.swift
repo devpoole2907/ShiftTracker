@@ -114,7 +114,7 @@ struct ShiftDetailRow: View {
                 
                 
                 if shift.multiplierEnabled {
-                    Text("\(payMultiplier)x")
+                    Text("x\(payMultiplier)")
                         .font(.caption)
                         .bold()
                         .roundedFontDesign()
@@ -179,7 +179,7 @@ struct ShiftDetailRow: View {
                             .bold()
                         
                         if shift.multiplierEnabled {
-                            Text("\(payMultiplier)x")
+                            Text("x\(payMultiplier)")
                                 .font(.caption)
                                 .bold()
                                 .roundedFontDesign()

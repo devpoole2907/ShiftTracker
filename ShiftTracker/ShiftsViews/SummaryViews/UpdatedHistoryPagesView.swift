@@ -32,49 +32,7 @@ struct UpdatedHistoryPagesView: View {
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
     
-    
-    var chartUnit: Calendar.Component {
-        
-        switch historyModel.historyRange {
-        case .week:
-            return .weekday
-        case .month:
-            return .weekOfMonth
-        case .year:
-            return .month
-        }
-        
-    }
-    
 
-    
-    var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-
-        switch historyModel.historyRange {
-        case .week:
-            formatter.dateFormat = "EEE"
-        case .month:
-            formatter.dateFormat = "dd/M"
-        case .year:
-            formatter.dateFormat = "MM/yy"
-        }
-
-        return formatter
-    }
-
-    
-    
-    var barWidth: MarkDimension {
-        switch historyModel.historyRange {
-        case .week:
-            return 25
-        case .month:
-            return 15
-        case .year:
-            return 15
-        }
-    }
     
 
     
@@ -83,16 +41,11 @@ struct UpdatedHistoryPagesView: View {
 
     @State private var isOverlayEnabled: Bool = true
     
-    
-    
     var body: some View {
         
         
         
-        let groupedShifts = Dictionary(grouping: shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })) { shift in
-            historyModel.getGroupingKey(for: shift)
-        }.sorted { $0.key < $1.key }
-        
+       
         
        ZStack(alignment: .bottomTrailing){
         ZStack(alignment: .bottomLeading){
@@ -100,16 +53,18 @@ struct UpdatedHistoryPagesView: View {
             
             List(selection: $historyModel.selection) {
                 
-                Section {
-                    
+            Section {
+                    ZStack(alignment: .topTrailing){
                     TabView(selection: $historyModel.selectedTab.animation(.default)) {
                         
-                        ForEach(groupedShifts.indices, id: \.self) { index in
-                            let startDate = groupedShifts[index].key
-                            let dateRange = historyModel.getDateRange(startDate: startDate)
-                           let totalEarnings = groupedShifts[index].value.reduce(0) { $0 + $1.totalPay }
-                            let totalHours = groupedShifts[index].value.reduce(0) { $0 + ($1.duration / 3600.0) }
-                            let totalBreaks = groupedShifts[index].value.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
+                        ForEach(historyModel.groupedShifts.indices, id: \.self) { index in
+                       
+                            let dateRange = historyModel.getDateRange(startDate: historyModel.groupedShifts[index].startDate)
+                            let totalEarnings = historyModel.groupedShifts[index].shifts.reduce(0) { $0 + $1.totalPay }
+                            let totalHours = historyModel.groupedShifts[index].shifts.reduce(0) { $0 + ($1.duration / 3600.0) }
+                            let totalBreaks = historyModel.groupedShifts[index].shifts.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
+                        
+
                             
                             VStack {
                                 HStack{
@@ -132,141 +87,31 @@ struct UpdatedHistoryPagesView: View {
                                     }
                                     Spacer()
                                     
-                                    HStack(spacing: 20) {
-                                        
-                                        Button(action: {
-                                            historyModel.backButtonAction()
-                                        }){
-                                            Image(systemName: "chevron.left").bold()
-                                          
-                                                .font(.title2)
-                                                .customAnimatedSymbol(value: $historyModel.selectedTab)
-                                        }
-                                        
-                                        Button(action: {
-                                            historyModel.forwardButtonAction(groupedShifts: groupedShifts)
-                                        }){
-                                            Image(systemName: "chevron.right").bold()
-                                      
-                                                .font(.title2)
-                                                .customAnimatedSymbol(value: $historyModel.selectedTab)
-                                        }
-                                        
-                                        
-                                        
-                                    }.padding(.horizontal)
+                                 
+                              
+                                    
                                     
                                 }.padding(.top, 5)
                                     .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
-                               Chart {
+                                
+                               let shifts = historyModel.groupedShifts[index].shifts
+                   
+                                // gotta do it this way, for some reason doing the check in the chartView fails and builds anyway for ios 16 causing a crash
+                                if #available(iOS 17.0, *){
                                     
+                                    ChartView(dateRange: dateRange, shifts: shifts)
+                                        .environmentObject(historyModel)
                                     
-                                    
-                                    
-                                    ForEach(groupedShifts[index].value, id: \.self) { shift in
-                                        
-                                        
-                                        
-                                        if let chartSelection = historyModel.chartSelection {
-                                            
-                                            let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
-                                            let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
-                                            
-                                            
-                                            
-                                            if chartSelectionDateComponents == shiftStartDateComponents {
-                                                
-                                                let ruleMark = RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
-                                                
-                                                let annotationView = ChartAnnotationView(value: shiftManager.statsMode == .earnings ? "$\(String(format: "%.2f", shift.totalPay))" : shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: (shift.duration / 3600.0)) : shiftManager.formatTime(timeInHours: (shift.breakDuration / 3600.0)), date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
-                                          
-                                                    if #available(iOS 17.0, *){
-                                                        ruleMark
-                                                            .annotation(alignment: .top, overflowResolution: .init(x: .fit, y: .disabled)){
-                                                                
-                                                                annotationView
-                                                                
-                                                            }
-                                                    } else {
-                                                        ruleMark.annotation(alignment: .top){
-                                                            
-                                                            annotationView
-                                                            
-                                                        }
-                                                    }
-                                                
-                                                
-                                            }
-                                        }
-                                        
-                                        
-                                        BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
-                                                y: .value(shiftManager.statsMode.description, shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
-                                                          
-                                                         ), width: barWidth
-                                        )
-                                        .foregroundStyle(shiftManager.statsMode.gradient)
-                                        .cornerRadius(shiftManager.statsMode.cornerRadius)
-                                        
-                                        
-                                    }
-                                    
-                                    
+                                } else {
+                                    iosSixteenChartView(dateRange: dateRange, shifts: shifts)
+                                        .environmentObject(historyModel)
                                 }
-                                
-                                
-                                
-                                .chartXScale(domain: dateRange, type: .linear)
-                                
-                                    .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
-                                
-                                    .chartXAxis {
-                                        
-                                        
-                                        if historyModel.historyRange == .month {
-                                            
-                                            AxisMarks(values: .stride(by: .day, count: 6)) { value in
-                                                if let date = value.as(Date.self) {
-                                                    
-                                                    AxisValueLabel(format: .dateTime.day(), centered: true, collisionResolution: .disabled)
-                                                    
-                                                    
-                                                } else {
-                                                    AxisValueLabel()
-                                                }
-                                                
-                                            }
-                                            
-                                        } else {
-                                            AxisMarks(values: .stride(by: historyModel.historyRange == .week ? .day : .month, count: 1)) { value in
-                                                if let date = value.as(Date.self) {
-                                                    
-                                                    if historyModel.historyRange == .week {
-                                                        AxisValueLabel(shiftManager.dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
-                                                        
-                                                    } else {
-                                                        AxisValueLabel(format: .dateTime.month(), centered: true, collisionResolution: .disabled)
-                                                    }
-                                                    
-                                                    
-                                                } else {
-                                                    AxisValueLabel()
-                                                }
-                                                
-                                            }
-                                        }
-                                    }
-            
-                                
-                                    .padding(.vertical)
-                                
-                                    .frame(minHeight: 200)
                                 
                                 
                             } .padding(.horizontal)
                                 .tag(index)
                             
-                     
+                            
                             
                         }
                         
@@ -274,6 +119,34 @@ struct UpdatedHistoryPagesView: View {
                     .tabViewStyle(.page(indexDisplayMode: .never))
                     .haptics(onChangeOf: historyModel.selectedTab, type: .light)
                     
+                      
+                            HStack(spacing: 20) {
+                                
+                                Button(action: {
+                                    historyModel.backButtonAction()
+                                }){
+                                    Image(systemName: "chevron.left").bold()
+                                    
+                                        .font(.system(size: 26))
+                                        .customAnimatedSymbol(value: $historyModel.selectedTab)
+                                }.buttonStyle(.plain)
+                                
+                                Button(action: {
+                                    historyModel.forwardButtonAction()
+                                }){
+                                    Image(systemName: "chevron.right").bold()
+                                    
+                                        .font(.system(size: 26))
+                                        .customAnimatedSymbol(value: $historyModel.selectedTab)
+                                }.buttonStyle(.plain)
+                                
+                                
+                                
+                            }.padding()
+                            .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
+                        
+                    
+                }
                     
                     
                 }.frame(minHeight: 300)
@@ -282,25 +155,45 @@ struct UpdatedHistoryPagesView: View {
                        
                
                 Section {
-                    if historyModel.selectedTab >= 0 && historyModel.selectedTab < groupedShifts.count {
-                        ForEach(groupedShifts[historyModel.selectedTab].value, id: \.objectID) { shift in
-                            NavigationLink(value: shift) {
-                                ShiftDetailRow(shift: shift)
-                            }
+                  
+                    
+                    if historyModel.groupedShifts.indices.contains(historyModel.selectedTab) {
+                        ForEach(historyModel.groupedShifts[historyModel.selectedTab].shifts, id: \.objectID) { shift in
+                                            NavigationLink(value: shift) {
+                                                ShiftDetailRow(shift: shift)
+                                                
+                                                
+                                            }
                             
-                            .swipeActions {
-                                Button(role: .destructive) {
-                                    shiftStore.deleteOldShift(shift, in: viewContext)
-                                 
-                                    
-                                } label: {
-                                    Image(systemName: "trash")
-                                }
-                            }
+                                            .swipeActions {
+                                                Button(role: .destructive) {
+                                                    withAnimation {
+                                                        shiftStore.deleteOldShift(shift, in: viewContext)
+                                                        if let index = historyModel.groupedShifts[historyModel.selectedTab].shifts.firstIndex(of: shift) {
+                                                            historyModel.groupedShifts[historyModel.selectedTab].shifts.remove(at: index)
+                                                                }
+                                                        
+                                                        if historyModel.groupedShifts[historyModel.selectedTab].shifts.isEmpty {
+                                                            historyModel.groupedShifts.remove(at: historyModel.selectedTab)
+                                                                   
+                                                                 // changes the current tab if it empties
+                                                                   if historyModel.selectedTab >= historyModel.groupedShifts.count {
+                                                                       historyModel.selectedTab = max(historyModel.groupedShifts.count - 1, 0)
+                                                                   }
+                                                               }
+                                                        
+                                                        
+                                                    }
+                                                    
+                                                } label: {
+                                                    Image(systemName: "trash")
+                                                }
+                                            }
                             
-                        }.transition(.slide)
-                            .animation(.easeInOut, value: historyModel.selectedTab)
-                    }
+                                        }
+                                    }
+                    
+    
                 }
                 .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                 .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
@@ -318,11 +211,17 @@ struct UpdatedHistoryPagesView: View {
         .customSectionSpacing()
      
 
-            PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: groupedShifts.count)
+            PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: historyModel.groupedShifts.count)
                     .frame(maxWidth: 175)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                 
                     .padding()
+            
+                    .onChange(of: historyModel.selectedTab){ value in
+                        print("Selected tab is \(value)")
+                      //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
+                    }
+                   
                 
             }
                 
@@ -368,9 +267,28 @@ struct UpdatedHistoryPagesView: View {
                       
                   
                     
-                        .onChange(of: historyModel.historyRange) { _ in
+                        .onChange(of: historyModel.historyRange) { value in
                             withAnimation{
-                                historyModel.selectedTab = groupedShifts.count - 1
+                                
+                              
+                                
+                                DispatchQueue.main.async {
+                                    
+                                    let groupedDictionary = Dictionary(grouping: shifts) { shift in
+                                        historyModel.getGroupingKey(for: shift)
+                                    }.sorted { $0.key < $1.key }
+
+                                    historyModel.groupedShifts = historyModel.convertToGroupedShifts(from: groupedDictionary)
+                                    
+                                    historyModel.selectedTab = historyModel.groupedShifts.count - 1
+                                    
+                      
+                                    }
+                      
+                                    
+                                    
+                              
+                         
                             }
                         }
                     
@@ -388,10 +306,22 @@ struct UpdatedHistoryPagesView: View {
         
         .onAppear {
             
+          
+            var shiftsEmpty = historyModel.groupedShifts.isEmpty
+
             
-            if shiftManager.showModePicker == true {
-                historyModel.selectedTab = groupedShifts.count - 1
+            if shiftsEmpty {
+                
+                
+                let groupedDictionary = Dictionary(grouping: shifts) { shift in
+                    historyModel.getGroupingKey(for: shift)
+                }.sorted { $0.key < $1.key }
+
+                historyModel.groupedShifts = historyModel.convertToGroupedShifts(from: groupedDictionary)
+                
+                historyModel.selectedTab = historyModel.groupedShifts.count - 1
             }
+          
             
             withAnimation {
                 shiftManager.showModePicker = true
@@ -399,7 +329,7 @@ struct UpdatedHistoryPagesView: View {
             
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                if groupedShifts.count < 1 {
+                if historyModel.groupedShifts.count < 1 {
                     dismiss()
                 }
             }
@@ -410,7 +340,7 @@ struct UpdatedHistoryPagesView: View {
         
         
         
-        .navigationTitle(historyModel.getCurrentDateRangeString(groupedShifts: groupedShifts))
+        .navigationTitle(historyModel.getCurrentDateRangeString())
         
         
     }
@@ -418,20 +348,52 @@ struct UpdatedHistoryPagesView: View {
     
     private func deleteItems() {
         withAnimation {
-            historyModel.selection.forEach { objectID in
-                let itemToDelete = viewContext.object(with: objectID)
-                viewContext.delete(itemToDelete)
+            
+       // for each shift selected 
+            for objectID in historyModel.selection {
+                let itemToDelete = viewContext.object(with: objectID) as? OldShift
+                
+              // find which group the shift is in
+                if let shift = itemToDelete, let groupIndex = historyModel.groupedShifts.firstIndex(where: { group in
+                    return group.shifts.contains(where: { $0.objectID == objectID })
+                }) {
+                    
+              // remove the shift from the group
+                    if let shiftIndex = historyModel.groupedShifts[groupIndex].shifts.firstIndex(of: shift) {
+                        historyModel.groupedShifts[groupIndex].shifts.remove(at: shiftIndex)
+                    }
+                    
+                   // if there are no more shifts in this group after deleting, remove the group
+                    if historyModel.groupedShifts[groupIndex].shifts.isEmpty {
+                        historyModel.groupedShifts.remove(at: groupIndex)
+                    }
+                }
+                
+              // delete the shift from core data
+                if let item = itemToDelete {
+                    viewContext.delete(item)
+                }
             }
             
             do {
                 try viewContext.save()
                 historyModel.selection.removeAll()
+     
+                if historyModel.selectedTab >= historyModel.groupedShifts.count {
+                    historyModel.selectedTab = max(historyModel.groupedShifts.count - 1, 0)
+                }
+                // if no shifts left, dismiss from this view
+                if historyModel.groupedShifts.isEmpty {
+                    dismiss()
+                }
+                
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
     }
+
     
     
 }

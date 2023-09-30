@@ -1,22 +1,23 @@
 //
-//  StatsView.swift
+//  iosSixteenChartView.swift
 //  ShiftTracker
 //
-//  Created by James Poole on 20/04/23.
+//  Created by James Poole on 30/09/23.
 //
 
 import SwiftUI
 import Charts
 import Haptics
 
-@available(iOS 17.0, *)
-struct ChartView: View {
+struct iosSixteenChartView: View {
     
     @EnvironmentObject var historyModel: HistoryViewModel
     @EnvironmentObject var shiftManager: ShiftDataManager
     
     var dateRange: ClosedRange<Date>
     var shifts: [OldShift]
+    
+    @State private var isOverlayEnabled = true
     
 
     var chartUnit: Calendar.Component {
@@ -81,11 +82,7 @@ struct ChartView: View {
                 
                 let yValue = shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
                 
-              
-                    
-                    
-                    
-                    
+     
                     
                     
                     
@@ -98,37 +95,32 @@ struct ChartView: View {
                     
                     if let chartSelection = historyModel.chartSelection {
                         
-                        let aggregateValue = historyModel.computeAggregateValue(for: chartSelection, in: shifts, statsMode: shiftManager.statsMode)
                         let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
                         let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
-                        
+                        let aggregateValue = historyModel.computeAggregateValue(for: chartSelection, in: shifts, statsMode: shiftManager.statsMode)
                         
                         
                         if chartSelectionDateComponents == shiftStartDateComponents {
                             
                             let ruleMark = RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
-                        
+                            
                             let annotationValue = formatAggregate(aggregateValue: aggregateValue)
                             
                             let annotationView = ChartAnnotationView(value: annotationValue, date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
                             
                             
                             
-                            
-                            ruleMark.opacity(0.5)
-                                .annotation(alignment: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)){
-                                    
-                                    annotationView.background{
-                                        RoundedRectangle(cornerRadius: 12).foregroundStyle(Color(.systemGray6)).padding(.top, 2)}
-                                    
-                                }
-                            
+                            ruleMark.opacity(0.5).annotation(alignment: .top){
+                                
+                                annotationView.background{
+                                    RoundedRectangle(cornerRadius: 12).foregroundStyle(Color(.systemGray6)).padding(.top, 2)}
+                                
+                            }
+                        
                             
                             
                         }
                     }
-                    
-                    
                     
                 
                 
@@ -139,11 +131,10 @@ struct ChartView: View {
             
         }
             
+            // ios 16 has to show the scale and be slightly broken because of the overlay
             
+            .chartXScale(domain: dateRange, type: .linear)
             
-
-            // conditionally applies the scale
-        .customChartXScale(useScale: historyModel.historyRange != .month, domain: dateRange)
             
             .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
             
@@ -154,7 +145,7 @@ struct ChartView: View {
                     
                 
                     AxisMarks(values: .automatic(desiredCount: 5))
-                                    
+                   // AxisMarks()
                     
                 } else {
                     AxisMarks(values: .stride(by: historyModel.historyRange == .week ? .day : .month, count: 1)) { value in
@@ -180,9 +171,51 @@ struct ChartView: View {
             .padding(.vertical)
             
             .frame(minHeight: 200)
+        
+        // will leave this custom modifier here for if in future the issue is fixed.
+        
+            .conditionalChartOverlay(overlayEnabled: $isOverlayEnabled)  { proxy in
+                    GeometryReader { innerProxy in
+                        
+                        Rectangle()
+                            .fill(.clear).contentShape(Rectangle())
+                            .gesture(
+                                DragGesture()
+                                    .onChanged{ value in
+                                        
+                                        
+                                        
+                                        let location = value.location
+                                        
+                                        if let date: Date = proxy.value(atX: location.x){
+                                            let calendar = Calendar.current
+                                            print("date is \(date)")
+                                            
+                                            historyModel.chartSelection = date
+                                        }
+                                        
+                                        
+                                    } .onEnded{ value in
+                                        
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                                            withAnimation(.easeInOut(duration: 0.2)) {
+                                                
+                                                
+                                                historyModel.chartSelection = nil
+                                                
+                                            }
+                                        }
+                                    }
+                            )
+                        
+                    }
+                
+            }
             
             
         }
+    
+    
             
     
         
