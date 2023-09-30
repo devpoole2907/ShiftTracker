@@ -519,7 +519,7 @@ struct JobView: View {
                         VStack(alignment: .leading, spacing: 10){
                             Toggle(isOn: $breakReminder){
                                 
-                                Text("Break reminders")
+                                Text("Break reminder")
                                 
                             }.toggleStyle(CustomToggleStyle())
                            

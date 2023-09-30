@@ -29,6 +29,21 @@ class HistoryViewModel: ObservableObject {
     
     @Published var selection = Set<NSManagedObjectID>()
     
+    func formatAggregate(aggregateValue: Double, shiftManager: ShiftDataManager) -> String {
+        
+        switch shiftManager.statsMode {
+        case .earnings:
+            return "$\(String(format: "%.2f", aggregateValue))"
+        case .hours:
+            print("aggregate value when formatting time is: \(aggregateValue)")
+            return shiftManager.formatTime(timeInHours: aggregateValue)
+        default:
+            return shiftManager.formatTime(timeInHours: aggregateValue)
+        }
+        
+        
+    }
+    
     func computeAggregateValue(for selectedDate: Date, in shifts: [OldShift], statsMode: StatsMode) -> Double {
         var aggregateValue = 0.0
 

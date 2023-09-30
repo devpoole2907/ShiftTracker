@@ -58,19 +58,7 @@ struct ChartView: View {
         return formatter
     }
     
-    func formatAggregate(aggregateValue: Double) -> String {
-        
-        switch shiftManager.statsMode {
-        case .earnings:
-            return "$\(String(format: "%.2f", aggregateValue))"
-        case .hours:
-            return shiftManager.formatTime(timeInHours: aggregateValue / 3600.0)
-        default:
-            return shiftManager.formatTime(timeInHours: aggregateValue / 3600.0)
-        }
-        
-        
-    }
+  
 
     
     var body: some View{
@@ -108,7 +96,7 @@ struct ChartView: View {
                             
                             let ruleMark = RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
                         
-                            let annotationValue = formatAggregate(aggregateValue: aggregateValue)
+                            let annotationValue = historyModel.formatAggregate(aggregateValue: aggregateValue, shiftManager: shiftManager)
                             
                             let annotationView = ChartAnnotationView(value: annotationValue, date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
                             
@@ -120,9 +108,13 @@ struct ChartView: View {
                                     
                                     annotationView.background{
                                         RoundedRectangle(cornerRadius: 12).foregroundStyle(Color(.systemGray6)).padding(.top, 2)}
+                                    .onAppear {
+                                        print("annotationValue is \(annotationValue)")
+                                    }
+                                
                                     
                                 }
-                            
+                               
                             
                             
                         }

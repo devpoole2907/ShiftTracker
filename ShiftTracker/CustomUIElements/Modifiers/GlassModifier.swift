@@ -58,7 +58,7 @@ struct GlassModifier: ViewModifier {
                 RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(LinearGradient(colors: gradientColors,
                                            startPoint: .topLeading,
-                                           endPoint: .bottomTrailing), lineWidth: 1.0)
+                                           endPoint: .bottomTrailing), lineWidth: 0.8)
                 
                 
             }

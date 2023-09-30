@@ -91,7 +91,7 @@ struct AllScheduledShiftsView: View {
                                                             }
                             }
                             
-                        } header: { Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? (colorScheme == .dark ? .orange : .cyan) : textColor)
+                        } header: { Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? .cyan : textColor)
                           
                           }
                             .listRowBackground(Color.clear)
