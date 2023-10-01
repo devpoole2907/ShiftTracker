@@ -21,9 +21,6 @@ struct DetailView: View {
     
     @EnvironmentObject var jobSelectionManager: JobSelectionManager
     
-    // we need to fire this when we save a shift, as that will tell shiftslist to update sorts when a shift is saved
-    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
-    
     @EnvironmentObject var shiftStore: ShiftStore
     
     @FetchRequest(

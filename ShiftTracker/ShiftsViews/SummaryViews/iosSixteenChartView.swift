@@ -69,46 +69,48 @@ struct iosSixteenChartView: View {
             ForEach(shifts, id: \.self) { shift in
                 
                 let yValue = shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
-                
-     
-                    
-                    
-                    
-                    
+
                     BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
                             y: .value(shiftManager.statsMode.description, yValue), width: barWidth
                     )
                     .foregroundStyle(shiftManager.statsMode.gradient)
                     .cornerRadius(shiftManager.statsMode.cornerRadius)
                     
-                    if let chartSelection = historyModel.chartSelection {
+                if let chartSelection = historyModel.chartSelection {
+                    
+                    let aggregateValue = historyModel.computeAggregateValue(for: chartSelection, in: shifts, statsMode: shiftManager.statsMode)
+                    let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
+                    let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
+                    
+                    
+                    
+                    if chartSelectionDateComponents == shiftStartDateComponents {
                         
-                        let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
-                        let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
-                        let aggregateValue = historyModel.computeAggregateValue(for: chartSelection, in: shifts, statsMode: shiftManager.statsMode)
+                        let ruleMark = RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
+                    
+                        let annotationValue = historyModel.formatAggregate(aggregateValue: aggregateValue, shiftManager: shiftManager)
+                        
+                        let annotationView = ChartAnnotationView(value: annotationValue, date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
                         
                         
-                        if chartSelectionDateComponents == shiftStartDateComponents {
-                            
-                            let ruleMark = RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
-                            
-                            let annotationValue = historyModel.formatAggregate(aggregateValue: aggregateValue, shiftManager: shiftManager)
-                            
-                            let annotationView = ChartAnnotationView(value: annotationValue, date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
-                            
-                            
-                            
-                            ruleMark.opacity(0.5).annotation(alignment: .top){
+                        
+                        
+                        ruleMark.opacity(0.5)
+                            .annotation(alignment: .top){
                                 
                                 annotationView.background{
                                     RoundedRectangle(cornerRadius: 12).foregroundStyle(Color(.systemGray6)).padding(.top, 2)}
+                                .onAppear {
+                                    print("annotationValue is \(annotationValue)")
+                                }
+                            
                                 
                             }
+                           
                         
-                            
-                            
-                        }
+                        
                     }
+                }
                     
                 
                 
@@ -132,8 +134,14 @@ struct iosSixteenChartView: View {
                 if historyModel.historyRange == .month {
                     
                 
-                    AxisMarks(values: .automatic(desiredCount: 5))
-                   // AxisMarks()
+                    AxisMarks(values: .stride(by: .day, count: 1)) { value in
+                        if let date = value.as(Date.self) {
+                            let components = Calendar.current.dateComponents([.day], from: date)
+                            if let day = components.day, (day - 1) % 7 == 0 {
+                                AxisValueLabel(dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
+                            }
+                        }
+                    }
                     
                 } else {
                     AxisMarks(values: .stride(by: historyModel.historyRange == .week ? .day : .month, count: 1)) { value in

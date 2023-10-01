@@ -37,6 +37,8 @@ struct UpdatedHistoryPagesView: View {
     
     @State private var isOverlayEnabled: Bool = true
     
+    
+    
     var body: some View {
         
         ZStack(alignment: .bottomTrailing){
@@ -93,10 +95,12 @@ struct UpdatedHistoryPagesView: View {
                                             
                                             ChartView(dateRange: dateRange, shifts: shifts)
                                                 .environmentObject(historyModel)
+                                                .padding(.leading)
                                             
                                         } else {
                                             iosSixteenChartView(dateRange: dateRange, shifts: shifts)
                                                 .environmentObject(historyModel)
+                                                .padding(.leading)
                                         }
                                         
                                         
@@ -173,9 +177,10 @@ struct UpdatedHistoryPagesView: View {
                                                     historyModel.selectedTab = max(historyModel.groupedShifts.count - 1, 0)
                                                 }
                                             }
-                                            
-                                            
                                         }
+                                        
+                                        // clear cached aggregate annotation values
+                                        historyModel.clearCache()
                                         
                                     } label: {
                                         Image(systemName: "trash")
@@ -297,26 +302,33 @@ struct UpdatedHistoryPagesView: View {
         }
         
         .onAppear {
-            
-            
-            let shiftsEmpty = historyModel.groupedShifts.isEmpty
-            
-            // check if count of shifts has changed
-            
-            let totalShiftsInGrouped = historyModel.groupedShifts.reduce(0) { $0 + $1.shifts.count }
+            DispatchQueue.global(qos: .background).async {
+                
+                let shiftsEmpty = historyModel.groupedShifts.isEmpty
+                // check if count of shifts has changed
+                let totalShiftsInGrouped = historyModel.groupedShifts.reduce(0) { $0 + $1.shifts.count }
                 let totalShiftsInFetchedResults = shifts.count
-            
-            if shiftsEmpty || totalShiftsInGrouped != totalShiftsInFetchedResults {
                 
-                
-                let groupedDictionary = Dictionary(grouping: shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })) { shift in
-                    historyModel.getGroupingKey(for: shift)
-                }.sorted { $0.key < $1.key }
-                
-                historyModel.groupedShifts = historyModel.convertToGroupedShifts(from: groupedDictionary)
-                
-                historyModel.selectedTab = historyModel.groupedShifts.count - 1
+                if shiftsEmpty || totalShiftsInGrouped != totalShiftsInFetchedResults {
+                    
+                    // Possibly expensive operations
+                    let filteredShifts = shifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })
+                    let groupedDictionary = Dictionary(grouping: filteredShifts) { shift in
+                        historyModel.getGroupingKey(for: shift)
+                    }.sorted { $0.key < $1.key }
+                    
+                    let newGroupedShifts = historyModel.convertToGroupedShifts(from: groupedDictionary)
+                    
+                    // Switch back to the main queue to update UI
+                    DispatchQueue.main.async {
+                        historyModel.groupedShifts = newGroupedShifts
+                        historyModel.selectedTab = historyModel.groupedShifts.count - 1
+                        historyModel.clearCache()
+                    }
+                }
             }
+        
+
             
           
         
@@ -385,6 +397,8 @@ struct UpdatedHistoryPagesView: View {
                 if historyModel.groupedShifts.isEmpty {
                     dismiss()
                 }
+                // clear cached aggregate annotation values
+                historyModel.clearCache()
                 
             } catch {
                 let nsError = error as NSError

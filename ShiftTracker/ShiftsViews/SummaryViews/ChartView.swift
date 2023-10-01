@@ -68,16 +68,6 @@ struct ChartView: View {
             ForEach(shifts, id: \.self) { shift in
                 
                 let yValue = shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
-                
-              
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
                             y: .value(shiftManager.statsMode.description, yValue), width: barWidth
                     )
@@ -135,7 +125,11 @@ struct ChartView: View {
             
 
             // conditionally applies the scale
-        .customChartXScale(useScale: historyModel.historyRange != .month, domain: dateRange)
+      //  .customChartXScale(useScale: true, domain: dateRange)
+        
+        .chartXScale(domain: dateRange, type: .linear)
+        
+        
             
             .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
             
@@ -145,7 +139,15 @@ struct ChartView: View {
                 if historyModel.historyRange == .month {
                     
                 
-                    AxisMarks(values: .automatic(desiredCount: 5))
+                    AxisMarks(values: .stride(by: .day, count: 1)) { value in
+                        if let date = value.as(Date.self) {
+                            let components = Calendar.current.dateComponents([.day], from: date)
+                            if let day = components.day, (day - 1) % 7 == 0 {
+                                AxisValueLabel(dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
+                            }
+                        }
+                    }
+
                                     
                     
                 } else {
@@ -173,6 +175,9 @@ struct ChartView: View {
             
             .frame(minHeight: 200)
             
+         
+        
+        
             
         }
             

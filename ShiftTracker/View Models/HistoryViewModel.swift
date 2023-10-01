@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import SwiftUI
+import Combine
 
 class HistoryViewModel: ObservableObject {
     
@@ -19,47 +20,86 @@ class HistoryViewModel: ObservableObject {
     
     let calendar = Calendar.current
     
-    @Published var chartSelection: Date?
-    @Published var selectedDate: Date?
+    @Published var chartSelection: Date? = nil
+    @Published var visibleShifts: [OldShift]? = nil
+    
+    var cancellables: Set<AnyCancellable> = []
+    
+    @Published var selectedDate: Date? = nil
     @Published var aggregateValue: Double = 0.0
     
     
     
-    @Published var chartYSelection: Double?
+    @Published var chartYSelection: Double? = nil
     
     @Published var selection = Set<NSManagedObjectID>()
     
+    var formatCache: [String: String] = [:]
+
     func formatAggregate(aggregateValue: Double, shiftManager: ShiftDataManager) -> String {
-        
-        switch shiftManager.statsMode {
-        case .earnings:
-            return "$\(String(format: "%.2f", aggregateValue))"
-        case .hours:
-            print("aggregate value when formatting time is: \(aggregateValue)")
-            return shiftManager.formatTime(timeInHours: aggregateValue)
-        default:
-            return shiftManager.formatTime(timeInHours: aggregateValue)
+        let key = "\(aggregateValue)_\(shiftManager.statsMode)"
+        if let cachedValue = formatCache[key] {
+            return cachedValue
         }
         
-        
+        var formattedString: String
+        switch shiftManager.statsMode {
+        case .earnings:
+            formattedString = "$\(String(format: "%.2f", aggregateValue))"
+        case .hours:
+            formattedString = shiftManager.formatTime(timeInHours: aggregateValue)
+        default:
+            formattedString = shiftManager.formatTime(timeInHours: aggregateValue)
+        }
+
+        formatCache[key] = formattedString
+        return formattedString
     }
     
-    func computeAggregateValue(for selectedDate: Date, in shifts: [OldShift], statsMode: StatsMode) -> Double {
-        var aggregateValue = 0.0
+   lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
 
+        switch historyRange {
+        case .week:
+            formatter.dateFormat = "EEE"
+        case .month:
+            formatter.dateFormat = "dd/M"
+        case .year:
+            formatter.dateFormat = "MMMM"
+        }
+
+        return formatter
+    }()
+    
+    func clearCache() {
+        self.cache = [:]
+        self.formatCache = [:]
+
+    }
+    // Cache Dictionary
+    var cache: [String: Double] = [:]
+
+    func computeAggregateValue(for selectedDate: Date, in shifts: [OldShift], statsMode: StatsMode) -> Double {
+        
+        let selectedDateStr = dateFormatter.string(from: selectedDate)
+        
+        // Check cache first
+        if let cachedValue = cache[selectedDateStr] {
+            
+            print("cached value found?")
+            
+            return cachedValue
+        }
+        
+        var aggregateValue = 0.0
+        
         // Extract the relevant date components of the selected date
         let selectedDateComponents = chartSelectionComponent(date: selectedDate)
         
-        // Loop through all shifts to find the ones that match the selected date (or month if the date range is a year)
+        // Loop through all shifts to find the ones that match the selected date
         for shift in shifts {
-            
-            // Extract the relevant date components of each shift's start date
             let shiftStartDateComponents = chartSelectionComponent(date: shift.shiftStartDate ?? Date())
-            
-            // Check if the selected date matches the shift's date
             if selectedDateComponents == shiftStartDateComponents {
-                
-                // Update the aggregate value based on the current stats mode
                 if statsMode == .earnings {
                     aggregateValue += shift.totalPay
                 } else if statsMode == .hours {
@@ -70,22 +110,10 @@ class HistoryViewModel: ObservableObject {
             }
         }
         
-        return aggregateValue
-    }
-
-    
-    
-    func generateSampleShifts() -> [OldShift] {
-        var shifts: [OldShift] = []
-        let oneMonthAgo = Calendar.current.date(byAdding: .month, value: -2, to: Date()) ?? Date()
+        // Store result in cache
+        cache[selectedDateStr] = aggregateValue
         
-        for i in 0..<64 {
-            let shift = OldShift(context: PersistenceController.preview.container.viewContext) 
-            shift.shiftStartDate = Calendar.current.date(byAdding: .day, value: i, to: oneMonthAgo)
-            shift.totalPay = Double(100 + (i * 5))
-            shifts.append(shift)
-        }
-        return shifts
+        return aggregateValue
     }
     
     func convertToGroupedShifts(from dictionary: [(key: Date, value: [OldShift])]) -> [GroupedShifts] {

@@ -18,9 +18,7 @@ struct ShiftsList: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var themeManager: ThemeDataManager
-    
-    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
-    
+
     @EnvironmentObject var sortSelection: SortSelection
 
     

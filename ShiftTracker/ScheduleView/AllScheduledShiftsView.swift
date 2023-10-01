@@ -67,8 +67,6 @@ struct AllScheduledShiftsView: View {
                                     .swipeActions {
                                         
                                         Button(role: .destructive) {
-                                            //scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
-                                            
                                             shiftStore.deleteOldShift(oldShift, in: viewContext)
                                             
                                         } label: {
@@ -85,7 +83,9 @@ struct AllScheduledShiftsView: View {
                                                           
                                                           
                                                                     .swipeActions {
-                                                                        ScheduledShiftRowSwipeButtons(shift: scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext)!)
+                                                                        if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {
+                                                                            ScheduledShiftRowSwipeButtons(shift: shift)
+                                                                        }
                                                                     }
                                                           
                                                             }
