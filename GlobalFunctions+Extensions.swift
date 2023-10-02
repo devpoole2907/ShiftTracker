@@ -349,147 +349,10 @@ func createDefaultTheme(in viewContext: NSManagedObjectContext, with themeManage
     }
 }
 
-struct CustomDisableListSelectionModifier: ViewModifier {
-    
-    var disabled: Bool
-    
-    func body(content: Content) -> some View {
-        if #available(iOS 17.0, *){
-            content.selectionDisabled(disabled)
-        } else {
-            content // just allow selection on ios 16, not as clean but still will be undeletable
-        }
-    }
-    
-}
-
-extension View {
-    func customDisableListSelection(disabled: Bool) -> some View{
-        self.modifier(CustomDisableListSelectionModifier(disabled: disabled))
-    }
-}
 
 
-// applies hidden scroll background only if in dark mode
 
-struct CustomScrollBackgroundModifier: ViewModifier {
-    @Environment(\.colorScheme) var colorScheme
-    
-    func body(content: Content) -> some View {
-        Group {
-            if colorScheme == .dark {
-                content.scrollContentBackground(.hidden)
-            } else {
-                content
-            }
-        }
-    }
-}
 
-extension View {
-    func customScrollBackgroundModifier() -> some View {
-        self.modifier(CustomScrollBackgroundModifier())
-    }
-}
-
-struct CustomChartXSelection: ViewModifier {
-    
-    @Binding var selection: Date?
-    
-    func body(content: Content) -> some View {
-        if #available(iOS 17.0, *) {
-            
-            content.chartXSelection(value: $selection)
-            
-        } else {
-            content
-        }
-    }
-    
-    
-    
-}
-
-extension View {
-    func customChartXSelectionModifier(selection: Binding<Date?>) -> some View {
-        self.modifier(CustomChartXSelection(selection: selection))
-    }
-}
-
-struct CustomChartOverlayModifier<V: View>: ViewModifier {
-    
-    // this overlay enabled is somewhat redudant now that we've discovered we can't use the gestures with tab view.
-    
-    @Binding var overlayEnabled: Bool
-    let overlayContent: (ChartProxy) -> V
-    
-    func body(content: Content) -> some View {
-        
-        if #available(iOS 17.0, *) {
-            // do nothing, use built-in modifier .chartXselection
-            
-            content
-            
-        } else {
-            
-            if overlayEnabled {
-                content.chartOverlay(content: overlayContent)
-            } else {
-                content
-            }
-            
-        }
-    }
-    
-    
-}
-
-extension View {
-    
-    func conditionalChartOverlay<V: View>(overlayEnabled: Binding<Bool>, content: @escaping (ChartProxy) -> V) -> some View {
-        
-        self.modifier(CustomChartOverlayModifier(overlayEnabled: overlayEnabled, overlayContent: content))
-        
-    }
-    
-}
-
-struct CustomAnimatedSymbolModifier<U:Hashable>: ViewModifier {
-    
-    @Binding var value: U
-    
-    func body(content: Content) -> some View {
-        if #available(iOS 17.0, *){
-            content.symbolEffect(.bounce, value: value)
-        } else {
-            content
-        }
-    }
-}
-
-extension View {
-    func customAnimatedSymbol<U: Hashable>(value: Binding<U>) -> some View {
-        self.modifier(CustomAnimatedSymbolModifier(value: value))
-    }
-}
-
-struct CustomListSectionSpacingModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 17.0, *){
-            content.listSectionSpacing(.compact)
-        } else {
-            content
-        }
-    }
-}
-
-extension View {
-    
-    func customSectionSpacing() -> some View {
-        self.modifier(CustomListSectionSpacingModifier())
-    }
-    
-}
 
 
 extension View {
@@ -550,86 +413,26 @@ extension View {
     }
 }
 
-struct CustomSheetBackgroundModifier: ViewModifier {
+
+
+
+extension Date {
+    func diff(numDays: Int) -> Date {
+        Calendar.current.date(byAdding: .day, value: numDays, to: self)!
+    }
     
-    var ultraThin: Bool = true
+    var startOfDay: Date {
+        Calendar.current.startOfDay(for: self)
+    }
     
-    func body(content: Content) -> some View {
-        if #available(iOS 16.4, *) {
-            content
-                .presentationBackground(ultraThin ? .ultraThinMaterial : .thinMaterial)
-        } else {
-            content
+    var endOfDay: Date {
+            let startOfNextDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+            return startOfNextDay.addingTimeInterval(-1)
         }
-    }
     
-    
-}
-
-
-extension View {
-    func customSheetBackground(ultraThin: Bool = true) -> some View {
-        self.modifier(CustomSheetBackgroundModifier(ultraThin: ultraThin))
-    }
-}
-
-struct CustomSheetRadius: ViewModifier {
-    var radius: CGFloat
-    
-    func body(content: Content) -> some View {
-        if #available(iOS 16.4, *){
-            content.presentationCornerRadius(radius)
-        } else {
-            content
+    var dateComponents: DateComponents {
+            let calendar = Calendar.current
+            return calendar.dateComponents([.year, .month, .day], from: self)
         }
-    }
     
-    
-}
-
-
-extension View {
-    func customSheetRadius(_ radius: CGFloat = 25) -> some View {
-        self.modifier(CustomSheetRadius(radius: radius))
-    }
-}
-
-struct CustomSheetBackgroundInteraction: ViewModifier {
-    
-    func body(content: Content) -> some View {
-        if #available(iOS 16.4, *){
-            content.presentationBackgroundInteraction(.enabled)
-        } else {
-            content
-        }
-    }
-    
-    
-}
-
-extension View {
-    func customSheetBackgroundInteraction() -> some View {
-        self.modifier(CustomSheetBackgroundInteraction())
-    }
-}
-
-struct CustomChartXScale: ViewModifier {
-    
-    let useScale: Bool
-    let domain: ClosedRange<Date>
-    
-    func body(content: Content) -> some View {
-        if useScale {
-            content
-                .chartXScale(domain: domain, type: .linear)
-        } else {
-            content
-        }
-    }
-}
-
-extension View {
-    func customChartXScale(useScale: Bool = true, domain: ClosedRange<Date>) -> some View {
-        self.modifier(CustomChartXScale(useScale: useScale, domain: domain))
-    }
 }

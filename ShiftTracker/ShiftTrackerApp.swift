@@ -16,8 +16,6 @@ struct ShiftTrackerApp: App {
     //@State private var selectedTab: Tab = .home
         private let defaults = UserDefaults.standard
     
-    @StateObject private var watchConnectivityManager = WatchConnectivityManager.shared
-    
     @StateObject private var purchaseManager = PurchaseManager()
    // @StateObject var navigationState = NavigationState()
     //@StateObject var locationManager = LocationDataManager()
@@ -27,14 +25,7 @@ struct ShiftTrackerApp: App {
 
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
-    init() {
-            WatchConnectivityManager.shared.onDeleteJob = { jobId in
-                let context = PersistenceController.shared.container.viewContext
-                WatchConnectivityManager.shared.deleteJob(with: jobId, in: context)
-            }
-        
-        
-        }
+
     
     let persistenceController = PersistenceController.shared
     var body: some Scene {

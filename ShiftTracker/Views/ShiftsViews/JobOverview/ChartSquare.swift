@@ -113,43 +113,6 @@ struct ChartSquare: View {
           
     }
     
-    func animateGraph(){
-        
-      
-    
-            for(index,_) in shiftManager.recentShifts.enumerated(){
-                
-               // DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05){
-                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.8)){
-                        shiftManager.recentShifts[index].animate = true
-                        
-                    }
-                    
-               // }
-
-            }
-            
-    
-            
-
-            
-   
-            
-            
-            
-        
-        
-
-    }
-    
-    func compareDates(_ date1: Date, _ date2: Date) -> Bool {
-        let calendar = Calendar.current
-        let components1 = calendar.dateComponents([.year, .month, .day], from: date1)
-        let components2 = calendar.dateComponents([.year, .month, .day], from: date2)
-        return components1 == components2
-    }
-
-    
 }
 
 

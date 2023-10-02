@@ -311,7 +311,7 @@ struct JobOverview: View {
                 } else if value == 2 {
                     
                     
-                    UpdatedHistoryPagesView(navPath: $navPath)
+                    HistoricalView(navPath: $navPath)
                     
                     
                     

@@ -13,12 +13,7 @@ import Combine
 class ShiftDataManager: ObservableObject {
     
     static let shared = ShiftDataManager()
-    
-    @Published var recentShifts: [singleShift] = []
-    @Published var monthlyShifts: [singleShift] = []
-    @Published var halfYearlyShifts: [singleShift] = []
-    @Published var yearlyShifts: [singleShift] = []
-    
+
     @Published var showModePicker = true
     
     @Published var weeklyTotalPay: Double = 0
@@ -112,10 +107,6 @@ class ShiftDataManager: ObservableObject {
         return shifts.filter { $0.shiftStartDate ?? Date() >= date }
     }
 
-    // This function transforms shifts into details
-    func mapShiftsToSingleShift(_ shifts: [OldShift]) -> [singleShift] {
-        return shifts.map { singleShift(shift: $0) }.reversed()
-    }
 
 
     func subtractDays(from date: Date, days: Int) -> Date {
@@ -126,77 +117,6 @@ class ShiftDataManager: ObservableObject {
         let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
         return Calendar.current.date(from: components)!
     }
-    
-    func getAllShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> [singleShift] {
-        
-        var allShifts: [singleShift] = []
-        
-        for shift in shifts {
-            if shouldIncludeShift(shift, jobModel: jobModel) {
-                allShifts.append(singleShift(shift: shift))
-            }
-        }
-        
-        return allShifts.reversed()
-        
-    }
-    
-    func getShiftCount(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager) -> Int {
-        
-        
-        var shiftCount: Int = 0
-        
-        for shift in shifts {
-            if shouldIncludeShift(shift, jobModel: jobModel) {
-               shiftCount += 1
-            }
-        }
-        
-        return shiftCount
-        
-    }
-
-    func getLastShifts(from shifts: FetchedResults<OldShift>, jobModel: JobSelectionManager, dateRange: DateRange) -> [singleShift] {
-        // Group shifts by day for all cases
-        
-       // let currentJobShifts = shifts.filter { shouldIncludeShift($0, jobModel: jobModel) }
-        
-        let shiftsGroupedByDate: [Date: [OldShift]] = Dictionary(grouping: shifts) { shift in
-            return Calendar.current.startOfDay(for: shift.shiftStartDate!)
-        }
-
-        // Filter only the shifts in the desired range
-        let today = Date()
-        let startDate = Calendar.current.date(byAdding: dateRange.dateComponent, value: -dateRange.length, to: today)!
-        let filteredShifts = shiftsGroupedByDate.filter { $0.key >= startDate && $0.key <= today }
-        
-        let calendar = Calendar.current
-        var periodShifts: [singleShift] = []
-        
-        switch dateRange {
-        case .week, .month:
-            // Convert to singleShift
-            periodShifts = filteredShifts.flatMap { date, shifts in
-                shifts.map { singleShift(shift: $0) }
-            }
-        case .year:
-            // Group shifts by month
-            let shiftsGroupedByMonth: [Date: [OldShift]] = Dictionary(grouping: filteredShifts.flatMap { $0.value }) { shift in
-                return calendar.date(from: calendar.dateComponents([.year, .month], from: shift.shiftStartDate!))!
-            }
-            // Convert to singleShift
-            periodShifts = shiftsGroupedByMonth.map { date, shifts in
-                singleShift(aggregateShifts: shifts, startDate: date)
-            }
-        }
-
-        return periodShifts.sorted(by: { $0.shiftStartDate < $1.shiftStartDate })
-    }
-
-
-
-
-
 
     func getDateRange() -> ClosedRange<Date> {
         var now = Date()
@@ -237,19 +157,6 @@ class ShiftDataManager: ObservableObject {
     }
 
 
-    func getTotalPay<T: Payable>(from shifts: [T]) -> Double {
-        return shifts.reduce(0, { $0 + $1.totalPay })
-    }
-    
-    func getTotalHours<T: Payable>(from shifts: [T]) -> Double {
-        return shifts.reduce(0, { $0 + $1.hoursCount })
-    }
-    
-    func getTotalBreaksHours<T: Payable>(from shifts: [T]) -> Double {
-        return shifts.reduce(0, { $0 + $1.breakDuration })
-    }
-    
-    
    
     
     

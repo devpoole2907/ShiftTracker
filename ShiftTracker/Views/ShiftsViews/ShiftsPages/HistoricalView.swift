@@ -1,5 +1,5 @@
 //
-//  UpdatedHistoryPagesView.swift
+//  HistoricalView.swift
 //  ShiftTracker
 //
 //  Created by James Poole on 23/09/23.
@@ -10,9 +10,7 @@ import Charts
 import CoreData
 import Haptics
 
-// duplicated historypagesview due to a system bug (I think)
-
-struct UpdatedHistoryPagesView: View {
+struct HistoricalView: View {
     
     @Binding var navPath: NavigationPath
     
