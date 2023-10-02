@@ -8,6 +8,15 @@
 import SwiftUI
 import CoreData
 
+extension Array {
+    func chunked(into size: Int) -> [[Element]] {
+        stride(from: 0, to: count, by: size).map {
+            Array(self[$0 ..< Swift.min($0 + size, count)])
+        }
+    }
+}
+
+
 struct AllScheduledShiftsView: View {
     
     @EnvironmentObject var shiftStore: ShiftStore
@@ -18,18 +27,13 @@ struct AllScheduledShiftsView: View {
     
     @Binding var navPath: NavigationPath
     
-    var groupedShifts: [Date: [SingleScheduledShift]] {
-        
-        Dictionary(grouping: shiftStore.shifts, by: { $0.startDate.startOfTheDay() })
-    }
-    
     @Environment(\.colorScheme) var colorScheme
     
-    func formattedDate(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE, d MMM"
-        return dateFormatter.string(from: date)
-    }
+    static let dateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "EEEE, d MMM"
+            return formatter
+        }()
     
     var nextShiftDate: Date? {
         let currentDate = Date()
@@ -39,26 +43,32 @@ struct AllScheduledShiftsView: View {
             .min()
     }
     
+    private var allShiftsDict: [UUID: OldShift] {
+           Dictionary(uniqueKeysWithValues: allShifts.map { ($0.shiftID!, $0) })
+       }
+    
     @FetchRequest(
                 sortDescriptors: ShiftSort.default.descriptors,
                 animation: .default)
             private var allShifts: FetchedResults<OldShift>
 
     
-    
     var body: some View {
         
         let textColor: Color = colorScheme == .dark ? .white : .black
         
         
-        if !groupedShifts.isEmpty {
+        if !scheduleModel.isEmpty {
+            
+
+            
             ScrollViewReader { scrollProxy in
                 List {
-                    ForEach(groupedShifts.keys.sorted(by: <), id: \.self) { date in
+                    ForEach(scheduleModel.groupedShifts.keys.sorted(by: <), id: \.self) { date in
                         Section {
-                            ForEach(groupedShifts[date] ?? [], id: \.self) { shift in
+                            ForEach(scheduleModel.groupedShifts[date] ?? [], id: \.self) { shift in
                                 
-                                if let oldShift = allShifts.first(where: { $0.shiftID == shift.id }) {
+                                if let oldShift = allShiftsDict[shift.id] {
                                     NavigationLink(value: oldShift) {
                                         ScheduledShiftRow(shift: shift)
                                             .environmentObject(shiftStore)
@@ -91,7 +101,7 @@ struct AllScheduledShiftsView: View {
                                                             }
                             }
                             
-                        } header: { Text(formattedDate(date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? .cyan : textColor)
+                        } header: { Text(Self.dateFormatter.string(from: date)).textCase(.uppercase).bold().foregroundColor(Calendar.current.isDateInToday(date) ? .cyan : textColor)
                           
                           }
                             .listRowBackground(Color.clear)
@@ -110,7 +120,7 @@ struct AllScheduledShiftsView: View {
                     
                     print("Should scroll is \(scheduleModel.shouldScrollToNextShift)")
                 
-                    
+                   
                     if let nextShiftDate = nextShiftDate, scheduleModel.shouldScrollToNextShift {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             scrollProxy.scrollTo(nextShiftDate, anchor: .top)
@@ -134,6 +144,10 @@ struct AllScheduledShiftsView: View {
                 .background(.ultraThinMaterial)
                 
             }
+        
+          
+        
+        
         } else {
             ZStack {
                 Color.clear
@@ -147,6 +161,10 @@ struct AllScheduledShiftsView: View {
 
         }
     }
+    
+
+    
+    
 }
 
 extension Date {

@@ -180,6 +180,7 @@ class DetailViewModel: ObservableObject {
         shift.payMultiplier = payMultiplier
         shift.multiplierEnabled = multiplierEnabled
         shift.shiftNote = notes
+        shift.shiftID = shift.shiftID ?? UUID()
         shift.tags = NSSet(array: Array(selectedTags))
         
         shift.overtimeRate = overtimeRate

@@ -22,9 +22,23 @@ class SchedulingViewModel: ObservableObject {
     @Published var selectedShiftToEdit: ScheduledShift?
     
     
-    
+    @Published var groupedShifts: [Date: [SingleScheduledShift]] = [:]
+    @Published var isEmpty: Bool = false
     
     private let notificationManager = ShiftNotificationManager.shared
+    
+     func loadGroupedShifts(shiftStore: ShiftStore, scheduleModel: SchedulingViewModel) async {
+      
+            let newGroupedShifts = Dictionary(grouping: shiftStore.shifts, by: { $0.startDate.startOfTheDay() })
+            
+            let isEmpty = newGroupedShifts.isEmpty
+        
+            await MainActor.run {
+                scheduleModel.groupedShifts = newGroupedShifts
+                
+                scheduleModel.isEmpty = isEmpty
+            }
+        }
     
     func fetchScheduledShift(id: UUID, in viewContext: NSManagedObjectContext) -> ScheduledShift? {
         let request: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()

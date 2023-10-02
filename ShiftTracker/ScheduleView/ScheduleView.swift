@@ -129,11 +129,11 @@ struct ScheduleView: View {
                         print("Its nil")
                     }
                     
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0){
-                        print("heres the fucking date before passing to create shift \(dateSelected?.date)")
-                        
+                    Task {
+                        await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
                     }
+                    
+                    
                 }
                 
                 ScheduledShiftsView(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts).environmentObject(savedPublisher)
@@ -166,6 +166,12 @@ struct ScheduleView: View {
                         
                         shouldScrollToNextShift = true
                         
+                    }
+                
+                    .onAppear {
+                        Task {
+                            await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
+                        }
                     }
                 
             }

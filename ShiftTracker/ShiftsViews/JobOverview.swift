@@ -53,6 +53,7 @@ struct JobOverview: View {
             oldShift.taxedPay = oldShift.totalPay * 0.9
             oldShift.tax = 0.1
             oldShift.job = selectedJob
+            oldShift.shiftID = UUID()
 
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
 
