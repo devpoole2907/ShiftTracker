@@ -34,9 +34,11 @@ class SchedulingViewModel: ObservableObject {
             let isEmpty = newGroupedShifts.isEmpty
         
             await MainActor.run {
-                scheduleModel.groupedShifts = newGroupedShifts
-                
-                scheduleModel.isEmpty = isEmpty
+                withAnimation {
+                    scheduleModel.groupedShifts = newGroupedShifts
+                    
+                    scheduleModel.isEmpty = isEmpty
+                }
             }
         }
     

@@ -8,15 +8,6 @@
 import SwiftUI
 import CoreData
 
-extension Array {
-    func chunked(into size: Int) -> [[Element]] {
-        stride(from: 0, to: count, by: size).map {
-            Array(self[$0 ..< Swift.min($0 + size, count)])
-        }
-    }
-}
-
-
 struct AllScheduledShiftsView: View {
     
     @EnvironmentObject var shiftStore: ShiftStore
@@ -78,6 +69,10 @@ struct AllScheduledShiftsView: View {
                                         
                                         Button(role: .destructive) {
                                             shiftStore.deleteOldShift(oldShift, in: viewContext)
+                                            
+                                            Task {
+                                                await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
+                                            }
                                             
                                         } label: {
                                             Image(systemName: "trash")

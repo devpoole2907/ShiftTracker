@@ -10,9 +10,7 @@ import SwiftUI
 struct ScheduledShiftRowSwipeButtons: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var shiftStore: ShiftStore
-    
-    
-    
+
     @Environment(\.managedObjectContext) var viewContext
     
     @ObservedObject var shift: ScheduledShift
@@ -25,6 +23,11 @@ struct ScheduledShiftRowSwipeButtons: View {
                 scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
                 
             }
+            
+            Task {
+                await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
+            }
+            
         } label: {
             HStack {
                 if showText {
