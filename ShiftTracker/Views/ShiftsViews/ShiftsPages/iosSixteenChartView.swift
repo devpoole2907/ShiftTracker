@@ -15,10 +15,9 @@ struct iosSixteenChartView: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     
     var dateRange: ClosedRange<Date>
-    var shifts: [OldShift]
+    var shifts: [DayOrMonthAggregate]
     
-    @State private var isOverlayEnabled = true
-    
+    @State private var isOverlayEnabled: Bool = true
 
     var chartUnit: Calendar.Component {
         
@@ -59,39 +58,43 @@ struct iosSixteenChartView: View {
         return formatter
     }
     
- 
+  
 
     
     var body: some View{
         
         Chart {
             
-            ForEach(shifts, id: \.self) { shift in
+            ForEach(shifts) { bar in
                 
-                let yValue = shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
-
-                    BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
+                let yValue = shiftManager.statsMode == .earnings ? bar.totalEarnings : shiftManager.statsMode == .hours ? bar.totalHours : bar.totalBreaks
+                
+                
+                
+                BarMark(x: .value("Day", bar.date, unit: chartUnit),
                             y: .value(shiftManager.statsMode.description, yValue), width: barWidth
                     )
+                
+                    
+                
                     .foregroundStyle(shiftManager.statsMode.gradient)
                     .cornerRadius(shiftManager.statsMode.cornerRadius)
-                    
+                
                 if let chartSelection = historyModel.chartSelection {
                     
-                    let aggregateValue = historyModel.computeAggregateValue(for: chartSelection, in: shifts, statsMode: shiftManager.statsMode)
+                    
                     let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
-                    let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
+                    let shiftStartDateComponents = historyModel.chartSelectionComponent(date: bar.date)
                     
                     
                     
                     if chartSelectionDateComponents == shiftStartDateComponents {
                         
-                        let ruleMark = RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
-                    
-                        let annotationValue = historyModel.formatAggregate(aggregateValue: aggregateValue, shiftManager: shiftManager)
+                        let ruleMark = RuleMark(x: .value("Day", bar.date, unit: chartUnit))
                         
-                        let annotationView = ChartAnnotationView(value: annotationValue, date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
+                        let annotationValue = shiftManager.statsMode == .earnings ? bar.formattedEarnings : shiftManager.statsMode == .hours ? bar.formattedHours : bar.formattedBreaks
                         
+                        let annotationView = ChartAnnotationView(value: annotationValue, date: bar.formattedDate)
                         
                         
                         
@@ -100,31 +103,26 @@ struct iosSixteenChartView: View {
                                 
                                 annotationView.background{
                                     RoundedRectangle(cornerRadius: 12).foregroundStyle(Color(.systemGray6)).padding(.top, 2)}
-                                .onAppear {
-                                    print("annotationValue is \(annotationValue)")
-                                }
-                            
+                                
+                                
                                 
                             }
-                           
-                        
-                        
                     }
                 }
-                    
-                
-                
-                
-                
                 
             }
             
         }
             
-            // ios 16 has to show the scale and be slightly broken because of the overlay
             
-            .chartXScale(domain: dateRange, type: .linear)
             
+
+            // conditionally applies the scale
+      //  .customChartXScale(useScale: true, domain: dateRange)
+        
+        .chartXScale(domain: dateRange, type: .linear)
+        
+        
             
             .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
             
@@ -142,6 +140,8 @@ struct iosSixteenChartView: View {
                             }
                         }
                     }
+
+                                    
                     
                 } else {
                     AxisMarks(values: .stride(by: historyModel.historyRange == .week ? .day : .month, count: 1)) { value in
@@ -162,11 +162,6 @@ struct iosSixteenChartView: View {
                     }
                 }
             }
-            
-            
-            .padding(.vertical)
-            
-            .frame(minHeight: 200)
         
         // will leave this custom modifier here for if in future the issue is fixed.
         
@@ -209,11 +204,16 @@ struct iosSixteenChartView: View {
             }
             
             
+            .padding(.vertical)
+            
+            .frame(minHeight: 200)
+            
+         
+        
+        
+            
         }
-    
-    
             
     
         
 }
-

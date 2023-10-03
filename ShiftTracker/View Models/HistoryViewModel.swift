@@ -15,7 +15,9 @@ class HistoryViewModel: ObservableObject {
     
     @Published var historyRange: HistoryRange = .week
     @Published var selectedTab: Int = 0 // To keep track of the selected tab
-    @Published var groupedShifts: [GroupedShifts] = []
+    
+    @Published var aggregatedShifts: [AggregatedShift] = []
+    var lastKnownShiftCount: Int = 0
     
     
     let calendar = Calendar.current
@@ -34,28 +36,6 @@ class HistoryViewModel: ObservableObject {
     
     @Published var selection = Set<NSManagedObjectID>()
     
-    var formatCache: [String: String] = [:]
-
-    func formatAggregate(aggregateValue: Double, shiftManager: ShiftDataManager) -> String {
-        let key = "\(aggregateValue)_\(shiftManager.statsMode)"
-        if let cachedValue = formatCache[key] {
-            return cachedValue
-        }
-        
-        var formattedString: String
-        switch shiftManager.statsMode {
-        case .earnings:
-            formattedString = "$\(String(format: "%.2f", aggregateValue))"
-        case .hours:
-            formattedString = shiftManager.formatTime(timeInHours: aggregateValue)
-        default:
-            formattedString = shiftManager.formatTime(timeInHours: aggregateValue)
-        }
-
-        formatCache[key] = formattedString
-        return formattedString
-    }
-    
    lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
 
@@ -70,96 +50,13 @@ class HistoryViewModel: ObservableObject {
 
         return formatter
     }()
-    
-    func clearCache() {
-        self.cache = [:]
-        self.formatCache = [:]
-
-    }
-    // Cache Dictionary
-    var cache: [String: Double] = [:]
-
-    func computeAggregateValue(for selectedDate: Date, in shifts: [OldShift], statsMode: StatsMode) -> Double {
-        
-        let selectedDateStr = dateFormatter.string(from: selectedDate)
-        
-        // Check cache first
-        if let cachedValue = cache[selectedDateStr] {
-            
-            print("cached value found?")
-            
-            return cachedValue
-        }
-        
-        var aggregateValue = 0.0
-        
-        // Extract the relevant date components of the selected date
-        let selectedDateComponents = chartSelectionComponent(date: selectedDate)
-        
-        // Loop through all shifts to find the ones that match the selected date
-        for shift in shifts {
-            let shiftStartDateComponents = chartSelectionComponent(date: shift.shiftStartDate ?? Date())
-            if selectedDateComponents == shiftStartDateComponents {
-                if statsMode == .earnings {
-                    aggregateValue += shift.totalPay
-                } else if statsMode == .hours {
-                    aggregateValue += shift.duration / 3600.0
-                } else {
-                    aggregateValue += shift.breakDuration / 3600.0
-                }
-            }
-        }
-        
-        // Store result in cache
-        cache[selectedDateStr] = aggregateValue
-        
-        return aggregateValue
-    }
-    
-    func convertToGroupedShifts(from dictionary: [(key: Date, value: [OldShift])]) -> [GroupedShifts] {
-
-        var newGroupedShifts: [GroupedShifts] = []
-        
-        // Convert to use the GroupedShifts struct.
-        for (key, shifts) in dictionary {
-            var title: String
-            let dateFormatter = DateFormatter()
-            var startDate: Date = Date()
-            
-            switch historyRange {
-            case .week:
-                 startDate = key
-                let endDate = Calendar.current.date(byAdding: .day, value: 6, to: startDate)!
-                dateFormatter.dateFormat = "MMM d"
-                let startDateString = dateFormatter.string(from: startDate)
-                dateFormatter.dateFormat = "d"
-                let endDateString = dateFormatter.string(from: endDate)
-                title = "\(startDateString) - \(endDateString)"
-                
-            case .month:
-                 startDate = key
-                dateFormatter.setLocalizedDateFormatFromTemplate("MMMM yyyy")
-                title = dateFormatter.string(from: startDate)
-                
-            case .year:
-                 startDate = key
-                dateFormatter.setLocalizedDateFormatFromTemplate("yyyy")
-                title = dateFormatter.string(from: startDate)
-            }
-            
-            let newGroup = GroupedShifts(title: title, shifts: shifts, startDate: startDate)
-            newGroupedShifts.append(newGroup)
-        }
-        
-        return newGroupedShifts
-    }
 
     
     func getCurrentDateRangeString() -> String {
-        guard groupedShifts.count > 0 else { return "" }
-        guard selectedTab < groupedShifts.count else { return "" }
+        guard aggregatedShifts.count > 0 else { return "" }
+        guard selectedTab < aggregatedShifts.count else { return "" }
         
-        return groupedShifts[selectedTab].title
+        return aggregatedShifts[selectedTab].title
     }
     
     
@@ -220,7 +117,7 @@ class HistoryViewModel: ObservableObject {
     
     func forwardButtonAction() {
         
-        if selectedTab != groupedShifts.count - 1 {
+        if selectedTab != aggregatedShifts.count - 1 {
             withAnimation {
                 selectedTab = selectedTab + 1
             }
@@ -228,14 +125,118 @@ class HistoryViewModel: ObservableObject {
         
     }
     
+    func generateAggregatedShifts(from shifts: FetchedResults<OldShift>) -> [AggregatedShift] {
+        var aggregatedShifts: [AggregatedShift] = []
+
+   
+        let sortedShifts = shifts.sorted(by: { $0.shiftStartDate! < $1.shiftStartDate! })
+
+        let groupedShifts = Dictionary(grouping: sortedShifts) { (shift) -> Date in
+            return getGroupingKey(for: shift)
+        }
+        
+        
+
+
+        for (groupKey, groupShifts) in groupedShifts {
+
+            
+            let dailyOrMonthlyAggregates = calculateDayOrMonthAggregates(from: groupShifts)
+            
+            let totalHours = groupShifts.reduce(0) { $0 + ($1.duration / 3600.0) }
+            let totalBreaks = groupShifts.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
+            let totalEarnings = groupShifts.reduce(0) { $0 + $1.totalPay }
+
+          
+            let endDate = getEndDate(from: groupKey)
+            let aggregatedShift = AggregatedShift(startDate: groupKey, endDate: endDate, totalHours: totalHours, totalBreaks: totalBreaks, totalEarnings: totalEarnings, originalShifts: groupShifts, historyRange: historyRange, dailyOrMonthlyAggregates: dailyOrMonthlyAggregates)
+            
+            aggregatedShifts.append(aggregatedShift)
+        }
+
+        return aggregatedShifts.sorted(by: { $0.startDate < $1.startDate })
+    }
     
+    func updateAggregatedShift(afterDeleting shift: OldShift, at index: Int) {
+        let oldAggregatedShift = aggregatedShifts[index]
+        let newAggregatedShift = recalculateAggregatedShift(afterDeleting: shift, from: oldAggregatedShift)
+        aggregatedShifts[index] = newAggregatedShift
+    }
+
+    func recalculateAggregatedShift(afterDeleting shift: OldShift, from aggregatedShift: AggregatedShift) -> AggregatedShift {
+        
+        let remainingShifts = aggregatedShift.originalShifts.filter { $0 != shift }
+
+        
+        let totalHours = remainingShifts.reduce(0) { $0 + ($1.duration / 3600.0) }
+        let totalBreaks = remainingShifts.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
+        let totalEarnings = remainingShifts.reduce(0) { $0 + $1.totalPay }
+
+
+        let dayOrMonthAggregates = calculateDayOrMonthAggregates(from: remainingShifts)
+
+
+        let updatedAggregatedShift = AggregatedShift(startDate: aggregatedShift.startDate,
+                                                     endDate: aggregatedShift.endDate,
+                                                     totalHours: totalHours,
+                                                     totalBreaks: totalBreaks,
+                                                     totalEarnings: totalEarnings,
+                                                     originalShifts: remainingShifts,
+                                                     historyRange: aggregatedShift.historyRange,
+                                                     dailyOrMonthlyAggregates: dayOrMonthAggregates)
+        
+        return updatedAggregatedShift
+    }
     
+    func calculateDayOrMonthAggregates(from shifts: [OldShift]) -> [DayOrMonthAggregate] {
+        var dayOrMonthAggregates: [DayOrMonthAggregate] = []
+
+        
+        switch historyRange {
+        case .week, .month:
+            let dayGroupedShifts = Dictionary(grouping: shifts, by: { calendar.startOfDay(for: $0.shiftStartDate!) })
+            
+            for (day, dayShifts) in dayGroupedShifts {
+                let totalHours = dayShifts.reduce(0, { $0 + ($1.duration / 3600.0) })
+                let totalBreaks = dayShifts.reduce(0, { $0 + ($1.breakDuration / 3600.0) })
+                let totalEarnings = dayShifts.reduce(0, { $0 + $1.totalPay })
+                dayOrMonthAggregates.append(DayOrMonthAggregate(date: day, totalEarnings: totalEarnings, totalHours: totalHours, totalBreaks: totalBreaks, historyRange: historyRange, calendar: calendar))
+            }
+            
+        case .year:
+            let monthGroupedShifts = Dictionary(grouping: shifts, by: { (shift) -> Date in
+                let components = calendar.dateComponents([.year, .month], from: shift.shiftStartDate!)
+                return calendar.date(from: components)!
+            })
+            
+            for (month, monthShifts) in monthGroupedShifts {
+                let totalHours = monthShifts.reduce(0, { $0 + ($1.duration / 3600.0) })
+                let totalBreaks = monthShifts.reduce(0, { $0 + ($1.breakDuration / 3600.0) })
+                let totalEarnings = monthShifts.reduce(0, { $0 + $1.totalPay })
+                dayOrMonthAggregates.append(DayOrMonthAggregate(date: month, totalEarnings: totalEarnings, totalHours: totalHours, totalBreaks: totalBreaks, historyRange: historyRange, calendar: calendar))
+            }
+        }
+        
+        return dayOrMonthAggregates
+    }
+
+
+    
+    func getEndDate(from startDate: Date) -> Date {
+        let calendar = Calendar.current
+        switch historyRange {
+        case .week:
+            return calendar.date(byAdding: .day, value: 6, to: startDate) ?? startDate
+        case .month:
+            return calendar.date(byAdding: .month, value: 1, to: startDate)?.addingTimeInterval(-1) ?? startDate
+        case .year:
+            return calendar.date(byAdding: .year, value: 1, to: startDate)?.addingTimeInterval(-1) ?? startDate
+        }
+    }
+
     
     
 }
 
-struct GroupedShifts {
-    var title: String
-    var shifts: [OldShift]
-    var startDate: Date
-}
+
+

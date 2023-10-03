@@ -16,7 +16,9 @@ struct ChartView: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     
     var dateRange: ClosedRange<Date>
-    var shifts: [OldShift]
+    var shifts: [DayOrMonthAggregate]
+    
+  //  var index: Int
     
 
     var chartUnit: Calendar.Component {
@@ -65,57 +67,50 @@ struct ChartView: View {
         
         Chart {
             
-            ForEach(shifts, id: \.self) { shift in
+            ForEach(shifts) { bar in
                 
-                let yValue = shiftManager.statsMode == .earnings ? shift.totalPay : shiftManager.statsMode == .hours ? (shift.duration / 3600) : (shift.breakDuration / 3600.0)
-                    BarMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit),
+                let yValue = shiftManager.statsMode == .earnings ? bar.totalEarnings : shiftManager.statsMode == .hours ? bar.totalHours : bar.totalBreaks
+                
+                
+                
+                BarMark(x: .value("Day", bar.date, unit: chartUnit),
                             y: .value(shiftManager.statsMode.description, yValue), width: barWidth
                     )
+                
+                    
+                
                     .foregroundStyle(shiftManager.statsMode.gradient)
                     .cornerRadius(shiftManager.statsMode.cornerRadius)
+                
+                if let chartSelection = historyModel.chartSelection {
                     
-                    if let chartSelection = historyModel.chartSelection {
+                    
+                    let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
+                    let shiftStartDateComponents = historyModel.chartSelectionComponent(date: bar.date)
+                    
+                    
+                    
+                    if chartSelectionDateComponents == shiftStartDateComponents {
                         
-                        let aggregateValue = historyModel.computeAggregateValue(for: chartSelection, in: shifts, statsMode: shiftManager.statsMode)
-                        let chartSelectionDateComponents = historyModel.chartSelectionComponent(date: chartSelection)
-                        let shiftStartDateComponents = historyModel.chartSelectionComponent(date: shift.shiftStartDate)
+                        let ruleMark = RuleMark(x: .value("Day", bar.date, unit: chartUnit))
+                        
+                        let annotationValue = shiftManager.statsMode == .earnings ? bar.formattedEarnings : shiftManager.statsMode == .hours ? bar.formattedHours : bar.formattedBreaks
+                        
+                        let annotationView = ChartAnnotationView(value: annotationValue, date: bar.formattedDate)
                         
                         
                         
-                        if chartSelectionDateComponents == shiftStartDateComponents {
-                            
-                            let ruleMark = RuleMark(x: .value("Day", shift.shiftStartDate ?? Date(), unit: chartUnit))
-                        
-                            let annotationValue = historyModel.formatAggregate(aggregateValue: aggregateValue, shiftManager: shiftManager)
-                            
-                            let annotationView = ChartAnnotationView(value: annotationValue, date: dateFormatter.string(from: shift.shiftStartDate ?? Date()))
-                            
-                            
-                            
-                            
-                            ruleMark.opacity(0.5)
-                                .annotation(alignment: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)){
-                                    
-                                    annotationView.background{
-                                        RoundedRectangle(cornerRadius: 12).foregroundStyle(Color(.systemGray6)).padding(.top, 2)}
-                                    .onAppear {
-                                        print("annotationValue is \(annotationValue)")
-                                    }
+                        ruleMark.opacity(0.5)
+                            .annotation(alignment: .top, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)){
                                 
-                                    
-                                }
-                               
-                            
-                            
-                        }
+                                annotationView.background{
+                                    RoundedRectangle(cornerRadius: 12).foregroundStyle(Color(.systemGray6)).padding(.top, 2)}
+                                
+                                
+                                
+                            }
                     }
-                    
-                    
-                    
-                
-                
-                
-                
+                }
                 
             }
             

@@ -225,6 +225,8 @@
 		7CD8A3472A88A5650011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		7CD907482ABEB36200D2862D /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 7CD907472ABEB36200D2862D /* SwiftUIIntrospect */; };
+		7CF01D752ACBEE2F00EBC36C /* AggregatedShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */; };
+		7CF01D772ACBEE4600EBC36C /* DayOrMonthAggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -466,6 +468,8 @@
 		7CD8A3452A88A4B10011A1C0 /* JobChartWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JobChartWidgetExtension.entitlements; sourceTree = "<group>"; };
 		7CD8A3502A88AB1A0011A1C0 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		7CD8A35B2A88AB1A0011A1C0 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
+		7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregatedShift.swift; sourceTree = "<group>"; };
+		7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayOrMonthAggregate.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -628,8 +632,6 @@
 				7C11324D2ACA9CC000E983FD /* Types */,
 				1A1DEF9829C94495005EE9FB /* ShiftTrackerStoreKitConfig.storekit */,
 				1A1D470B29C58444001E5C15 /* ShiftTrackerWidgetExtension.entitlements */,
-				1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */,
-				7CAB87152A5878C900A08219 /* ShiftStore.swift */,
 				1A9855D229C55F8A003F512C /* ShiftTracker */,
 				1AD72AB129F7809900534342 /* ShiftTracker Watch Edition Watch App */,
 				7C1AA4552A75106700330A54 /* ShiftTrackerActivityTimer */,
@@ -659,6 +661,7 @@
 		1A9855D229C55F8A003F512C /* ShiftTracker */ = {
 			isa = PBXGroup;
 			children = (
+				7CF01D732ACBEE1200EBC36C /* Data */,
 				7C11323F2ACA98EF00E983FD /* ViewModifiers */,
 				7C11323C2ACA96FC00E983FD /* Views */,
 				7C2A18DA2AA025FF00518789 /* Managers */,
@@ -997,6 +1000,17 @@
 			path = JobChartWidget;
 			sourceTree = "<group>";
 		};
+		7CF01D732ACBEE1200EBC36C /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */,
+				7CAB87152A5878C900A08219 /* ShiftStore.swift */,
+				7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */,
+				7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		BF8191402A5A70E70079E449 /* ThemeViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -1300,6 +1314,7 @@
 				7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */,
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
+				7CF01D752ACBEE2F00EBC36C /* AggregatedShift.swift in Sources */,
 				7C0AC12E2A88EBA10016456E /* ShiftToChart.swift in Sources */,
 				1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
@@ -1318,6 +1333,7 @@
 				BF857D972A6A21EE00D02C5C /* CustomCheckbox.swift in Sources */,
 				7C1BB6842AA8376E00957BF5 /* ChartAnnotationView.swift in Sources */,
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
+				7CF01D772ACBEE4600EBC36C /* DayOrMonthAggregate.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
 				7C11324A2ACA9C7600E983FD /* CustomAnimatedSymbolModifier.swift in Sources */,

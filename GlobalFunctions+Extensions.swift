@@ -436,3 +436,17 @@ extension Date {
         }
     
 }
+
+struct GraphedShift: Hashable {
+    
+    var shiftID: UUID
+    var earnings: Double
+    var duration: TimeInterval
+    var breakDuration: TimeInterval
+    var date: Date
+    
+}
+
+
+
+
