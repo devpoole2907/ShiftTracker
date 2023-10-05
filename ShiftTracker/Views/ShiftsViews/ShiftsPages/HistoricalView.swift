@@ -324,6 +324,26 @@ struct HistoricalView: View {
         
         .onAppear {
             
+            // this is bad code. I am not proud of it. But it will work.
+            
+            if shiftManager.showModePicker == false {
+                // we must have been in detail view if its false.
+                
+                
+                DispatchQueue.global(qos: .background).async {
+                    
+                    let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts)
+                    
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            historyModel.aggregatedShifts = newAggregatedShifts
+                            
+                        }
+                                
+                    }
+                }
+            }
+            
             appeared.toggle()
             
             if historyModel.lastKnownShiftCount != shifts.count {

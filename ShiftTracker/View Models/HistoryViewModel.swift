@@ -8,7 +8,6 @@
 import Foundation
 import CoreData
 import SwiftUI
-import Combine
 
 class HistoryViewModel: ObservableObject {
     
@@ -24,8 +23,6 @@ class HistoryViewModel: ObservableObject {
     
     @Published var chartSelection: Date? = nil
     @Published var visibleShifts: [OldShift]? = nil
-    
-    var cancellables: Set<AnyCancellable> = []
     
     @Published var selectedDate: Date? = nil
     @Published var aggregateValue: Double = 0.0
