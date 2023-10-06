@@ -24,10 +24,8 @@ struct ChartView: View {
     var chartUnit: Calendar.Component {
         
         switch historyModel.historyRange {
-        case .week:
+        case .week, .month:
             return .weekday
-        case .month:
-            return .weekOfMonth
         case .year:
             return .month
         }
@@ -39,7 +37,7 @@ struct ChartView: View {
         case .week:
             return 25
         case .month:
-            return 15
+            return 8
         case .year:
             return 15
         }
@@ -65,9 +63,7 @@ struct ChartView: View {
     
     var body: some View{
         
-        Chart {
-            
-            ForEach(shifts) { bar in
+        Chart(shifts) { bar in
                 
                 let yValue = shiftManager.statsMode == .earnings ? bar.totalEarnings : shiftManager.statsMode == .hours ? bar.totalHours : bar.totalBreaks
                 
@@ -94,6 +90,8 @@ struct ChartView: View {
                         
                         let ruleMark = RuleMark(x: .value("Day", bar.date, unit: chartUnit))
                         
+                       
+                        
                         let annotationValue = shiftManager.statsMode == .earnings ? bar.formattedEarnings : shiftManager.statsMode == .hours ? bar.formattedHours : bar.formattedBreaks
                         
                         let annotationView = ChartAnnotationView(value: annotationValue, date: bar.formattedDate)
@@ -112,7 +110,7 @@ struct ChartView: View {
                     }
                 }
                 
-            }
+            
             
         }
             
@@ -128,20 +126,12 @@ struct ChartView: View {
             
             .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
             
-            .chartXAxis {
+           .chartXAxis {
                 
                 
                 if historyModel.historyRange == .month {
                     
-                
-                    AxisMarks(values: .stride(by: .day, count: 1)) { value in
-                        if let date = value.as(Date.self) {
-                            let components = Calendar.current.dateComponents([.day], from: date)
-                            if let day = components.day, (day - 1) % 7 == 0 {
-                                AxisValueLabel(dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
-                            }
-                        }
-                    }
+                    AxisMarks(preset: .automatic)
 
                                     
                     
@@ -164,7 +154,7 @@ struct ChartView: View {
                     }
                 }
             }
-            
+        
             
             .padding(.vertical)
             

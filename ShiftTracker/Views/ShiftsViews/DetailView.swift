@@ -127,8 +127,8 @@ struct DetailView: View {
     
     var body: some View {
         
-        var timeDigits = digitsFromTimeString(timeString: viewModel.adaptiveShiftDuration.stringFromTimeInterval())
-        var breakDigits = shift != nil ? digitsFromTimeString(timeString: viewModel.totalBreakDuration(for: (shift!.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval()) : digitsFromTimeString(timeString: viewModel.totalTempBreakDuration(for: viewModel.tempBreaks).stringFromTimeInterval())
+        let timeDigits = digitsFromTimeString(timeString: viewModel.adaptiveShiftDuration.stringFromTimeInterval())
+        let breakDigits = shift != nil ? digitsFromTimeString(timeString: viewModel.totalBreakDuration(for: (shift!.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval()) : digitsFromTimeString(timeString: viewModel.totalTempBreakDuration(for: viewModel.tempBreaks).stringFromTimeInterval())
         
         let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
         
@@ -161,12 +161,12 @@ struct DetailView: View {
                                     .fill(Material.ultraThinMaterial)
                                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                                     .overlay {
-                                        //if colorScheme == .light {
+                                 
                                         RoundedRectangle(cornerRadius: 12)
                                             .stroke(LinearGradient(colors: gradientColors,
                                                                    startPoint: .topLeading,
                                                                    endPoint: .bottomTrailing))
-                                        // }
+                                
                                     }
                                     .frame(width: UIScreen.main.bounds.width - 60)
                                 VStack(alignment: .center, spacing: 5) {
@@ -216,7 +216,7 @@ struct DetailView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding(.bottom, 5)
                                     
-                                    // }
+                              
                                     
                                     Divider().frame(maxWidth: 200)
                                     
@@ -232,7 +232,7 @@ struct DetailView: View {
                                         }
                                     }
                                     .foregroundStyle(themeManager.timerColor)
-                                    //.frame(width: 250, height: 70)
+                                 
                                     .frame(maxWidth: .infinity)
                                     .padding(.bottom,
                                              
@@ -259,7 +259,7 @@ struct DetailView: View {
                                             }
                                         }
                                         .foregroundStyle(themeManager.breaksColor)
-                                        //.frame(width: 250, height: 70)
+                           
                                         .frame(maxWidth: .infinity)
                                         .padding(.bottom)
                                         
@@ -418,14 +418,10 @@ struct DetailView: View {
                                                 .disabled(!viewModel.isEditing)
                                                 .focused($focusedField, equals: .field2)
                                                 .keyboardType(.decimalPad)
-                                            //  .padding(.horizontal)
+                           
                                                 .padding(.vertical, 5)
                                                 .multilineTextAlignment(.trailing)
-                                            //  .frame(maxWidth: 70)
-                                            //     .glassModifier(cornerRadius: 20)
-                                            
-                                            
-                                            
+                                      
                                         }
                                         
                                         Toggle(isOn: $viewModel.addTipsToTotal) {

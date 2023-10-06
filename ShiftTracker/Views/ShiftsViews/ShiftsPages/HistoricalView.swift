@@ -85,7 +85,6 @@ struct HistoricalView: View {
                                             }.padding(.top, 5)
                                                 .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
                                             
-                                            let shifts = historyModel.aggregatedShifts[index].originalShifts
                                             let barMarks = historyModel.aggregatedShifts[index].dailyOrMonthlyAggregates
                                             
                                             // gotta do it this way, for some reason doing the check in the chartView fails and builds anyway for ios 16 causing a crash
@@ -255,6 +254,9 @@ struct HistoricalView: View {
                         .frame(width: 165)
                         .frame(maxHeight: 30)
                     
+                        .disabled(editMode?.wrappedValue.isEditing ?? false)
+                        .opacity(editMode!.wrappedValue.isEditing ? 0.5 : 1.0)
+                    
                     
                     
                     
@@ -326,44 +328,31 @@ struct HistoricalView: View {
             
             // this is bad code. I am not proud of it. But it will work.
             
-            if shiftManager.showModePicker == false {
-                // we must have been in detail view if its false.
+            DispatchQueue.global(qos: .background).async {
                 
+                let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts)
                 
-                DispatchQueue.global(qos: .background).async {
-                    
-                    let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts)
-                    
-                    DispatchQueue.main.async {
-                        withAnimation {
-                            historyModel.aggregatedShifts = newAggregatedShifts
-                            
-                        }
-                                
-                    }
-                }
-            }
-            
-            appeared.toggle()
-            
-            if historyModel.lastKnownShiftCount != shifts.count {
-                
-                historyModel.lastKnownShiftCount = shifts.count
-                
-                DispatchQueue.global(qos: .background).async {
-                    
-                    let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts)
-                    
-                    DispatchQueue.main.async {
-                        withAnimation {
-                            historyModel.aggregatedShifts = newAggregatedShifts
-                            
-                        }
-                        historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
+                DispatchQueue.main.async {
+                    withAnimation {
+                        historyModel.aggregatedShifts = newAggregatedShifts
+                        
                     }
                 }
                 
+                print("appeared is \(appeared)")
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    // only change selected tab to first one if this is the first appearance, or the currently selected tab is no longer within the range of the newAggregatedShifts
+                    if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || appeared == false {
+                        historyModel.selectedTab = newAggregatedShifts.count - 1
+                        print("selected tab set to last one")
+                    }
+                }
             }
+
+            
+         
+
 
             withAnimation {
                 shiftManager.showModePicker = true
@@ -371,6 +360,7 @@ struct HistoricalView: View {
             
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                appeared = true
                 if historyModel.aggregatedShifts.count < 1 {
                     dismiss()
                 }
