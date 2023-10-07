@@ -41,7 +41,7 @@ struct PurchaseSuccessView: View {
                 
                 ToolbarItem(placement: .navigationBarLeading) {
                     
-                    CloseButton(action: {dismiss()})
+                    CloseButton()
                     
                     
                 }

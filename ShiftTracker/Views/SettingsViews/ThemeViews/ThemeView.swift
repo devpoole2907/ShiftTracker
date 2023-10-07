@@ -148,7 +148,7 @@ struct ThemeView: View {
                  }*/
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton(action: { dismiss() })
+                    CloseButton()
                 }
                 
             }

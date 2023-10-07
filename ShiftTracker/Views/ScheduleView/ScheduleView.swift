@@ -25,7 +25,7 @@ struct ScheduleView: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var shiftStore: ShiftStore
     
-    @StateObject var savedPublisher = ShiftSavedPublisher() // need to look at this
+ 
     
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
@@ -136,7 +136,7 @@ struct ScheduleView: View {
                     
                 }
                 
-                ScheduledShiftsView(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts).environmentObject(savedPublisher)
+                ScheduledShiftsView(dateSelected: $dateSelected, navPath: $navPath, displayedOldShifts: $displayedOldShifts)
                     .environmentObject(shiftStore)
                     .environmentObject(scheduleModel)
                 
@@ -159,7 +159,7 @@ struct ScheduleView: View {
       
             
             if showAllScheduledShiftsView {
-                AllScheduledShiftsView(navPath: $navPath).environmentObject(savedPublisher)
+                AllScheduledShiftsView(navPath: $navPath)
                     .animation(.easeInOut(duration: 1.0), value: showAllScheduledShiftsView)
                     .onDisappear{
                         

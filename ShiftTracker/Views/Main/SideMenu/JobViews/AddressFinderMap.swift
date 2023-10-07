@@ -231,9 +231,7 @@ struct AddressFinderMap: View {
                 
                     .toolbar{
                         ToolbarItem(placement: .topBarTrailing) {
-                            CloseButton {
-                                dismiss()
-                            }
+                            CloseButton()
                         }
                         
                         ToolbarItem(placement: .topBarLeading) {

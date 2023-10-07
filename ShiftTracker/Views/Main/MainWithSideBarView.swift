@@ -152,7 +152,8 @@ struct MainWithSideBarView: View {
                             
                             
                             
-                        }.tag(Tab.timesheets)
+                        }.ignoresSafeArea(.keyboard)
+                            .tag(Tab.timesheets)
                             
                         
                         
@@ -323,6 +324,13 @@ struct MainWithSideBarView: View {
             
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarHidden(true)
+                
+                .toolbar{
+                    ToolbarItemGroup(placement: .keyboard){
+                        
+                        KeyboardDoneButton()
+                    }
+                }
             
         }
           

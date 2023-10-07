@@ -17,7 +17,6 @@ struct ScheduledShiftsView: View {
     
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
-    @EnvironmentObject var savedPublisher: ShiftSavedPublisher
     @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
@@ -56,7 +55,7 @@ struct ScheduledShiftsView: View {
                     .navigationDestination(for: OldShift.self) { shift in
                        
                        
-                       DetailView(shift: shift, navPath: $navPath).environmentObject(savedPublisher)
+                       DetailView(shift: shift, navPath: $navPath)
                        
                        
                    }

@@ -97,8 +97,6 @@ struct ShiftsList: View {
                 .onSubmit(of: .search, sortSelection.fetchShifts)
                
             .tint(Color.gray)
-           // .scrollContentBackground(.hidden)
-            
             .scrollContentBackground(.hidden)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
           
@@ -160,7 +158,6 @@ struct ShiftsList: View {
             }
                 
                 TagSortView(selectedFilters: $sortSelection.selectedFilters)
-                //.padding(.top)
                     .frame(width: UIScreen.main.bounds.width - 20)
                     .frame(maxHeight: 40)
                     .padding(5)
@@ -177,31 +174,11 @@ struct ShiftsList: View {
                 
             }
         
-    }
-        
-        
-        
-        
+        }.ignoresSafeArea(.keyboard)
+
         .navigationBarTitle(sortSelection.selectedSort.name)
-        
-        
-            .toolbar{
-                
-                ToolbarItemGroup(placement: .keyboard){
-                    
-                    Spacer()
-                    
-                    Button("Done"){
-                        
-                        hideKeyboard()
-                        
-                    }
-                }
-                
+
             
-                
-                
-            }
         
     }
     
@@ -220,22 +197,5 @@ struct ShiftsList: View {
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
-    }
-    
-    
-    
-    
-}
-
-
-
-
-
-
-class ShiftSavedPublisher: ObservableObject {
-    let shiftChanged = PassthroughSubject<Void, Never>()
-
-    func changedShift() {
-        shiftChanged.send()
     }
 }

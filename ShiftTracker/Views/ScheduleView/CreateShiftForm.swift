@@ -536,9 +536,7 @@ struct CreateShiftForm: View {
                 .toolbar{
                     
                     ToolbarItem(placement: .navigationBarTrailing){
-                        CloseButton{
-                            dismiss()
-                        }
+                        CloseButton()
                     }
                 }
                 .navigationTitle(scheduledShift == nil ? "Schedule" : "Edit Schedule")

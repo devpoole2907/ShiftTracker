@@ -93,9 +93,7 @@ struct BreakInputView: View {
     
         .toolbar{
             ToolbarItem(placement: .navigationBarTrailing) {
-                CloseButton {
-                    dismiss()
-                }
+                CloseButton()
             }
         }
             

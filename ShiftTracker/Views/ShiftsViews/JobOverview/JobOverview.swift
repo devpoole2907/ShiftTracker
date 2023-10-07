@@ -19,13 +19,11 @@ struct JobOverview: View {
     
     @State private var isShareSheetShowing = false
     
-    @State private var jobIcon: String = "briefcase.fill"
     @State private var showLargeIcon = true
     @State private var appeared: Bool = false // for icon tap
     @State private var isEditJobPresented: Bool = false
     
     @State private var job: Job?
-    @State private var jobName: String = "Summary"
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -116,8 +114,6 @@ struct JobOverview: View {
         _navPath = navPath
         
         _job = State(initialValue: job)
-        _jobIcon = State(initialValue: job?.icon ?? "briefcase.fill")
-        _jobName = State(initialValue: job?.name ?? "Summary")
         
         
         UITableView.appearance().backgroundColor = UIColor.clear
@@ -135,109 +131,15 @@ struct JobOverview: View {
     
     var body: some View {
         
-        let textColor: Color = colorScheme == .dark ? .white : .black
-        
         let jobColor = Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0))
         
         
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
                 List{
-                    
-                   
-                    VStack(alignment: .leading, spacing: 0){
-                        HStack(spacing: 8){
-                            VStack(spacing: 0) {
-                                
-                                StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
-                                    .environmentObject(shiftManager)
-                                
-                                Spacer()
-                                
-                                ChartSquare(shifts: weeklyShifts)
-                                    .environmentObject(shiftManager)
-                                
-                            }
-                            
-                            
-                            ExportSquare(totalShifts: shifts.count, action: {
-                                activeSheet = .configureExportSheet
-                            })
-                            .environmentObject(shiftManager)
-                            
-                            
-                            
-                            
-                        }
-                    }.frame(maxWidth: .infinity)
-                        .padding(.horizontal, 12)
-                        .frame(maxHeight: 220)
-                    
-                    
-                    
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(.init(top: 20, leading: 0, bottom: 30, trailing: 0))
-                    
-                    
-                   
-                    Section{
-                        
-                        ForEach(lastTenShifts, id: \.self) { shift in
-                            
-                            NavigationLink(value: shift) {
-                                ShiftDetailRow(shift: shift)
-                            }
-                            
-                        
-                   
-                            
-                            .swipeActions {
-                                
-                                Button(role: .destructive) {
-                                    shiftStore.deleteOldShift(shift, in: viewContext)
-                                    shiftManager.shiftAdded.toggle()
-                                    
-                                } label: {
-                                    Image(systemName: "trash")
-                                }
-                                
-                            }
-                            
-                            
-                        }
-                        
-                        
-                    } header: {
-                        
-                        NavigationLink(value: 1) {
-                            
-                            Text("Latest Shifts")
-                                .textCase(nil)
-                                .foregroundStyle(textColor)
-                                .padding(.leading, job != nil ? -12 : -4)
-                                .font(.title2)
-                                .bold()
-                            
-                            Image(systemName: "chevron.right")
-                                .bold()
-                                .foregroundStyle(.gray)
-                            Spacer()
-                            
-                        }
-                    
-                        
-                        
-                        
-                        
-                    }
-                    
-                    .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-                    
-                    
-                    
-                    
-                    
+                statsSection
+
+                    recentShiftsSection
                     .listRowInsets(.init(top: 10, leading: job != nil ? 20 : 10, bottom: 10, trailing: 20))
                     
                
@@ -245,38 +147,9 @@ struct JobOverview: View {
                     
                 }.scrollContentBackground(.hidden)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                
-                
                     .customSectionSpacing()
                 
-                VStack{
-                    
-                    HStack(spacing: 10){
-                        
-                        
-                        
-                        Button(action: {
-                            withAnimation(.spring) {
-                                activeSheet = .addShiftSheet
-                            }
-                        }){
-                            
-                            Image(systemName: "plus").customAnimatedSymbol(value: $activeSheet)
-                                .bold()
-                            
-                        }.disabled(job == nil)
-                        
-                        
-                        
-                        
-                    }.padding()
-                        .glassModifier(cornerRadius: 20)
-                    
-                        .padding()
-                    // .shadow(radius: 1)
-                    
-                    Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 50 : 40)
-                }
+                floatingButtons
                 
                 .onChange(of: geo.frame(in: .global).minY) { minY in
                     
@@ -285,7 +158,7 @@ struct JobOverview: View {
                     }
                 }
                 
-            }
+            }.ignoresSafeArea(.keyboard)
             
             .navigationDestination(for: OldShift.self) { shift in
                 DetailView(shift: shift, navPath: $navPath)
@@ -301,27 +174,18 @@ struct JobOverview: View {
                 
                 if value == 1 {
                     ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection)
-                    
                         .onAppear {
                             withAnimation {
                                 shiftManager.showModePicker = false
                             }
                         }
-                    
                 } else if value == 2 {
-                    
-                    
                     HistoricalView(navPath: $navPath)
-                    
-                    
-                    
-                    
                 }
                 
             }
             
         }
-        
         .sheet(item: $activeSheet) { sheet in
             
             switch sheet {
@@ -365,7 +229,8 @@ struct JobOverview: View {
                 }
                 
             case .symbolSheet:
-                JobIconPicker(selectedIcon: $jobIcon, iconColor: jobColor)
+                JobIconPicker()
+                    .environmentObject(JobViewModel(job: self.job))
                     .environment(\.managedObjectContext, viewContext)
                     .presentationDetents([ .medium, .fraction(0.7)])
                     .presentationDragIndicator(.visible)
@@ -376,11 +241,6 @@ struct JobOverview: View {
             
             
         }
-        
-        
-        
-        
-        
         .onAppear {
             navigationState.gestureEnabled = true
             
@@ -404,35 +264,13 @@ struct JobOverview: View {
                 
             }
         }
-        
-        
-        
-        
-        
-        .navigationTitle($jobName)
-        
-        .onChange(of: jobName) { _ in
-            
-            // inefficient to change it every time, look into combine debouncing in future
-            
-            saveJobName()
-            
-            
-            
-        }
-        
-        .onChange(of: jobIcon) { _ in
-            
-            saveJobIcon()
-            
-        }
+
+        .navigationTitle(job?.name ?? "Summary")
+
         
         .onChange(of: jobSelectionViewModel.selectedJobUUID) { jobUUID in
             
             self.job = jobSelectionViewModel.fetchJob(with: jobUUID, in: viewContext)
-            
-            self.jobName = job?.name ?? "Summary"
-            self.jobIcon = job?.icon ?? "briefcase.fill"
         }
         
         .fullScreenCover(isPresented: $isEditJobPresented) {
@@ -467,25 +305,11 @@ struct JobOverview: View {
             
             if !showLargeIcon && job != nil {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Menu{
-                        Button(action: {
-                            activeSheet = .symbolSheet
-                        }){
-                            HStack {
-                                Text("Change Icon")
-                                Image(systemName: job?.icon ?? "briefcase.fill")
-                            }
-                        }
-                    } label: {
-                        NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: jobIcon, color: jobColor).frame(maxHeight: 25)
-                    }
+                        NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: job?.icon ?? "", color: jobColor).frame(maxHeight: 25)
                 }
             }
             
             ToolbarTitleMenu {
-                if job != nil {
-                    RenameButton()
-                }
                 
                 Button(action: {
                     isEditJobPresented.toggle()
@@ -500,6 +324,10 @@ struct JobOverview: View {
                 
             }
             
+            ToolbarItem(placement: .keyboard){
+                KeyboardDoneButton()
+            }
+            
             
         }
         
@@ -510,43 +338,130 @@ struct JobOverview: View {
         showLargeIcon = minY > 100  // adjust this threshold as needed
     }
     
-    private func saveJobName() {
-        guard let job = jobSelectionViewModel.fetchJob(in: viewContext) else {
-            // Handle job fetching failure
-            return
+    var recentShiftsSection: some View {
+        
+        let textColor: Color = colorScheme == .dark ? .white : .black
+        
+        return Section{
+            
+            ForEach(lastTenShifts, id: \.self) { shift in
+                
+                NavigationLink(value: shift) {
+                    ShiftDetailRow(shift: shift)
+                }
+                
+            
+       
+                
+                .swipeActions {
+                    
+                    Button(role: .destructive) {
+                        shiftStore.deleteOldShift(shift, in: viewContext)
+                        shiftManager.shiftAdded.toggle()
+                        
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    
+                }
+                
+                
+            }
+            
+            
+        } header: {
+            
+            NavigationLink(value: 1) {
+                
+                Text("Latest Shifts")
+                    .textCase(nil)
+                    .foregroundStyle(textColor)
+                    .padding(.leading, job != nil ? -12 : -4)
+                    .font(.title2)
+                    .bold()
+                
+                Image(systemName: "chevron.right")
+                    .bold()
+                    .foregroundStyle(.gray)
+                Spacer()
+                
+            }
+        
+            
+            
+            
+            
         }
         
-        job.name = jobName
-        
-        do {
-            try viewContext.save()
+        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+    }
+    
+    var floatingButtons: some View {
+        VStack{
             
-            jobSelectionViewModel.updateJob(job)
+            HStack(spacing: 10){
+                
+                
+                
+                Button(action: {
+                    withAnimation(.spring) {
+                        activeSheet = .addShiftSheet
+                    }
+                }){
+                    
+                    Image(systemName: "plus").customAnimatedSymbol(value: $activeSheet)
+                        .bold()
+                    
+                }.disabled(job == nil)
+                
+                
+                
+                
+            }.padding()
+                .glassModifier(cornerRadius: 20)
             
+                .padding()
             
-        } catch {
-            // Handle save error
+            Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 50 : 40)
         }
     }
     
-    private func saveJobIcon() {
-        guard let job = jobSelectionViewModel.fetchJob(in: viewContext) else {
-            // Handle job fetching failure
-            return
-        }
+    var statsSection: some View {
+        VStack(alignment: .leading, spacing: 0){
+            HStack(spacing: 8){
+                VStack(spacing: 0) {
+                    
+                    StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
+                        .environmentObject(shiftManager)
+                    
+                    Spacer()
+                    
+                    ChartSquare(shifts: weeklyShifts)
+                        .environmentObject(shiftManager)
+                    
+                }
+                
+                
+                ExportSquare(totalShifts: shifts.count, action: {
+                    activeSheet = .configureExportSheet
+                })
+                .environmentObject(shiftManager)
+                
+                
+                
+                
+            }
+        }.frame(maxWidth: .infinity)
+            .padding(.horizontal, 12)
+            .frame(maxHeight: 220)
         
-        job.icon = jobIcon
         
-        do {
-            try viewContext.save()
-            
-            jobSelectionViewModel.updateJob(job)
-            
-            
-        } catch {
-            // Handle save error
-        }
+        
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .listRowInsets(.init(top: 20, leading: 0, bottom: 30, trailing: 0))
     }
+    
     
 }
 

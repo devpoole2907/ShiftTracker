@@ -196,20 +196,9 @@ struct AddTagView: View {
             
             .toolbar {
                 
-                ToolbarItem{
-                    
-                    CloseButton(action: {dismiss()})
+                ToolbarItem(placement: .topBarTrailing){
+                    CloseButton()
                 }
-                ToolbarItemGroup(placement: .keyboard){
-                    Spacer()
-                    
-                    Button("Done"){
-                        
-                        hideKeyboard()
-                        
-                    }
-                }
-                
             }
             
         }

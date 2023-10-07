@@ -267,9 +267,7 @@ struct ThemesGuideView: View {
         .toolbar{
             
             ToolbarItem(placement: .navigationBarTrailing){
-                CloseButton(action: {
-                    dismiss()
-                })
+                CloseButton()
             }
             
             

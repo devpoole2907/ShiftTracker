@@ -164,6 +164,9 @@
 		7C4D83042A8B6C76006D54F9 /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
 		7C5243792ABE70FE00356B6C /* HistoricalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5243782ABE70FE00356B6C /* HistoricalView.swift */; };
 		7C5F735E2ABA59CF00F698A1 /* ThemesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */; };
+		7C6218582AD0BA4E00E67245 /* JobForShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */; };
+		7C62185A2AD0BCBF00E67245 /* EstTaxPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */; };
+		7C62185C2AD0C3D800E67245 /* JobViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C62185B2AD0C3D700E67245 /* JobViewModel.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
 		7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B52AC1624D00D87140 /* MockupContentView.swift */; };
 		7C7B46B82AC166AB00D87140 /* MockupSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */; };
@@ -200,6 +203,7 @@
 		7CAC9B742A762AAC0048F818 /* LockscreenWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */; };
 		7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B752A762D410048F818 /* ShiftEntry.swift */; };
 		7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
+		7CAF46BE2AD0293300584749 /* KeyboardDoneButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */; };
 		7CBEB11C2AC02B4D002DC7D6 /* MockupLockscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */; };
 		7CC2C6C22AC6AC9100F15E74 /* RepeatEndPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */; };
 		7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */; };
@@ -420,6 +424,9 @@
 		7C4D82FE2A8B6A29006D54F9 /* SelectJobIntentExtent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelectJobIntentExtent.entitlements; sourceTree = "<group>"; };
 		7C5243782ABE70FE00356B6C /* HistoricalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalView.swift; sourceTree = "<group>"; };
 		7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesList.swift; sourceTree = "<group>"; };
+		7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobForShiftView.swift; sourceTree = "<group>"; };
+		7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstTaxPicker.swift; sourceTree = "<group>"; };
+		7C62185B2AD0C3D700E67245 /* JobViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobViewModel.swift; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
 		7C7B46B52AC1624D00D87140 /* MockupContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupContentView.swift; sourceTree = "<group>"; };
 		7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupSideMenu.swift; sourceTree = "<group>"; };
@@ -448,6 +455,7 @@
 		7CAC9B712A7628B20048F818 /* ShiftTrackerLockscreenPayWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerLockscreenPayWidgets.swift; sourceTree = "<group>"; };
 		7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockscreenWidgetProvider.swift; sourceTree = "<group>"; };
 		7CAC9B752A762D410048F818 /* ShiftEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftEntry.swift; sourceTree = "<group>"; };
+		7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDoneButton.swift; sourceTree = "<group>"; };
 		7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupLockscreenView.swift; sourceTree = "<group>"; };
 		7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatEndPicker.swift; sourceTree = "<group>"; };
 		7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftRowSwipeButtons.swift; sourceTree = "<group>"; };
@@ -722,6 +730,7 @@
 				1AECCC5E29E0BD2E00D879FE /* JobOverview */,
 				1A4E610C29C82DF9008AC8ED /* DetailView.swift */,
 				1A8D4ADD2A4EFC6000EEB334 /* ShiftDetailRow.swift */,
+				7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */,
 			);
 			path = ShiftsViews;
 			sourceTree = "<group>";
@@ -756,6 +765,8 @@
 				7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */,
 				7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */,
 				7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */,
+				7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */,
+				7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -885,6 +896,7 @@
 				7C2A18E72AA0278A00518789 /* NavigationState.swift */,
 				7C2C2F842AA6CB0A0074E32E /* SettingsViewModel.swift */,
 				7C1BB6852AA838F300957BF5 /* HistoryViewModel.swift */,
+				7C62185B2AD0C3D700E67245 /* JobViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -1305,6 +1317,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C62185A2AD0BCBF00E67245 /* EstTaxPicker.swift in Sources */,
 				1A8D4ADC2A4EFAC100EEB334 /* ShiftsList.swift in Sources */,
 				1A1DEC9729F101040002D9E4 /* ChartView.swift in Sources */,
 				7CD8A3222A882EE70011A1C0 /* TagFilter.swift in Sources */,
@@ -1340,11 +1353,13 @@
 				7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */,
 				7CC2C6C22AC6AC9100F15E74 /* RepeatEndPicker.swift in Sources */,
 				7C1132422ACA9B9200E983FD /* CustomListSectionSpacingModifier.swift in Sources */,
+				7C62185C2AD0C3D800E67245 /* JobViewModel.swift in Sources */,
 				7C1AA4662A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */,
 				7C0AC1322A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */,
 				7C1132442ACA9BE000E983FD /* CustomDisableListSelectionModifier.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift in Sources */,
+				7CAF46BE2AD0293300584749 /* KeyboardDoneButton.swift in Sources */,
 				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
 				1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */,
 				7C2C2F8B2AA6CD9D0074E32E /* SettingsRow.swift in Sources */,
@@ -1401,6 +1416,7 @@
 				7C2C2F872AA6CD580074E32E /* SettingsCheckView.swift in Sources */,
 				7C7B46BE2AC170F300D87140 /* MockupStatisticsView.swift in Sources */,
 				7CAB87162A5878C900A08219 /* ShiftStore.swift in Sources */,
+				7C6218582AD0BA4E00E67245 /* JobForShiftView.swift in Sources */,
 				1A1914212A185281000D0F8B /* ShiftManager.swift in Sources */,
 				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,
 				7C934D3A2A6522F9004F2622 /* PurchaseManager.swift in Sources */,

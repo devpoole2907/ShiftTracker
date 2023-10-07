@@ -80,9 +80,7 @@ struct ConfigureExportView: View {
             
                 .toolbar{
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        CloseButton {
-                            dismiss()
-                        }
+                        CloseButton()
                     }
                 }
             

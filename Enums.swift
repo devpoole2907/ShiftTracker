@@ -270,6 +270,14 @@ public enum ActiveSheet: Identifiable {
     }
 }
 
+enum JobViewActiveSheet: Identifiable {
+    case overtimeSheet, symbolSheet, breakRemindSheet
+    
+    var id: Int {
+        hashValue
+    }
+}
+
 enum ReminderTime: String, CaseIterable, Identifiable {
     case oneMinute = "1m before"
     case fifteenMinutes = "15m before"
