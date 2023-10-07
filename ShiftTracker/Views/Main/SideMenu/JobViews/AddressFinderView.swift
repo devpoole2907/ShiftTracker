@@ -317,12 +317,6 @@ struct AddressFinderView: View {
     }
 }
 
-/*
- struct AddressTextField_Previews: PreviewProvider {
- static var previews: some View {
- AddressFinderView(job: <#Job#>)
- }
- } */
 
 class IdentifiablePointAnnotation: MKPointAnnotation, Identifiable {
     let id = UUID()

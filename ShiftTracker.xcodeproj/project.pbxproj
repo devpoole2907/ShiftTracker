@@ -167,6 +167,8 @@
 		7C6218582AD0BA4E00E67245 /* JobForShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */; };
 		7C62185A2AD0BCBF00E67245 /* EstTaxPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */; };
 		7C62185C2AD0C3D800E67245 /* JobViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C62185B2AD0C3D700E67245 /* JobViewModel.swift */; };
+		7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C62185D2AD0E8F100E67245 /* JobIconPicker.swift */; };
+		7C6218602AD0EC8300E67245 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C62185F2AD0EC8300E67245 /* MapViewModel.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
 		7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B52AC1624D00D87140 /* MockupContentView.swift */; };
 		7C7B46B82AC166AB00D87140 /* MockupSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */; };
@@ -427,6 +429,8 @@
 		7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobForShiftView.swift; sourceTree = "<group>"; };
 		7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstTaxPicker.swift; sourceTree = "<group>"; };
 		7C62185B2AD0C3D700E67245 /* JobViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobViewModel.swift; sourceTree = "<group>"; };
+		7C62185D2AD0E8F100E67245 /* JobIconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobIconPicker.swift; sourceTree = "<group>"; };
+		7C62185F2AD0EC8300E67245 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
 		7C7B46B52AC1624D00D87140 /* MockupContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupContentView.swift; sourceTree = "<group>"; };
 		7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupSideMenu.swift; sourceTree = "<group>"; };
@@ -579,6 +583,7 @@
 				1A34588329D17B8A00CADDD8 /* AddressFinderView.swift */,
 				1A5B0B9D2A53A3F00021572B /* JobView.swift */,
 				7C0F154E2AB8EEA4008D5464 /* AddressFinderMap.swift */,
+				7C62185D2AD0E8F100E67245 /* JobIconPicker.swift */,
 			);
 			path = JobViews;
 			sourceTree = "<group>";
@@ -897,6 +902,7 @@
 				7C2C2F842AA6CB0A0074E32E /* SettingsViewModel.swift */,
 				7C1BB6852AA838F300957BF5 /* HistoryViewModel.swift */,
 				7C62185B2AD0C3D700E67245 /* JobViewModel.swift */,
+				7C62185F2AD0EC8300E67245 /* MapViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -1328,6 +1334,7 @@
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
 				7CF01D752ACBEE2F00EBC36C /* AggregatedShift.swift in Sources */,
+				7C6218602AD0EC8300E67245 /* MapViewModel.swift in Sources */,
 				7C0AC12E2A88EBA10016456E /* ShiftToChart.swift in Sources */,
 				1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
@@ -1436,6 +1443,7 @@
 				7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */,
 				1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
+				7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */,
 				1A8D4AD82A4EDE4300EEB334 /* CloseButton.swift in Sources */,
 				1A0D86EC2A51783B00EA4438 /* ChartSquare.swift in Sources */,
 				7C16AEF92AC54C4F00C0B58E /* JobIconView.swift in Sources */,

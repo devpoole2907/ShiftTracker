@@ -33,6 +33,7 @@ struct JobView: View {
     @Binding var selectedJobForEditing: Job?
     @Binding var isEditJobPresented: Bool
     
+    // these state variables exist purely for ios 16 versions with older mapkit
     @State private var mapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     @State private var miniMapRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3308, longitude: -122.0074), span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
     
@@ -46,13 +47,13 @@ struct JobView: View {
         }
         
         self._jobViewModel = StateObject(wrappedValue: JobViewModel(job: job))
-
+        
         // shows clear button for textfields
-                UITextField.appearance().clearButtonMode = .whileEditing
+        UITextField.appearance().clearButtonMode = .whileEditing
         
         _isEditJobPresented = isEditJobPresented
         _selectedJobForEditing = selectedJobForEditing
-            
+        
         
     }
     
@@ -62,316 +63,31 @@ struct JobView: View {
         return "\(hours)h \(minutes)m"
     }
     
+    var jobTitle: String {
+        return job != nil ? "Edit Job" : "Add Job"
+    }
+    
     
     var body: some View {
-    
+        
         
         NavigationStack{
             ZStack(alignment: .bottomTrailing){
                 
                 themeManager.contentDynamicBackground.opacity(jobViewModel.hasAppeared ? 0 : 1)
-                    
+                
                     .edgesIgnoringSafeArea(.all)
                 
                 ScrollView{
-                    VStack(spacing: 15){
-                        GeometryReader { geometry in
-                            let offset = geometry.frame(in: .global).minY
-                            VStack{
-                                Spacer()
-                                ZStack {
-                                    Image(systemName: jobViewModel.selectedIcon)
-                                     
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .customAnimatedSymbol(value: $jobViewModel.selectedIcon)
-                                        .customAnimatedSymbol(value: $jobViewModel.editToggle)
-                                        .foregroundStyle(.white)
-                                        .shadow(color: .white, radius: 0.7)
-                                        .padding(20)
-                                        .background {
-                                            
-                                            Circle()
-                                                .foregroundStyle(jobViewModel.selectedColor.gradient)
-                                            
-                                            
-                                        }
-                                        .shadow(color: jobViewModel.selectedColor, radius: 4, x: 0, y: 0)
-                                    VStack(alignment: .trailing){
-                                        Spacer()
-                                        Image(systemName: "pencil") .customAnimatedSymbol(value: $jobViewModel.editToggle)
-                                            .font(.caption)
-                            
-                                            .padding(8)
-                                            .background {
-                                                
-                                                Circle()
-                                                    .foregroundStyle(Color("SquaresColor"))
-                                                
-                                                
-                                            }
-                                            .padding(.leading, 60)
-                                            .padding(.top, 15)
-                                        
-                                    }
-                                    
-                                    
-                                }
-                                .scaleEffect(1 + (offset / 1000))
-                                .onTapGesture {
-                                    jobViewModel.activeSheet = .symbolSheet
-                                    jobViewModel.editToggle.toggle()
-                                }
-                                .frame(maxWidth: .infinity)
-                            }
-                            
-                        }.frame(height: 80)
-                        
-                        TextField("Company Name", text: $jobViewModel.name)
-                           
-                            .font(.title)
-                            .bold()
-                            .roundedFontDesign()
-                            .foregroundStyle(jobViewModel.selectedColor.gradient)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .glassModifier(cornerRadius: 20)
-                 
-                            .padding(.horizontal)
-                            .shake(times: jobViewModel.nameShakeTimes)
-                           
-                        
-                    }
-                    .padding(.vertical)
-                    .glassModifier(cornerRadius: 20)
-              
-                    .padding(.horizontal)
-                 
-                    
-                    
-                    
-                    
-                    
-                    
+                    headerWithIconPanel
                     VStack(spacing: 15){
                         
                         
-                        TextField("Job Title", text: $jobViewModel.title)
-                            .roundedFontDesign()
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .glassModifier(cornerRadius: 20)
-                            .shake(times: jobViewModel.titleShakeTimes)
+                        titleAndHourlyPanel
                         
-                        CurrencyTextField(placeholder: "Hourly Pay", text: $jobViewModel.hourlyPay)
-                            .roundedFontDesign()
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .glassModifier(cornerRadius: 20)
-                            .keyboardType(.decimalPad)
-                            .shake(times: jobViewModel.payShakeTimes)
+                        colorPickerPanel
 
-                            .haptics(onChangeOf: jobViewModel.payShakeTimes, type: .error)
-                            .haptics(onChangeOf: jobViewModel.nameShakeTimes, type: .error)
-                            .haptics(onChangeOf: jobViewModel.titleShakeTimes, type: .error)
-                        
-                        HStack(spacing: 0){
-                            ForEach(1...6, id: \.self) { index in
-                                let color = jobViewModel.jobColors[index - 1]
-                                Circle()
-                                    .fill(color)
-                                    .frame(width: 30, height: 30)
-                                    .overlay(content: {
-                                        if color == jobViewModel.selectedColor{
-                                            Image(systemName: "circle.fill")
-                                                .foregroundColor(.white.opacity(0.6))
-                                                .font(.caption.bold())
-                                            
-                                        }
-                                    })
-                                    .onTapGesture {
-                                        withAnimation{
-                                            jobViewModel.selectedColor = color
-                                        }
-                                    }
-                                    .frame(maxWidth: .infinity)
-                            }
-                            Divider()
-                                .frame(height: 20)
-                                .padding(.leading)
-                            ColorPicker("", selection: $jobViewModel.selectedColor, supportsOpacity: false)
-                                .padding()
-                        }
-                        
-                        
-                        
-                        VStack(alignment: .leading, spacing: 10){
-                            
-                            
-                            
-                            VStack{
-                                Toggle(isOn: $jobViewModel.clockInReminder) {
-                                    Text("Remind me to clock in")
-                                }
-                                .disabled(jobViewModel.autoClockIn)
-                                .onChange(of: jobViewModel.clockInReminder) { value in
-                                    if value {
-                                        jobViewModel.autoClockIn = false
-                                    }
-                                }
-                                .toggleStyle(CustomToggleStyle())
-                                .padding(.horizontal)
-                                .padding(.top, 10)
-                                
-                                Toggle(isOn: $jobViewModel.clockOutReminder) {
-                                    Text("Remind me to clock out")
-                                }
-                                .disabled(jobViewModel.autoClockOut)
-                                .onChange(of: jobViewModel.clockOutReminder) { value in
-                                    if value {
-                                        jobViewModel.autoClockOut = false
-                                    }
-                                }
-                                .toggleStyle(CustomToggleStyle())
-                                .padding(.horizontal)
-                                
-                                Toggle(isOn: $jobViewModel.autoClockIn) {
-                                    Text("Auto clock in")
-                                }
-                                .disabled(jobViewModel.clockInReminder)
-                                .onChange(of: jobViewModel.autoClockIn) { value in
-                                    if value {
-                                        if !purchaseManager.hasUnlockedPro {
-                                            
-                                            jobViewModel.showProSheet.toggle()
-                                            jobViewModel.autoClockIn = false
-                                            
-                                        } else {
-                                            jobViewModel.clockInReminder = false
-                                        }
-                                    }
-                                }
-                                .toggleStyle(CustomToggleStyle())
-                                .padding(.horizontal)
-                                
-                                Toggle(isOn: $jobViewModel.autoClockOut) {
-                                    Text("Auto clock out")
-                                }
-                                .disabled(jobViewModel.clockOutReminder)
-                                .onChange(of: jobViewModel.autoClockOut) { value in
-                                    if value {
-                                        if !purchaseManager.hasUnlockedPro {
-                                            
-                                            jobViewModel.showProSheet.toggle()
-                                            jobViewModel.autoClockOut = false
-                                            
-                                        } else {
-                                            jobViewModel.clockOutReminder = false
-                                        }
-                                    }
-                                }
-                                .toggleStyle(CustomToggleStyle())
-                                .padding(.horizontal)
-                                .padding(.bottom, 10)
-                                
-                                if #available(iOS 17.0, *){
-                                    
-                                    NavigationLink(destination: AddressFinderMap(selectedAddressString: $jobViewModel.selectedAddress, selectedRadius: $jobViewModel.selectedRadius, iconColor: jobViewModel.selectedColor, icon: jobViewModel.selectedIcon)
-                                        .onDisappear {
-                                            self.miniMapRegion = self.mapRegion
-                                        }){
-                                            VStack(alignment: .leading){
-                                                
-                                                Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: jobViewModel.miniMapAnnotation != nil ? [jobViewModel.miniMapAnnotation!] : []) { annotation in
-                                                    MapAnnotation(coordinate: annotation.coordinate) {
-                                                        VStack {
-                                                            Image(systemName: jobViewModel.selectedIcon)
-                                                                .font(.title2)
-                                                                .foregroundStyle(.white)
-                                                                .padding(10)
-                                                                .background{
-                                                                    Circle()
-                                                                        .foregroundStyle(jobViewModel.selectedColor.gradient)
-                                                                    
-                                                                }
-                                                            
-                                                        }
-                                                    }
-                                                }
-                                                .onAppear{
-                                                    //locationManager.requestAuthorization()
-                                                    addressManager.loadSavedAddress(selectedAddressString: jobViewModel.selectedAddress) { region, annotation in
-                                                        self.miniMapRegion = region ?? self.miniMapRegion
-                                                        jobViewModel.miniMapAnnotation = annotation
-                                                    }
-                                                }
-                                                HStack{
-                                                    Text("Work Location")
-                                                    
-                                                    Spacer()
-                                                    Image(systemName: "chevron.right")
-                                                }.bold()
-                                                    .padding(.bottom, 10)
-                                                    .padding(.horizontal)
-                                            }
-                                        }.frame(minHeight: 120)
-                                        .background(Color.clear,in:
-                                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                        .cornerRadius(20)
-                                    
-                                } else {
-                                    
-                                    
-                                    
-                                    NavigationLink(destination: AddressFinderView(selectedAddress: $jobViewModel.selectedAddress, mapRegion: $mapRegion, selectedRadius: $jobViewModel.selectedRadius, icon: jobViewModel.selectedIcon, iconColor: jobViewModel.selectedColor)
-                                        .onDisappear {
-                                            self.miniMapRegion = self.mapRegion
-                                        }) {
-                                            VStack(alignment: .leading){
-                                                
-                                                Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: jobViewModel.miniMapAnnotation != nil ? [jobViewModel.miniMapAnnotation!] : []) { annotation in
-                                                    MapAnnotation(coordinate: annotation.coordinate) {
-                                                        VStack {
-                                                            Image(systemName: jobViewModel.selectedIcon)
-                                                                .font(.title2)
-                                                                .foregroundStyle(.white)
-                                                                .padding(10)
-                                                                .background{
-                                                                    Circle()
-                                                                        .foregroundStyle(jobViewModel.selectedColor.gradient)
-                                                                    
-                                                                }
-                                                            
-                                                        }
-                                                    }
-                                                }
-                                                .onAppear{
-                                                    //locationManager.requestAuthorization()
-                                                    addressManager.loadSavedAddress(selectedAddressString: jobViewModel.selectedAddress) { region, annotation in
-                                                        self.miniMapRegion = region ?? self.miniMapRegion
-                                                        jobViewModel.miniMapAnnotation = annotation
-                                                    }
-                                                }
-                                                HStack{
-                                                    Text("Work Location")
-                                                    
-                                                    Spacer()
-                                                    Image(systemName: "chevron.right")
-                                                }.bold()
-                                                    .padding(.bottom, 10)
-                                                    .padding(.horizontal)
-                                            }
-                                        }.frame(minHeight: 120)
-                                        .background(Color.clear,in:
-                                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                        .cornerRadius(20)
-                                    
-                                }
-                                
-                            }
-                            
-                        }.glassModifier(cornerRadius: 20)
+                        clockInOutPanel
                         
                         
                         
@@ -380,137 +96,20 @@ struct JobView: View {
                             
                         }
                         
-                
                         
-                        VStack(alignment: .leading, spacing: 10){
-                            Toggle(isOn: $jobViewModel.rosterReminder){
-                                
-                                Text("Roster reminders")
-                                
-                            }.toggleStyle(CustomToggleStyle())
-                                .padding(.horizontal)
-                                .padding(.top, 10)
-                            HStack{
-                                Text("Time")
-                                Spacer()
-                                DatePicker("Time", selection: $jobViewModel.selectedTime, displayedComponents: .hourAndMinute).labelsHidden()
-                                Picker(selection: $jobViewModel.selectedDay, label: Text("Day of the week")) {
-                                    Text("Sunday").tag(1)
-                                    Text("Monday").tag(2)
-                                    Text("Tuesday").tag(3)
-                                    Text("Wednesday").tag(4)
-                                    Text("Thursday").tag(5)
-                                    Text("Friday").tag(6)
-                                    Text("Saturday").tag(7)
-                                }.buttonStyle(.bordered)
-                                
-                            }.padding(.horizontal)
-                                .padding(.vertical, 10)
-                                .disabled(!jobViewModel.rosterReminder)
-                            
-                            
-                            
-                        }.glassModifier(cornerRadius: 20)
                         
-                        VStack(alignment: .leading, spacing: 10){
-                            Toggle(isOn: $jobViewModel.breakReminder){
-                                
-                                Text("Break reminder")
-                                
-                            }.toggleStyle(CustomToggleStyle())
-                           
-                            
-                            if #available(iOS 16.1, *){
-                                
-                                HStack {
-                                   
-                                    Text("When:")
-                                    TimePicker(timeInterval: $jobViewModel.breakRemindAfter)
-                                        .frame(maxHeight: 75)
-                                        .frame(maxWidth: getRect().width - 100)
-                                    
-                                }
-                                .disabled(!jobViewModel.breakReminder)
-                                .opacity(jobViewModel.breakReminder ? 1.0 : 0.5)
-                    
-                                
-                            } else {
-                                
-                                // due to a frame issue with overtime views pickers on iOS 16 or lower, overtime view is a sheet in those versions
-                                
-                                Button(action: { jobViewModel.activeSheet = .breakRemindSheet }){
-                                    HStack {
-                                    
-                                        Text("When: ")
-                                        Spacer()
-                                        Text("\(formattedTimeInterval(jobViewModel.breakRemindAfter))")
-                                        
-                                        
-                                    }
-                                }
-                            }
-                            
-                            
-                        }.padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .glassModifier(cornerRadius: 20)
-                    
+                        rosterReminderPanel
                         
-                        VStack(alignment: .leading, spacing: 10){
-                            Toggle(isOn: $jobViewModel.overtimeEnabled) {
-                                HStack {
-                                    Text("Overtime")
-                                }
-                            }
-                            .toggleStyle(CustomToggleStyle())
-                            
-                            Stepper(value: $jobViewModel.overtimeRate, in: 1.25...3, step: 0.25) {
-                                
-                                
-                                Text("Rate: \(jobViewModel.overtimeRate, specifier: "%.2f")x")
-                                
-                            }.disabled(!jobViewModel.overtimeEnabled)
-                            
-                            if #available(iOS 16.1, *){
-                                
-                                HStack {
-                                 
-                                    Text("Apply after:")
-                                    TimePicker(timeInterval: $jobViewModel.overtimeAppliedAfter)
-                                        .frame(maxHeight: 75)
-                                        .frame(maxWidth: getRect().width - 100)
-                                    
-                                }
-                                .disabled(!jobViewModel.overtimeEnabled)
-                                .opacity(jobViewModel.overtimeEnabled ? 1.0 : 0.5)
-                                .shake(times: jobViewModel.overtimeShakeTimes)
-                                
-                            } else {
-                                
-                                // due to a frame issue with overtime views pickers on iOS 16 or lower, overtime view is a sheet in those versions
-                                
-                                Button(action: { jobViewModel.activeSheet = .overtimeSheet }){
-                                    HStack {
-                                        
-                                        Text("Apply after: ")
-                                        Spacer()
-                                        Text("\(formattedTimeInterval(jobViewModel.overtimeAppliedAfter))")
-                                        
-                                        
-                                    }
-                                }
-                            }
-                            
-                            
-                        }.padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .glassModifier(cornerRadius: 20)
-                    
+                        breakReminderPanel
+                        
+                        
+                        overtimePanel
+                        
                         
                     }
-                     .frame(maxHeight: .infinity, alignment: .top)
+                    .frame(maxHeight: .infinity, alignment: .top)
                     .padding()
-                    .navigationTitle(job != nil ? "Edit Job" : "Add Job")
+                    .navigationTitle(jobTitle)
                     
                     .navigationBarTitleDisplayMode(.inline)
                     
@@ -528,17 +127,12 @@ struct JobView: View {
                         
                         switch item {
                         case .overtimeSheet:
-                         
+                            
                             TimePicker(timeInterval: $jobViewModel.overtimeAppliedAfter)
                                 .environment(\.managedObjectContext, viewContext)
-                                
-                           
                                 .presentationDragIndicator(.visible)
                                 .presentationDetents([ .fraction(0.4)])
-                             
-                            
-                            
-                            
+
                         case .symbolSheet:
                             JobIconPicker()
                                 .environment(\.managedObjectContext, viewContext)
@@ -553,8 +147,8 @@ struct JobView: View {
                         case .breakRemindSheet:
                             TimePicker(timeInterval: $jobViewModel.breakRemindAfter)
                                 .environment(\.managedObjectContext, viewContext)
-                                
-                           
+                            
+                            
                                 .presentationDragIndicator(.visible)
                                 .presentationDetents([ .fraction(0.4)])
                             
@@ -565,121 +159,8 @@ struct JobView: View {
                     
                     
                 }
-                HStack(spacing: 10){
-                    
-             
-                    
-                    Button(action: {
-                        
-                        jobViewModel.buttonBounce.toggle()
-                        
-                        if jobViewModel.name.isEmpty {
-                            withAnimation(.linear(duration: 0.4)) {
-                                jobViewModel.nameShakeTimes += 2
-                            }
-                        }
-                        else if jobViewModel.hourlyPay.isEmpty || jobViewModel.hourlyPay == "0.0" {
-                            withAnimation(.linear(duration: 0.4)) {
-                                jobViewModel.payShakeTimes += 2
-                            }
-                        } else if jobViewModel.title.isEmpty {
-                            withAnimation(.linear(duration: 0.4)) {
-                                jobViewModel.titleShakeTimes += 2
-                            }
-                            
-                            
-                        } else if jobViewModel.overtimeEnabled && jobViewModel.overtimeAppliedAfter == 0 {
-                            withAnimation(.linear(duration: 0.4)) {
-                                jobViewModel.overtimeShakeTimes += 2
-                            }
-                        }
-                        else {
-                            jobViewModel.saveJob(in: viewContext){
-                                locationManager.startMonitoringAllLocations()
-                                notificationManager.updateRosterNotifications(viewContext: viewContext)
-
-                               
-
-
-                                // checks if content views selected job is this job
-                                
-                                if let jobUUID = jobViewModel.job?.uuid {
-                                    if jobUUID == contentViewModel.selectedJobUUID {
-                                        contentViewModel.hourlyPay = jobViewModel.job!.hourlyPay
-                                        contentViewModel.saveHourlyPay()
-                                        contentViewModel.taxPercentage = jobViewModel.job!.tax
-                                        contentViewModel.saveTaxPercentage()
-                                    }
-                                    
-                                    
-                                    
-                                    
-                                    // checks if this is the overall selected job
-                                    if jobUUID == selectedJobManager.selectedJobUUID {
-                                        print("its the selected job yes")
-                                        
-                                        //   jobSelectionViewModel.deselectJob(shiftViewModel: viewModel) DOES IT NEED TO BE DESELECTED?
-                                        
-                                        selectedJobManager.updateJob(jobViewModel.job!)
-                                        
-                                        
-                                        
-                                    }
-                                }
-                            }
-                            
-                            dismiss()
-                            
-                        }
-                        
-                        
-                        
-                    }) {
-                        Image(systemName: "folder.badge.plus").customAnimatedSymbol(value: $jobViewModel.buttonBounce)
-                            .bold()
-                    }
-                    
-                    if job != nil {
-                        
-                        Divider().frame(maxHeight: 10)
-                        
-                      
-                            Button(action: {
-                                
-                                dismiss()
-                             
-                                CustomConfirmationAlert(action: {
-                                    
-                                    jobViewModel.deleteJob(in: viewContext, selectedJobManager: selectedJobManager){
-                                        notificationManager.scheduleNotifications()
-                                        notificationManager.updateRosterNotifications(viewContext: viewContext)
-                                        locationManager.startMonitoringAllLocations()
-                                    }
-                                    
-                                }, cancelAction: {
-                                    isEditJobPresented = true
-                                    selectedJobForEditing = job
-                                    
-                                    
-                                }, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").showAndStack()
-                                
-                                
-                            }
-                            ) {
-                                Image(systemName: "trash")
-                                    .foregroundColor(.red)
-                                    .bold()
-                            }
-                        
-                    }
-                    
-                    
-                    
-                }.padding()
-                    .glassModifier(cornerRadius: 20)
+                floatingButtons
                 
-                    .padding()
-                 //   .shadow(radius: 3)
                 
             }.onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -688,77 +169,592 @@ struct JobView: View {
                     }
                 }
             }
+            
+            .toolbar{
+                ToolbarItemGroup(placement: .keyboard){
+                    Spacer()
+                    
+                    Button("Done"){
+                        hideKeyboard()
+                    }
+                }
                 
-                .toolbar{
-                    ToolbarItemGroup(placement: .keyboard){
-                        Spacer()
+                
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    CloseButton()
+                }
+                
+            }
+        }.background(Color.clear)
+    }
+    
+    
+    
+    var headerWithIconPanel: some View {
+        return VStack(spacing: 15){
+            GeometryReader { geometry in
+                let offset = geometry.frame(in: .global).minY
+                VStack{
+                    Spacer()
+                    ZStack {
+                        Image(systemName: jobViewModel.selectedIcon)
                         
-                        Button("Done"){
-                            hideKeyboard()
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .customAnimatedSymbol(value: $jobViewModel.selectedIcon)
+                            .customAnimatedSymbol(value: $jobViewModel.editToggle)
+                            .foregroundStyle(.white)
+                            .shadow(color: .white, radius: 0.7)
+                            .padding(20)
+                            .background {
+                                
+                                Circle()
+                                    .foregroundStyle(jobViewModel.selectedColor.gradient)
+                                
+                                
+                            }
+                            .shadow(color: jobViewModel.selectedColor, radius: 4, x: 0, y: 0)
+                        VStack(alignment: .trailing){
+                            Spacer()
+                            Image(systemName: "pencil") .customAnimatedSymbol(value: $jobViewModel.editToggle)
+                                .font(.caption)
+                            
+                                .padding(8)
+                                .background {
+                                    
+                                    Circle()
+                                        .foregroundStyle(Color("SquaresColor"))
+                                    
+                                    
+                                }
+                                .padding(.leading, 60)
+                                .padding(.top, 15)
+                            
+                        }
+                        
+                        
+                    }
+                    .scaleEffect(1 + (offset / 1000))
+                    .onTapGesture {
+                        jobViewModel.activeSheet = .symbolSheet
+                        jobViewModel.editToggle.toggle()
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                
+            }.frame(height: 80)
+            
+            TextField("Company Name", text: $jobViewModel.name)
+            
+                .font(.title)
+                .bold()
+                .roundedFontDesign()
+                .foregroundStyle(jobViewModel.selectedColor.gradient)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+                .glassModifier(cornerRadius: 20)
+            
+                .padding(.horizontal)
+                .shake(times: jobViewModel.nameShakeTimes)
+            
+            
+        }
+        .padding(.vertical)
+        .glassModifier(cornerRadius: 20)
+        
+        .padding(.horizontal)
+    }
+    
+    var titleAndHourlyPanel: some View {
+        return Group {
+        TextField("Job Title", text: $jobViewModel.title)
+            .roundedFontDesign()
+            .padding(.horizontal)
+            .padding(.vertical, 10)
+            .glassModifier(cornerRadius: 20)
+            .shake(times: jobViewModel.titleShakeTimes)
+        
+        CurrencyTextField(placeholder: "Hourly Pay", text: $jobViewModel.hourlyPay)
+            .roundedFontDesign()
+            .padding(.horizontal)
+            .padding(.vertical, 10)
+            .glassModifier(cornerRadius: 20)
+            .keyboardType(.decimalPad)
+            .shake(times: jobViewModel.payShakeTimes)
+        
+            .haptics(onChangeOf: jobViewModel.payShakeTimes, type: .error)
+            .haptics(onChangeOf: jobViewModel.nameShakeTimes, type: .error)
+            .haptics(onChangeOf: jobViewModel.titleShakeTimes, type: .error)
+        
+    }
+    }
+    
+    var colorPickerPanel: some View {
+        HStack(spacing: 0){
+            ForEach(1...6, id: \.self) { index in
+                let color = jobViewModel.jobColors[index - 1]
+                Circle()
+                    .fill(color)
+                    .frame(width: 30, height: 30)
+                    .overlay(content: {
+                        if color == jobViewModel.selectedColor{
+                            Image(systemName: "circle.fill")
+                                .foregroundColor(.white.opacity(0.6))
+                                .font(.caption.bold())
+                            
+                        }
+                    })
+                    .onTapGesture {
+                        withAnimation{
+                            jobViewModel.selectedColor = color
                         }
                     }
-                    
-                 
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        CloseButton()
-                    }
-                    
+                    .frame(maxWidth: .infinity)
+            }
+            Divider()
+                .frame(height: 20)
+                .padding(.leading)
+            ColorPicker("", selection: $jobViewModel.selectedColor, supportsOpacity: false)
+                .padding()
+        }
+    }
+    
+    var clockInOutPanel: some View {
+        return VStack(alignment: .leading, spacing: 10){
+            
+            
+            
+            VStack{
+                Toggle(isOn: $jobViewModel.clockInReminder) {
+                    Text("Remind me to clock in")
                 }
-        }.background(Color.clear)
+                .disabled(jobViewModel.autoClockIn)
+                .onChange(of: jobViewModel.clockInReminder) { value in
+                    if value {
+                        jobViewModel.autoClockIn = false
+                    }
+                }
+                .toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                .padding(.top, 10)
+                
+                Toggle(isOn: $jobViewModel.clockOutReminder) {
+                    Text("Remind me to clock out")
+                }
+                .disabled(jobViewModel.autoClockOut)
+                .onChange(of: jobViewModel.clockOutReminder) { value in
+                    if value {
+                        jobViewModel.autoClockOut = false
+                    }
+                }
+                .toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                
+                Toggle(isOn: $jobViewModel.autoClockIn) {
+                    Text("Auto clock in")
+                }
+                .disabled(jobViewModel.clockInReminder)
+                .onChange(of: jobViewModel.autoClockIn) { value in
+                    if value {
+                        if !purchaseManager.hasUnlockedPro {
+                            
+                            jobViewModel.showProSheet.toggle()
+                            jobViewModel.autoClockIn = false
+                            
+                        } else {
+                            jobViewModel.clockInReminder = false
+                        }
+                    }
+                }
+                .toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                
+                Toggle(isOn: $jobViewModel.autoClockOut) {
+                    Text("Auto clock out")
+                }
+                .disabled(jobViewModel.clockOutReminder)
+                .onChange(of: jobViewModel.autoClockOut) { value in
+                    if value {
+                        if !purchaseManager.hasUnlockedPro {
+                            
+                            jobViewModel.showProSheet.toggle()
+                            jobViewModel.autoClockOut = false
+                            
+                        } else {
+                            jobViewModel.clockOutReminder = false
+                        }
+                    }
+                }
+                .toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                .padding(.bottom, 10)
+                
+                addressFinder
+                
+            }
+            
+        }.glassModifier(cornerRadius: 20)
+    }
+    
+    var addressFinder: some View {
+        if #available(iOS 17.0, *){
+            
+            var miniMap = MiniMapView()
+            
+            if let job = job {
+                miniMap = MiniMapView(job: job)
+            } else {
+                miniMap = MiniMapView(icon: jobViewModel.selectedIcon, iconColor: jobViewModel.selectedColor)
+            }
+            
+            return miniMap.environmentObject(jobViewModel)
+            
+        } else {
+            
+            
+            
+            return NavigationLink(destination: AddressFinderView(selectedAddress: $jobViewModel.selectedAddress, mapRegion: $mapRegion, selectedRadius: $jobViewModel.selectedRadius, icon: jobViewModel.selectedIcon, iconColor: jobViewModel.selectedColor)
+                .onDisappear {
+                    self.miniMapRegion = self.mapRegion
+                }) {
+                    VStack(alignment: .leading){
+                        
+                        Map(coordinateRegion: $miniMapRegion, interactionModes: [], showsUserLocation: true, annotationItems: jobViewModel.miniMapAnnotation != nil ? [jobViewModel.miniMapAnnotation!] : []) { annotation in
+                            MapAnnotation(coordinate: annotation.coordinate) {
+                                VStack {
+                                    Image(systemName: jobViewModel.selectedIcon)
+                                        .font(.title2)
+                                        .foregroundStyle(.white)
+                                        .padding(10)
+                                        .background{
+                                            Circle()
+                                                .foregroundStyle(jobViewModel.selectedColor.gradient)
+                                            
+                                        }
+                                    
+                                }
+                            }
+                        }
+                        .onAppear{
+                            addressManager.loadSavedAddress(selectedAddressString: jobViewModel.selectedAddress) { region, annotation in
+                                self.miniMapRegion = region ?? self.miniMapRegion
+                                jobViewModel.miniMapAnnotation = annotation
+                            }
+                        }
+                        WorkLocationHeader()
+                    }
+                }.frame(minHeight: 120)
+                .background(Color.clear,in:
+                                RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .cornerRadius(20)
+            
+        }
     }
     
 
     
-}
-
-
-
-struct JobIconPicker: View {
-    @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var jobViewModel: JobViewModel
-    @Environment(\.dismiss) private var dismiss
+    var rosterReminderPanel: some View {
+        return VStack(alignment: .leading, spacing: 10){
+            Toggle(isOn: $jobViewModel.rosterReminder){
+                
+                Text("Roster reminders")
+                
+            }.toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                .padding(.top, 10)
+            HStack{
+                Text("Time")
+                Spacer()
+                DatePicker("Time", selection: $jobViewModel.selectedTime, displayedComponents: .hourAndMinute).labelsHidden()
+                Picker(selection: $jobViewModel.selectedDay, label: Text("Day of the week")) {
+                    
+                    ForEach(jobViewModel.daysOfWeek.indices){ index in
+                        Text(jobViewModel.daysOfWeek[index]).tag(index + 1)
+                    }
+                }.buttonStyle(.bordered)
+                
+            }.padding(.horizontal)
+                .padding(.vertical, 10)
+                .disabled(!jobViewModel.rosterReminder)
+            
+            
+            
+        }.glassModifier(cornerRadius: 20)
+    }
     
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.adaptive(minimum: 50)), count: 4), spacing: 50) {
-                    ForEach(jobViewModel.jobIcons, id: \.self) { icon in
-                        Button(action: {
-               
-                            jobViewModel.selectedIcon = icon
+    var breakReminderPanel: some View {
+        return VStack(alignment: .leading, spacing: 10){
+            Toggle(isOn: $jobViewModel.breakReminder){
+                
+                Text("Break reminder")
+                
+            }.toggleStyle(CustomToggleStyle())
+            
+            
+            if #available(iOS 16.1, *){
+                
+                HStack {
+                    
+                    Text("When:")
+                    TimePicker(timeInterval: $jobViewModel.breakRemindAfter)
+                        .frame(maxHeight: 75)
+                        .frame(maxWidth: getRect().width - 100)
+                    
+                }
+                .disabled(!jobViewModel.breakReminder)
+                .opacity(jobViewModel.breakReminder ? 1.0 : 0.5)
+                
+                
+            } else {
+                
+                // due to a frame issue with wheel pickers on iOS 16 or lower, time picker is a sheet in those versions
+                
+                Button(action: { jobViewModel.activeSheet = .breakRemindSheet }){
+                    HStack {
+                        
+                        Text("When: ")
+                        Spacer()
+                        Text("\(formattedTimeInterval(jobViewModel.breakRemindAfter))")
+                        
+                        
+                    }
+                }
+            }
+            
+            
+        }.padding(.horizontal)
+            .padding(.vertical, 10)
+            .glassModifier(cornerRadius: 20)
+    }
+    
+    var overtimePanel: some View {
+        return VStack(alignment: .leading, spacing: 10){
+            Toggle(isOn: $jobViewModel.overtimeEnabled) {
+                HStack {
+                    Text("Overtime")
+                }
+            }
+            .toggleStyle(CustomToggleStyle())
+            
+            Stepper(value: $jobViewModel.overtimeRate, in: 1.25...3, step: 0.25) {
+                
+                
+                Text("Rate: \(jobViewModel.overtimeRate, specifier: "%.2f")x")
+                
+            }.disabled(!jobViewModel.overtimeEnabled)
+            
+            if #available(iOS 16.1, *){
+                
+                HStack {
+                    
+                    Text("Apply after:")
+                    TimePicker(timeInterval: $jobViewModel.overtimeAppliedAfter)
+                        .frame(maxHeight: 75)
+                        .frame(maxWidth: getRect().width - 100)
+                    
+                }
+                .disabled(!jobViewModel.overtimeEnabled)
+                .opacity(jobViewModel.overtimeEnabled ? 1.0 : 0.5)
+                .shake(times: jobViewModel.overtimeShakeTimes)
+                
+            } else {
+                
+                // due to a frame issue with wheel pickers on iOS 16 or lower, time picker is a sheet in those versions
+                
+                Button(action: { jobViewModel.activeSheet = .overtimeSheet }){
+                    HStack {
+                        
+                        Text("Apply after: ")
+                        Spacer()
+                        Text("\(formattedTimeInterval(jobViewModel.overtimeAppliedAfter))")
+                        
+                        
+                    }
+                }
+            }
+            
+            
+        }.padding(.horizontal)
+            .padding(.vertical, 10)
+            .glassModifier(cornerRadius: 20)
+    }
+    
+    var floatingButtons: some View {
+        return HStack(spacing: 10){
+            
+            
+            
+            Button(action: {
+                
+                jobViewModel.buttonBounce.toggle()
+                
+                if jobViewModel.name.isEmpty {
+                    withAnimation(.linear(duration: 0.4)) {
+                        jobViewModel.nameShakeTimes += 2
+                    }
+                }
+                else if jobViewModel.hourlyPay.isEmpty || jobViewModel.hourlyPay == "0.0" {
+                    withAnimation(.linear(duration: 0.4)) {
+                        jobViewModel.payShakeTimes += 2
+                    }
+                } else if jobViewModel.title.isEmpty {
+                    withAnimation(.linear(duration: 0.4)) {
+                        jobViewModel.titleShakeTimes += 2
+                    }
+                    
+                    
+                } else if jobViewModel.overtimeEnabled && jobViewModel.overtimeAppliedAfter == 0 {
+                    withAnimation(.linear(duration: 0.4)) {
+                        jobViewModel.overtimeShakeTimes += 2
+                    }
+                }
+                else {
+                    jobViewModel.saveJob(in: viewContext){
+                        locationManager.startMonitoringAllLocations()
+                        notificationManager.updateRosterNotifications(viewContext: viewContext)
+                        
+                        
+                        
+                        
+                        // checks if content views selected job is this job
+                        
+                        if let jobUUID = jobViewModel.job?.uuid {
+                            if jobUUID == contentViewModel.selectedJobUUID {
+                                contentViewModel.hourlyPay = jobViewModel.job!.hourlyPay
+                                contentViewModel.saveHourlyPay()
+                                contentViewModel.taxPercentage = jobViewModel.job!.tax
+                                contentViewModel.saveTaxPercentage()
+                            }
                             
-                            dismiss()
-                        }) {
-                            VStack {
-                                Image(systemName: icon)
-                                    .font(.title2)
+                            
+                            
+                            
+                            // checks if this is the overall selected job
+                            if jobUUID == selectedJobManager.selectedJobUUID {
+                                print("its the selected job yes")
                                 
-                                    .frame(height: 20)
-                                    .shadow(color: .white, radius: 0.7)
-                                    .foregroundStyle(.white)
+                                //   jobSelectionViewModel.deselectJob(shiftViewModel: viewModel) DOES IT NEED TO BE DESELECTED?
                                 
-                            }.padding()
-                            .background{
-                                Circle()
-                                    .foregroundStyle(jobViewModel.selectedColor.gradient)
-                                    
+                                selectedJobManager.updateJob(jobViewModel.job!)
+                                
+                                
+                                
                             }
                         }
                     }
+                    
+                    dismiss()
+                    
                 }
-                .padding()
-            }
-            .navigationBarTitle("Icon", displayMode: .inline)
-            
-            
-            .toolbar {
                 
                 
-                CloseButton()
                 
+            }) {
+                Image(systemName: "folder.badge.plus").customAnimatedSymbol(value: $jobViewModel.buttonBounce)
+                    .bold()
             }
             
+            if job != nil {
+                
+                Divider().frame(maxHeight: 10)
+                
+                
+                Button(action: {
+                    
+                    dismiss()
+                    
+                    CustomConfirmationAlert(action: {
+                        
+                        jobViewModel.deleteJob(in: viewContext, selectedJobManager: selectedJobManager){
+                            notificationManager.scheduleNotifications()
+                            notificationManager.updateRosterNotifications(viewContext: viewContext)
+                            locationManager.startMonitoringAllLocations()
+                        }
+                        
+                    }, cancelAction: {
+                        isEditJobPresented = true
+                        selectedJobForEditing = job
+                        
+                        
+                    }, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").showAndStack()
+                    
+                    
+                }
+                ) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.red)
+                        .bold()
+                }
+                
+            }
+            
+            
+            
+        }.padding()
+            .glassModifier(cornerRadius: 20)
+        
+            .padding()
+    }
+    
+    
+}
+
+@available(iOS 17.0, *)
+struct MiniMapView: View {
+    
+    @StateObject var mapModel: MapViewModel
+    @EnvironmentObject var jobViewModel: JobViewModel
+    
+    init(job: Job? = nil, icon: String = "briefcase.fill", iconColor: Color = .cyan){
+        if let job = job {
+            
+            self._mapModel = StateObject(wrappedValue: MapViewModel(job: job))
+        } else {
+            self._mapModel = StateObject(wrappedValue: MapViewModel(iconColor: iconColor, icon: icon))
         }
+    }
+    
+    var body: some View {
+        
+        
+        NavigationLink(destination: AddressFinderMap().environmentObject(jobViewModel).environmentObject(mapModel)
+            .onDisappear{
+                jobViewModel.selectedAddress = mapModel.selectedAddressString
+                jobViewModel.selectedRadius = mapModel.selectedRadius
+                
+            }
+        
+        ) {
+            VStack(alignment: .leading) {
+                Map(position: $mapModel.cameraPosition, interactionModes: .rotate, selection: $mapModel.mapSelection) {
+                    if let jobLocationCoordinate = mapModel.jobLocationCoordinate {
+                        Marker(mapModel.selectedAddressString ?? "Unknown", systemImage: mapModel.icon, coordinate: jobLocationCoordinate).tint(mapModel.iconColor)
+                    }
+                    
+                    UserAnnotation()
+                }
+                
+                WorkLocationHeader()
+            }
+        }.frame(minHeight: 120)
+            .background(Color.clear,in:
+                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .cornerRadius(20)
+    }
+}
+
+struct WorkLocationHeader: View {
+    
+    var body: some View {
+        HStack{
+            Text("Work Location")
+            
+            Spacer()
+            Image(systemName: "chevron.right")
+        }.bold()
+            .padding(.bottom, 10)
+            .padding(.horizontal)
     }
 }

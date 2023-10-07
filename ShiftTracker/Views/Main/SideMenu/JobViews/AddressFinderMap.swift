@@ -11,54 +11,30 @@ import _MapKit_SwiftUI
 @available(iOS 17.0, *)
 struct AddressFinderMap: View {
     
-    private let addressManager = AddressManager()
-    
-    @State private var searchText = ""
-    @State private var mapStyle: MapStyle = .hybrid
-    @State private var bottomSheet: Bool = true
-    @State private var selectedAddress: CLPlacemark?
-    @State private var searchResults: [MKMapItem] = []
-    @State private var mapSelection: MKMapItem?
-    @State private var addressConfirmSheet: Bool = false
-    @State private var jobLocationCoordinate: CLLocationCoordinate2D?
-    
-    @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-    ))
-    
-    @State private var mapCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194)
-    
-    @Binding var selectedAddressString: String?
-    @Binding var selectedRadius: Double
-    
-    let iconColor: Color
-    let icon: String
+    @EnvironmentObject var jobViewModel: JobViewModel
+    @EnvironmentObject var mapViewModel: MapViewModel
     
     @Environment(\.isSearching) private var isSearching
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dismissSearch) private var dismissSearch
     
-    @State private var lastSearchTask: DispatchWorkItem?
-    @State private var initialSearch: Bool = false
-    
     var body: some View {
         
-        Map(position: $cameraPosition, selection: $mapSelection) {
+        Map(position: $mapViewModel.cameraPosition, selection: $mapViewModel.mapSelection) {
             
-            ForEach(searchResults, id: \.self) { mapItem in
+            ForEach(mapViewModel.searchResults, id: \.self) { mapItem in
                 
                 Marker(mapItem.placemark.name ?? "Unknown", coordinate: mapItem.placemark.coordinate)
                 
             }
             
-            if let jobLocationCoordinate = jobLocationCoordinate {
-                Marker(selectedAddressString ?? "Unknown", systemImage: icon, coordinate: jobLocationCoordinate).tint(iconColor)
+            if let jobLocationCoordinate = mapViewModel.jobLocationCoordinate {
+                Marker(mapViewModel.selectedAddressString ?? "Unknown", systemImage: mapViewModel.icon, coordinate: jobLocationCoordinate).tint(mapViewModel.iconColor)
             }
             
             UserAnnotation()
             
-        }//.mapStyle(.imagery(elevation: .realistic))
+        }
         .mapControls{
             MapCompass()
             MapUserLocationButton()
@@ -66,14 +42,18 @@ struct AddressFinderMap: View {
         
         }
         
-        .sheet(isPresented: $bottomSheet){
+        .onAppear {
+            mapViewModel.bottomSheet = true
+        }
+        
+        .sheet(isPresented: $mapViewModel.bottomSheet){
             
             NavigationStack{
                 ScrollView{
                     
                     VStack(alignment: .leading, spacing: 10){
                         
-                        ForEach(searchResults, id: \.self) { result in
+                        ForEach(mapViewModel.searchResults, id: \.self) { result in
                             HStack {
                               
                                 Text(result.placemark.name ?? "Unknown")
@@ -86,8 +66,8 @@ struct AddressFinderMap: View {
                             .padding(.horizontal, 20)
                             
                                 .onTapGesture {
-                                    addressConfirmSheet = true
-                                    selectedAddress = result.placemark
+                                    mapViewModel.addressConfirmSheet = true
+                                    mapViewModel.selectedAddress = result.placemark
                                     
                                     if let clRegion = result.placemark.region as? CLCircularRegion {
                                         let center = clRegion.center
@@ -95,7 +75,7 @@ struct AddressFinderMap: View {
                                         
                                         let coordinateRegion = MKCoordinateRegion(center: center, latitudinalMeters: radius * 2.0, longitudinalMeters: radius * 2.0)
                                         
-                                        self.cameraPosition = .region(coordinateRegion)
+                                        mapViewModel.cameraPosition = .region(coordinateRegion)
                                         
                                     }
                                
@@ -103,8 +83,8 @@ struct AddressFinderMap: View {
                         }
                     }
                 }.scrollContentBackground(.hidden)
-                    .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search work address") {
-                        ForEach(searchResults, id: \.self) { suggestion in
+                    .searchable(text: $mapViewModel.searchText, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search work address") {
+                        ForEach(mapViewModel.searchResults, id: \.self) { suggestion in
                             VStack(alignment: .leading){
                                 Text(suggestion.placemark.name ?? "")
                                     .font(.title3)
@@ -121,27 +101,7 @@ struct AddressFinderMap: View {
                                         
                                         dismissSearch()
                                         
-                                        self.searchText = suggestion.placemark.name ?? ""
-                                        
-                       
-                                        
-                                        Task {
-                                            await searchForAddress()
-                                        }
-                                        
-                                        addressConfirmSheet = true
-                                        selectedAddress = suggestion.placemark
-                                        
-                                        if let clRegion = suggestion.placemark.region as? CLCircularRegion {
-                                            let center = clRegion.center
-                                            let radius = clRegion.radius
-                                            
-                                            let coordinateRegion = MKCoordinateRegion(center: center, latitudinalMeters: radius * 2.0, longitudinalMeters: radius * 2.0)
-                                            
-                                            self.cameraPosition = .region(coordinateRegion)
-                                            
-                                        }
-                                        
+                                        mapViewModel.resultTapped(suggestion)
                                         
                                         
                                     }
@@ -154,75 +114,46 @@ struct AddressFinderMap: View {
                         
                         dismissSearch()
                         
-                        // do something when the user submits the search query
+                        
                         Task {
                             
-                            guard !searchText.isEmpty else { return }
-                            print("awaiting search address")
-                            await searchForAddress()
-                            
-                            if let clRegion = searchResults.first?.placemark.region as? CLCircularRegion {
-                                let center = clRegion.center
-                                let radius = clRegion.radius
-                                
-                                let coordinateRegion = MKCoordinateRegion(center: center, latitudinalMeters: radius * 5.0, longitudinalMeters: radius * 5.0)
-                                
-                                self.cameraPosition = .region(coordinateRegion)
-                                
-                            }
+                            await mapViewModel.searchSubmitted()
                             
                        
                             
                         }
                     })
                 
-                    .onChange(of: searchText) { newValue in
+                    .onChange(of: mapViewModel.searchText) { newValue in
                         
                         // ensure string length is longer than 3
                         guard newValue.count >= 3 else {
                                 return
                             }
                         
-                        let delay: Double = initialSearch ? 0.2 : 0.5 // 0.5 is too long for initial search
+                        let delay: Double = mapViewModel.initialSearch ? 0.2 : 0.5 // 0.5 is too long for initial search
                         
                         
-                        lastSearchTask?.cancel()
+                        mapViewModel.lastSearchTask?.cancel()
 
                         let task = DispatchWorkItem {
                             Task {
-                                await searchForAddress()
+                                await mapViewModel.searchForAddress()
                             }
                         }
 
-                        lastSearchTask = task
+                        mapViewModel.lastSearchTask = task
 
                         DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: task)
                         
-                        initialSearch = false
-                    }
-
-                
-                    .onAppear{
-                        //locationManager.requestAuthorization()
-                        addressManager.loadSavedAddress(selectedAddressString: selectedAddressString) { region, annotation in
-                            
-                            
-                            guard let region else { return }
-                            
-                            self.cameraPosition = .region(region)
-                            
-                            self.jobLocationCoordinate = annotation?.coordinate
-                        }
-                        
-                   
-                        
+                        mapViewModel.initialSearch = false
                     }
                 
-                    .onChange(of: mapSelection) { oldValue, newValue in
+                    .onChange(of: mapViewModel.mapSelection) { oldValue, newValue in
                         
                         guard let newValue else { return }
-                        addressConfirmSheet = true
-                        selectedAddress = newValue.placemark
+                        mapViewModel.addressConfirmSheet = true
+                        mapViewModel.selectedAddress = newValue.placemark
                         
                         
                     }
@@ -236,7 +167,7 @@ struct AddressFinderMap: View {
                         
                         ToolbarItem(placement: .topBarLeading) {
                             
-                            Text(selectedAddressString ?? "No address saved")
+                            Text(mapViewModel.selectedAddressString ?? "No address saved")
                                 .bold()
                                 .font(.headline)
                             
@@ -255,8 +186,8 @@ struct AddressFinderMap: View {
             .presentationBackgroundInteraction(.enabled)
             .interactiveDismissDisabled()
             
-            .sheet(isPresented: $addressConfirmSheet){
-                AddressConfirmView(address: $selectedAddress, radius: $selectedRadius, onConfirm: setSelectedAddress)
+            .sheet(isPresented: $mapViewModel.addressConfirmSheet){
+                AddressConfirmView(address: $mapViewModel.selectedAddress, radius: $mapViewModel.selectedRadius, onConfirm: mapViewModel.setSelectedAddress)
                     .presentationDetents([ .fraction(0.4), .medium])
                  .presentationBackground(.ultraThinMaterial)
                     .presentationCornerRadius(12)
@@ -283,56 +214,8 @@ struct AddressFinderMap: View {
         
     }
     
-    private func setSelectedAddress(_ address: CLPlacemark) {
-        
-        selectedAddressString = address.formattedAddress
-        createAnnotation(for: address)
-        
-    }
-    
-    private func createAnnotation(for address: CLPlacemark) {
-        
-        searchResults.removeAll(keepingCapacity: false)
-        
-        jobLocationCoordinate = address.location?.coordinate
-        
- 
-    }
-    
-    private func searchForAddress() async {
-        
-      /*  guard let mapRegion = cameraPosition.region else {
-            
-            print("failed mapregion during search")
-            
-            return }
-        */
-        
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = searchText
-
-       // request.region = cameraPosition.region!
-        
-        if let results = try? await MKLocalSearch(request: request).start() {
-                searchResults = results.mapItems
-
-            }
-        
-    }
-    
     
 
     
     
-}
-
-#Preview {
-    if #available(iOS 17.0, *) {
-        AddressFinderMap(selectedAddressString: .constant(""), selectedRadius: .constant(75), iconColor: .indigo, icon: "paintpalette")
-    } else {
-        // Fallback on earlier versions
-        
-        Text("Invalid")
-        
-    }
 }

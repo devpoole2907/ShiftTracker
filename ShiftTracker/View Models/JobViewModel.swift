@@ -20,6 +20,8 @@ class JobViewModel: ObservableObject {
     let jobColors = [
         Color.pink, Color.green, Color.blue, Color.purple, Color.orange, Color.cyan]
     
+    let daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    
     var job: Job?
     
     @Published var miniMapAnnotation: IdentifiablePointAnnotation?
