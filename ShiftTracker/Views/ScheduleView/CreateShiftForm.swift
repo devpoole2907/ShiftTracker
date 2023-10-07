@@ -533,12 +533,7 @@ struct CreateShiftForm: View {
                 
             }
             
-                .toolbar{
-                    
-                    ToolbarItem(placement: .navigationBarTrailing){
-                        CloseButton()
-                    }
-                }
+                .trailingCloseButton()
                 .navigationTitle(scheduledShift == nil ? "Schedule" : "Edit Schedule")
                 .navigationBarTitleDisplayMode(.inline)
     
@@ -554,7 +549,6 @@ struct CreateShiftForm: View {
     @ViewBuilder
     func scheduleSlider() -> some View{
         
-        let sliderBackgroundColor: Color = colorScheme == .dark ? Color(.black) : Color(.systemGray5)
         let sliderColor: Color = colorScheme == .dark ? Color(.systemGray6) : .white
         
         GeometryReader{ proxy in

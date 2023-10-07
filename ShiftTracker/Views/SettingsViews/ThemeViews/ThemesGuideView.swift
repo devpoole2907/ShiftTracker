@@ -264,14 +264,7 @@ struct ThemesGuideView: View {
         .navigationBarTitleDisplayMode(.inline)
             
             
-        .toolbar{
-            
-            ToolbarItem(placement: .navigationBarTrailing){
-                CloseButton()
-            }
-            
-            
-        }
+        .trailingCloseButton()
             
     }
     }

@@ -170,6 +170,7 @@
 		7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C62185D2AD0E8F100E67245 /* JobIconPicker.swift */; };
 		7C6218602AD0EC8300E67245 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C62185F2AD0EC8300E67245 /* MapViewModel.swift */; };
 		7C6218622AD0FB4500E67245 /* AddTagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218612AD0FB4500E67245 /* AddTagViewModel.swift */; };
+		7C6218642AD0FF5E00E67245 /* TrailingCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218632AD0FF5E00E67245 /* TrailingCloseButton.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
 		7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B52AC1624D00D87140 /* MockupContentView.swift */; };
 		7C7B46B82AC166AB00D87140 /* MockupSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */; };
@@ -433,6 +434,7 @@
 		7C62185D2AD0E8F100E67245 /* JobIconPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobIconPicker.swift; sourceTree = "<group>"; };
 		7C62185F2AD0EC8300E67245 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		7C6218612AD0FB4500E67245 /* AddTagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagViewModel.swift; sourceTree = "<group>"; };
+		7C6218632AD0FF5E00E67245 /* TrailingCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailingCloseButton.swift; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
 		7C7B46B52AC1624D00D87140 /* MockupContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupContentView.swift; sourceTree = "<group>"; };
 		7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupSideMenu.swift; sourceTree = "<group>"; };
@@ -857,6 +859,7 @@
 				7C1132472ACA9C3D00E983FD /* CustomChartModifiers.swift */,
 				7C1132492ACA9C7600E983FD /* CustomAnimatedSymbolModifier.swift */,
 				7C11324B2ACA9C9600E983FD /* CustomScrollBackgroundModifier.swift */,
+				7C6218632AD0FF5E00E67245 /* TrailingCloseButton.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -1406,6 +1409,7 @@
 				1AB7D69129FB4C3300326AAA /* JobSelectionView.swift in Sources */,
 				1A1914252A188256000D0F8B /* ActionView.swift in Sources */,
 				1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
+				7C6218642AD0FF5E00E67245 /* TrailingCloseButton.swift in Sources */,
 				7C337B682ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				7CD8A3262A882F350011A1C0 /* ShiftSorts.swift in Sources */,

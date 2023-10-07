@@ -45,12 +45,7 @@ struct JobIconPicker: View {
             .navigationBarTitle("Icon", displayMode: .inline)
             
             
-            .toolbar {
-                
-                
-                CloseButton()
-                
-            }
+            .trailingCloseButton()
             
         }
     }

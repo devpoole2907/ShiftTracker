@@ -414,11 +414,7 @@ struct AddressConfirmView: View {
             
 
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
-                ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton()
-                }
-            }
+            .trailingCloseButton()
         }
     }
 }

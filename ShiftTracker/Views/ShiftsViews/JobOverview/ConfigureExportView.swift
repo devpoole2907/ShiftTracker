@@ -78,11 +78,7 @@ struct ConfigureExportView: View {
                 .navigationBarTitleDisplayMode(.inline)
             
             
-                .toolbar{
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        CloseButton()
-                    }
-                }
+                .trailingCloseButton()
             
         }
     }

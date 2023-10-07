@@ -133,25 +133,7 @@ struct ThemeView: View {
             .navigationBarTitleDisplayMode(.inline)
             
             
-            .toolbar {
-                /*  ToolbarItemGroup(placement: .navigationBarTrailing){
-                 Button(action: {
-                 themeManager.resetColorsToDefaults()
-                 
-                 }){
-                 Text("Reset")
-                 .bold()
-                 
-                 }
-                 
-                 
-                 }*/
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton()
-                }
-                
-            }
+            .trailingCloseButton()
             
             
             

@@ -91,11 +91,7 @@ struct BreakInputView: View {
         
         .navigationBarTitle("Add Break", displayMode: .inline)
     
-        .toolbar{
-            ToolbarItem(placement: .navigationBarTrailing) {
-                CloseButton()
-            }
-        }
+        .trailingCloseButton()
             
     }
         

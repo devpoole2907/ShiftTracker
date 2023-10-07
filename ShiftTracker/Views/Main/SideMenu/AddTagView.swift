@@ -49,13 +49,7 @@ struct AddTagView: View {
                 .navigationTitle("Tags")
                 .navigationBarTitleDisplayMode(.inline)
             
-                .toolbar {
-                    
-                    ToolbarItem(placement: .topBarTrailing){
-                        CloseButton()
-                    }
-                }
-            
+                .trailingCloseButton()
         }
         
         

@@ -266,11 +266,7 @@ struct ActionView: View {
             
             
             .navigationBarTitle(navTitle, displayMode: .inline)
-            .toolbar{
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    CloseButton()
-                }
-            }
+            .trailingCloseButton()
         }
         
     }
