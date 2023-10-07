@@ -57,12 +57,6 @@ struct JobView: View {
         
     }
     
-    func formattedTimeInterval(_ timeInterval: TimeInterval) -> String {
-        let hours = Int(timeInterval) / 3600
-        let minutes = Int(timeInterval) % 3600 / 60
-        return "\(hours)h \(minutes)m"
-    }
-    
     var jobTitle: String {
         return job != nil ? "Edit Job" : "Add Job"
     }
@@ -79,7 +73,9 @@ struct JobView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 ScrollView{
+                    
                     headerWithIconPanel
+                    
                     VStack(spacing: 15){
                         
                         
@@ -405,8 +401,6 @@ struct JobView: View {
             
             if let job = job {
                 miniMap = MiniMapView(job: job)
-            } else {
-                miniMap = MiniMapView(icon: jobViewModel.selectedIcon, iconColor: jobViewModel.selectedColor)
             }
             
             return miniMap.environmentObject(jobViewModel)
@@ -516,7 +510,7 @@ struct JobView: View {
                         
                         Text("When: ")
                         Spacer()
-                        Text("\(formattedTimeInterval(jobViewModel.breakRemindAfter))")
+                        Text("\(jobViewModel.formattedTimeInterval(jobViewModel.breakRemindAfter))")
                         
                         
                     }
@@ -568,7 +562,7 @@ struct JobView: View {
                         
                         Text("Apply after: ")
                         Spacer()
-                        Text("\(formattedTimeInterval(jobViewModel.overtimeAppliedAfter))")
+                        Text("\(jobViewModel.formattedTimeInterval(jobViewModel.overtimeAppliedAfter))")
                         
                         
                     }
@@ -704,15 +698,13 @@ struct JobView: View {
 @available(iOS 17.0, *)
 struct MiniMapView: View {
     
-    @StateObject var mapModel: MapViewModel
+    @StateObject var mapModel = MapViewModel()
     @EnvironmentObject var jobViewModel: JobViewModel
     
-    init(job: Job? = nil, icon: String = "briefcase.fill", iconColor: Color = .cyan){
+    init(job: Job? = nil){
         if let job = job {
             
             self._mapModel = StateObject(wrappedValue: MapViewModel(job: job))
-        } else {
-            self._mapModel = StateObject(wrappedValue: MapViewModel(iconColor: iconColor, icon: icon))
         }
     }
     
@@ -730,7 +722,7 @@ struct MiniMapView: View {
             VStack(alignment: .leading) {
                 Map(position: $mapModel.cameraPosition, interactionModes: .rotate, selection: $mapModel.mapSelection) {
                     if let jobLocationCoordinate = mapModel.jobLocationCoordinate {
-                        Marker(mapModel.selectedAddressString ?? "Unknown", systemImage: mapModel.icon, coordinate: jobLocationCoordinate).tint(mapModel.iconColor)
+                        Marker(mapModel.selectedAddressString ?? "Unknown", systemImage: jobViewModel.selectedIcon, coordinate: jobLocationCoordinate).tint(jobViewModel.selectedColor)
                     }
                     
                     UserAnnotation()

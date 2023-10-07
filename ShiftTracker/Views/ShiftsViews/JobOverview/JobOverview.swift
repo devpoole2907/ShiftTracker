@@ -13,30 +13,25 @@ import Haptics
 
 struct JobOverview: View {
     
+    @StateObject var overviewModel: JobOverviewViewModel
+    
     @EnvironmentObject var sortSelection: SortSelection
-    
     @EnvironmentObject var shiftManager: ShiftDataManager
-    
-    @State private var isShareSheetShowing = false
-    
-    @State private var showLargeIcon = true
-    @State private var appeared: Bool = false // for icon tap
-    @State private var isEditJobPresented: Bool = false
-    
-    @State private var job: Job?
+    @EnvironmentObject var navigationState: NavigationState
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     @Environment(\.colorScheme) var colorScheme
-    
-    @EnvironmentObject var navigationState: NavigationState
-    
     @Environment(\.managedObjectContext) private var viewContext
     
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @FetchRequest var shifts: FetchedResults<OldShift>
+    @FetchRequest var weeklyShifts: FetchedResults<OldShift>
+    @FetchRequest var lastTenShifts: FetchedResults<OldShift>
+    
     let shiftStore = ShiftStore()
     
     func generateTestData() {
 
-        guard let selectedJob = jobSelectionViewModel.fetchJob(in: viewContext) else { return }
+        guard let selectedJob = selectedJobManager.fetchJob(in: viewContext) else { return }
         var currentDate = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
         for _ in 0..<300 {
             let oldShift = OldShift(context: viewContext)
@@ -62,22 +57,6 @@ struct JobOverview: View {
             }
         }
     }
-    
-    
-    
-    @State private var activeSheet: ActiveSheet?
-    
-    private enum ActiveSheet: Identifiable {
-        case addShiftSheet, configureExportSheet, symbolSheet
-        
-        var id: Int {
-            hashValue
-        }
-    }
-    
-    @FetchRequest var shifts: FetchedResults<OldShift>
-    @FetchRequest var weeklyShifts: FetchedResults<OldShift>
-    @FetchRequest var lastTenShifts: FetchedResults<OldShift>
     
     init(navPath: Binding<NavigationPath>, job: Job? = nil){
         print("job overview itself got reinitialised")
@@ -113,7 +92,7 @@ struct JobOverview: View {
         
         _navPath = navPath
         
-        _job = State(initialValue: job)
+        _overviewModel = StateObject(wrappedValue: JobOverviewViewModel(job: job))
         
         
         UITableView.appearance().backgroundColor = UIColor.clear
@@ -131,16 +110,13 @@ struct JobOverview: View {
     
     var body: some View {
         
-        let jobColor = Color(red: Double(job?.colorRed ?? 0.0), green: Double(job?.colorGreen ?? 0.0), blue: Double(job?.colorBlue ?? 0.0))
-        
-        
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
                 List{
                 statsSection
 
                     recentShiftsSection
-                    .listRowInsets(.init(top: 10, leading: job != nil ? 20 : 10, bottom: 10, trailing: 20))
+                        .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
                     
                
                     
@@ -154,7 +130,7 @@ struct JobOverview: View {
                 .onChange(of: geo.frame(in: .global).minY) { minY in
                     
                     withAnimation {
-                        checkTitlePosition(geometry: geo)
+                        overviewModel.checkTitlePosition(geometry: geo)
                     }
                 }
                 
@@ -173,20 +149,20 @@ struct JobOverview: View {
             .navigationDestination(for: Int.self) { value in
                 
                 if value == 1 {
-                    ShiftsList(navPath: $navPath).environmentObject(jobSelectionViewModel).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection)
+                    ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection)
                         .onAppear {
                             withAnimation {
                                 shiftManager.showModePicker = false
                             }
                         }
                 } else if value == 2 {
-                    HistoricalView(navPath: $navPath)
+                    HistoricalView()
                 }
                 
             }
             
         }
-        .sheet(item: $activeSheet) { sheet in
+        .sheet(item: $overviewModel.activeSheet) { sheet in
             
             switch sheet {
                 
@@ -194,10 +170,10 @@ struct JobOverview: View {
                 
                 
                 
-                if job != nil {
+                if overviewModel.job != nil {
                     
                     
-                    ConfigureExportView(shifts: shifts, job: job)
+                    ConfigureExportView(shifts: shifts, job: overviewModel.job)
                         .presentationDetents([.large])
                         .customSheetRadius(35)
                         .customSheetBackground()
@@ -213,12 +189,12 @@ struct JobOverview: View {
                 
             case .addShiftSheet:
                 
-                if job != nil {
+                if overviewModel.job != nil {
                     
                     
                     
                     NavigationStack{
-                        DetailView(job: job, presentedAsSheet: true)
+                        DetailView(job: overviewModel.job, presentedAsSheet: true)
                     }
                     
                     .presentationDetents([.large])
@@ -230,7 +206,7 @@ struct JobOverview: View {
                 
             case .symbolSheet:
                 JobIconPicker()
-                    .environmentObject(JobViewModel(job: self.job))
+                    .environmentObject(JobViewModel(job: overviewModel.job))
                     .environment(\.managedObjectContext, viewContext)
                     .presentationDetents([ .medium, .fraction(0.7)])
                     .presentationDragIndicator(.visible)
@@ -248,7 +224,7 @@ struct JobOverview: View {
                 shiftManager.showModePicker = true
             }
             
-            appeared.toggle()
+            overviewModel.appeared.toggle()
             
         }
         
@@ -256,30 +232,30 @@ struct JobOverview: View {
         
         .overlay(alignment: .topTrailing){
             
-            if showLargeIcon && job != nil {
-                
-                NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: job?.icon ?? "", color: jobColor)
+            if overviewModel.showLargeIcon && overviewModel.job != nil && overviewModel.job?.name?.count ?? 0 <= 16 {
+             
+                NavBarIconView(appeared: $overviewModel.appeared, isLarge: $overviewModel.showLargeIcon, job: overviewModel.job!)
                     .padding(.trailing, 20)
                     .offset(x: 0, y: -55)
                 
             }
         }
 
-        .navigationTitle(job?.name ?? "Summary")
+        .navigationTitle(overviewModel.job?.name ?? "Summary")
 
         
-        .onChange(of: jobSelectionViewModel.selectedJobUUID) { jobUUID in
+        .onChange(of: selectedJobManager.selectedJobUUID) { jobUUID in
             
-            self.job = jobSelectionViewModel.fetchJob(with: jobUUID, in: viewContext)
+            overviewModel.job = selectedJobManager.fetchJob(with: jobUUID, in: viewContext)
         }
         
-        .fullScreenCover(isPresented: $isEditJobPresented) {
-            JobView(job: job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $job).environmentObject(ContentViewModel.shared)
+        .fullScreenCover(isPresented: $overviewModel.isEditJobPresented) {
+            JobView(job: overviewModel.job, isEditJobPresented: $overviewModel.isEditJobPresented, selectedJobForEditing: $overviewModel.job).environmentObject(ContentViewModel.shared)
                 .customSheetBackground()
             
         }
         
-        .toolbar{
+          .toolbar{
             
             
             ToolbarItem(placement: .topBarLeading){
@@ -303,22 +279,22 @@ struct JobOverview: View {
             }
             
             
-            if !showLargeIcon && job != nil {
+            if !overviewModel.showLargeIcon && overviewModel.job != nil {
                 ToolbarItem(placement: .topBarTrailing) {
-                        NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: job?.icon ?? "", color: jobColor).frame(maxHeight: 25)
+                    NavBarIconView(appeared: $overviewModel.appeared, isLarge: $overviewModel.showLargeIcon, job: overviewModel.job!).frame(maxHeight: 25)
                 }
             }
             
             ToolbarTitleMenu {
                 
                 Button(action: {
-                    isEditJobPresented.toggle()
+                    overviewModel.isEditJobPresented.toggle()
                 }){
                     HStack {
                         Text("Edit Job")
                         Image(systemName: "pencil")
                     }
-                }.disabled(job == nil || ContentViewModel.shared.shift != nil)
+                }.disabled(overviewModel.job == nil || ContentViewModel.shared.shift != nil)
                 
                 
                 
@@ -331,11 +307,6 @@ struct JobOverview: View {
             
         }
         
-    }
-    
-    private func checkTitlePosition(geometry: GeometryProxy) {
-        let minY = geometry.frame(in: .global).minY
-        showLargeIcon = minY > 100  // adjust this threshold as needed
     }
     
     var recentShiftsSection: some View {
@@ -376,7 +347,7 @@ struct JobOverview: View {
                 Text("Latest Shifts")
                     .textCase(nil)
                     .foregroundStyle(textColor)
-                    .padding(.leading, job != nil ? -12 : -4)
+                    .padding(.leading, overviewModel.job != nil ? -12 : -4)
                     .font(.title2)
                     .bold()
                 
@@ -405,14 +376,14 @@ struct JobOverview: View {
                 
                 Button(action: {
                     withAnimation(.spring) {
-                        activeSheet = .addShiftSheet
+                        overviewModel.activeSheet = .addShiftSheet
                     }
                 }){
                     
-                    Image(systemName: "plus").customAnimatedSymbol(value: $activeSheet)
+                    Image(systemName: "plus").customAnimatedSymbol(value: $overviewModel.activeSheet)
                         .bold()
                     
-                }.disabled(job == nil)
+                }.disabled(overviewModel.job == nil)
                 
                 
                 
@@ -443,7 +414,7 @@ struct JobOverview: View {
                 
                 
                 ExportSquare(totalShifts: shifts.count, action: {
-                    activeSheet = .configureExportSheet
+                    overviewModel.activeSheet = .configureExportSheet
                 })
                 .environmentObject(shiftManager)
                 
@@ -465,31 +436,4 @@ struct JobOverview: View {
     
 }
 
-struct NavBarIconView: View {
-    
-    @Binding var appeared: Bool
-    @Binding var isLarge: Bool
-    var icon: String
-    var color: Color
-    
-    var body: some View {
-        
-        let dimension: CGFloat = isLarge ? 25 : 15
-        
-        Image(systemName: icon)
-        
-            .resizable()
-            .scaledToFit()
-            .frame(width: dimension, height: dimension)
-            .shadow(color: .white, radius: 1.0)
-            .customAnimatedSymbol(value: $appeared)
-        
-            .padding(isLarge ? 10 : 7)
-            .foregroundStyle(Color.white)
-            .background{
-                Circle().foregroundStyle(color.gradient).shadow(color: color, radius: 2)
-            }
-            .frame(width: dimension * 1.8, height: dimension * 1.8)
-        
-    }
-}
+

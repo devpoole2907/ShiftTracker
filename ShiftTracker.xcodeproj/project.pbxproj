@@ -236,6 +236,9 @@
 		7CD907482ABEB36200D2862D /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 7CD907472ABEB36200D2862D /* SwiftUIIntrospect */; };
 		7CF01D752ACBEE2F00EBC36C /* AggregatedShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */; };
 		7CF01D772ACBEE4600EBC36C /* DayOrMonthAggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */; };
+		7CF4D0D92AD21F21001A891E /* JobOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0D82AD21F21001A891E /* JobOverviewViewModel.swift */; };
+		7CF4D0DB2AD22123001A891E /* NavBarIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0DA2AD22123001A891E /* NavBarIconView.swift */; };
+		7CF4D0DD2AD2220F001A891E /* ExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -488,6 +491,9 @@
 		7CD8A35B2A88AB1A0011A1C0 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
 		7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregatedShift.swift; sourceTree = "<group>"; };
 		7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayOrMonthAggregate.swift; sourceTree = "<group>"; };
+		7CF4D0D82AD21F21001A891E /* JobOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobOverviewViewModel.swift; sourceTree = "<group>"; };
+		7CF4D0DA2AD22123001A891E /* NavBarIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarIconView.swift; sourceTree = "<group>"; };
+		7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportViewModel.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -778,6 +784,7 @@
 				7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */,
 				7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */,
 				7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */,
+				7CF4D0DA2AD22123001A891E /* NavBarIconView.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -912,6 +919,8 @@
 				7C62185F2AD0EC8300E67245 /* MapViewModel.swift */,
 				7C6218612AD0FB4500E67245 /* AddTagViewModel.swift */,
 				7C6218652AD20DC600E67245 /* MenuViewModel.swift */,
+				7CF4D0D82AD21F21001A891E /* JobOverviewViewModel.swift */,
+				7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -1414,6 +1423,7 @@
 				1ACA60BD29D8EDEC00B279CB /* CustomToggleStyle.swift in Sources */,
 				7C6218642AD0FF5E00E67245 /* TrailingCloseButton.swift in Sources */,
 				7C337B682ABFE77600A535CE /* RoundedFontDesignModifier.swift in Sources */,
+				7CF4D0DB2AD22123001A891E /* NavBarIconView.swift in Sources */,
 				1A88007129E3D98D009458BE /* BreaksListView.swift in Sources */,
 				7CD8A3262A882F350011A1C0 /* ShiftSorts.swift in Sources */,
 				1A22F00829C686A200A23F33 /* ShiftDataModel.xcdatamodeld in Sources */,
@@ -1431,6 +1441,7 @@
 				7CD8A32A2A8831D20011A1C0 /* SortSelectionView.swift in Sources */,
 				7C2A18E62AA0275A00518789 /* AddressManager.swift in Sources */,
 				1A83C61A2A5794F90054E3B1 /* BreakTimerView.swift in Sources */,
+				7CF4D0D92AD21F21001A891E /* JobOverviewViewModel.swift in Sources */,
 				7C2C2F872AA6CD580074E32E /* SettingsCheckView.swift in Sources */,
 				7C7B46BE2AC170F300D87140 /* MockupStatisticsView.swift in Sources */,
 				7CAB87162A5878C900A08219 /* ShiftStore.swift in Sources */,
@@ -1472,6 +1483,7 @@
 				BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */,
 				7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */,
 				BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */,
+				7CF4D0DD2AD2220F001A891E /* ExportViewModel.swift in Sources */,
 				BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -27,7 +27,9 @@ class HistoryViewModel: ObservableObject {
     @Published var selectedDate: Date? = nil
     @Published var aggregateValue: Double = 0.0
     
+    @Published var appeared: Bool = false
     
+    @Published var showLargeIcon: Bool = true
     
     @Published var chartYSelection: Double? = nil
     
@@ -47,6 +49,11 @@ class HistoryViewModel: ObservableObject {
 
         return formatter
     }()
+    
+    func checkTitlePosition(geometry: GeometryProxy) {
+        let minY = geometry.frame(in: .global).minY
+        showLargeIcon = minY > 100  // adjust this threshold as needed
+    }
 
     
     func getCurrentDateRangeString() -> String {

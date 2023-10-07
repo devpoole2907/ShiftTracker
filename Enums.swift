@@ -278,6 +278,14 @@ enum JobViewActiveSheet: Identifiable {
     }
 }
 
+enum ActiveOverviewSheet: Identifiable {
+    case addShiftSheet, configureExportSheet, symbolSheet
+    
+    var id: Int {
+        hashValue
+    }
+}
+
 enum ReminderTime: String, CaseIterable, Identifiable {
     case oneMinute = "1m before"
     case fifteenMinutes = "15m before"

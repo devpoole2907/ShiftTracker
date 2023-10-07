@@ -12,8 +12,6 @@ import Haptics
 
 struct HistoricalView: View {
     
-    @Binding var navPath: NavigationPath
-    
     @Environment(\.editMode) private var editMode
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) private var viewContext
@@ -29,15 +27,6 @@ struct HistoricalView: View {
     
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
-    
-    @State private var appeared: Bool = false
-    
-    @State private var showLargeIcon: Bool = true
-    
-    private func checkTitlePosition(geometry: GeometryProxy) {
-        let minY = geometry.frame(in: .global).minY
-        showLargeIcon = minY > 100  // adjust this threshold as needed
-    }
     
     
     var body: some View {
@@ -300,7 +289,7 @@ struct HistoricalView: View {
             .onChange(of: geo.frame(in: .global).minY) { minY in
                 
                 withAnimation {
-                    checkTitlePosition(geometry: geo)
+                    historyModel.checkTitlePosition(geometry: geo)
                 }
             }
             
@@ -309,12 +298,11 @@ struct HistoricalView: View {
         .overlay(alignment: .topTrailing){
             
             if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
-                let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue))
-                if showLargeIcon {
+                if historyModel.showLargeIcon {
                     
                     
                     
-                    NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: job.icon ?? "", color: jobColor)
+                    NavBarIconView(appeared: $historyModel.appeared, isLarge: $historyModel.showLargeIcon, job: job)
                         .padding(.trailing, 20)
                         .offset(x: 0, y: -55)
                     
@@ -339,11 +327,9 @@ struct HistoricalView: View {
                     }
                 }
                 
-                print("appeared is \(appeared)")
-                
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     // only change selected tab to first one if this is the first appearance, or the currently selected tab is no longer within the range of the newAggregatedShifts
-                    if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || appeared == false {
+                    if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || historyModel.appeared == false {
                         historyModel.selectedTab = newAggregatedShifts.count - 1
                         print("selected tab set to last one")
                     }
@@ -360,7 +346,7 @@ struct HistoricalView: View {
             
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                appeared = true
+                historyModel.appeared = true
                 if historyModel.aggregatedShifts.count < 1 {
                     dismiss()
                 }
@@ -374,24 +360,22 @@ struct HistoricalView: View {
         
         .navigationTitle(historyModel.getCurrentDateRangeString())
         
-        .toolbar {
-            if !showLargeIcon {
+     /*   .toolbar {
+            if !historyModel.showLargeIcon {
                 
                 if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
-                    let jobColor = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue))
-                    let jobIcon = job.icon ?? "briefcase"
                     
-                    if !showLargeIcon {
+                    if !historyModel.showLargeIcon {
                         ToolbarItem(placement: .topBarTrailing) {
                             
-                            NavBarIconView(appeared: $appeared, isLarge: $showLargeIcon, icon: jobIcon, color: jobColor).frame(maxHeight: 25)
+                            NavBarIconView(appeared: $historyModel.appeared, isLarge: $historyModel.showLargeIcon, job: .constant(job)).frame(maxHeight: 25)
                             
                             
                         }
                     }
                 }
             }
-        }
+        }*/
         
     }
     

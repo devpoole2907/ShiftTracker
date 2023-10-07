@@ -226,6 +226,13 @@ extension View {
     }
 }
 
+extension Calendar {
+    func isDateInLastSixMonths(_ date: Date) -> Bool {
+        let sixMonthsAgo = self.date(byAdding: .month, value: -6, to: Date()) ?? Date()
+        return date >= sixMonthsAgo
+    }
+}
+
 // used to create 3 default tags when the app launches
 
 func createTags(in viewContext: NSManagedObjectContext) {

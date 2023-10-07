@@ -35,20 +35,10 @@ class MapViewModel: ObservableObject {
     @Published var selectedRadius = 75.0
     @Published var selectedAddressString: String?
     
-    var iconColor: Color = .cyan
-    var icon: String = "briefcase.fill"
     var job: Job? = nil
     
     init(job: Job? = nil) {
         self.job = job
-        
-        if let jobColorRed = job?.colorRed, let jobColorBlue = job?.colorBlue, let jobColorGreen = job?.colorGreen {
-            self.iconColor = Color(red: Double(jobColorRed), green: Double(jobColorGreen), blue: Double(jobColorBlue))
-        }
-        
-        if let jobIcon = job?.icon {
-            self.icon = jobIcon
-        }
         
         if let locationSet = job?.locations, let location = locationSet.allObjects.first as? JobLocation {
             self.selectedAddressString = location.address
@@ -72,11 +62,6 @@ class MapViewModel: ObservableObject {
             self.jobLocationCoordinate = annotation?.coordinate
         
         }
-    }
-    
-    init(iconColor: Color, icon: String) {
-        self.icon = icon
-        self.iconColor = iconColor
     }
     
     func setSelectedAddress(_ address: CLPlacemark) {

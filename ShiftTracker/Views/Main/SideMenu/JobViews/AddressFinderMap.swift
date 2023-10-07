@@ -29,7 +29,7 @@ struct AddressFinderMap: View {
             }
             
             if let jobLocationCoordinate = mapViewModel.jobLocationCoordinate {
-                Marker(mapViewModel.selectedAddressString ?? "Unknown", systemImage: mapViewModel.icon, coordinate: jobLocationCoordinate).tint(mapViewModel.iconColor)
+                Marker(mapViewModel.selectedAddressString ?? "Unknown", systemImage: jobViewModel.selectedIcon, coordinate: jobLocationCoordinate).tint(jobViewModel.selectedColor)
             }
             
             UserAnnotation()
@@ -90,7 +90,7 @@ struct AddressFinderMap: View {
                                     .font(.title3)
                                     .bold()
                                 
-                                Text(suggestion.placemark.formattedAddress ?? "")
+                                Text(suggestion.placemark.formattedAddress)
                                     .font(.callout)
                                     .foregroundStyle(.gray)
                                     .fontDesign(.rounded)
