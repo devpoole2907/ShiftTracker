@@ -14,257 +14,42 @@ struct SideMenu: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @StateObject var menuModel = MenuViewModel()
+    
     @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest(entity: Job.entity(), sortDescriptors: [])
     private var jobs: FetchedResults<Job>
-    @FetchRequest(entity: Tag.entity(), sortDescriptors: [])
-    private var tags: FetchedResults<Tag>
     
-    @State private var showJobs: Bool = false
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var navigationState: NavigationState
-    @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
-    @AppStorage("selectedJobUUID") private var storedSelectedJobUUID: String?
-    // used for sub expiry
-    @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
-
     
-    @State private var selectedJobForEditing: Job?
-    @State private var isEditJobPresented: Bool = false
-    
-    @State private var showAddJobView = false
-    @State private var showingTagSheet = false
-    @State private var showUpgradeScreen = false
-    
-    @Binding var currentTab: Tab
     
     var body: some View {
-        
-        let proColor: Color = colorScheme == .dark ? .orange : .cyan
-        
-        
         VStack(alignment: .leading, spacing: 0){
             
-            VStack(alignment: .leading, spacing: 14){
-                HStack{
-                    if purchaseManager.hasUnlockedPro{
-                        Text("ShiftTracker")
-                            .font(.title)
-                            .bold()
-                        Text("PRO")
-                            .font(.largeTitle)
-                            .foregroundStyle(proColor.gradient)
-                            .bold()
-                    } else {
-                        Text("ShiftTracker")
-                            .font(.largeTitle)
-                            .bold()
-                    }
-                    
-                }
-                
-            }
-  
-            .padding(.leading)
+            menuTitle
             
             ScrollView(.vertical, showsIndicators: false){
                 VStack{
                     VStack(alignment: .leading, spacing: 30) {
-                        
-                            HStack(spacing: 25) {
-                                Image(systemName: "briefcase.fill")
-                                    .resizable()
-                                    .renderingMode(.template)
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 30, height: 30)
-                                Text("Jobs")
-                                    .font(.largeTitle)
-                                    .bold()
-                                Spacer()
-                                Button(action: {
-                                    if purchaseManager.hasUnlockedPro || jobs.isEmpty {
-                                        showAddJobView = true
-                                    } else {
-                                        showUpgradeScreen = true
-                                    }
-                                }) {
-                                    Image(systemName: "plus").customAnimatedSymbol(value: $showAddJobView)
-                                        .bold()
-                                }.padding(.trailing)
-                            }
-                            .foregroundColor(.primary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .haptics(onChangeOf: showAddJobView, type: .light)
-                        
-                        VStack{
-                          //  if isJobsExpanded {
-                            VStack(alignment: .leading, spacing: 10){
-                                ForEach(jobs) { job in
-                                    
-                                    
-                                    
-                                    VStack(spacing: 0) {
-                                        JobRow(job: job, isSelected: jobSelectionViewModel.selectedJobUUID == job.uuid, editAction: {
-                                            selectedJobForEditing = job
-                                            isEditJobPresented = true
-                                        }, showEdit: true)
-                                        .contentShape(Rectangle())
-                                        .onTapGesture {
-                                            if purchaseManager.hasUnlockedPro
-                                                || jobSelectionViewModel.selectedJobUUID == job.uuid
-                                                || (job.uuid?.uuidString == lastSelectedJobUUID)
-                                                || (lastSelectedJobUUID == nil) {
-                                                if !(jobSelectionViewModel.selectedJobUUID == job.uuid) {
-                                                    jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
-                                                    lastSelectedJobUUID = job.uuid?.uuidString
-                                                } else {
-                                                    withAnimation {
-                                                        jobSelectionViewModel.deselectJob(shiftViewModel: viewModel)
-                                                    }
-                                                }
-
-                                                withAnimation(.easeInOut) {
-                                                    navigationState.showMenu = false
-                                                }
-                                            } else {
-                                  
-                                                showUpgradeScreen = true
-                                            }
-                                        }
-
-
-                                        
-                                    }.padding(.horizontal, 8)
-                                        .padding(.vertical, 10)
-                                    
-                                    
-                                    
-                                    
-                                        .glassModifier(cornerRadius: 50)
-                                    
-                                        .shadow(radius: jobSelectionViewModel.selectedJobUUID == job.uuid ? 5 : 0)
-                                    
-                                    
-                                        .opacity(purchaseManager.hasUnlockedPro
-                                                 || jobSelectionViewModel.selectedJobUUID == job.uuid
-                                                 || (job.uuid?.uuidString == lastSelectedJobUUID)
-                                                 || (lastSelectedJobUUID == nil)
-                                            ? 1.0
-                                            : 0.5)
-                                    
-                                    
-                                    
-                                    
-                                    
-                                }
-                                
-                                .fullScreenCover(item: $selectedJobForEditing) { job in
-                                    JobView(job: job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $selectedJobForEditing)
-                                        .onDisappear {
-                                            selectedJobForEditing = nil
-                                        }
-                                        .customSheetBackground()
-                                }
-                                
-                                
-                                
-                                .haptics(onChangeOf: selectedJobForEditing, type: .light)
-                                
-                                
-                                
-                            }
-                            
-                            
-                        } .transition(.move(edge: .top))
-                            .haptics(onChangeOf: jobSelectionViewModel.selectedJobUUID, type: .light)
-                        
-                        
-                        
+                        jobsHeader
+                        jobsList
+                            .transition(.move(edge: .top))
+                            .haptics(onChangeOf: selectedJobManager.selectedJobUUID, type: .light)
                     }
                     .padding()
                     .padding(.leading)
                     .padding(.top, 35)
-                    
-                    
-                    
                 }
             }
             
-            VStack{
-                HStack(spacing: 8){
-
-                    Button(action: {
-                        
-                        showingTagSheet = true
-                        
-                    }){
-                        HStack(spacing: 8){
-                            Image(systemName: "tag.fill")
-                                .resizable()
-                                .renderingMode(.template)
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 20, height: 20)
-                                .customAnimatedSymbol(value: $showingTagSheet)
-                            
-                            Text("Tags")
-                                .font(.title2)
-                                .bold()
-                            
-                            
-                            Image(systemName: "plus").customAnimatedSymbol(value: $showingTagSheet)
-                                .bold()
-                            
-                            
-                        }
-                        
-                    }.padding(.top, 1)
-                    .haptics(onChangeOf: showingTagSheet, type: .light)
-                    Spacer()
-                }
-                
-            }.padding()
-            
-                .sheet(isPresented: $showingTagSheet){
-                    
-                    AddTagView()
-                        .presentationDetents([.medium])
-                        .customSheetRadius(35)
-                        .customSheetBackground()
-                    
-                }
+            tagButton
             
             
-            VStack{
-                
-                if !purchaseManager.hasUnlockedPro{
-                    
-                    Divider()
-                    
-                    Button(action: { showUpgradeScreen.toggle()}){
-                        HStack(spacing: 25) {
-                            Image(systemName: "plus.diamond.fill")
-                                .resizable()
-                                .renderingMode(.template)
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 30, height: 30)
-                            Text("Upgrade")
-                                .font(.largeTitle)
-                                .bold()
-                        }
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding()
-                    .padding(.leading)
-                }
-                    
-                
-                
-                
-            }
+            upgradeButton.environmentObject(purchaseManager)
             
         }
         .padding(.top)
@@ -275,74 +60,244 @@ struct SideMenu: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .onAppear {
             // Initialize the selected job to be the stored job when the view appears
-            if let storedUUIDString = storedSelectedJobUUID,
+            if let storedUUIDString = menuModel.storedSelectedJobUUID,
                let storedUUID = UUID(uuidString: storedUUIDString),
                let storedJob = jobs.first(where: { $0.uuid == storedUUID }) {
-                jobSelectionViewModel.selectedJobUUID = storedJob.uuid
+                selectedJobManager.selectedJobUUID = storedJob.uuid
                 viewModel.selectedJobUUID = storedJob.uuid
             }
         }
         
         
-        .fullScreenCover(isPresented: $showAddJobView){
-            JobView(isEditJobPresented: $isEditJobPresented, selectedJobForEditing: .constant(nil))
+        .fullScreenCover(isPresented: $menuModel.showAddJobView){
+            JobView(isEditJobPresented: $menuModel.isEditJobPresented)
             
                 .customSheetBackground()
             
         }
         
-        .fullScreenCover(isPresented: $showUpgradeScreen){
-      
+        .fullScreenCover(isPresented: $menuModel.showUpgradeScreen){
+            
             ProView()
-               
+            
                 .customSheetBackground()
-        
+            
         }
         
     }
     
-    @ViewBuilder
-    func TabButton(title: String, image: String, destination: @escaping () -> AnyView) -> some View {
-        NavigationLink(destination: destination().toolbar(.hidden)) {
-            HStack(spacing: 25) {
-                Image(systemName: image)
-                    .resizable()
-                    .renderingMode(.template)
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 30, height: 30)
-                Text(title)
-                    .font(.largeTitle)
-                    .bold()
+    var upgradeButton: some View {
+        
+        return VStack{
+            
+            if !purchaseManager.hasUnlockedPro{
+                
+                Divider()
+                
+                Button(action: { menuModel.showUpgradeScreen.toggle()}){
+                    HStack(spacing: 25) {
+                        Image(systemName: "plus.diamond.fill")
+                            .resizable()
+                            .renderingMode(.template)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 30, height: 30)
+                        Text("Upgrade")
+                            .font(.largeTitle)
+                            .bold()
+                    }
+                    .foregroundColor(.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding()
+                .padding(.leading)
             }
-            .foregroundColor(.primary)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            
+            
+            
         }
-    }
-    
-    
-    func findSelectedJob() -> Job? {
-        return jobs.first(where: { $0.uuid == viewModel.selectedJobUUID })
         
     }
     
-    private func deleteJob(_ job: Job) {
-        viewContext.delete(job)
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+    var menuTitle: some View {
+        
+        let proColor: Color = colorScheme == .dark ? .orange : .cyan
+        
+        return VStack(alignment: .leading, spacing: 14){
+            HStack{
+                if purchaseManager.hasUnlockedPro{
+                    Text("ShiftTracker")
+                        .font(.title)
+                        .bold()
+                    Text("PRO")
+                        .font(.largeTitle)
+                        .foregroundStyle(proColor.gradient)
+                        .bold()
+                } else {
+                    Text("ShiftTracker")
+                        .font(.largeTitle)
+                        .bold()
+                }
+                
+            }
+            
         }
+        
+        .padding(.leading)
+    }
+    
+    var jobsHeader: some View {
+        return HStack(spacing: 25) {
+            Image(systemName: "briefcase.fill")
+                .resizable()
+                .renderingMode(.template)
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 30, height: 30)
+            Text("Jobs")
+                .font(.largeTitle)
+                .bold()
+            Spacer()
+            Button(action: {
+                if purchaseManager.hasUnlockedPro || jobs.isEmpty {
+                    menuModel.showAddJobView = true
+                } else {
+                    menuModel.showUpgradeScreen = true
+                }
+            }) {
+                Image(systemName: "plus").customAnimatedSymbol(value: $menuModel.showAddJobView)
+                    .bold()
+            }.padding(.trailing)
+        }
+        .foregroundColor(.primary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .haptics(onChangeOf: menuModel.showAddJobView, type: .light)
+    }
+    
+    var jobsList: some View {
+        return  LazyVStack(alignment: .leading, spacing: 10){
+            ForEach(jobs) { job in
+                
+                
+                
+                VStack(spacing: 0) {
+                    JobRow(job: job, isSelected: selectedJobManager.selectedJobUUID == job.uuid, editAction: {
+                        menuModel.selectedJobForEditing = job
+                        menuModel.isEditJobPresented = true
+                    }, showEdit: true)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if purchaseManager.hasUnlockedPro
+                            || selectedJobManager.selectedJobUUID == job.uuid
+                            || (job.uuid?.uuidString == menuModel.lastSelectedJobUUID)
+                            || (menuModel.lastSelectedJobUUID == nil) {
+                            if !(selectedJobManager.selectedJobUUID == job.uuid) {
+                                selectedJobManager.selectJob(job, with: jobs, shiftViewModel: viewModel)
+                                menuModel.lastSelectedJobUUID = job.uuid?.uuidString
+                            } else {
+                                withAnimation {
+                                    selectedJobManager.deselectJob(shiftViewModel: viewModel)
+                                }
+                            }
+                            
+                            withAnimation(.easeInOut) {
+                                navigationState.showMenu = false
+                            }
+                        } else {
+                            
+                            menuModel.showUpgradeScreen = true
+                        }
+                    }
+                    
+                    
+                    
+                }.padding(.horizontal, 8)
+                    .padding(.vertical, 10)
+                
+                
+                
+                
+                    .glassModifier(cornerRadius: 50)
+                
+                    .shadow(radius: selectedJobManager.selectedJobUUID == job.uuid ? 5 : 0)
+                
+                
+                    .opacity(purchaseManager.hasUnlockedPro
+                             || selectedJobManager.selectedJobUUID == job.uuid
+                             || (job.uuid?.uuidString == menuModel.lastSelectedJobUUID)
+                             || (menuModel.lastSelectedJobUUID == nil)
+                             ? 1.0
+                             : 0.5)
+                
+                
+                
+                
+                
+            }
+            
+            .fullScreenCover(item: $menuModel.selectedJobForEditing) { job in
+                JobView(job: job, isEditJobPresented: $menuModel.isEditJobPresented, selectedJobForEditing: $menuModel.selectedJobForEditing)
+                    .onDisappear {
+                        menuModel.selectedJobForEditing = nil
+                    }
+                    .customSheetBackground()
+            }
+            
+            
+            
+            .haptics(onChangeOf: menuModel.selectedJobForEditing, type: .light)
+            
+            
+            
+        }
+    }
+    
+    var tagButton: some View {
+        return VStack{
+            HStack(spacing: 8){
+                
+                Button(action: {
+                    
+                    menuModel.showingTagSheet = true
+                    
+                }){
+                    HStack(spacing: 8){
+                        Image(systemName: "tag.fill")
+                            .resizable()
+                            .renderingMode(.template)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 20, height: 20)
+                            .customAnimatedSymbol(value: $menuModel.showingTagSheet)
+                        
+                        Text("Tags")
+                            .font(.title2)
+                            .bold()
+                        
+                        
+                        Image(systemName: "plus").customAnimatedSymbol(value: $menuModel.showingTagSheet)
+                            .bold()
+                        
+                        
+                    }
+                    
+                }.padding(.top, 1)
+                    .haptics(onChangeOf: menuModel.showingTagSheet, type: .light)
+                Spacer()
+            }
+            
+        }.padding()
+            .sheet(isPresented: $menuModel.showingTagSheet){
+                
+                AddTagView()
+                    .presentationDetents([.medium])
+                    .customSheetRadius(35)
+                    .customSheetBackground()
+                
+            }
     }
     
 }
 
-struct SideMenu_Previews: PreviewProvider {
-    static var previews: some View {
-       // MainWithSideBarView(currentTab: .constant(.home))
-        MainWithSideBarView()
-    }
-}
+
 
 
 

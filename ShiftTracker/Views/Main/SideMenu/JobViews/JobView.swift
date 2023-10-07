@@ -39,7 +39,7 @@ struct JobView: View {
     
     
     // Initialize state properties with job values - we shouldnt need to pass the binding for the selected job to edit but here we are for now it works
-    init(job: Job? = nil, isEditJobPresented: Binding<Bool>, selectedJobForEditing: Binding<Job?>) {
+    init(job: Job? = nil, isEditJobPresented: Binding<Bool>, selectedJobForEditing: Binding<Job?> = .constant(nil)) {
         self.job = job
         
         if job == nil {

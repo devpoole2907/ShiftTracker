@@ -59,7 +59,10 @@ struct AddTagView: View {
     
     var tagGrid: some View {
         
-        let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+        let columns = [
+                GridItem(.adaptive(minimum: 100)),
+                GridItem(.adaptive(minimum: 100)),
+            ]
         
         return VStack(alignment: .center) {
             

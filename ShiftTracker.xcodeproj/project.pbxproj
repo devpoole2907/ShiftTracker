@@ -171,6 +171,7 @@
 		7C6218602AD0EC8300E67245 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C62185F2AD0EC8300E67245 /* MapViewModel.swift */; };
 		7C6218622AD0FB4500E67245 /* AddTagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218612AD0FB4500E67245 /* AddTagViewModel.swift */; };
 		7C6218642AD0FF5E00E67245 /* TrailingCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218632AD0FF5E00E67245 /* TrailingCloseButton.swift */; };
+		7C6218662AD20DC600E67245 /* MenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218652AD20DC600E67245 /* MenuViewModel.swift */; };
 		7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */; };
 		7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B52AC1624D00D87140 /* MockupContentView.swift */; };
 		7C7B46B82AC166AB00D87140 /* MockupSideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */; };
@@ -435,6 +436,7 @@
 		7C62185F2AD0EC8300E67245 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		7C6218612AD0FB4500E67245 /* AddTagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagViewModel.swift; sourceTree = "<group>"; };
 		7C6218632AD0FF5E00E67245 /* TrailingCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrailingCloseButton.swift; sourceTree = "<group>"; };
+		7C6218652AD20DC600E67245 /* MenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewModel.swift; sourceTree = "<group>"; };
 		7C72D9C02A6FA6C700FADDFD /* TagPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPicker.swift; sourceTree = "<group>"; };
 		7C7B46B52AC1624D00D87140 /* MockupContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupContentView.swift; sourceTree = "<group>"; };
 		7C7B46B72AC166AB00D87140 /* MockupSideMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupSideMenu.swift; sourceTree = "<group>"; };
@@ -909,6 +911,7 @@
 				7C62185B2AD0C3D700E67245 /* JobViewModel.swift */,
 				7C62185F2AD0EC8300E67245 /* MapViewModel.swift */,
 				7C6218612AD0FB4500E67245 /* AddTagViewModel.swift */,
+				7C6218652AD20DC600E67245 /* MenuViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -1431,6 +1434,7 @@
 				7C2C2F872AA6CD580074E32E /* SettingsCheckView.swift in Sources */,
 				7C7B46BE2AC170F300D87140 /* MockupStatisticsView.swift in Sources */,
 				7CAB87162A5878C900A08219 /* ShiftStore.swift in Sources */,
+				7C6218662AD20DC600E67245 /* MenuViewModel.swift in Sources */,
 				7C6218582AD0BA4E00E67245 /* JobForShiftView.swift in Sources */,
 				1A1914212A185281000D0F8B /* ShiftManager.swift in Sources */,
 				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,

@@ -262,7 +262,7 @@ struct MainWithSideBarView: View {
                 
                 
                 
-                SideMenu(currentTab: $navigationState.currentTab)
+                SideMenu()
                     .disabled(!navigationState.showMenu)
                     .environmentObject(navigationState)
                     .environmentObject(ContentViewModel.shared)
