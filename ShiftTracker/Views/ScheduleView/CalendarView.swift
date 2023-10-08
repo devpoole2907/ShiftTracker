@@ -11,8 +11,8 @@ import CoreData
 struct CalendarView: UIViewRepresentable {
     let interval: DateInterval
     @ObservedObject var shiftStore: ShiftStore
-    @Binding var dateSelected: DateComponents?
-    @Binding var displayEvents: Bool
+    
+    @EnvironmentObject var scheduleModel: SchedulingViewModel
     
     
     func makeUIView(context: Context) -> some UICalendarView {
@@ -97,9 +97,9 @@ struct CalendarView: UIViewRepresentable {
     
         
         
-        if let selectedDate = dateSelected?.date {
+        if let selectedDate = scheduleModel.dateSelected?.date {
                 if selectedDate >= visibleDate && selectedDate <= futureDate {
-                    uiView.reloadDecorations(forDateComponents: [dateSelected!], animated: true)
+                    uiView.reloadDecorations(forDateComponents: [scheduleModel.dateSelected!], animated: true)
                 }
             }
         
@@ -157,7 +157,7 @@ struct CalendarView: UIViewRepresentable {
     
         func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
             withAnimation{
-                parent.dateSelected = dateComponents
+                parent.scheduleModel.dateSelected = dateComponents
             }
             
          //   print("setting date selected to \(dateComponents?.date)")
@@ -166,7 +166,7 @@ struct CalendarView: UIViewRepresentable {
                         // User has deselected a date, so reselect the current date
                         let currentDateComponents = Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: Date())
                         dateSelection?.setSelected(currentDateComponents, animated: true)
-               parent.dateSelected = Date().dateComponents
+               parent.scheduleModel.dateSelected = Date().dateComponents
                     }
             
             guard let dateComponents else { return }
@@ -176,7 +176,7 @@ struct CalendarView: UIViewRepresentable {
                 .filter {$0.startDate.startOfDay == dateComponents.date?.startOfDay}
             if !foundEvents.isEmpty {
      
-                    parent.displayEvents.toggle()
+                parent.scheduleModel.displayEvents.toggle()
                 
             }
             

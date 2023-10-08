@@ -25,7 +25,33 @@ class SchedulingViewModel: ObservableObject {
     @Published var groupedShifts: [Date: [SingleScheduledShift]] = [:]
     @Published var isEmpty: Bool = false
     
+    @Published var displayEvents = false
+    
+    @Published var displayedOldShifts: [OldShift] = []
+    
+    @Published var deleteJobAlert = false
+    @Published var jobToDelete: Job?
+    
+    @Published var activeSheet: ActiveScheduleSheet?
+    
+    @Published var showAllScheduledShiftsView = false
+    
+    @Published var dateSelected: DateComponents? = Date().startOfDay.dateComponents
+    
+    init() {
+        self.dateSelected = Date().startOfDay.dateComponents
+    }
+    
     private let notificationManager = ShiftNotificationManager.shared
+    
+    func fetchShifts(allShifts: FetchedResults<OldShift>) {
+        let selectedDate = dateSelected?.date ?? Date()
+        let startOfDay = Calendar.current.startOfDay(for: selectedDate)
+        let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
+        withAnimation {
+            displayedOldShifts = allShifts.filter { ($0.shiftStartDate! as Date) >= startOfDay && ($0.shiftStartDate! as Date) < endOfDay }
+        }
+    }
     
      func loadGroupedShifts(shiftStore: ShiftStore, scheduleModel: SchedulingViewModel) async {
       

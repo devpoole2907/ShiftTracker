@@ -233,6 +233,22 @@ extension Calendar {
     }
 }
 
+extension Date {
+    func midnight() -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day], from: self)
+        return calendar.date(from: components) ?? self
+    }
+}
+
+extension Date {
+    func startOfTheDay() -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day], from: self)
+        return calendar.date(from: components) ?? self
+    }
+}
+
 // used to create 3 default tags when the app launches
 
 func createTags(in viewContext: NSManagedObjectContext) {

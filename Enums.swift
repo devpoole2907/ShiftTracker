@@ -286,6 +286,14 @@ enum ActiveOverviewSheet: Identifiable {
     }
 }
 
+enum ActiveScheduleSheet: Identifiable {
+    case pastShiftSheet, scheduleSheet
+    
+    var id: Int {
+        hashValue
+    }
+}
+
 enum ReminderTime: String, CaseIterable, Identifiable {
     case oneMinute = "1m before"
     case fifteenMinutes = "15m before"

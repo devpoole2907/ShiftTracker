@@ -24,10 +24,7 @@ struct ScheduledShiftsView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
-    @Binding var dateSelected: DateComponents?
     @Binding var navPath: NavigationPath
-    @Binding var displayedOldShifts: [OldShift]
-    
 
     
     var dateFormatter: DateFormatter {
@@ -41,9 +38,9 @@ struct ScheduledShiftsView: View {
         Group {
             
             
-            let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == dateSelected?.date?.startOfDay ?? Date().startOfDay}
+            let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == scheduleModel.dateSelected?.date?.startOfDay ?? Date().startOfDay}
             
-            let foundOldShifts = displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })
+            let foundOldShifts = scheduleModel.displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })
             
             if !foundOldShifts.isEmpty {
                 Section{
@@ -84,7 +81,7 @@ struct ScheduledShiftsView: View {
                 }
             } header: {
                 
-                Text(dateFormatter.string(from: dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
+                Text(dateFormatter.string(from: scheduleModel.dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
                         
                     
                     
@@ -114,7 +111,7 @@ struct ScheduledShiftsView: View {
                     }
                 
                 }
-            else if ((Calendar.current.isDateInToday(dateSelected?.date ?? Date()) || !isBeforeEndOfToday(dateSelected!.date ?? Date())) && displayedOldShifts.isEmpty) {
+            else if ((Calendar.current.isDateInToday(scheduleModel.dateSelected?.date ?? Date()) || !isBeforeEndOfToday(scheduleModel.dateSelected!.date ?? Date())) && scheduleModel.displayedOldShifts.isEmpty) {
                     Section{
                         Text("You have no shifts scheduled on this date.")
                             .bold()
@@ -144,7 +141,7 @@ struct ScheduledShiftsView: View {
             
         }) { shift in
             
-            CreateShiftForm(dateSelected: $dateSelected, scheduledShift: shift)
+            CreateShiftForm(dateSelected: $scheduleModel.dateSelected, scheduledShift: shift)
                 .presentationDetents([.large])
                 .customSheetRadius(35)
                 .customSheetBackground()
