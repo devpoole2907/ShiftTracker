@@ -30,6 +30,8 @@ struct DetailView: View {
         entity: Job.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]
     ) private var jobs: FetchedResults<Job>
+    @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
+    
     
     @State private var savedShift = false
     
@@ -107,7 +109,7 @@ struct DetailView: View {
         ZStack(alignment: .bottomTrailing){
             List{
                 Section{
-                    VStack{
+                    LazyVStack{
      
                         if !viewModel.areAllTempBreaksWithin {
                             HStack {
@@ -122,21 +124,17 @@ struct DetailView: View {
                             .frame(width: UIScreen.main.bounds.width - 60)
                             
                         }
-                        
+                      
                         statsPanel
    
-                        TagPicker($viewModel.selectedTags).allowsHitTesting(viewModel.isEditing)
+                        TagPicker($viewModel.selectedTags, from: tags).allowsHitTesting(viewModel.isEditing)
                             .padding(.horizontal, 15)
                             .padding(.vertical, 5)
-
-                    }
-
-                    VStack{
                         
                         shiftDatePickers
                         
                         payPanels
-   
+                        
                         if viewModel.tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
   
                             tipsPanel
@@ -147,16 +145,14 @@ struct DetailView: View {
                             
                             EstTaxPicker(taxPercentage: $viewModel.selectedTaxPercentage, isEditing: $viewModel.isEditing)
                         }
-
+                        
                         notesField
                         
-                        overtimePanel
-                        
-                        
-                        
-                        
+                        overtimePanel.padding(.vertical, 5)
+
                     }.padding(.horizontal, 10)
-                    
+
+
                     
                     
                 }.listRowSeparator(.hidden)
@@ -661,6 +657,18 @@ struct DetailView: View {
         return OvertimePanel(enabled: $viewModel.overtimeEnabled, rate: $viewModel.overtimeRate, applyAfter: $viewModel.overtimeAppliedAfter) {
             // add sheet for ios 16.1 <
         }.disabled(!viewModel.isEditing)
+            .onChange(of: viewModel.overtimeEnabled) { value in
+                   guard let overtimeTag = tags.first(where: { $0.name?.lowercased() == "overtime" }) else {
+                       // overtime tag not found?
+                       return
+                   }
+                   
+                   if value {
+                       viewModel.selectedTags.insert(overtimeTag)
+                   } else {
+                       viewModel.selectedTags.remove(overtimeTag)
+                   }
+               }
     }
     
     var breaksList: some View {

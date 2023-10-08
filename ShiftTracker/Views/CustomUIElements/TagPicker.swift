@@ -9,12 +9,13 @@ import SwiftUI
 
 struct TagPicker: View {
     
-    @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
+    private var tags: FetchedResults<Tag>
     
     @Binding var selectedTags: Set<Tag>
     
-    init(_ selectedTags: Binding<Set<Tag>>){
+    init(_ selectedTags: Binding<Set<Tag>>, from tags: FetchedResults<Tag>){
         _selectedTags = selectedTags
+        self.tags = tags
     }
     
     var body: some View {

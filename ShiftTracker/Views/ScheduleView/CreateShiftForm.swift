@@ -18,7 +18,6 @@ struct CreateShiftForm: View {
     
     @Environment(\.colorScheme) var colorScheme
     
-    //  let jobs: FetchedResults<Job>
     @Binding var dateSelected: DateComponents?
     
     @State private var selectedJob: Job?
@@ -43,6 +42,8 @@ struct CreateShiftForm: View {
     
     @State var startProgress: CGFloat = 0
     @State var toProgress: CGFloat = 0.5
+    
+    @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
     
     
     init(dateSelected: Binding<DateComponents?>, scheduledShift: ScheduledShift? = nil) {
@@ -479,7 +480,7 @@ struct CreateShiftForm: View {
                                 .padding(.horizontal)
                             
                             HStack{
-                                TagPicker($selectedTags)
+                                TagPicker($selectedTags, from: tags)
                             }.padding(.horizontal)
                             
                             
