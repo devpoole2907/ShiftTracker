@@ -16,37 +16,27 @@ struct DetailView: View {
     @StateObject var viewModel: DetailViewModel
     
     @Environment(\.colorScheme) var colorScheme
-    
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.requestReview) var requestReview
     
     @EnvironmentObject var jobSelectionManager: JobSelectionManager
-    
     @EnvironmentObject var shiftStore: ShiftStore
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
+    let breakManager = BreaksManager()
     
     @FetchRequest(
         entity: Job.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]
     ) private var jobs: FetchedResults<Job>
     
-    @Environment(\.dismiss) private var dismiss
-    
     @State private var savedShift = false
     
-    @Environment(\.requestReview) var requestReview
-    
-    @EnvironmentObject var themeManager: ThemeDataManager
-    
-    let breakManager = BreaksManager()
-    
-    @AppStorage("displayedCount") private var displayedCount: Int = 0
-    
     var presentedAsSheet: Bool
-    @State private var isEditJobPresented: Bool = false
+    
     @Binding var activeSheet: ActiveSheet?
-    
     @Binding var navPath: NavigationPath
-    
-    
     @FocusState private var focusedField: Field?
     
     private var currencyFormatter: NumberFormatter {
@@ -55,17 +45,6 @@ struct DetailView: View {
         formatter.locale = Locale.current
         return formatter
     }
-    
-    
-    
-    
-    @AppStorage("TipsEnabled") private var tipsEnabled: Bool = true
-    @AppStorage("TaxEnabled") private var taxEnabled: Bool = true
-    
-    
-    
-    var shift: OldShift?
-    var dateSelected: DateComponents?
     
     init(shift: OldShift? = nil, job: Job? = nil, dateSelected: DateComponents? = nil, presentedAsSheet: Bool = false, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<NavigationPath> = .constant(NavigationPath())) {
         
@@ -90,11 +69,6 @@ struct DetailView: View {
             
             
         }
-        
-        
-        self.shift = shift
-        
-        self.dateSelected = dateSelected
         
         self.presentedAsSheet = presentedAsSheet
         _activeSheet = activeSheet ?? Binding.constant(nil)
@@ -133,11 +107,8 @@ struct DetailView: View {
         ZStack(alignment: .bottomTrailing){
             List{
                 Section{
-                    
                     VStack{
-                        
-                        
-                        
+     
                         if !viewModel.areAllTempBreaksWithin {
                             HStack {
                                 
@@ -153,176 +124,33 @@ struct DetailView: View {
                         }
                         
                         statsPanel
-                        
-                        
+   
                         TagPicker($viewModel.selectedTags).allowsHitTesting(viewModel.isEditing)
                             .padding(.horizontal, 15)
                             .padding(.vertical, 5)
-                        
-                        
-                        
+
                     }
-                    
-                    
-                    
+
                     VStack{
                         
                         shiftDatePickers
                         
-                        HStack {
-                            
-                            Text("Hourly Pay")
-                                .bold()
-                            
-                                .padding(.vertical, 5)
-                            
-                                .frame(width: 120, alignment: .leading)
-                            
-                            
-                            
-                            Divider().frame(height: 10)
-                            
-                            Spacer()
-                            
-                            CurrencyTextField(placeholder: "Hourly Pay", text: $viewModel.selectedHourlyPay)
-                                .disabled(!viewModel.isEditing)
-                                .focused($focusedField, equals: .field1)
-                                .keyboardType(.decimalPad)
-                            
-                                .padding(.vertical, 10)
-                            
-                                .multilineTextAlignment(.trailing)
-                            
-                            
-                            
-                        }     .padding(.horizontal)
-                            .frame(height: 45)
-                            .glassModifier(cornerRadius: 16)
-                        
-                        HStack{
-                            
-                            Text("Pay Multiplier").lineLimit(1)
-                                .bold()
-                            
-                                .padding(.vertical, 10)
-                                .frame(width: 120, alignment: .leading)
-                            
-                            
-                            Divider().frame(height: 10)
-                            
-                            Spacer()
-                            
-                            Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
-                                Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
-                            }.disabled(!viewModel.isEditing)
-                                .onChange(of: viewModel.payMultiplier) { newMultiplier in
-                                    viewModel.multiplierEnabled = newMultiplier > 1.0
-                                }
-                            
-                            
-                        } .padding(.horizontal)
-                            .frame(height: 45)
-                            .glassModifier(cornerRadius: 16)
-                            .padding(.bottom, 5)
-                        
-                        if tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
-                            
-                            
-                            VStack{
-                                HStack {
-                                    
-                                    
-                                    Text("Total Tips")
-                                        .bold()
-                                    
-                                    
-                                    
-                                        .frame(width: 120, alignment: .leading)
-                                    
-                                    
-                                    Divider().frame(height: 10)
-                                    
-                                    Spacer()
-                                    
-                                    CurrencyTextField(placeholder: "Total tips", text: $viewModel.selectedTotalTips)
-                                        .disabled(!viewModel.isEditing)
-                                        .focused($focusedField, equals: .field2)
-                                        .keyboardType(.decimalPad)
-                                    
-                                        .padding(.vertical, 5)
-                                        .multilineTextAlignment(.trailing)
-                                    
-                                }
-                                
-                                Toggle(isOn: $viewModel.addTipsToTotal) {
-                                    
-                                    Text("Add to Total") .bold()
-                                    
-                                }.toggleStyle(CustomToggleStyle())
-                                    .disabled(!viewModel.isEditing)
-                                
-                            }.padding(.horizontal)
-                                .padding(.vertical)
-                                .glassModifier(cornerRadius: 20)
-                                .padding(.bottom, 10)
-                            
-                            
-                            
-                            
-                            
-                            
-                            
+                        payPanels
+   
+                        if viewModel.tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
+  
+                            tipsPanel
+
                         }
-                        
-                        
-                        
-                        if viewModel.selectedTaxPercentage > 0 || taxEnabled {
+
+                        if viewModel.selectedTaxPercentage > 0 || viewModel.taxEnabled {
                             
                             EstTaxPicker(taxPercentage: $viewModel.selectedTaxPercentage, isEditing: $viewModel.isEditing)
                         }
-                        
-                        
-                        
-                        
-                        
-                        
+
                         notesField
                         
-                        VStack(alignment: .leading){
-                            
-                            Text("Overtime")
-                                .bold()
-                            
-                                .padding(.vertical, 5)
-                                .padding(.horizontal)
-                                .glassModifier(cornerRadius: 20)
-                            VStack{
-                                Stepper(value: $viewModel.overtimeRate, in: 1.00...3, step: 0.25) {
-                                    
-                                    
-                                    Text("Rate: \(viewModel.overtimeRate, specifier: "%.2f")x")
-                                    
-                                }
-                                
-                                HStack {
-                                    
-                                    
-                                    
-                                    Image(systemName: "calendar.badge.clock")
-                                    Text("Applied after:")
-                                    TimePicker(timeInterval: $viewModel.overtimeAppliedAfter)
-                                        .frame(maxHeight: 75)
-                                        .disabled(!viewModel.isEditing)
-                                    
-                                }
-                                
-                            }.padding(.horizontal)
-                                .padding(.vertical)
-                                .glassModifier(cornerRadius: 20)
-                                .padding(.bottom, 10)
-                            
-                            
-                        }
+                        overtimePanel
                         
                         
                         
@@ -334,14 +162,10 @@ struct DetailView: View {
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
-                
-                
-                
-                
-                
+
                     .sheet(isPresented: $viewModel.isAddingBreak){
                         
-                        if let shift = shift {
+                        if let shift = viewModel.shift {
                             
                             BreakInputView(startDate: viewModel.selectedStartDate, endDate: viewModel.selectedEndDate, buttonAction: { breakManager.addBreak(oldShift: shift, startDate: viewModel.selectedBreakStartDate, endDate: viewModel.selectedBreakEndDate, isUnpaid: viewModel.isUnpaid, context: viewContext)
                                 viewModel.isAddingBreak = false}).environmentObject(viewModel)
@@ -368,16 +192,7 @@ struct DetailView: View {
                         }
                     }
                 
-                if let shift = shift {
-                    
-                    BreaksListView(shift: shift).environmentObject(viewModel)
-                        .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-                    
-                    
-                } else {
-                    BreaksListView().environmentObject(viewModel)
-                        .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
-                }
+                breaksList
                 
                 Spacer(minLength: 100)
                     .listRowSeparator(.hidden)
@@ -402,166 +217,7 @@ struct DetailView: View {
             
             
             
-            HStack(alignment: .center){
-                
-                if shift != nil {
-                    
-                    Menu {
-                        
-                        Button(action: {
-                            isEditJobPresented.toggle()
-                        }){
-                            HStack{
-                                Image(systemName: "pencil")
-                                Text("Edit Job")
-                            }
-                        }
-                        
-                        Menu {
-                            
-                            ForEach(jobs, id: \.objectID) { job in
-                                Button(action: {viewModel.job = job}) {
-                                    HStack{
-                                        Image(systemName: job.icon ?? "briefcase.circle")
-                                        Text(job.name ?? "Unknown")
-                                    }.tag(job)
-                                }
-                                
-                                
-                            }
-                            
-                        } label: {
-                            Text("Change Job")
-                        }
-                        
-                        
-                        
-                        
-                    } label: {
-                        JobForShiftView().frame(maxWidth: 250).frame(height: 25)
-                            .environmentObject(viewModel)
-                    }.allowsHitTesting(viewModel.isEditing)
-                    
-                    
-                } else {
-                    JobForShiftView().frame(maxWidth: 250).frame(height: 25)
-                        .environmentObject(viewModel)
-                }
-                
-                
-                
-                
-                
-                
-                Spacer()
-                VStack{
-                    if let shift = shift {
-                        HStack(spacing: 10){
-                            if viewModel.isEditing {
-                                
-                                Button(action: {
-                                    
-                                    viewModel.saveShift(shift, in: viewContext)
-                                    
-                                    savedShift = true
-                                    
-                                    if viewModel.job != viewModel.originalJob {
-                                        // if the job has been changed, dismiss the view then change selected job to the new one
-                                        
-                                        withAnimation {
-                                            dismiss()
-                                            
-                                            guard let job = viewModel.job else { return }
-                                            
-                                            CustomConfirmationAlert(action: {
-                                                
-                                                jobSelectionManager.selectJob(job, with: jobs, shiftViewModel: ContentViewModel.shared)
-                                                
-                                            }, cancelAction: nil, title: "Switch to this job?").showAndStack()
-                                            
-                                            
-                                            
-                                        }
-                                        
-                                    }
-                                    
-                                    
-                                }) {
-                                    Text("Done").bold()
-                                }
-                                
-                            } else {
-                                Button(action: {
-                                    withAnimation {
-                                        viewModel.isEditing = true
-                                    }
-                                }) {
-                                    
-                                    Image(systemName: "pencil").bold().customAnimatedSymbol(value: $viewModel.isEditing)
-                                }
-                            }
-                            
-                            Divider().frame(height: 10)
-                            
-                            Button(action: {
-                                viewModel.showingDeleteAlert = true
-                                if presentedAsSheet{
-                                    dismiss()
-                                }
-                                
-                                CustomConfirmationAlert(action: {
-                                    shiftStore.deleteOldShift(shift, in: viewContext)
-                                    dismiss()
-                                    
-                                }, cancelAction: { presentedAsSheet ? activeSheet = .detailSheet : nil}, title: "Are you sure you want to delete this shift?").showAndStack()
-                                
-                                
-                                
-                            }) {
-                                Image(systemName: "trash").customAnimatedSymbol(value: $viewModel.showingDeleteAlert)
-                                    .bold()
-                            }
-                            .tint(.red)
-                            
-                            
-                        }
-                    } else {
-                        Button(action: {
-                            
-                            if let job = viewModel.job {
-                                viewModel.addShift(in: viewContext, with: shiftStore, job: job)
-                            } else {
-                                dismiss()
-                                OkButtonPopup(title: "Error adding shift.").showAndStack()
-                                
-                            }
-                            
-                            
-                            dismiss()
-                        }) {
-                            Image(systemName: "folder.badge.plus")
-                                .bold()
-                            
-                        }
-                        .disabled(viewModel.totalPay <= 0 || !viewModel.areAllTempBreaksWithin)
-                    }
-                    
-                }.padding()
-                    .glassModifier(cornerRadius: 20)
-                
-                    .frame(height: 25)
-                
-            }
-            
-            .padding()
-            .padding(.bottom)
-            
-            .fullScreenCover(isPresented: $isEditJobPresented) {
-                JobView(job: viewModel.job, isEditJobPresented: $isEditJobPresented, selectedJobForEditing: $viewModel.job).environmentObject(ContentViewModel.shared)
-                
-                    .customSheetBackground()
-                
-            }
+            floatingButtons
             
             
         }.ignoresSafeArea(.keyboard)
@@ -572,7 +228,7 @@ struct DetailView: View {
         
         
         
-            .navigationTitle(shift == nil ? "Add Shift" : "Shift Details")
+            .navigationTitle(viewModel.shift == nil ? "Add Shift" : "Shift Details")
             .navigationBarTitleDisplayMode(.inline)
         
             .onAppear{
@@ -582,10 +238,10 @@ struct DetailView: View {
                 
                 if presentedAsSheet {
                     
-                    displayedCount += 1
+                    viewModel.displayedCount += 1
                     
-                    print("displayed count is: \(displayedCount)")
-                    if displayedCount == 2 {
+                    print("displayed count is: \(viewModel.displayedCount)")
+                    if viewModel.displayedCount == 2 {
                         
                         
                         requestReview()
@@ -662,7 +318,7 @@ struct DetailView: View {
     var statsPanel: some View {
         
         let timeDigits = digitsFromTimeString(timeString: viewModel.adaptiveShiftDuration.stringFromTimeInterval())
-        let breakDigits = shift != nil ? digitsFromTimeString(timeString: viewModel.totalBreakDuration(for: (shift!.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval()) : digitsFromTimeString(timeString: viewModel.totalTempBreakDuration(for: viewModel.tempBreaks).stringFromTimeInterval())
+        let breakDigits = viewModel.shift != nil ? digitsFromTimeString(timeString: viewModel.totalBreakDuration(for: (viewModel.shift!.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval()) : digitsFromTimeString(timeString: viewModel.totalTempBreakDuration(for: viewModel.tempBreaks).stringFromTimeInterval())
         
         let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
         
@@ -682,16 +338,53 @@ struct DetailView: View {
             VStack(alignment: .center, spacing: 5) {
                 
                 VStack {
-                    Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.totalPay)) ?? "")")
-                        .padding(.horizontal, 20)
-                        .font(.system(size: 60).monospacedDigit())
-                        .fontWeight(.bold)
-                        .lineLimit(1)
-                        .allowsTightening(true)
+                    HStack(alignment: .center, spacing: 0) {
+                        Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.totalPay)) ?? "")")
+                            .padding(.horizontal, 20)
+                            .font(.system(size: 60).monospacedDigit())
+                            .fontWeight(.bold)
+                            .lineLimit(1)
+                            .allowsTightening(true)
+
+                    }
                     
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top)
+                
+                if viewModel.overtimeEnabled {
+                    HStack(spacing: 20){
+                        VStack(alignment: .center, spacing: 2){
+                            Text("Original Pay").bold().multilineTextAlignment(.center)
+                                .font(.footnote)
+                                .foregroundStyle(.gray)
+                    
+                            Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.originalPay)) ?? "")")
+                                .font(.caption)
+                            
+                         
+                            
+                            
+                        }
+                        
+                        VStack(alignment: .center, spacing: 2){
+                            Text("Overtime").bold()
+                                .font(.footnote)
+                                .foregroundStyle(.gray)
+                              
+                            Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.overtimeEarnings)) ?? "")")
+                                .font(.caption)
+                            
+                              
+                            
+                            
+                        }
+                        
+                        
+                    }  .roundedFontDesign()
+                       
+                }
+                
                 HStack(spacing: 10){
                     if viewModel.selectedTaxPercentage > 0 {
                         HStack(spacing: 2){
@@ -724,7 +417,7 @@ struct DetailView: View {
                 
                 
                 .frame(maxWidth: .infinity)
-                .padding(.bottom, 5)
+                .padding(.vertical, 5)
                 
                 
                 
@@ -746,7 +439,7 @@ struct DetailView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.bottom,
                          
-                         ((shift != nil && shift?.breaks != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
+                         ((viewModel.shift != nil && viewModel.shift?.breaks != nil && viewModel.totalBreakDuration(for: viewModel.shift!.breaks as! Set<Break>) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
                          
                          
                 )
@@ -756,7 +449,7 @@ struct DetailView: View {
                 
                 
                 
-                if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (shift != nil && shift?.breaks != nil && viewModel.totalBreakDuration(for: shift!.breaks as! Set<Break>) > 0) {
+                if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (viewModel.shift != nil && viewModel.shift?.breaks != nil && viewModel.totalBreakDuration(for: viewModel.shift!.breaks as! Set<Break>) > 0) {
                     HStack(spacing: 0) {
                         ForEach(0..<breakDigits.count, id: \.self) { index in
                             RollingDigit(digit: breakDigits[index])
@@ -804,7 +497,6 @@ struct DetailView: View {
                         if viewModel.selectedStartDate > viewModel.selectedEndDate {
                             viewModel.selectedStartDate = viewModel.selectedEndDate
                         }
-                        
                     }
                     .disabled(!viewModel.isEditing)
                     .scaleEffect(viewModel.isEditing ? 1.01 : 1.0)
@@ -841,6 +533,108 @@ struct DetailView: View {
             .padding(.bottom, 5)
     }
     
+    var payPanels: some View {
+        Group {
+            HStack {
+                
+                Text("Hourly Pay")
+                    .bold()
+                
+                    .padding(.vertical, 5)
+                
+                    .frame(width: 120, alignment: .leading)
+                
+                
+                
+                Divider().frame(height: 10)
+                
+                Spacer()
+                
+                CurrencyTextField(placeholder: "Hourly Pay", text: $viewModel.selectedHourlyPay)
+                    .disabled(!viewModel.isEditing)
+                    .focused($focusedField, equals: .field1)
+                    .keyboardType(.decimalPad)
+                
+                    .padding(.vertical, 10)
+                
+                    .multilineTextAlignment(.trailing)
+                
+                
+                
+            }     .padding(.horizontal)
+                .frame(height: 45)
+                .glassModifier(cornerRadius: 16)
+            
+            HStack{
+                
+                Text("Pay Multiplier").lineLimit(1)
+                    .bold()
+                
+                    .padding(.vertical, 10)
+                    .frame(width: 120, alignment: .leading)
+                
+                
+                Divider().frame(height: 10)
+                
+                Spacer()
+                
+                Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
+                    Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
+                }.disabled(!viewModel.isEditing)
+                    .onChange(of: viewModel.payMultiplier) { newMultiplier in
+                        viewModel.multiplierEnabled = newMultiplier > 1.0
+                    }
+                
+                
+            } .padding(.horizontal)
+                .frame(height: 45)
+                .glassModifier(cornerRadius: 16)
+                .padding(.bottom, 5)
+            
+        }
+        
+    }
+    
+    var tipsPanel: some View {
+        VStack{
+            HStack {
+                
+                
+                Text("Total Tips")
+                    .bold()
+                
+                
+                
+                    .frame(width: 120, alignment: .leading)
+                
+                
+                Divider().frame(height: 10)
+                
+                Spacer()
+                
+                CurrencyTextField(placeholder: "Total tips", text: $viewModel.selectedTotalTips)
+                    .disabled(!viewModel.isEditing)
+                    .focused($focusedField, equals: .field2)
+                    .keyboardType(.decimalPad)
+                
+                    .padding(.vertical, 5)
+                    .multilineTextAlignment(.trailing)
+                
+            }
+            
+            Toggle(isOn: $viewModel.addTipsToTotal) {
+                
+                Text("Add to Total") .bold()
+                
+            }.toggleStyle(CustomToggleStyle())
+                .disabled(!viewModel.isEditing)
+            
+        }.padding(.horizontal)
+            .padding(.vertical)
+            .glassModifier(cornerRadius: 20)
+            .padding(.bottom, 10)
+    }
+    
     var notesField: some View {
         VStack(alignment: .leading){
             Text("Notes")
@@ -863,7 +657,188 @@ struct DetailView: View {
         }
     }
     
-
+    var overtimePanel: some View {
+        return OvertimePanel(enabled: $viewModel.overtimeEnabled, rate: $viewModel.overtimeRate, applyAfter: $viewModel.overtimeAppliedAfter) {
+            // add sheet for ios 16.1 <
+        }.disabled(!viewModel.isEditing)
+    }
+    
+    var breaksList: some View {
+        if let shift = viewModel.shift {
+            
+            BreaksListView(shift: shift).environmentObject(viewModel)
+                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            
+            
+        } else {
+            BreaksListView().environmentObject(viewModel)
+                .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+        }
+    }
+    
+    var floatingButtons: some View {
+        HStack(alignment: .center){
+            
+            if viewModel.shift != nil {
+                
+                Menu {
+                    
+                    Button(action: {
+                        viewModel.isEditJobPresented.toggle()
+                    }){
+                        HStack{
+                            Image(systemName: "pencil")
+                            Text("Edit Job")
+                        }
+                    }
+                    
+                    Menu {
+                        
+                        ForEach(jobs, id: \.objectID) { job in
+                            Button(action: {viewModel.job = job}) {
+                                HStack{
+                                    Image(systemName: job.icon ?? "briefcase.circle")
+                                    Text(job.name ?? "Unknown")
+                                }.tag(job)
+                            }
+                            
+                            
+                        }
+                        
+                    } label: {
+                        Text("Change Job")
+                    }
+                    
+                    
+                    
+                    
+                } label: {
+                    JobForShiftView().frame(maxWidth: 250).frame(height: 25)
+                        .environmentObject(viewModel)
+                }.allowsHitTesting(viewModel.isEditing)
+                
+                
+            } else {
+                JobForShiftView().frame(maxWidth: 250).frame(height: 25)
+                    .environmentObject(viewModel)
+            }
+            
+            
+            
+            
+            
+            
+            Spacer()
+            VStack{
+                if let shift = viewModel.shift {
+                    HStack(spacing: 10){
+                        if viewModel.isEditing {
+                            
+                            Button(action: {
+                                
+                                viewModel.saveShift(shift, in: viewContext)
+                                
+                                savedShift = true
+                                
+                                if viewModel.job != viewModel.originalJob {
+                                    // if the job has been changed, dismiss the view then change selected job to the new one
+                                    
+                                    withAnimation {
+                                        dismiss()
+                                        
+                                        guard let job = viewModel.job else { return }
+                                        
+                                        CustomConfirmationAlert(action: {
+                                            
+                                            jobSelectionManager.selectJob(job, with: jobs, shiftViewModel: ContentViewModel.shared)
+                                            
+                                        }, cancelAction: nil, title: "Switch to this job?").showAndStack()
+                                        
+                                        
+                                        
+                                    }
+                                    
+                                }
+                                
+                                
+                            }) {
+                                Text("Done").bold()
+                            }
+                            
+                        } else {
+                            Button(action: {
+                                withAnimation {
+                                    viewModel.isEditing = true
+                                }
+                            }) {
+                                
+                                Image(systemName: "pencil").bold().customAnimatedSymbol(value: $viewModel.isEditing)
+                            }
+                        }
+                        
+                        Divider().frame(height: 10)
+                        
+                        Button(action: {
+                            viewModel.showingDeleteAlert = true
+                            if presentedAsSheet{
+                                dismiss()
+                            }
+                            
+                            CustomConfirmationAlert(action: {
+                                shiftStore.deleteOldShift(shift, in: viewContext)
+                                dismiss()
+                                
+                            }, cancelAction: { presentedAsSheet ? activeSheet = .detailSheet : nil}, title: "Are you sure you want to delete this shift?").showAndStack()
+                            
+                            
+                            
+                        }) {
+                            Image(systemName: "trash").customAnimatedSymbol(value: $viewModel.showingDeleteAlert)
+                                .bold()
+                        }
+                        .tint(.red)
+                        
+                        
+                    }
+                } else {
+                    Button(action: {
+                        
+                        if let job = viewModel.job {
+                            viewModel.addShift(in: viewContext, with: shiftStore, job: job)
+                        } else {
+                            dismiss()
+                            OkButtonPopup(title: "Error adding shift.").showAndStack()
+                            
+                        }
+                        
+                        
+                        dismiss()
+                    }) {
+                        Image(systemName: "folder.badge.plus")
+                            .bold()
+                        
+                    }
+                    .disabled(viewModel.totalPay <= 0 || !viewModel.areAllTempBreaksWithin)
+                }
+                
+            }.padding()
+                .glassModifier(cornerRadius: 20)
+            
+                .frame(height: 25)
+            
+        }
+        
+        .padding()
+        .padding(.bottom)
+        
+        .fullScreenCover(isPresented: $viewModel.isEditJobPresented) {
+            JobView(job: viewModel.job, isEditJobPresented: $viewModel.isEditJobPresented, selectedJobForEditing: $viewModel.job).environmentObject(ContentViewModel.shared)
+            
+                .customSheetBackground()
+            
+        }
+    }
+    
     
 }
 

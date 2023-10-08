@@ -26,12 +26,18 @@ class DetailViewModel: ObservableObject {
     @Published var selectedTags: Set<Tag> = []
     @Published var shiftID: UUID
     
+    @Published var overtimeEnabled: Bool = false
     @Published var overtimeRate: Double = 1.00
     @Published var overtimeAppliedAfter: Double = 0
     
     @Published var shift: OldShift?
     @Published var job: Job?
     
+    @Published var isEditJobPresented: Bool = false
+    
+    @AppStorage("displayedCount") var displayedCount: Int = 0
+    @AppStorage("TipsEnabled") var tipsEnabled: Bool = true
+    @AppStorage("TaxEnabled") var taxEnabled: Bool = true
     
     @Published var isAddingBreak: Bool = false
     @Published var isUnpaid: Bool = false
@@ -65,6 +71,7 @@ class DetailViewModel: ObservableObject {
         self.isEditing = isEditing
         self.job = job
         self.originalJob = job
+        self.overtimeAppliedAfter = job?.overtimeAppliedAfter ?? 0
     }
     
     init(shift: OldShift){
@@ -84,7 +91,7 @@ class DetailViewModel: ObservableObject {
         self.shiftID = shift.shiftID ?? UUID()
         self.isEditing = false
         self.shift = shift
-        
+        self.overtimeEnabled = shift.overtimeEnabled
         self.overtimeRate = shift.overtimeRate
         self.overtimeAppliedAfter = shift.timeBeforeOvertime
         self.job = shift.job
@@ -114,29 +121,50 @@ class DetailViewModel: ObservableObject {
         selectedEndDate.timeIntervalSince(selectedStartDate)
     }
     
+    // pay before overtime pay added
+    
+    var originalPay: Double {
+        
+        let totalDuration = selectedEndDate.timeIntervalSince(selectedStartDate)
+        let totalBreakDuration = totalTempBreakDuration(for: tempBreaks)
+        
+        let originalPay = (totalDuration - totalBreakDuration) / 3600.0 * (Double(selectedHourlyPay) ?? 0.0)
+        
+        return originalPay
+
+    }
+    // the earnings made purely from overtime
+    var overtimeEarnings: Double {
+        return totalPay - originalPay
+    }
+    
     var totalPay: Double {
-        var totalHoursWorked = adaptiveShiftDuration / 3600 - totalTempBreakDuration(for: tempBreaks) / 3600
-        
-        if let shift = shift {
-            totalHoursWorked = adaptiveShiftDuration / 3600 - totalBreakDuration(for: shift.breaks as? Set<Break> ?? Set<Break>()) / 3600
+        let totalDuration = selectedEndDate.timeIntervalSince(selectedStartDate)
+        let totalBreakDuration = totalTempBreakDuration(for: tempBreaks)
+        var overtimeDuration = 0.0
+        var baseDuration = totalDuration
+
+        // base and overtime duration
+        if overtimeAppliedAfter > 0 && overtimeRate > 1.0 && totalDuration > overtimeAppliedAfter {
+            overtimeDuration = totalDuration - overtimeAppliedAfter
+            baseDuration = totalDuration - overtimeDuration
         }
+
+        // base pay and overtime pay
+        let basePay = (baseDuration - totalBreakDuration) / 3600.0 * (Double(selectedHourlyPay) ?? 0.0)
+        let overtimePay = (overtimeDuration / 3600.0) * (Double(selectedHourlyPay) ?? 0.0) * overtimeRate
+
         
-       
-        
-       var total = totalHoursWorked * (Double(selectedHourlyPay) ?? 0.0)
-        
-        if payMultiplier > 1.0 {
-            total = total * payMultiplier
-        }
-        
+        var total = multiplierEnabled ? (basePay + overtimePay) * payMultiplier : basePay + overtimePay
+
         if addTipsToTotal {
             total += Double(selectedTotalTips) ?? 0.0
         }
         
-       
-        
         return total
     }
+
+
     
     var taxedPay: Double {
         return totalPay - (totalPay * selectedTaxPercentage / 100.0)
@@ -183,6 +211,7 @@ class DetailViewModel: ObservableObject {
         shift.shiftID = shift.shiftID ?? UUID()
         shift.tags = NSSet(array: Array(selectedTags))
         
+        shift.overtimeEnabled = overtimeEnabled
         shift.overtimeRate = overtimeRate
         shift.timeBeforeOvertime = overtimeAppliedAfter
         
@@ -194,10 +223,12 @@ class DetailViewModel: ObservableObject {
             
             var overtimeDuration = 0.0
             var baseDuration = shiftDuration
+        if overtimeEnabled {
             if overtimeAppliedAfter > 0 && overtimeRate > 1.0 && shiftDuration > overtimeAppliedAfter {
                 overtimeDuration = shiftDuration - overtimeAppliedAfter
                 baseDuration = shiftDuration - overtimeDuration
             }
+        }
 
         let basePay = (baseDuration - totalBreakDuration) / 3600.0 * Double(selectedHourlyPay)!
         let overtimePay = (overtimeDuration / 3600.0) * Double(selectedHourlyPay)! * overtimeRate

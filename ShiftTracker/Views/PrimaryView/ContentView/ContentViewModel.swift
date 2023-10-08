@@ -87,6 +87,9 @@ class ContentViewModel: ObservableObject {
     @Published  var isOvertime = false
     @Published var overtimeEnabled = false
     
+    // used to determine whether to even activate overtime calcs
+    @Published var enableOvertime = false
+    
     @Published  var shiftEnded = false
     
     @Published var upcomingShiftShakeTimes: CGFloat = 0
@@ -248,23 +251,6 @@ class ContentViewModel: ObservableObject {
         guard let breakStartDate = breakStartDate, let breakEndDate = breakEndDate else { return 0 }
         return breakEndDate.timeIntervalSince(breakStartDate)
     }
-    /* // original totalPay and taxedPay excluding overtime
-     var totalPay: Double {
-     guard let shift = shift else { return 0 }
-     let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
-     let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
-     return pay
-     }
-     
-     var taxedPay: Double {
-     guard let shift = shift else { return 0 }
-     let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
-     let pay = (elapsed / 3600.0) * Double(shift.hourlyPay)
-     let afterTax = pay - (pay * Double(taxPercentage) / 100.0)
-     return afterTax
-     }
-     
-     */
     
     // NEW totalPay and taxedPay factoring in overtime
     
@@ -277,11 +263,7 @@ class ContentViewModel: ObservableObject {
             timeElapsedUntilOvertime = elapsed
             overtimeEnabled = true
             print("overtime was set to true")
-            
-            
-            
-            
-            
+ 
         } else {
             print("not overtime yet")
         }
@@ -315,7 +297,7 @@ class ContentViewModel: ObservableObject {
         
         var elapsedTimeUntilOvertime = timeElapsedUntilOvertime
         
-        if applyOvertimeAfter > 0 {
+        if applyOvertimeAfter > 0 && enableOvertime {
             if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 {
                 
                 // this was modifying the global variable. this may have been fine for when calling this when ending a shift, but now that we call it upon starting a break
@@ -330,7 +312,10 @@ class ContentViewModel: ObservableObject {
         let basePay = (elapsedTimeUntilOvertime > 0 ? elapsedTimeUntilOvertime : elapsed) / 3600.0 * Double(shift.hourlyPay)
         let overtimePay = computeOvertimeEnabled ? (elapsed - elapsedTimeUntilOvertime) / 3600.0 * Double(shift.hourlyPay) * overtimeRate : 0
         
-        let pay = basePay + overtimePay
+        var pay = basePay
+        if enableOvertime {
+            pay += overtimePay
+        }
         
         return isMultiplierEnabled ? pay * payMultiplier : pay
     }
@@ -651,6 +636,7 @@ class ContentViewModel: ObservableObject {
                 latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
                 latestShift!.overtimeDuration = overtimeElapsed
                 latestShift!.timeBeforeOvertime = timeElapsedUntilOvertime
+                latestShift!.overtimeEnabled = enableOvertime
                 latestShift!.overtimeRate = overtimeRate
                 latestShift!.multiplierEnabled = isMultiplierEnabled
                 latestShift!.payMultiplier = payMultiplier
@@ -900,6 +886,9 @@ class ContentViewModel: ObservableObject {
                     self.applyOvertimeAfter = job.overtimeAppliedAfter
                     print("Overtime will be applied after: \(applyOvertimeAfter)")
                     self.overtimeRate = job.overtimeRate
+                    
+                    self.enableOvertime = job.overtimeEnabled
+                    
                 } else {
                     self.applyOvertimeAfter = 0
                     self.overtimeRate = 1.0

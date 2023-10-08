@@ -99,8 +99,9 @@ struct JobView: View {
                         breakReminderPanel
                         
                         
-                        overtimePanel
+                        overtimePanel.shake(times: jobViewModel.overtimeShakeTimes)
                         
+                        Spacer(minLength: 100)
                         
                     }
                     .frame(maxHeight: .infinity, alignment: .top)
@@ -510,7 +511,7 @@ struct JobView: View {
                         
                         Text("When: ")
                         Spacer()
-                        Text("\(jobViewModel.formattedTimeInterval(jobViewModel.breakRemindAfter))")
+                        Text("\(formattedTimeInterval(jobViewModel.breakRemindAfter))")
                         
                         
                     }
@@ -524,55 +525,9 @@ struct JobView: View {
     }
     
     var overtimePanel: some View {
-        return VStack(alignment: .leading, spacing: 10){
-            Toggle(isOn: $jobViewModel.overtimeEnabled) {
-                HStack {
-                    Text("Overtime")
-                }
-            }
-            .toggleStyle(CustomToggleStyle())
-            
-            Stepper(value: $jobViewModel.overtimeRate, in: 1.25...3, step: 0.25) {
-                
-                
-                Text("Rate: \(jobViewModel.overtimeRate, specifier: "%.2f")x")
-                
-            }.disabled(!jobViewModel.overtimeEnabled)
-            
-            if #available(iOS 16.1, *){
-                
-                HStack {
-                    
-                    Text("Apply after:")
-                    TimePicker(timeInterval: $jobViewModel.overtimeAppliedAfter)
-                        .frame(maxHeight: 75)
-                        .frame(maxWidth: getRect().width - 100)
-                    
-                }
-                .disabled(!jobViewModel.overtimeEnabled)
-                .opacity(jobViewModel.overtimeEnabled ? 1.0 : 0.5)
-                .shake(times: jobViewModel.overtimeShakeTimes)
-                
-            } else {
-                
-                // due to a frame issue with wheel pickers on iOS 16 or lower, time picker is a sheet in those versions
-                
-                Button(action: { jobViewModel.activeSheet = .overtimeSheet }){
-                    HStack {
-                        
-                        Text("Apply after: ")
-                        Spacer()
-                        Text("\(jobViewModel.formattedTimeInterval(jobViewModel.overtimeAppliedAfter))")
-                        
-                        
-                    }
-                }
-            }
-            
-            
-        }.padding(.horizontal)
-            .padding(.vertical, 10)
-            .glassModifier(cornerRadius: 20)
+        return OvertimePanel(enabled: $jobViewModel.overtimeEnabled, rate: $jobViewModel.overtimeRate, applyAfter: $jobViewModel.overtimeAppliedAfter) {
+            jobViewModel.activeSheet = .overtimeSheet
+        }
     }
     
     var floatingButtons: some View {

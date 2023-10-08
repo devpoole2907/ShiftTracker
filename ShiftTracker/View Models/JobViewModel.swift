@@ -111,12 +111,6 @@ class JobViewModel: ObservableObject {
         
     }
     
-    func formattedTimeInterval(_ timeInterval: TimeInterval) -> String {
-        let hours = Int(timeInterval) / 3600
-        let minutes = Int(timeInterval) % 3600 / 60
-        return "\(hours)h \(minutes)m"
-    }
-    
      func saveJob(in viewContext: NSManagedObjectContext, completion: () -> Void) {
         
         var newJob: Job

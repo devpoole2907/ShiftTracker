@@ -49,6 +49,7 @@
         <attribute name="hourlyPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="multiplierEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="overtimeDuration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="overtimeEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="overtimePay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="overtimeRate" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="payMultiplier" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

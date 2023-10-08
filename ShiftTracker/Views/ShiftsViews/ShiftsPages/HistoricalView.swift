@@ -140,7 +140,7 @@ struct HistoricalView: View {
                             
                             
                             if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
-                                ForEach(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts, id: \.objectID) { shift in
+                                ForEach(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.reversed(), id: \.objectID) { shift in
                                     NavigationLink(value: shift) {
                                         ShiftDetailRow(shift: shift)
                                         

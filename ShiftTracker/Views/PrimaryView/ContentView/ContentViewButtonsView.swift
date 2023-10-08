@@ -48,22 +48,19 @@ struct ContentViewButtonsView: View {
                 }
                 
             } else if viewModel.shiftState == .countdown {
-                Button(action: {
-                    CustomConfirmationAlert(action: {
-                        viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
-                    }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
-                    
-                }) {
-                    Text("Cancel Shift")
-                        .frame(minWidth: UIScreen.main.bounds.width / 3)
-                        .bold()
-                        .padding()
-                        .background((viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor)
-                        .foregroundColor(foregroundColor)
-                        .cornerRadius(18)
-                }
-                .buttonStyle(.scale)
-                .frame(maxWidth: .infinity)
+                
+                
+                AnimatedButton(
+                    action: {
+                        CustomConfirmationAlert(action: {
+                            viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
+                        }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
+                        
+                    },
+                    title: "Cancel Shift",
+                    backgroundColor: !viewModel.isEditing ? buttonColor : disabledButtonColor,
+                    isDisabled: viewModel.isEditing
+                )
         
                 
                 

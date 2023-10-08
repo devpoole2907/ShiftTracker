@@ -89,8 +89,10 @@ struct ShiftsList: View {
                 }
 
             }
-            
-            
+            Section {
+                Spacer(minLength: 100)
+            }.listRowBackground(Color.clear)
+                .opacity(0)
 
         }.searchable(text: $sortSelection.searchTerm, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
             
@@ -151,10 +153,7 @@ struct ShiftsList: View {
                     
                 }.padding()
                         .glassModifier(cornerRadius: 20)
-                
-                   // .padding()
-                   // .shadow(radius: 3)
-      
+
             }
                 
                 TagSortView(selectedFilters: $sortSelection.selectedFilters)

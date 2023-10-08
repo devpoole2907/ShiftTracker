@@ -240,6 +240,7 @@
 		7CF4D0DB2AD22123001A891E /* NavBarIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0DA2AD22123001A891E /* NavBarIconView.swift */; };
 		7CF4D0DD2AD2220F001A891E /* ExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */; };
 		7CF4D0DF2AD24770001A891E /* ScheduledShiftRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0DE2AD24770001A891E /* ScheduledShiftRow.swift */; };
+		7CF4D0E12AD25F1F001A891E /* OvertimePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -496,6 +497,7 @@
 		7CF4D0DA2AD22123001A891E /* NavBarIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarIconView.swift; sourceTree = "<group>"; };
 		7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportViewModel.swift; sourceTree = "<group>"; };
 		7CF4D0DE2AD24770001A891E /* ScheduledShiftRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftRow.swift; sourceTree = "<group>"; };
+		7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvertimePanel.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -787,6 +789,7 @@
 				7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */,
 				7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */,
 				7CF4D0DA2AD22123001A891E /* NavBarIconView.swift */,
+				7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -1359,6 +1362,7 @@
 				7C0AC12E2A88EBA10016456E /* ShiftToChart.swift in Sources */,
 				1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
+				7CF4D0E12AD25F1F001A891E /* OvertimePanel.swift in Sources */,
 				7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */,
 				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
 				7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */,

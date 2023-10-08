@@ -249,6 +249,15 @@ extension Date {
     }
 }
 
+
+func formattedTimeInterval(_ timeInterval: TimeInterval) -> String {
+    let hours = Int(timeInterval) / 3600
+    let minutes = Int(timeInterval) % 3600 / 60
+    return "\(hours)h \(minutes)m"
+}
+
+
+
 // used to create 3 default tags when the app launches
 
 func createTags(in viewContext: NSManagedObjectContext) {
