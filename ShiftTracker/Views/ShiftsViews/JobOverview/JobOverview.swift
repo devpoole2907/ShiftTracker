@@ -98,13 +98,7 @@ struct JobOverview: View {
         UITableView.appearance().backgroundColor = UIColor.clear
         
     }
-    
-    private var currencyFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale.current
-        return formatter
-    }
+
     
     @Binding var navPath: NavigationPath
     
@@ -286,18 +280,7 @@ struct JobOverview: View {
             }
             
             ToolbarTitleMenu {
-                
-                Button(action: {
-                    overviewModel.isEditJobPresented.toggle()
-                }){
-                    HStack {
-                        Text("Edit Job")
-                        Image(systemName: "pencil")
-                    }
-                }.disabled(overviewModel.job == nil || ContentViewModel.shared.shift != nil)
-                
-                
-                
+                toolbarMenu
             }
             
             ToolbarItem(placement: .keyboard){
@@ -431,6 +414,17 @@ struct JobOverview: View {
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             .listRowInsets(.init(top: 20, leading: 0, bottom: 30, trailing: 0))
+    }
+    
+    var toolbarMenu: some View {
+        return Button(action: {
+            overviewModel.isEditJobPresented.toggle()
+        }){
+            HStack {
+                Text("Edit Job")
+                Image(systemName: "pencil")
+            }
+        }.disabled(overviewModel.job == nil || ContentViewModel.shared.shift != nil)
     }
     
     

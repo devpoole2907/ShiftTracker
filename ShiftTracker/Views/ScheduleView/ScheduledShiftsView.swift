@@ -39,11 +39,15 @@ struct ScheduledShiftsView: View {
     
     var body: some View {
         Group {
+            
+            
             let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == dateSelected?.date?.startOfDay ?? Date().startOfDay}
             
-            if !displayedOldShifts.isEmpty {
+            let foundOldShifts = displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })
+            
+            if !foundOldShifts.isEmpty {
                 Section{
-                ForEach(displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }), id: \.objectID) { shift in
+                ForEach(foundOldShifts, id: \.objectID) { shift in
                     
                     NavigationLink(value: shift) {
                         
@@ -86,7 +90,8 @@ struct ScheduledShiftsView: View {
                     
                 
             }.listRowInsets(.init(top: 0, leading: 8, bottom: 5, trailing: 0))
-                
+                   
+                    
             }
             
             
@@ -118,7 +123,7 @@ struct ScheduledShiftsView: View {
                     } .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 }
             
-            else if isBeforeEndOfToday(dateSelected?.date ?? Date()) && displayedOldShifts.isEmpty {
+            else/* if isBeforeEndOfToday(dateSelected?.date ?? Date()) && displayedOldShifts.isEmpty */{
                     
                     Text("No previous shifts found for this date.")
                     .bold()
@@ -126,11 +131,14 @@ struct ScheduledShiftsView: View {
                         .padding()
                         .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 }
+           
             
             
       
             
-        }.sheet(item: $scheduleModel.selectedShiftToEdit, onDismiss: {
+        }
+        
+        .sheet(item: $scheduleModel.selectedShiftToEdit, onDismiss: {
             
             scheduleModel.selectedShiftToEdit = nil
             
