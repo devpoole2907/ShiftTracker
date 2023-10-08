@@ -605,7 +605,6 @@
 		1A1DEC9229F0FFB00002D9E4 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				1A19141E2A16C232000D0F8B /* SideMenu */,
 				1AB7D69229FB6CE100326AAA /* MainWithSideBarView.swift */,
 				1A1914222A187DF9000D0F8B /* LockedView.swift */,
 			);
@@ -851,6 +850,7 @@
 				1ACA60BB29D8EC1200B279CB /* CustomUIElements */,
 				1AECCC4B29DBFCD700D879FE /* SettingsViews */,
 				1ACA60B129D79A2800B279CB /* ShiftsViews */,
+				1A19141E2A16C232000D0F8B /* SideMenu */,
 				1A1DEC9229F0FFB00002D9E4 /* Main */,
 				1ACA60B429D79A9200B279CB /* PrimaryView */,
 				1A1DEC9C29F1020D0002D9E4 /* ScheduleView */,
