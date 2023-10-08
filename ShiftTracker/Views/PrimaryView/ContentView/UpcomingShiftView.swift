@@ -169,32 +169,38 @@ struct UpcomingShiftView: View {
                     
                 
         } else {
-            VStack(alignment: .leading) {
-                
-                Text("Upcoming Shift")
-                    .font(.title3)
-                    .bold()
-                    .padding(.bottom, -1)
-                Divider().frame(maxWidth: 200)
-                HStack{
-                    Image(systemName: "briefcase.fill")
-                    Text("No Upcoming Shifts")
-                    
-                }.foregroundColor(.gray)
-                    .font(.footnote)
-                    .bold()
-                    .padding(.vertical, 2)
-                    .roundedFontDesign()
-                
-            }.onTapGesture {
-             
-                    withAnimation(.linear(duration: 0.4)) {
-                        viewModel.upcomingShiftShakeTimes += 2
-                    }
-                
-            }
+            noUpcomingShifts
         }
     }
+    
+    
+    var noUpcomingShifts: some View {
+        return VStack(alignment: .leading) {
+            
+            Text("Upcoming Shift")
+                .font(.title3)
+                .bold()
+                .padding(.bottom, -1)
+            Divider().frame(maxWidth: 200)
+            HStack{
+                Image(systemName: "briefcase.fill")
+                Text("No Upcoming Shifts")
+                
+            }.foregroundColor(.gray)
+                .font(.footnote)
+                .bold()
+                .padding(.vertical, 2)
+                .roundedFontDesign()
+            
+        }.onTapGesture {
+         
+                withAnimation(.linear(duration: 0.4)) {
+                    viewModel.upcomingShiftShakeTimes += 2
+                }
+            
+        }
+    }
+    
 }
 
 struct Previews_UpcomingShiftView_Previews: PreviewProvider {

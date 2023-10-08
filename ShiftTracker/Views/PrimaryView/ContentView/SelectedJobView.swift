@@ -10,7 +10,7 @@ import SwiftUI
 struct SelectedJobView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,7 +20,7 @@ struct SelectedJobView: View {
                 .bold()
                 .padding(.bottom, -1)
             Divider().frame(maxWidth: 300)
-            if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
+            if let job = selectedJobManager.fetchJob(in: viewContext) {
                 HStack{
                     
                     JobIconView(icon: job.icon ?? "briefcase", color: Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue)), font: .callout)
