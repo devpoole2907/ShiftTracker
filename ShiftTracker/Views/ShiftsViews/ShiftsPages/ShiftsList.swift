@@ -31,7 +31,7 @@ struct ShiftsList: View {
     
     @State private var showingAddShiftSheet: Bool = false
     
-    
+    @State private var showingSearch: Bool = false
     
     @Binding var navPath: NavigationPath
     
@@ -94,7 +94,8 @@ struct ShiftsList: View {
             }.listRowBackground(Color.clear)
                 .opacity(0)
 
-        }.searchable(text: $sortSelection.searchTerm, placement: .navigationBarDrawer(displayMode: .always), prompt: "Search Notes")
+        }.customSearchable(searchText: $sortSelection.searchTerm, isPresented: $showingSearch, prompt: "Search Notes")
+
             
                 .onSubmit(of: .search, sortSelection.fetchShifts)
                
@@ -175,8 +176,9 @@ struct ShiftsList: View {
         
         }.ignoresSafeArea(.keyboard)
 
-        .navigationBarTitle(sortSelection.selectedSort.name)
+        .navigationTitle(sortSelection.selectedSort.name)
 
+        
             
         
     }

@@ -13,6 +13,12 @@ struct NavBarIconView: View {
     @Binding var isLarge: Bool
     @ObservedObject var job: Job
     
+    init(appeared: Binding<Bool>, isLarge: Binding<Bool> = .constant(true), job: Job) {
+        _appeared = appeared
+        _isLarge = isLarge
+        self.job = job
+    }
+    
     var body: some View {
         
         let dimension: CGFloat = isLarge ? 25 : 15
@@ -32,7 +38,7 @@ struct NavBarIconView: View {
             .background{
                 Circle().foregroundStyle(jobColor.gradient).shadow(color: jobColor, radius: 2)
             }
-            .frame(width: dimension * 1.8, height: dimension * 1.8)
+            .frame(width: dimension * 1.76, height: dimension * 1.76)
         
     }
 }

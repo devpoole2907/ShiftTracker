@@ -217,6 +217,8 @@
 		7CC2C6C82AC7A66300F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7CC2C6C92AC7A67700F15E74 /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7CC2C6CB2AC7FDBB00F15E74 /* iosSixteenChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6CA2AC7FDBB00F15E74 /* iosSixteenChartView.swift */; };
+		7CC985182AD3B9C90001BA57 /* NavBarIconModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC985172AD3B9C90001BA57 /* NavBarIconModifier.swift */; };
+		7CC9851A2AD3C27B0001BA57 /* CustomSearchableModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC985192AD3C27B0001BA57 /* CustomSearchableModifier.swift */; };
 		7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */; };
 		7CD8A31F2A882AED0011A1C0 /* ScaleButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */; };
 		7CD8A3222A882EE70011A1C0 /* TagFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD8A3212A882EE70011A1C0 /* TagFilter.swift */; };
@@ -475,6 +477,8 @@
 		7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatEndPicker.swift; sourceTree = "<group>"; };
 		7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftRowSwipeButtons.swift; sourceTree = "<group>"; };
 		7CC2C6CA2AC7FDBB00F15E74 /* iosSixteenChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosSixteenChartView.swift; sourceTree = "<group>"; };
+		7CC985172AD3B9C90001BA57 /* NavBarIconModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarIconModifier.swift; sourceTree = "<group>"; };
+		7CC985192AD3C27B0001BA57 /* CustomSearchableModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSearchableModifier.swift; sourceTree = "<group>"; };
 		7CD8A31A2A8703C60011A1C0 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		7CD8A31E2A882AED0011A1C0 /* ScaleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleButtonStyle.swift; sourceTree = "<group>"; };
 		7CD8A3212A882EE70011A1C0 /* TagFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagFilter.swift; sourceTree = "<group>"; };
@@ -875,6 +879,8 @@
 				7C1132492ACA9C7600E983FD /* CustomAnimatedSymbolModifier.swift */,
 				7C11324B2ACA9C9600E983FD /* CustomScrollBackgroundModifier.swift */,
 				7C6218632AD0FF5E00E67245 /* TrailingCloseButton.swift */,
+				7CC985172AD3B9C90001BA57 /* NavBarIconModifier.swift */,
+				7CC985192AD3C27B0001BA57 /* CustomSearchableModifier.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -1381,6 +1387,7 @@
 				7CF01D772ACBEE4600EBC36C /* DayOrMonthAggregate.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
+				7CC985182AD3B9C90001BA57 /* NavBarIconModifier.swift in Sources */,
 				7C11324A2ACA9C7600E983FD /* CustomAnimatedSymbolModifier.swift in Sources */,
 				7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */,
 				7CC2C6C22AC6AC9100F15E74 /* RepeatEndPicker.swift in Sources */,
@@ -1411,6 +1418,7 @@
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
+				7CC9851A2AD3C27B0001BA57 /* CustomSearchableModifier.swift in Sources */,
 				7CAB87102A58214600A08219 /* ExportSquare.swift in Sources */,
 				1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */,
 				1A8D4ADE2A4EFC6000EEB334 /* ShiftDetailRow.swift in Sources */,

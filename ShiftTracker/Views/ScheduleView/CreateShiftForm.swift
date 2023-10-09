@@ -473,9 +473,6 @@ struct CreateShiftForm: View {
                                 .frame(height: 40)
                                 .padding(.horizontal)
                                 
-                                // .frame(maxWidth: .infinity)
-                                
-                                
                             } .glassModifier(cornerRadius: 20)
                                 .padding(.horizontal)
                             
