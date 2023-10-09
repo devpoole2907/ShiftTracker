@@ -66,26 +66,31 @@ struct JobView: View {
         
         
         NavigationStack{
+
             ZStack(alignment: .bottomTrailing){
                 
                 themeManager.contentDynamicBackground.opacity(jobViewModel.hasAppeared ? 0 : 1)
                 
-                    .edgesIgnoringSafeArea(.all)
+                        .edgesIgnoringSafeArea(.all)
                 
+            
+        
+            
                 ScrollView{
                     
-                    headerWithIconPanel
+                  
                     
-                    VStack(spacing: 15){
+                    VStack(spacing: 12){
                         
-                        
+                        headerWithIconPanel
+                   
                         titleAndHourlyPanel
                         
                         colorPickerPanel
 
                         clockInOutPanel
                         
-                        
+                       
                         
                         if taxEnabled || jobViewModel.taxPercentage > 0 {
                             EstTaxPicker(taxPercentage: $jobViewModel.taxPercentage, isEditing: .constant(true))
@@ -106,9 +111,7 @@ struct JobView: View {
                     }
                     .frame(maxHeight: .infinity, alignment: .top)
                     .padding()
-                    .navigationTitle(jobTitle)
-                    
-                    .navigationBarTitleDisplayMode(.inline)
+              
                     
                     .fullScreenCover(isPresented: $jobViewModel.showProSheet){
                         
@@ -156,10 +159,18 @@ struct JobView: View {
                     
                     
                 }
-                floatingButtons
+               floatingButtons
                 
                 
-            }.onAppear {
+            }
+            
+            .navigationTitle(jobTitle)
+            
+            .navigationBarTitleDisplayMode(.inline)
+            
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+            
+            .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     withAnimation {
                         jobViewModel.hasAppeared = true
@@ -261,7 +272,7 @@ struct JobView: View {
         .padding(.vertical)
         .glassModifier(cornerRadius: 20)
         
-        .padding(.horizontal)
+  
     }
     
     var titleAndHourlyPanel: some View {
@@ -319,10 +330,6 @@ struct JobView: View {
     }
     
     var clockInOutPanel: some View {
-        return VStack(alignment: .leading, spacing: 10){
-            
-            
-            
             VStack{
                 Toggle(isOn: $jobViewModel.clockInReminder) {
                     Text("Remind me to clock in")
@@ -392,12 +399,12 @@ struct JobView: View {
                 
             }
             
-        }.glassModifier(cornerRadius: 20)
+        .glassModifier(cornerRadius: 20)
     }
     
     var addressFinder: some View {
         if #available(iOS 17.0, *){
-            
+
             var miniMap = MiniMapView()
             
             if let job = job {
@@ -405,6 +412,7 @@ struct JobView: View {
             }
             
             return miniMap.environmentObject(jobViewModel)
+            
             
         } else {
             
@@ -665,7 +673,9 @@ struct MiniMapView: View {
     
     var body: some View {
         
+    
         
+    
         NavigationLink(destination: AddressFinderMap().environmentObject(jobViewModel).environmentObject(mapModel)
             .onDisappear{
                 jobViewModel.selectedAddress = mapModel.selectedAddressString
@@ -684,11 +694,12 @@ struct MiniMapView: View {
                 }
                 
                 WorkLocationHeader()
-            }
+           }
         }.frame(minHeight: 120)
             .background(Color.clear,in:
-                            RoundedRectangle(cornerRadius: 12, style: .continuous))
+                          RoundedRectangle(cornerRadius: 12, style: .continuous))
             .cornerRadius(20)
+         
     }
 }
 
