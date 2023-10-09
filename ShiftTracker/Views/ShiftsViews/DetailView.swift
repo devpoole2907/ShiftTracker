@@ -157,7 +157,8 @@ struct DetailView: View {
                     
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
-                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    .listRowInsets(.init(top: 0, leading: 0, bottom: 10, trailing: 0))
+
 
                     .sheet(isPresented: $viewModel.isAddingBreak){
                         
@@ -429,6 +430,16 @@ struct DetailView: View {
                                 .font(.system(size: 30, weight: .bold).monospacedDigit())
                         }
                     }
+                    
+                    // This is the conditionally displayed multiplier text
+                    if viewModel.multiplierEnabled {
+                        
+                        
+                        MultiplierView(payMultiplier: $viewModel.payMultiplier)
+                        
+                    }
+                    
+                    
                 }
                 .foregroundStyle(themeManager.timerColor)
                 
@@ -464,11 +475,7 @@ struct DetailView: View {
                     
                     
                 }
-                
-                
-                
-                
-                
+
             }
         }
     }

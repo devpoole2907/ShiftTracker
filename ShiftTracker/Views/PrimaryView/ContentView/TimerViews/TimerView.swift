@@ -100,7 +100,7 @@ struct TimerView: View {
                 .frame(width: getRect().width - 60)
                
         VStack(alignment: .center, spacing: 5) {
-            ZStack {
+ 
                 // This is the center aligned text
                 Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
                     .padding(.horizontal, 20)
@@ -110,18 +110,9 @@ struct TimerView: View {
                     .allowsTightening(true)
                     .frame(maxWidth: .infinity, alignment: .center) // added this
                 
-                // This is the conditionally displayed multiplier text
-                if viewModel.isMultiplierEnabled {
-                    HStack {
-                        Spacer()
-                        Text("x\(viewModel.payMultiplier, specifier: "%.2f")")
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                            .bold()
-                    }.frame(maxWidth: getRect().width / 1.5 )
-                }
-            }
-            .frame(maxWidth: .infinity)
+            
+            
+      
             .padding(.top)
 
             
@@ -157,9 +148,19 @@ struct TimerView: View {
                         Text(":")
                             .font(.system(size: 30, weight: .bold).monospacedDigit()) .roundedFontDesign()
                     }
+                }    .foregroundStyle(themeManager.timerColor)
+                
+                // This is the conditionally displayed multiplier text
+                if viewModel.isMultiplierEnabled {
+                    
+                    
+                    MultiplierView(payMultiplier: $viewModel.payMultiplier)
+                    
                 }
+                
+                
             }
-            .foregroundStyle(themeManager.timerColor)
+        
             .frame(maxWidth: .infinity)
             .padding(.bottom)
 
