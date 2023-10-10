@@ -8,6 +8,7 @@
 import Foundation
 import CoreData
 import SwiftUI
+import Combine
 
 class SortSelection: ObservableObject {
     @Published var selectedSort: ShiftNSSort = .default
@@ -17,19 +18,23 @@ class SortSelection: ObservableObject {
     @Published var oldShifts: [OldShift] = []
     @Published var filteredShifts: [OldShift] = []
     
+    private var searchTask: DispatchWorkItem?
+    
     @Published var searchTerm: String = "" {
+        
+        
         didSet {
-            if searchTerm.isEmpty {
-                if oldShifts.isEmpty {
-                    fetchShifts()
+                searchTask?.cancel()
+                
+                let task = DispatchWorkItem { [weak self] in
+                    self?.fetchShifts()
                 }
-                filteredShifts = oldShifts
-            } else {
-                filteredShifts = oldShifts.filter {
-                    $0.shiftNote?.lowercased().contains(searchTerm.lowercased()) ?? false
-                }
+                
+                searchTask = task
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: task)
             }
-        }
+
     }
     
 
@@ -69,9 +74,4 @@ class SortSelection: ObservableObject {
             print("Failed to fetch shifts: \(error)")
         }
     }
-    
-    func commitSearch() {
-            fetchShifts() // we only commit full fetch when searching if they submit the search to be more efficient
-        }
-    
 }

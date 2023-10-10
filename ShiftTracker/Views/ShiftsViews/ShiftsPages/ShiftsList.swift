@@ -98,6 +98,8 @@ struct ShiftsList: View {
 
             
                 .onSubmit(of: .search, sortSelection.fetchShifts)
+            
+                
                
             .tint(Color.gray)
             .scrollContentBackground(.hidden)
