@@ -111,7 +111,10 @@ class JobViewModel: ObservableObject {
         
     }
     
-     func saveJob(in viewContext: NSManagedObjectContext, completion: () -> Void) {
+    func saveJob(in viewContext: NSManagedObjectContext, locationManager: LocationDataManager, selectedJobManager: JobSelectionManager, jobViewModel: JobViewModel, contentViewModel: ContentViewModel) {
+        
+        
+        let notificationManager = ShiftNotificationManager.shared
         
         var newJob: Job
 
@@ -167,6 +170,38 @@ class JobViewModel: ObservableObject {
             try viewContext.save()
             
             self.job = newJob
+            
+            locationManager.startMonitoringAllLocations()
+            
+            notificationManager.updateRosterNotifications(viewContext: viewContext)
+            
+            
+            
+            // checks if content views selected job is this job
+            
+            if let jobUUID = jobViewModel.job?.uuid {
+                if jobUUID == contentViewModel.selectedJobUUID {
+                    contentViewModel.hourlyPay = jobViewModel.job!.hourlyPay
+                    contentViewModel.saveHourlyPay()
+                    contentViewModel.taxPercentage = jobViewModel.job!.tax
+                    contentViewModel.saveTaxPercentage()
+                }
+                
+                
+                
+                
+                // checks if this is the overall selected job
+                if jobUUID == selectedJobManager.selectedJobUUID {
+                    print("its the selected job yes")
+                    
+                    //   jobSelectionViewModel.deselectJob(shiftViewModel: viewModel) DOES IT NEED TO BE DESELECTED?
+                    
+                    selectedJobManager.updateJob(jobViewModel.job!)
+                    
+                    
+                    
+                }
+            }
  
         } catch {
             print("Failed to save job: \(error.localizedDescription)")

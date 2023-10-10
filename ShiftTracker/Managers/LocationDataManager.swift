@@ -17,6 +17,9 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
     
     var locationManager = CLLocationManager()
     
+    var lastRegionChange: Date? // will store the last time we chnaged region so we dont clock out/remind to clock out too soon.
+    var cooldownTime: TimeInterval = 3600.0 // 1 hour cooldown for location tracking.
+    
     private let notificationManager = ShiftNotificationManager.shared
     
     @Published var authorizationStatus: CLAuthorizationStatus?
@@ -32,6 +35,9 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
         //locationManager.allowsBackgroundLocationUpdates = true
             //print("requested when in use")
                 locationManager.startUpdatingLocation()
+        
+        self.startMonitoringAllLocations()
+        
     }
     
     func requestLocation() {
@@ -92,6 +98,8 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
     
     public func startMonitoringAllLocations() {
         stopMonitoringAllRegions()
+        
+        
 
         let context = PersistenceController.shared.container.viewContext
         let fetchRequest: NSFetchRequest<JobLocation> = JobLocation.fetchRequest()
@@ -133,16 +141,33 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
     
     
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        
+        let now = Date()
+        
+        if let lastChange = lastRegionChange, now.timeIntervalSince(lastChange) < cooldownTime {
+            return
+            
+            // preventsn another notification etc if its been too soon since the last one
+        }
+        
         print("Entered the region")
 
         guard let locationURI = URL(string: region.identifier),
               let locationID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: locationURI) else {
             return
         }
+        
+        print("checking for job with location")
 
         let context = PersistenceController.shared.container.viewContext
         if let location = try? context.existingObject(with: locationID) as? JobLocation {
+            
+            print("found location")
+            
             if let job = location.job {
+                
+                print("found locations job")
+                
                 if job.autoClockIn {
                     print("Region entered, sending notification") // debugging
                     
@@ -160,6 +185,10 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                 
                     NotificationCenter.default.post(name: .didEnterRegion, object: nil)
                 }
+                
+                lastRegionChange = now
+                
+                
             }
         }
     }
@@ -167,6 +196,13 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
     
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("Exited the region")
+        
+        let now = Date()
+        
+        if let lastChange = lastRegionChange, now.timeIntervalSince(lastChange) < cooldownTime {
+            print("preventing region exit notifications")
+            return
+        }
 
         guard let locationURI = URL(string: region.identifier),
               let locationID = PersistenceController.shared.container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: locationURI) else {
@@ -193,6 +229,8 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
 
                     NotificationCenter.default.post(name: .didExitRegion, object: nil)
                 }
+                
+                lastRegionChange = now
             }
         }
     }

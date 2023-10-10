@@ -568,39 +568,9 @@ struct JobView: View {
                     }
                 }
                 else {
-                    jobViewModel.saveJob(in: viewContext){
-                        locationManager.startMonitoringAllLocations()
-                        notificationManager.updateRosterNotifications(viewContext: viewContext)
-                        
-                        
-                        
-                        
-                        // checks if content views selected job is this job
-                        
-                        if let jobUUID = jobViewModel.job?.uuid {
-                            if jobUUID == contentViewModel.selectedJobUUID {
-                                contentViewModel.hourlyPay = jobViewModel.job!.hourlyPay
-                                contentViewModel.saveHourlyPay()
-                                contentViewModel.taxPercentage = jobViewModel.job!.tax
-                                contentViewModel.saveTaxPercentage()
-                            }
-                            
-                            
-                            
-                            
-                            // checks if this is the overall selected job
-                            if jobUUID == selectedJobManager.selectedJobUUID {
-                                print("its the selected job yes")
-                                
-                                //   jobSelectionViewModel.deselectJob(shiftViewModel: viewModel) DOES IT NEED TO BE DESELECTED?
-                                
-                                selectedJobManager.updateJob(jobViewModel.job!)
-                                
-                                
-                                
-                            }
-                        }
-                    }
+                    print("saving")
+                    
+                    jobViewModel.saveJob(in: viewContext, locationManager: locationManager, selectedJobManager: selectedJobManager, jobViewModel: jobViewModel, contentViewModel: contentViewModel)
                     
                     dismiss()
                     
