@@ -14,7 +14,7 @@ struct ShiftsList: View {
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var navigationState: NavigationState
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var themeManager: ThemeDataManager
@@ -42,7 +42,7 @@ struct ShiftsList: View {
         
         ZStack(alignment: .bottomTrailing){
         List(selection: $selection){
-            ForEach(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) }, id: \.objectID) { shift in
+            ForEach(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }, id: \.objectID) { shift in
                 ZStack {
                     NavigationLink(value: shift) {
                         ShiftDetailRow(shift: shift)
@@ -51,7 +51,7 @@ struct ShiftsList: View {
                         HStack {
                             Spacer()
                             VStack(alignment: .trailing){
-                                if jobSelectionViewModel.fetchJob(in: viewContext) == nil {
+                                if selectedJobManager.fetchJob(in: viewContext) == nil {
                                     Spacer()
                                     
                                 }
@@ -59,18 +59,18 @@ struct ShiftsList: View {
                                     Spacer()
                                     
                                     HighlightedText(text: shift.shiftNote ?? "", highlight: sortSelection.searchTerm)
-                                        .padding(.vertical, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 2 : 5)
+                                        .padding(.vertical, selectedJobManager.fetchJob(in: viewContext) == nil ? 2 : 5)
                                         .background(Color.gray.opacity(0.1))
                                         .cornerRadius(6)
-                                        .padding(.bottom, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 5 : 0)
-                                        .padding(.trailing, jobSelectionViewModel.fetchJob(in: viewContext) == nil ? 0 : 12)
+                                        .padding(.bottom, selectedJobManager.fetchJob(in: viewContext) == nil ? 5 : 0)
+                                        .padding(.trailing, selectedJobManager.fetchJob(in: viewContext) == nil ? 0 : 12)
                                 }
                             }.frame(maxWidth: 180)
                                 .frame(alignment: .trailing)
                         }
                     }
                 }
-                .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+                .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                 .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 
                 .swipeActions {

@@ -19,7 +19,7 @@ struct HistoricalView: View {
     @EnvironmentObject var shiftStore: ShiftStore
     
     @EnvironmentObject var shiftManager: ShiftDataManager
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
@@ -176,10 +176,12 @@ struct HistoricalView: View {
                             
                             
                         }
-                        .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+                        .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                         .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                         
-                        
+                        Section {
+                            Spacer(minLength: 100)
+                        }.listRowBackground(Color.clear)
                         
                         
                     }.scrollContentBackground(.hidden)
@@ -253,7 +255,7 @@ struct HistoricalView: View {
                             withAnimation{
                                 
                                 DispatchQueue.global(qos: .background).async {
-                                    let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts)
+                                    let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
                                     DispatchQueue.main.async {
                                         historyModel.aggregatedShifts = newAggregatedShifts
                                      //   historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
@@ -297,7 +299,7 @@ struct HistoricalView: View {
         
         .overlay(alignment: .topTrailing){
             
-            if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
+            if let job = selectedJobManager.fetchJob(in: viewContext) {
                 if historyModel.showLargeIcon {
                     
                     
@@ -318,7 +320,7 @@ struct HistoricalView: View {
             
             DispatchQueue.global(qos: .background).async {
                 
-                let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts)
+                let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
                 
                 DispatchQueue.main.async {
                     withAnimation {
@@ -363,7 +365,7 @@ struct HistoricalView: View {
      /*   .toolbar {
             if !historyModel.showLargeIcon {
                 
-                if let job = jobSelectionViewModel.fetchJob(in: viewContext) {
+                if let job = selectedJobManager.fetchJob(in: viewContext) {
                     
                     if !historyModel.showLargeIcon {
                         ToolbarItem(placement: .topBarTrailing) {

@@ -12,7 +12,7 @@ struct UpcomingShiftView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
     @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
@@ -67,8 +67,8 @@ struct UpcomingShiftView: View {
                     if let upcomingShiftJob = upcomingShift.job {
                         
                         CustomConfirmationAlert(action: {
-                            if upcomingShiftJob != jobSelectionViewModel.fetchJob(in: viewContext){
-                                jobSelectionViewModel.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
+                            if upcomingShiftJob != selectedJobManager.fetchJob(in: viewContext){
+                                selectedJobManager.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
                             }
                             let startDate = max(Date(), upcomingShift.startDate ?? Date())
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -104,7 +104,7 @@ struct UpcomingShiftView: View {
                                 viewModel.payMultiplier = upcomingShift.payMultiplier
                                 viewModel.isMultiplierEnabled = upcomingShift.multiplierEnabled
                                 
-                                viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: jobSelectionViewModel.fetchJob(in: viewContext)!)
+                                viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: selectedJobManager.fetchJob(in: viewContext)!)
                                 
 
                             }

@@ -17,7 +17,7 @@ struct ScheduledShiftsView: View {
     
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
     let shiftManager = ShiftDataManager()
@@ -40,7 +40,7 @@ struct ScheduledShiftsView: View {
             
             let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == scheduleModel.dateSelected?.date?.startOfDay ?? Date().startOfDay}
             
-            let foundOldShifts = scheduleModel.displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: jobSelectionViewModel) })
+            let foundOldShifts = scheduleModel.displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) })
             
             if !foundOldShifts.isEmpty {
                 Section{
@@ -65,7 +65,7 @@ struct ScheduledShiftsView: View {
                    
                     
                     .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-                    .listRowInsets(.init(top: 10, leading: jobSelectionViewModel.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+                    .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                     
                     .swipeActions {
                         Button(role: .destructive) {

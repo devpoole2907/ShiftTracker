@@ -19,7 +19,7 @@ struct ScheduleView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @EnvironmentObject var navigationState: NavigationState
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var shiftStore: ShiftStore
@@ -126,7 +126,7 @@ struct ScheduleView: View {
                 case .pastShiftSheet:
                     
                     NavigationStack{
-                        DetailView(job: jobSelectionViewModel.fetchJob(in: viewContext)!, dateSelected: scheduleModel.dateSelected, presentedAsSheet: true)
+                        DetailView(job: selectedJobManager.fetchJob(in: viewContext)!, dateSelected: scheduleModel.dateSelected, presentedAsSheet: true)
                     }
                     
                     .environmentObject(shiftManager)
@@ -150,25 +150,25 @@ struct ScheduleView: View {
                 shiftStore.deleteOldScheduledShifts(in: viewContext)
                 
                 DispatchQueue.main.async{
-                    shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
+                    shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: selectedJobManager)
                 }
                 
-                print("selected job is \(jobSelectionViewModel.fetchJob(in: viewContext)?.name)")
+                print("selected job is \(selectedJobManager.fetchJob(in: viewContext)?.name)")
                 
                 
                 
             }
         
-            .onReceive(jobSelectionViewModel.$selectedJobUUID){ _ in
+            .onReceive(selectedJobManager.$selectedJobUUID){ _ in
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                     withAnimation {
-                        shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: jobSelectionViewModel)
+                        shiftStore.fetchShifts(from: scheduledShifts, and: allShifts, jobModel: selectedJobManager)
                     }
                 }
                 
                 print("Changed job")
-                shiftStore.changedJob = jobSelectionViewModel.fetchJob(in: viewContext)
+                shiftStore.changedJob = selectedJobManager.fetchJob(in: viewContext)
                 
             }
         
@@ -247,7 +247,7 @@ struct ScheduleView: View {
                         
                         Button(action: {
                             
-                            if jobSelectionViewModel.selectedJobUUID == nil {
+                            if selectedJobManager.selectedJobUUID == nil {
                                 
                                 
                                 OkButtonPopup(title: "Select a job before adding a past shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
@@ -279,7 +279,7 @@ struct ScheduleView: View {
                                 
                                 
                                 
-                                if jobSelectionViewModel.selectedJobUUID == nil {
+                                if selectedJobManager.selectedJobUUID == nil {
                                     
                                     
                                     OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
@@ -303,7 +303,7 @@ struct ScheduleView: View {
                                 
                                 
                                 
-                                if jobSelectionViewModel.selectedJobUUID == nil {
+                                if selectedJobManager.selectedJobUUID == nil {
                                     
                                     
                                     OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()
@@ -351,7 +351,7 @@ struct ScheduleView: View {
                             
                             
                             
-                            if jobSelectionViewModel.selectedJobUUID == nil {
+                            if selectedJobManager.selectedJobUUID == nil {
                                 
                                 
                                 OkButtonPopup(title: "Select a job before scheduling a shift.", action: { navigationState.showMenu.toggle() }).showAndStack()

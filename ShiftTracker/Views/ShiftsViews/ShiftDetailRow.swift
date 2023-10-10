@@ -14,7 +14,7 @@ struct ShiftDetailRow: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     let shiftManager = ShiftDataManager()
     
@@ -66,7 +66,7 @@ struct ShiftDetailRow: View {
         
         let job = shift.job
         
-        if jobSelectionViewModel.fetchJob(in: viewContext) != nil {
+        if selectedJobManager.fetchJob(in: viewContext) != nil {
             
             
             

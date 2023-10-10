@@ -28,7 +28,7 @@ struct ContentView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
@@ -104,7 +104,7 @@ struct ContentView: View {
                             
                             if value >= 86400 {
                                 DispatchQueue.main.async {
-                                    self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(86400), job: jobSelectionViewModel.fetchJob(in: context)!)
+                                    self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(86400), job: selectedJobManager.fetchJob(in: context)!)
                                     
                
                                     navigationState.activeSheet = .detailSheet
@@ -244,8 +244,8 @@ struct ContentView: View {
                 if viewModel.hourlyPay != 0 {
                     
                     
-                    if let jobSelected = jobSelectionViewModel.fetchJob(in: context) {
-                        viewModel.startShift(using: context, startDate: shiftStartDate, job: jobSelectionViewModel.fetchJob(in: context)!)
+                    if let jobSelected = selectedJobManager.fetchJob(in: context) {
+                        viewModel.startShift(using: context, startDate: shiftStartDate, job: selectedJobManager.fetchJob(in: context)!)
                         
                         viewModel.loadSelectedTags()
                         
@@ -265,15 +265,15 @@ struct ContentView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { notification in
             
-            if let jobID = notification.userInfo?["jobID"] as? UUID, let job = jobSelectionViewModel.fetchJob(with: jobID, in: context), viewModel.shift == nil && !viewModel.isOnBreak{
-                jobSelectionViewModel.selectJob(job, with: jobs, shiftViewModel: viewModel)
+            if let jobID = notification.userInfo?["jobID"] as? UUID, let job = selectedJobManager.fetchJob(with: jobID, in: context), viewModel.shift == nil && !viewModel.isOnBreak{
+                selectedJobManager.selectJob(job, with: jobs, shiftViewModel: viewModel)
                 viewModel.startShift(using: context, startDate: Date(), job: job)
             }
         })
         .onReceive(NotificationCenter.default.publisher(for: .didExitRegion), perform: { _ in
             
             if viewModel.shift != nil && !viewModel.isOnBreak {
-                viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
+                viewModel.endShift(using: context, endDate: Date(), job: selectedJobManager.fetchJob(in: context)!)
             }
         })
     }

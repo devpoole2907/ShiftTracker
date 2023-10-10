@@ -14,7 +14,7 @@ struct ActionView: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var navigationState: NavigationState
     
@@ -188,7 +188,7 @@ struct ActionView: View {
                             .glassModifier(cornerRadius: 20)
                         
                             .onAppear {
-                                viewModel.breakReminder = jobSelectionViewModel.fetchJob(in: context)?.breakReminder ?? false
+                                viewModel.breakReminder = selectedJobManager.fetchJob(in: context)?.breakReminder ?? false
                             }
                         
                         Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
@@ -227,13 +227,13 @@ struct ActionView: View {
                         
                         
                         ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
-                            viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
+                            viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: selectedJobManager.fetchJob(in: context)!)
                             dismiss()
                         }
                     case .endShift:
                         ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 60) {
                             
-                            self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: jobSelectionViewModel.fetchJob(in: context)!)
+                            self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: selectedJobManager.fetchJob(in: context)!)
                             dismiss()
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

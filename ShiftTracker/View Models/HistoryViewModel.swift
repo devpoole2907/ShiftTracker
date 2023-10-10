@@ -129,13 +129,16 @@ class HistoryViewModel: ObservableObject {
         
     }
     
-    func generateAggregatedShifts(from shifts: FetchedResults<OldShift>) -> [AggregatedShift] {
+    func generateAggregatedShifts(from shifts: FetchedResults<OldShift>, using selectedJobManager: JobSelectionManager) -> [AggregatedShift] {
+        
+        let shiftManager = ShiftDataManager.shared
+        
         var aggregatedShifts: [AggregatedShift] = []
 
-   
-        let sortedShifts = shifts.sorted(by: { $0.shiftStartDate! < $1.shiftStartDate! })
+     
+            let filteredShifts = shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }
 
-        let groupedShifts = Dictionary(grouping: sortedShifts) { (shift) -> Date in
+        let groupedShifts = Dictionary(grouping: filteredShifts) { (shift) -> Date in
             return getGroupingKey(for: shift)
         }
         

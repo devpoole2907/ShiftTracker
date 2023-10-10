@@ -12,7 +12,7 @@ import Haptics
 struct ExportSquare: View {
     
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
     @State private var showingProView = false

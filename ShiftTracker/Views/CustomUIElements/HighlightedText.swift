@@ -12,32 +12,32 @@ struct HighlightedText: View {
     let highlight: String
     
     @Environment(\.managedObjectContext) var viewContext
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         if let parts = highlightSnippet(in: text, highlight: highlight) {
             HStack(spacing: 0) {
                 Text("..")
-                    .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                    .font(selectedJobManager.fetchJob(in: viewContext) != nil ? .callout : .caption)
                     .bold()
                 ForEach(parts, id: \.0) { part, isHighlighted in
                     if isHighlighted {
                         Text(part)
                             .bold()
-                            .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                            .font(selectedJobManager.fetchJob(in: viewContext) != nil ? .callout : .caption)
                             .foregroundStyle(.black)
                             .background(Color.yellow.opacity(0.8))
                             .cornerRadius(4)
                     } else {
                         Text(part)
-                            .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                            .font(selectedJobManager.fetchJob(in: viewContext) != nil ? .callout : .caption)
                             .bold()
                             .font(.caption)
                     }
                 }
                 Text("..")
-                    .font(jobSelectionViewModel.fetchJob(in: viewContext) != nil ? .callout : .caption)
+                    .font(selectedJobManager.fetchJob(in: viewContext) != nil ? .callout : .caption)
                     .bold()
             }.lineLimit(1)
                 .padding(.horizontal, 10)

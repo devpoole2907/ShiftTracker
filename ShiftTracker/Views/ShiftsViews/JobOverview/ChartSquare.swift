@@ -13,7 +13,7 @@ struct ChartSquare: View {
     
     @EnvironmentObject var shiftManager: ShiftDataManager
     
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     
     @Environment(\.colorScheme) var colorScheme

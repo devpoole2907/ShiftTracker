@@ -194,7 +194,7 @@ class JobViewModel: ObservableObject {
                 if jobUUID == selectedJobManager.selectedJobUUID {
                     print("its the selected job yes")
                     
-                    //   jobSelectionViewModel.deselectJob(shiftViewModel: viewModel) DOES IT NEED TO BE DESELECTED?
+                    //   selectedJobManager.deselectJob(shiftViewModel: viewModel) DOES IT NEED TO BE DESELECTED?
                     
                     selectedJobManager.updateJob(jobViewModel.job!)
                     

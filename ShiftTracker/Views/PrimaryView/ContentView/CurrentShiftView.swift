@@ -10,7 +10,7 @@ import CoreData
 
 struct CurrentShiftView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     let startDate: Date
     
     
@@ -71,7 +71,7 @@ struct CurrentShiftView: View {
             
             
         }.onAppear {
-            job = jobSelectionViewModel.fetchJob(in: viewContext)
+            job = selectedJobManager.fetchJob(in: viewContext)
         }
     }
 }

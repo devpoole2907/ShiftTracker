@@ -14,7 +14,7 @@ struct CreateShiftForm: View {
     
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var scheduleModel: SchedulingViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -91,7 +91,7 @@ struct CreateShiftForm: View {
     func createShift() {
         let shiftID = UUID()
         let repeatID = UUID().uuidString
-        let job = jobSelectionViewModel.fetchJob(in: viewContext)!
+        let job = selectedJobManager.fetchJob(in: viewContext)!
         
         let newShift = scheduleModel.createScheduledShift(startDate: startDate, endDate: endDate, shiftID: shiftID, repeatID: repeatID, job: job, selectedTags: selectedTags, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, in: viewContext)
         let singleShift = SingleScheduledShift(shift: newShift)
@@ -491,7 +491,7 @@ struct CreateShiftForm: View {
                 
                 HStack(spacing: 10){
                     
-                    let job = jobSelectionViewModel.fetchJob(in: viewContext)
+                    let job = selectedJobManager.fetchJob(in: viewContext)
                     
                     JobForShiftView(job: job)
                     

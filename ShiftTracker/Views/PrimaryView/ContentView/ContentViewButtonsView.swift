@@ -11,7 +11,7 @@ import Haptics
 struct ContentViewButtonsView: View {
     
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var jobSelectionViewModel: JobSelectionManager
+    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var navigationState: NavigationState
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) private var context
@@ -32,12 +32,12 @@ struct ContentViewButtonsView: View {
                 AnimatedButton(
                     action: { navigationState.activeSheet = .startShiftSheet }, title: "Start Shift",
                     backgroundColor: buttonColor,
-                    isDisabled: viewModel.hourlyPay == 0 || jobSelectionViewModel.selectedJobUUID == nil
+                    isDisabled: viewModel.hourlyPay == 0 || selectedJobManager.selectedJobUUID == nil
                 )
                 .frame(maxWidth: .infinity)
                 .onAppear(perform: viewModel.prepareHaptics)
                 .onTapGesture {
-                    if jobSelectionViewModel.selectedJobUUID == nil {
+                    if selectedJobManager.selectedJobUUID == nil {
                         withAnimation(.linear(duration: 0.4)) {
                             jobShakeTimes += 2
                         }
@@ -53,7 +53,7 @@ struct ContentViewButtonsView: View {
                 AnimatedButton(
                     action: {
                         CustomConfirmationAlert(action: {
-                            viewModel.endShift(using: context, endDate: Date(), job: jobSelectionViewModel.fetchJob(in: context)!)
+                            viewModel.endShift(using: context, endDate: Date(), job: selectedJobManager.fetchJob(in: context)!)
                         }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
                         
                     },
