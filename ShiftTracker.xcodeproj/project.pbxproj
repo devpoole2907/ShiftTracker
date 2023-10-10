@@ -246,6 +246,7 @@
 		7CF4D0E12AD25F1F001A891E /* OvertimePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */; };
 		7CFF521B2AD5230C00BB3AD6 /* StatsSquareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF521A2AD5230C00BB3AD6 /* StatsSquareViewModel.swift */; };
 		7CFF521D2AD52C3100BB3AD6 /* ChartSquareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF521C2AD52C3100BB3AD6 /* ChartSquareViewModel.swift */; };
+		7CFF521F2AD52D2100BB3AD6 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF521E2AD52D2100BB3AD6 /* ActivityIndicator.swift */; };
 		BF81913B2A5A6F400079E449 /* ThemeDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */; };
 		BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913C2A5A6FF80079E449 /* SelectableButton.swift */; };
 		BF81913F2A5A70540079E449 /* PreviewTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF81913E2A5A70540079E449 /* PreviewTimerView.swift */; };
@@ -508,6 +509,7 @@
 		7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvertimePanel.swift; sourceTree = "<group>"; };
 		7CFF521A2AD5230C00BB3AD6 /* StatsSquareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsSquareViewModel.swift; sourceTree = "<group>"; };
 		7CFF521C2AD52C3100BB3AD6 /* ChartSquareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSquareViewModel.swift; sourceTree = "<group>"; };
+		7CFF521E2AD52D2100BB3AD6 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		BF81913A2A5A6F3F0079E449 /* ThemeDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeDataManager.swift; sourceTree = "<group>"; };
 		BF81913C2A5A6FF80079E449 /* SelectableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableButton.swift; sourceTree = "<group>"; };
 		BF81913E2A5A70540079E449 /* PreviewTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTimerView.swift; sourceTree = "<group>"; };
@@ -801,6 +803,7 @@
 				7CF4D0DA2AD22123001A891E /* NavBarIconView.swift */,
 				7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */,
 				7CC9851B2AD3CC900001BA57 /* MultiplierView.swift */,
+				7CFF521E2AD52D2100BB3AD6 /* ActivityIndicator.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -1478,6 +1481,7 @@
 				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,
 				7C934D3A2A6522F9004F2622 /* PurchaseManager.swift in Sources */,
 				7CC9851C2AD3CC900001BA57 /* MultiplierView.swift in Sources */,
+				7CFF521F2AD52D2100BB3AD6 /* ActivityIndicator.swift in Sources */,
 				1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */,
 				1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */,
 				7C5243792ABE70FE00356B6C /* HistoricalView.swift in Sources */,
