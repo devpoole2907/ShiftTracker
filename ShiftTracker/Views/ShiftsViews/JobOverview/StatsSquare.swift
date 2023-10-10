@@ -93,7 +93,7 @@ struct StatsSquare: View {
     }
     
     var headerView: some View {
-        Text("This Week")
+        Text("Past 7 Days")
             .font(.callout)
             .bold()
             .foregroundStyle(headerColor)

@@ -390,8 +390,8 @@ struct JobOverview: View {
                     
                     Spacer()
                     
-                        // ignore the ChartSquare for now              //   ChartSquare(shifts: weeklyShifts)
-                   //     .environmentObject(shiftManager)
+                   ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode)
+                       .environmentObject(shiftManager)
                     
                 }
                 
