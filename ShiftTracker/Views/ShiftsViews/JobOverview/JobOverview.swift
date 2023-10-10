@@ -107,7 +107,7 @@ struct JobOverview: View {
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
                 List{
-                      statsSection
+                      
 
                     recentShiftsSection
                         .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
@@ -294,7 +294,7 @@ struct JobOverview: View {
     
     var recentShiftsSection: some View {
         
-        let textColor: Color = colorScheme == .dark ? .white : .black
+      
         
         return Section{
             
@@ -325,21 +325,9 @@ struct JobOverview: View {
             
         } header: {
             
-            NavigationLink(value: 1) {
-                
-                Text("Latest Shifts")
-                    .textCase(nil)
-                    .foregroundStyle(textColor)
-                    .padding(.leading, overviewModel.job != nil ? -12 : -4)
-                    .font(.title2)
-                    .bold()
-                
-                Image(systemName: "chevron.right")
-                    .bold()
-                    .foregroundStyle(.gray)
-                Spacer()
-                
-            }
+            statsSection
+            
+          
         
             
             
@@ -381,17 +369,23 @@ struct JobOverview: View {
     }
     
     var statsSection: some View {
-        VStack(alignment: .leading, spacing: 0){
+        
+        let textColor: Color = colorScheme == .dark ? .white : .black
+        
+        return Group {
+        VStack(alignment: .leading, spacing: 16){
             HStack(spacing: 8){
                 VStack(spacing: 0) {
                     
-                StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
-                       .environmentObject(shiftManager)
+                    StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
+                        .environmentObject(shiftManager)
+                    
+            
                     
                     Spacer()
                     
-                   ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode)
-                       .environmentObject(shiftManager)
+                    ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode)
+                        .environmentObject(shiftManager)
                     
                 }
                 
@@ -404,16 +398,33 @@ struct JobOverview: View {
                 
                 
                 
+            }.frame(width: getRect().width - 44)
+            
+            
+            NavigationLink(value: 1) {
+                
+                Text("Latest Shifts")
+                 
+                    .foregroundStyle(textColor)
+                    .padding(.leading, overviewModel.job != nil ? 4 : 8)
+                    .font(.title2)
+                    .bold()
+                
+                Image(systemName: "chevron.right")
+                    .bold()
+                    .foregroundStyle(.gray)
+                Spacer()
+                
             }
-        }.frame(maxWidth: .infinity)
-            .padding(.horizontal, 12)
-            .frame(maxHeight: 220)
+            
+        }
+            .frame(maxHeight: 244)
+
+        
+    }   .textCase(nil)
         
         
         
-            .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
-            .listRowInsets(.init(top: 20, leading: 0, bottom: 30, trailing: 0))
     }
     
     var toolbarMenu: some View {

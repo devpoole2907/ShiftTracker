@@ -28,9 +28,13 @@ struct ChartSquare: View {
     }
     
     var body: some View {
-        VStack(alignment: .center) {
-            navHeader
-            weeklyChart
+        NavigationLink(value: 2) {
+            VStack(alignment: .center) {
+                
+                navHeader
+                weeklyChart
+                
+            }
         }
         .padding(.vertical, 8)
         .glassModifier(cornerRadius: 12, applyPadding: false)
@@ -39,13 +43,20 @@ struct ChartSquare: View {
     var navHeader: some View {
         let headerColor: Color = colorScheme == .dark ? .white : .black
         return HStack(spacing: 5){
-            NavigationLink(value: 2) {
+            
                 Text("Activity")
                     .font(.callout)
                     .bold()
                     .foregroundStyle(headerColor)
                     .padding(.leading)
-            }
+            
+            Image(systemName: "chevron.right")
+                .bold()
+                .font(.caption)
+                .font(.callout)
+                .foregroundStyle(.gray)
+    
+            
             Spacer()
         }
     }

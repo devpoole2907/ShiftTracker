@@ -82,7 +82,7 @@ struct StatsSquare: View {
                 
             }
             .padding(.leading)
-            Spacer()
+           Spacer()
         }
             .padding(.vertical, 16)
             .glassModifier(cornerRadius: 12, applyPadding: false)

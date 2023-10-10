@@ -25,18 +25,22 @@ struct ExportSquare: View {
     
     var body: some View {
         
+        let headerColor: Color = colorScheme == .dark ? .white : .black
+        
         VStack(alignment: .leading, spacing: 10){
             
             Text("Total Shifts")
                 .bold()
                 .font(.headline)
-            
+                .foregroundStyle(headerColor)
             
             Text("\(totalShifts)")
                 .font(.largeTitle)
                 .bold()
-            
+                .foregroundStyle(headerColor)
             Spacer()
+            
+        
             
             Button(action: {
                 
@@ -65,6 +69,7 @@ struct ExportSquare: View {
                     }
                     .bold()
                     .font(.subheadline)
+                    .foregroundStyle(headerColor)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
