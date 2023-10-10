@@ -14,36 +14,35 @@ struct StatsSquare: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     
-     var shifts: FetchedResults<OldShift>
-    var shiftsThisWeek: FetchedResults<OldShift>
+    @ObservedObject var viewModel: StatsSquareViewModel
     
+
+        init(shifts: FetchedResults<OldShift>, shiftsThisWeek: FetchedResults<OldShift>) {
+            viewModel = StatsSquareViewModel(shifts: shifts, weeklyShifts: shiftsThisWeek)
+        }
+    
+    private var subTextColor: Color {
+          return colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)
+      }
+
+      private var headerColor: Color {
+          return colorScheme == .dark ? .white : .black
+      }
+
     var body: some View {
-        
-        let subTextColor: Color = colorScheme == .dark ? .white.opacity(0.5) : .black.opacity(0.5)
-        let headerColor: Color = colorScheme == .dark ? .white : .black
-        
-        let totalEarnings = shifts.reduce(0) { $0 + $1.totalPay }
-        let totalHours = shifts.reduce(0) { $0 + ($1.duration / 3600.0) }
-        let totalBreaks = shifts.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
-        
-        let weeklyEarnings = shiftsThisWeek.reduce(0) { $0 + $1.totalPay }
-        let weeklyHours = shiftsThisWeek.reduce(0) { $0 + ($1.duration / 3600.0) }
-        let weeklyBreaks = shiftsThisWeek.reduce(0) { $0 + ($1.breakDuration / 3600.0) }
+
         
         HStack{
             VStack(alignment: .leading) {
+                headerView
                 
-                Text("This Week")
-                    .font(.callout)
-                    .bold()
-                    .foregroundStyle(headerColor)
                 if shiftManager.statsMode == .earnings {
-                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: weeklyEarnings)) ?? "0")")
+                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: viewModel.weeklyEarnings)) ?? "0")")
                         .font(.title2)
                         .bold()
                         .foregroundStyle(headerColor)
                     
-                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: totalEarnings)) ?? "0") Total")
+                    Text("\(shiftManager.currencyFormatter.string(from: NSNumber(value: viewModel.totalEarnings)) ?? "0") Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
@@ -51,13 +50,13 @@ struct StatsSquare: View {
                     
                 } else if shiftManager.statsMode == .hours {
                     
-                    Text("\(shiftManager.formatTime(timeInHours: weeklyHours))")
+                    Text("\(shiftManager.formatTime(timeInHours: viewModel.weeklyHours))")
                     
                         .font(.title2)
                         .bold()
                         .foregroundStyle(headerColor)
                     
-                    Text("\(shiftManager.formatTime(timeInHours: totalHours)) Total")
+                    Text("\(shiftManager.formatTime(timeInHours: viewModel.totalHours)) Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
@@ -65,13 +64,13 @@ struct StatsSquare: View {
                     
                 } else {
                     
-                    Text("\(shiftManager.formatTime(timeInHours: weeklyBreaks))")
+                    Text("\(shiftManager.formatTime(timeInHours: viewModel.weeklyBreaks))")
                     
                         .font(.title2)
                         .bold()
                         .foregroundStyle(headerColor)
                     
-                    Text("\(shiftManager.formatTime(timeInHours: totalBreaks)) Total")
+                    Text("\(shiftManager.formatTime(timeInHours: viewModel.totalBreaks)) Total")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(subTextColor)
@@ -88,8 +87,55 @@ struct StatsSquare: View {
             .padding(.vertical, 16)
             .glassModifier(cornerRadius: 12, applyPadding: false)
         
+        
+        
           
     }
+    
+    var headerView: some View {
+        Text("This Week")
+            .font(.callout)
+            .bold()
+            .foregroundStyle(headerColor)
+    }
+    
+    
+    // this is better code but way worse performance...?
+    
+    /*
+    
+    private var valueView: some View {
+        
+        switch shiftManager.statsMode {
+            
+        case .earnings:
+            return statView(weeklyValue: viewModel.weeklyEarnings, totalValue: viewModel.totalEarnings)
+        case .hours:
+            return statView(weeklyValue: viewModel.weeklyHours, totalValue: viewModel.totalHours, isTime: true)
+        case .breaks:
+            return statView(weeklyValue: viewModel.weeklyBreaks, totalValue: viewModel.totalBreaks, isTime: true)
+            
+
+        }
+    }
+    
+    private func statView(weeklyValue: Double, totalValue: Double, isTime: Bool = false) -> some View {
+            let weeklyString = isTime ? shiftManager.formatTime(timeInHours: weeklyValue) : shiftManager.currencyFormatter.string(from: NSNumber(value: weeklyValue)) ?? "0"
+            let totalString = isTime ? shiftManager.formatTime(timeInHours: totalValue) : shiftManager.currencyFormatter.string(from: NSNumber(value: totalValue)) ?? "0"
+            
+            return VStack {
+                Text(weeklyString)
+                    .font(.title2)
+                    .bold()
+                    .foregroundStyle(headerColor)
+                
+                Text("\(totalString) Total")
+                    .font(.subheadline)
+                    .bold()
+                    .foregroundStyle(subTextColor)
+                    .roundedFontDesign()
+            }
+        }
+    */
+    
 }
-
-

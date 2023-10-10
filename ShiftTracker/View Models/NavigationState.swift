@@ -30,11 +30,9 @@ class NavigationState: ObservableObject {
     
     
     @Published var calculatedBlur: Double = 0
-        
-        // Initialize or setup your publisher chain
+
         init() {
-            // Your existing initialization code
-            
+        
             // Recalculate blur whenever offset or sideBarWidth changes
             Publishers.CombineLatest($offset, $sideBarWidth)
                 .map { offset, sideBarWidth in

@@ -107,11 +107,11 @@ struct JobOverview: View {
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
                 List{
-                statsSection
+                      statsSection
 
                     recentShiftsSection
                         .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
-                    
+                  
                
                     
                     
@@ -385,13 +385,13 @@ struct JobOverview: View {
             HStack(spacing: 8){
                 VStack(spacing: 0) {
                     
-                    StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
-                        .environmentObject(shiftManager)
+                StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
+                       .environmentObject(shiftManager)
                     
                     Spacer()
                     
-                    ChartSquare(shifts: weeklyShifts)
-                        .environmentObject(shiftManager)
+                        // ignore the ChartSquare for now              //   ChartSquare(shifts: weeklyShifts)
+                   //     .environmentObject(shiftManager)
                     
                 }
                 
