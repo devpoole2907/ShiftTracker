@@ -342,7 +342,7 @@ struct DetailView: View {
                             .fontWeight(.bold)
                             .lineLimit(1)
                             .allowsTightening(true)
-
+                            .minimumScaleFactor(0.5)
                     }
                     
                 }
@@ -395,6 +395,7 @@ struct DetailView: View {
                                 .allowsTightening(true)
                         }.foregroundStyle(themeManager.taxColor)
                             .roundedFontDesign()
+                        
                     }
                     if Double(viewModel.selectedTotalTips) ?? 0 > 0 {
                         HStack(spacing: 2){
@@ -408,7 +409,7 @@ struct DetailView: View {
                         }.foregroundStyle(themeManager.tipsColor)
                             .roundedFontDesign()
                     }
-                }
+                }  .minimumScaleFactor(0.5)
                 
                 .padding(.horizontal, 20)
                 
@@ -440,7 +441,7 @@ struct DetailView: View {
                     }
                     
                     
-                }
+                }  
                 .foregroundStyle(themeManager.timerColor)
                 
                 .frame(maxWidth: .infinity)

@@ -67,17 +67,15 @@ struct ShiftDetailRow: View {
         let job = shift.job
         
         if selectedJobManager.fetchJob(in: viewContext) != nil {
-            
-            
-            
-          
+
             VStack(alignment: .leading, spacing: 5){
                 HStack{
                     Text("\(currencyFormatter.currencySymbol ?? "")\(payString)")
                         .foregroundStyle(textColor)
                         .font(.title)
                         .bold()
-                    
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                     if shift.taxedPay != shift.totalPay {
                         HStack(spacing: 2){
                             Image(systemName: "chart.line.downtrend.xyaxis")
@@ -86,6 +84,7 @@ struct ShiftDetailRow: View {
                                 .bold()
                                 .lineLimit(1)
                                 .allowsTightening(true)
+                                .minimumScaleFactor(0.5)
                         }.foregroundStyle(themeManager.taxColor)
                             .font(.subheadline)
                             .roundedFontDesign()
@@ -133,7 +132,7 @@ struct ShiftDetailRow: View {
                     .font(.footnote)
                     .bold()
             }
-                
+
             
                 
                 
@@ -208,7 +207,8 @@ struct ShiftDetailRow: View {
                         .font(.title3)
                         .bold()
                         .roundedFontDesign()
-                    //.padding(.ver)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                     
                     if shift.taxedPay != shift.totalPay {
                         HStack(spacing: 2){
@@ -217,6 +217,7 @@ struct ShiftDetailRow: View {
                                 .bold()
                                 .lineLimit(1)
                                 .allowsTightening(true)
+                                .minimumScaleFactor(0.5)
                         }.foregroundStyle(themeManager.taxColor)
                             .font(.caption)
                             .roundedFontDesign()
