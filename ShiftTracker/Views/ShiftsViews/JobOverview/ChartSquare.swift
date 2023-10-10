@@ -60,7 +60,7 @@ struct ChartSquare: View {
                     width: 6
                 )
                 .foregroundStyle(shiftManager.statsMode.gradient)
-                .cornerRadius(shiftManager.statsMode.cornerRadius)
+                .clipShape(Capsule())
             }
         }
         

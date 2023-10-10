@@ -46,7 +46,8 @@ class DetailViewModel: ObservableObject {
     
     var originalJob: Job? = nil // used to determine if the job associated with the shift is changed/different from initialisation
     
-    
+    // used to toggle view refresh when editing a break
+    @Published var breakEdited = false
     
     // for adding shift:
     
@@ -139,8 +140,21 @@ class DetailViewModel: ObservableObject {
     }
     
     var totalPay: Double {
+        
+        var totalBreakDuration: TimeInterval = 0.0
+        
+        if let shift = shift {
+            let allBreaks = shift.breaks as! Set<Break>
+            
+            totalBreakDuration = self.totalBreakDuration(for: allBreaks)
+   
+        } else {
+            totalBreakDuration = totalTempBreakDuration(for: tempBreaks)
+        }
+        
+        
+
         let totalDuration = selectedEndDate.timeIntervalSince(selectedStartDate)
-        let totalBreakDuration = totalTempBreakDuration(for: tempBreaks)
         var overtimeDuration = 0.0
         var baseDuration = totalDuration
 

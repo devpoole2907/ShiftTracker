@@ -102,6 +102,10 @@ struct BreaksListView: View {
                                         breakItem.endDate = newValue
                                     }
                                 }
+                                
+                                viewModel.breakEdited.toggle()
+                                
+                                
                             }), displayedComponents: [.date, .hourAndMinute])
                         .labelsHidden()
                         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -121,6 +125,9 @@ struct BreaksListView: View {
                                 if let startDate = breakItem.startDate, newValue >= startDate && newValue <= maximumEndDate {
                                     breakItem.endDate = newValue
                                 }
+                                
+                                viewModel.breakEdited.toggle()
+                                
                             }), displayedComponents: [.date, .hourAndMinute])
                         .labelsHidden()
                         
@@ -179,7 +186,6 @@ struct BreaksListView: View {
                         HStack{
                             Text("Start:")
                                 .bold()
-                            //.padding(.horizontal, 15)
                                 .frame(width: 50, alignment: .leading)
                                 .padding(.vertical, 5)
                             
@@ -190,13 +196,13 @@ struct BreaksListView: View {
                             Text("End:")
                                 .bold()
                                 .frame(width: 50, alignment: .leading)
-                            //.padding(.horizontal, 15)
                                 .padding(.vertical, 5)
                             Text(formatDate(breakItem.endDate ?? Date()))
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                     }.padding()
-                        .glassModifier(cornerRadius: 20)
+                        .background(.thinMaterial .opacity(0.5),in:
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
                     
                 } header: {
                     
@@ -220,8 +226,8 @@ struct BreaksListView: View {
                 }
                 
                 
-                .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                .listRowSeparator(.hidden)
             }
             
             

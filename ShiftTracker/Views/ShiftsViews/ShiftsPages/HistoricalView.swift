@@ -35,162 +35,12 @@ struct HistoricalView: View {
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
                 ZStack(alignment: .bottomLeading){
-                    
-                    
+
                     List(selection: $historyModel.selection) {
                         
-                        Section {
-                            ZStack(alignment: .topTrailing){
-                                TabView(selection: $historyModel.selectedTab.animation(.default)) {
-                                    
-                                    if !isAnimating {
-                                    
-                                    
-                                    ForEach(historyModel.aggregatedShifts.indices, id: \.self) { index in
-                                        
-                                        let dateRange = historyModel.getDateRange(startDate: historyModel.aggregatedShifts[index].startDate)
-                                        
-                                        VStack {
-                                            HStack{
-                                                VStack(alignment: .leading){
-                                                    Text("Total")
-                                                        .font(.headline)
-                                                        .bold()
-                                                        .roundedFontDesign()
-                                                        .foregroundColor(.gray)
-                                                    
-                                                    Text(
-                                                        shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: historyModel.aggregatedShifts[index].totalEarnings)) ?? "0")" :
-                                                            shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalHours) :
-                                                            shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalBreaks)
-                                                    )
-                                                    .font(.title2)
-                                                    .bold()
-                                                    
-                                                    
-                                                }
-                                                Spacer()
-                                                
-                                                
-                                                
-                                                
-                                                
-                                            }.padding(.top, 5)
-                                                .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
-                                            
-                                            let barMarks = historyModel.aggregatedShifts[index].dailyOrMonthlyAggregates
-                                            
-                                            // gotta do it this way, for some reason doing the check in the chartView fails and builds anyway for ios 16 causing a crash
-                                            if #available(iOS 17.0, *){
-                                                
-                                                ChartView(dateRange: dateRange, shifts: barMarks)
-                                                    .environmentObject(historyModel)
-                                                    .padding(.leading)
-                                                
-                                            } else {
-                                                iosSixteenChartView(dateRange: dateRange, shifts: barMarks)
-                                                    .environmentObject(historyModel)
-                                                    .padding(.leading)
-                                            }
-                                            
-                                            
-                                        } .padding(.horizontal)
-                                            .tag(index)
-                                        
-                                        
-                                        
-                                    }
-                                    
-                                    } else {
-                                        ActivityIndicator(isAnimating: isAnimating)
-                                    }
-                                    
-                                }
-                                .tabViewStyle(.page(indexDisplayMode: .never))
-                                .haptics(onChangeOf: historyModel.selectedTab, type: .light)
-                                
-                                
-                                HStack(spacing: 20) {
-                                    
-                                    Button(action: {
-                                        historyModel.backButtonAction()
-                                    }){
-                                        Image(systemName: "chevron.left").bold()
-                                        
-                                            .font(.system(size: 26))
-                                            .customAnimatedSymbol(value: $historyModel.selectedTab)
-                                    }.buttonStyle(.plain)
-                                    
-                                    Button(action: {
-                                        historyModel.forwardButtonAction()
-                                    }){
-                                        Image(systemName: "chevron.right").bold()
-                                        
-                                            .font(.system(size: 26))
-                                            .customAnimatedSymbol(value: $historyModel.selectedTab)
-                                    }.buttonStyle(.plain)
-                                    
-                                    
-                                    
-                                }.padding()
-                                    .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
-                                
-                                
-                            }
-                            
-                            
-                        }.frame(minHeight: 300)
-                            .listRowInsets(.init(top: 20, leading: 0, bottom: 20, trailing: 0))
-                            .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                        chartSection
                         
-                        
-                        Section {
-                            
-                            
-                            if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
-                                ForEach(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.reversed(), id: \.objectID) { shift in
-                                    NavigationLink(value: shift) {
-                                        ShiftDetailRow(shift: shift)
-                                        
-                                        
-                                    }
-                                    
-                                    .swipeActions {
-                                        Button(role: .destructive) {
-                                            withAnimation {
-                                                shiftStore.deleteOldShift(shift, in: viewContext)
-                                                if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
-                                                    historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
-                                                }
-                                                
-                                                historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
-                                                
-                                                if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
-                                                    historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
-                                                    
-                                                    // changes the current tab if it empties
-                                                    if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
-                                                        historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
-                                                    }
-                                                }
-                                            }
-                                        } label: {
-                                            Image(systemName: "trash")
-                                        }
-                                    }
-                                    
-                                }
-                            }
-                            
-                            
-                        }
-                        .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-                        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-                        
-                        Section {
-                            Spacer(minLength: 100)
-                        }.listRowBackground(Color.clear)
-                        
+                        shiftsSection
                         
                     }.scrollContentBackground(.hidden)
                         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
@@ -200,8 +50,7 @@ struct HistoricalView: View {
                         }
                     
                         .customSectionSpacing()
-                    
-                    
+
                     PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: historyModel.aggregatedShifts.count)
                         .frame(maxWidth: 175)
                         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
@@ -212,13 +61,9 @@ struct HistoricalView: View {
                             print("Selected tab is \(value)")
                             //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
                         }
-                    
-                    
+
                 }
-                
-                
-                
-                
+
                 VStack(alignment: .trailing){
                     
                     HStack(spacing: 10){
@@ -237,17 +82,11 @@ struct HistoricalView: View {
                         }.disabled(historyModel.selection.isEmpty)
                             .tint(.red)
                         
-                        
-                        
-                        
-                        
                     }.padding()
                         .glassModifier(cornerRadius: 20)
                     
                     CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
-                    
-                    
-                    
+
                         .glassModifier(cornerRadius: 20)
                     
                         .frame(width: 165)
@@ -255,10 +94,7 @@ struct HistoricalView: View {
                     
                         .disabled(editMode?.wrappedValue.isEditing ?? false)
                         .opacity(editMode!.wrappedValue.isEditing ? 0.5 : 1.0)
-                    
-                    
-                    
-                    
+
                         .onChange(of: historyModel.historyRange) { value in
                             withAnimation{
                                 self.isAnimating = true
@@ -266,15 +102,10 @@ struct HistoricalView: View {
                                     let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
                                     DispatchQueue.main.async {
                                         historyModel.aggregatedShifts = newAggregatedShifts
-                                     //   historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
                                     }
                                    
                                 }
-                                
-                                
-                                
-                                
-                                
+
                             }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
                                 withAnimation {
@@ -286,16 +117,9 @@ struct HistoricalView: View {
                             
                         }
                     
-                    
                     Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
                 }  .padding(.horizontal)
-                
-                
-                
-                
-                
-                
-                
+
             }
             
             .onChange(of: geo.frame(in: .global).minY) { minY in
@@ -311,14 +135,11 @@ struct HistoricalView: View {
             
             if let job = selectedJobManager.fetchJob(in: viewContext) {
                 if historyModel.showLargeIcon {
-                    
-                    
-                    
+
                     NavBarIconView(appeared: $historyModel.appeared, isLarge: $historyModel.showLargeIcon, job: job)
                         .padding(.trailing, 20)
                         .offset(x: 0, y: -55)
-                    
-                    
+
                 }
                 
             }
@@ -343,26 +164,22 @@ struct HistoricalView: View {
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     // only change selected tab to first one if this is the first appearance, or the currently selected tab is no longer within the range of the newAggregatedShifts
-                    
-                    
-                    
+
                     if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || historyModel.appeared == false {
                         historyModel.selectedTab = newAggregatedShifts.count - 1
                         
                         
                         print("selected tab set to last one")
                     }
+                    
+                    self.isAnimating = false
+                    
                 }
             }
-
-            self.isAnimating = false
-         
-
 
             withAnimation {
                 shiftManager.showModePicker = true
             }
-            
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                 historyModel.appeared = true
@@ -370,12 +187,8 @@ struct HistoricalView: View {
                     dismiss()
                 }
             }
-            
-            
+    
         }
-        
-        
-        
         
         .navigationTitle(historyModel.getCurrentDateRangeString())
         
@@ -395,10 +208,8 @@ struct HistoricalView: View {
                 }
             }
         }*/
-        
     }
-    
-    
+
     private func deleteItems() {
         withAnimation {
             
@@ -457,7 +268,169 @@ struct HistoricalView: View {
         }
     }
     
+    var chartSection: some View {
+        Section {
+            ZStack(alignment: .topTrailing){
+                TabView(selection: $historyModel.selectedTab.animation(.default)) {
+                    
+                    if !isAnimating {
+                    
+                    
+                    ForEach(historyModel.aggregatedShifts.indices, id: \.self) { index in
+                        
+                        let dateRange = historyModel.getDateRange(startDate: historyModel.aggregatedShifts[index].startDate)
+                        
+                        VStack {
+                            HStack{
+                                VStack(alignment: .leading){
+                                    Text("Total")
+                                        .font(.headline)
+                                        .bold()
+                                        .roundedFontDesign()
+                                        .foregroundColor(.gray)
+                                    
+                                    Text(
+                                        shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: historyModel.aggregatedShifts[index].totalEarnings)) ?? "0")" :
+                                            shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalHours) :
+                                            shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalBreaks)
+                                    )
+                                    .font(.title2)
+                                    .bold()
+                                    
+                                    
+                                }
+                                Spacer()
+                                
+                                
+                                
+                                
+                                
+                            }.padding(.top, 5)
+                                .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
+                            
+                            let barMarks = historyModel.aggregatedShifts[index].dailyOrMonthlyAggregates
+                            
+                            // gotta do it this way, for some reason doing the check in the chartView fails and builds anyway for ios 16 causing a crash
+                            if #available(iOS 17.0, *){
+                                
+                                ChartView(dateRange: dateRange, shifts: barMarks)
+                                    .environmentObject(historyModel)
+                                    .padding(.leading)
+                                
+                            } else {
+                                iosSixteenChartView(dateRange: dateRange, shifts: barMarks)
+                                    .environmentObject(historyModel)
+                                    .padding(.leading)
+                            }
+                            
+                            
+                        } .padding(.horizontal)
+                            .tag(index)
+                        
+                        
+                        
+                    }
+                    
+                    } else {
+                        ActivityIndicator(isAnimating: isAnimating)
+                    }
+                    
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .haptics(onChangeOf: historyModel.selectedTab, type: .light)
+                
+                
+                HStack(spacing: 20) {
+                    
+                    Button(action: {
+                        historyModel.backButtonAction()
+                    }){
+                        Image(systemName: "chevron.left").bold()
+                        
+                            .font(.system(size: 26))
+                            .customAnimatedSymbol(value: $historyModel.selectedTab)
+                    }.buttonStyle(.plain)
+                    
+                    Button(action: {
+                        historyModel.forwardButtonAction()
+                    }){
+                        Image(systemName: "chevron.right").bold()
+                        
+                            .font(.system(size: 26))
+                            .customAnimatedSymbol(value: $historyModel.selectedTab)
+                    }.buttonStyle(.plain)
+                    
+                    
+                    
+                }.padding()
+                    .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
+                
+                
+            }
+            
+            
+        }.frame(minHeight: 300)
+            .listRowInsets(.init(top: 20, leading: 0, bottom: 20, trailing: 0))
+            .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+    }
     
+    var shiftsSection: some View {
+        
+        return Group {
+            Section {
+                
+                if !isAnimating {
+                if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
+                    ForEach(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.reversed(), id: \.objectID) { shift in
+                        NavigationLink(value: shift) {
+                            ShiftDetailRow(shift: shift)
+                            
+                            
+                        }
+                        
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                withAnimation {
+                                    shiftStore.deleteOldShift(shift, in: viewContext)
+                                    if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
+                                        historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
+                                    }
+                                    
+                                    historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
+                                    
+                                    if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
+                                        historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
+                                        
+                                        // changes the current tab if it empties
+                                        if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
+                                            historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
+                                        }
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "trash")
+                            }
+                        }
+                        
+                    }
+                }
+                
+                } else {
+                    ActivityIndicator(isAnimating: isAnimating).frame(maxWidth: .infinity)
+                }
+            
+            
+        }
+        .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+        
+        Section {
+            Spacer(minLength: 100)
+        }.listRowBackground(Color.clear)
+        
+    }
+        
+    }
     
 }
 

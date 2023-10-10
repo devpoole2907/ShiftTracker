@@ -680,16 +680,11 @@ struct DetailView: View {
     }
     
     var breaksList: some View {
-        if let shift = viewModel.shift {
+     
             
-            BreaksListView(shift: shift).environmentObject(viewModel)
+        BreaksListView(shift: viewModel.shift).environmentObject(viewModel)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-            
-            
-        } else {
-            BreaksListView().environmentObject(viewModel)
-                .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 0))
-        }
+        
     }
     
     var floatingButtons: some View {
