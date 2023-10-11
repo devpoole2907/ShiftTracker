@@ -17,6 +17,9 @@ class StatsSquareViewModel: ObservableObject {
     @Published var weeklyBreaks: Double = 0
 
     init(shifts: FetchedResults<OldShift>, weeklyShifts: FetchedResults<OldShift>) {
+        
+        // gcd here not swift concurrency (too strict, unnecessary complexity imo)
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let totalEarnings = shifts.reduce(0) { $0 + $1.totalPay }
                         let totalHours = shifts.reduce(0) { $0 + ($1.duration / 3600.0) }

@@ -12,6 +12,9 @@ class ChartSquareViewModel: ObservableObject {
     @Published var weeklyData: [Double] = Array(repeating: 0, count: 7)
     
     init(shifts: FetchedResults<OldShift>, statsMode: StatsMode) {
+        
+        // gcd here not swift concurrency (too strict, unnecessary complexity imo)
+        
         DispatchQueue.global(qos: .background).async { [weak self] in
             var tempData: [Double] = Array(repeating: 0, count: 7)
             

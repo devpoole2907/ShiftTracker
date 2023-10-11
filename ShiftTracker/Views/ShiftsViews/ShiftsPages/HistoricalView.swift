@@ -96,24 +96,37 @@ struct HistoricalView: View {
                         .opacity(editMode!.wrappedValue.isEditing ? 0.5 : 1.0)
 
                         .onChange(of: historyModel.historyRange) { value in
-                            withAnimation{
+                            
+                            withAnimation {
                                 self.isAnimating = true
-                                DispatchQueue.global(qos: .background).async {
-                                    let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
-                                    DispatchQueue.main.async {
-                                        historyModel.aggregatedShifts = newAggregatedShifts
-                                    }
-                                   
-                                }
-
                             }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-                                withAnimation {
+                            
+                            Task {
+                                
+                                 
+                                        let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
+                                        await MainActor.run {
+                                            withAnimation {
+                                                historyModel.aggregatedShifts = newAggregatedShifts
+                                            }
+                                        }
                                     
-                                    historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
-                                    self.isAnimating = false
-                                }
+                                    
+                                try await Task.sleep(nanoseconds: 300_000_000)
+                                
+                                
+                                            await MainActor.run {
+                                                historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
+                                                withAnimation {
+                                                    self.isAnimating = false
+                                                }
+                                            }
+                                        
+                                    
+                                
+                                
                             }
+                      
                             
                         }
                     
@@ -147,45 +160,61 @@ struct HistoricalView: View {
         
         .onAppear {
             
-            self.isAnimating = true
             
             // this is bad code. I am not proud of it. But it will work.
             
-            DispatchQueue.global(qos: .background).async {
-                
-                let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
-                
-                DispatchQueue.main.async {
-                    withAnimation {
-                        historyModel.aggregatedShifts = newAggregatedShifts
-                        
-                    }
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    // only change selected tab to first one if this is the first appearance, or the currently selected tab is no longer within the range of the newAggregatedShifts
-
-                    if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || historyModel.appeared == false {
-                        historyModel.selectedTab = newAggregatedShifts.count - 1
-                        
-                        
-                        print("selected tab set to last one")
-                    }
-                    
-                    self.isAnimating = false
-                    
-                }
+            withAnimation {
+                self.isAnimating = true
             }
+            
+            
+            
+            Task {
+                
+                 
+                        let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
+                        await MainActor.run {
+                            withAnimation {
+                                historyModel.aggregatedShifts = newAggregatedShifts
+                            }
+                        }
+                    
+                    
+                try await Task.sleep(nanoseconds: 300_000_000)
+                
+                
+                            await MainActor.run {
+                                if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || historyModel.appeared == false {
+                                    historyModel.selectedTab = newAggregatedShifts.count - 1
+                                    
+                                    
+                                    print("selected tab set to last one")
+                                }
+                                withAnimation {
+                                    self.isAnimating = false
+                                }
+                            }
+                        
+                    
+                
+                
+            }
+            
 
             withAnimation {
                 shiftManager.showModePicker = true
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                historyModel.appeared = true
-                if historyModel.aggregatedShifts.count < 1 {
-                    dismiss()
+            Task {
+                try await Task.sleep(nanoseconds: 500_000_000)
+                
+                await MainActor.run {
+                    historyModel.appeared = true
+                    if historyModel.aggregatedShifts.count < 1 {
+                        dismiss()
+                    }
                 }
+                
             }
     
         }
