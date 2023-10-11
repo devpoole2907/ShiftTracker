@@ -149,13 +149,15 @@ struct SettingsView: View {
                     }.toggleStyle(CustomToggleStyle())
                             .onChange(of: viewModel.authEnabled) { newValue in
                             if newValue {
-                                viewModel.authenticateUser { success in
+                                Task {
+                                    let success = await viewModel.authenticateUser()
                                     if success {
                                         viewModel.isAuthenticated = true
                                     } else {
                                         viewModel.authEnabled = false
                                     }
                                 }
+
                             } else {
                                 viewModel.isAuthenticated = false
                             }

@@ -27,27 +27,22 @@ class SettingsViewModel: ObservableObject {
     @AppStorage("TipsEnabled") var tipsEnabled: Bool = true
     @AppStorage("colorScheme") var userColorScheme: String = "system"
     
-    func authenticateUser(completion: @escaping (Bool) -> Void) {
+    func authenticateUser() async -> Bool {
         let context = LAContext()
         var error: NSError?
         
         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-            let reason = "Unlock ShiftTracker"
-            
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, error in
-                DispatchQueue.main.async {
-                    if success {
-                        completion(true)
-                    } else {
-                        completion(false)
+                let reason = "Unlock ShiftTracker"
+                return await withCheckedContinuation { continuation in
+                    context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, error in
+                        continuation.resume(returning: success)
                     }
                 }
+            } else {
+                
+                    return false
+                
             }
-        } else {
-            DispatchQueue.main.async {
-                completion(false)
-            }
-        }
     }
     
     func updateTax(){
