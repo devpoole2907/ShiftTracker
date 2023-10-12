@@ -25,6 +25,8 @@ struct ScheduledShiftsView: View {
     @Environment(\.colorScheme) var colorScheme
     
     @Binding var navPath: NavigationPath
+    
+    @ObservedObject var oldShiftsViewModel: OldShiftsViewModel
 
     
     var dateFormatter: DateFormatter {
@@ -33,19 +35,20 @@ struct ScheduledShiftsView: View {
         return formatter
     }
     
+    init(navPath: Binding<NavigationPath>, allShifts: FetchedResults<OldShift>, selectedDate: Date?, selectedJobManager: JobSelectionManager) {
+        _navPath = navPath
+        self.oldShiftsViewModel = OldShiftsViewModel(shifts: allShifts, date: selectedDate ?? Date(), selectedJobManager: selectedJobManager)
+    }
+    
     
     var body: some View {
-        Group {
+        
+        
+        Section {
             
-            
-            let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == scheduleModel.dateSelected?.date?.startOfDay ?? Date().startOfDay}
-            
-            let foundOldShifts = scheduleModel.displayedOldShifts.filter({ shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) })
-            
-            if !foundOldShifts.isEmpty {
-                Section{
-                ForEach(foundOldShifts, id: \.objectID) { shift in
-                    
+            if !oldShiftsViewModel.displayedOldShifts.isEmpty {
+                
+                ForEach(oldShiftsViewModel.displayedOldShifts, id: \.objectID){ shift in
                     NavigationLink(value: shift) {
                         
                         ShiftDetailRow(shift: shift, showTime: true)
@@ -54,15 +57,12 @@ struct ScheduledShiftsView: View {
                     }
                     
                     .navigationDestination(for: OldShift.self) { shift in
-                       
-                       
-                       DetailView(shift: shift, navPath: $navPath)
-                       
-                       
-                   }
-                    
-                    
-                   
+                        
+                        
+                        DetailView(shift: shift, navPath: $navPath)
+                        
+                        
+                    }
                     
                     .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                     .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
@@ -78,23 +78,11 @@ struct ScheduledShiftsView: View {
                         }.tint(Color.clear)
                         
                     }
-                    
-                    
-                    
-                    
-                    
                 }
-            } header: {
                 
-                Text(dateFormatter.string(from: scheduleModel.dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
-                        
-                    
-                    
-                
-            }.listRowInsets(.init(top: 0, leading: 8, bottom: 5, trailing: 0))
-                   
-                    
             }
+            
+            let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == scheduleModel.dateSelected?.date?.startOfDay ?? Date().startOfDay}
             
             
                 if !foundShifts.isEmpty {
@@ -116,6 +104,7 @@ struct ScheduledShiftsView: View {
                     }
                 
                 }
+            
             else if ((Calendar.current.isDateInToday(scheduleModel.dateSelected?.date ?? Date()) || !isBeforeEndOfToday(scheduleModel.dateSelected!.date ?? Date())) && scheduleModel.displayedOldShifts.isEmpty) {
                     Section{
                         Text("You have no shifts scheduled on this date.")
@@ -133,12 +122,18 @@ struct ScheduledShiftsView: View {
                         .padding()
                         .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 }
-           
             
+                
+                
+        } header: {
             
-      
+            Text(dateFormatter.string(from: scheduleModel.dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
+                    
+                
+                
             
-        }
+        }.listRowInsets(.init(top: 0, leading: 8, bottom: 5, trailing: 0))
+
         
         .sheet(item: $scheduleModel.selectedShiftToEdit, onDismiss: {
             
@@ -165,12 +160,23 @@ extension View {
     }
 }
 
-
-
-
-
-
-
-
-
+class OldShiftsViewModel: ObservableObject {
+    @Published var displayedOldShifts: [OldShift] = []
+    
+    let shiftManager = ShiftDataManager()
+    
+    init(shifts: FetchedResults<OldShift>, date: Date, selectedJobManager: JobSelectionManager) {
+        fetchShifts(shifts: shifts, for: date, with: selectedJobManager)
+    }
+    
+    private func fetchShifts(shifts: FetchedResults<OldShift>, for date: Date, with selectedJobManager: JobSelectionManager) {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let endOfDay = Calendar.current.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        displayedOldShifts = shifts.filter { shift in
+            let shiftDate = shift.shiftStartDate! as Date
+            return shiftDate >= startOfDay && shiftDate < endOfDay
+        }.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }
+    }
+}
 

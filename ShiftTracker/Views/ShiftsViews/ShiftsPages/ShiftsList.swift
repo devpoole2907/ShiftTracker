@@ -76,12 +76,17 @@ struct ShiftsList: View {
                 .swipeActions {
                     
                     Button(action: {
-                        shiftStore.deleteOldShift(shift, in: viewContext)
-                        
-                        if sortSelection.oldShifts.isEmpty {
-                            // navigates back if all shifts are deleted
-                            navPath.removeLast()
+                        withAnimation {
+                            shiftStore.deleteOldShift(shift, in: viewContext)
                             
+                            // duct tape fix
+                           sortSelection.fetchShifts()
+                            
+                            if sortSelection.oldShifts.isEmpty {
+                                // navigates back if all shifts are deleted
+                                navPath.removeLast()
+                                
+                            }
                         }
                     }){
                         Image(systemName: "trash")

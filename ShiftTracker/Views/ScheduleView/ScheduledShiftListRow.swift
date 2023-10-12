@@ -34,10 +34,6 @@ struct ScheduledShiftListRow: View {
     }
     
     var body: some View {
-        Section(header: Text("\(dateFormatter.string(from: shift.startDate )) - \(dateFormatter.string(from: shift.endDate ))")
-            .bold()
-            .roundedFontDesign()
-            .textCase(nil)){
                 
                 ZStack{
                     VStack(alignment: .leading){
@@ -65,7 +61,7 @@ struct ScheduledShiftListRow: View {
                                 
                                
                                 .frame(width: UIScreen.main.bounds.width / 7)
-                            VStack(alignment: .leading, spacing: 5){
+                            VStack(alignment: .leading, spacing: 3){
                                 Text(shift.job?.name ?? "")
                                     .font(.title2)
                                     .bold()
@@ -75,7 +71,11 @@ struct ScheduledShiftListRow: View {
                                     .bold()
                                     .roundedFontDesign()
                                 
-                                
+                                Text("\(dateFormatter.string(from: shift.startDate )) - \(dateFormatter.string(from: shift.endDate ))")
+                                    .bold()
+                                    .roundedFontDesign()
+                                    .foregroundStyle(.gray)
+                                    .font(.footnote)
                                 
                                 
                             }
@@ -110,7 +110,7 @@ struct ScheduledShiftListRow: View {
                     
                     
                 }
-            }.opacity(!purchaseManager.hasUnlockedPro ? (shift.job?.uuid?.uuidString != lastSelectedJobUUID ? 0.5 : 1.0) : 1.0)
+            .opacity(!purchaseManager.hasUnlockedPro ? (shift.job?.uuid?.uuidString != lastSelectedJobUUID ? 0.5 : 1.0) : 1.0)
         
     }
 }

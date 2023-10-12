@@ -28,7 +28,7 @@ struct ScheduleView: View {
 
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
     @FetchRequest(
-        sortDescriptors: ShiftSort.default.descriptors,
+        sortDescriptors: ShiftSort.sorts[1].descriptors,
         animation: .default)
     private var allShifts: FetchedResults<OldShift>
     @FetchRequest var scheduledShifts: FetchedResults<ScheduledShift>
@@ -52,7 +52,7 @@ struct ScheduleView: View {
                
                 calendarSection
                 
-                ScheduledShiftsView(navPath: $navPath)
+                ScheduledShiftsView(navPath: $navPath, allShifts: allShifts, selectedDate: scheduleModel.dateSelected?.date, selectedJobManager: selectedJobManager)
                     .environmentObject(shiftStore)
                     .environmentObject(scheduleModel)
                 
@@ -220,11 +220,11 @@ struct ScheduleView: View {
                     
                 }
             
-                .onAppear {
-                    Task {
+         
+                .task {
                         await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
                     }
-                }
+                
             
         
     }

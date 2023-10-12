@@ -316,10 +316,10 @@ struct JobOverview: View {
                 .swipeActions {
                     
                     Button(action: {
-                        
-                        shiftStore.deleteOldShift(shift, in: viewContext)
-                        shiftManager.shiftAdded.toggle()
-                        
+                        withAnimation {
+                            shiftStore.deleteOldShift(shift, in: viewContext)
+                            shiftManager.shiftAdded.toggle()
+                        }
                     }){
                         Image(systemName: "trash")
                             .foregroundStyle(.red)
