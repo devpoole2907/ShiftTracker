@@ -80,8 +80,6 @@ struct ActionView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .disabled(isRounded)
                     }
-                default:
-                    fatalError("Unsupported action type")
                 }
                 
             }
@@ -175,21 +173,31 @@ struct ActionView: View {
                             .padding(.vertical, 10)
                             .glassModifier(cornerRadius: 20)
                         
-                      
-                        
-                        Toggle(isOn: $viewModel.breakReminder){
+                        if let selectedJob = selectedJobManager.fetchJob(in: context) {
                             
-                            Text("Break Reminder").bold()
-                            
-                        }.toggleStyle(CustomToggleStyle())
-                            .padding(.horizontal)
-                            .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                            .padding(.vertical, 10)
-                            .glassModifier(cornerRadius: 20)
-                        
-                            .onAppear {
-                                viewModel.breakReminder = selectedJobManager.fetchJob(in: context)?.breakReminder ?? false
+                            if selectedJob.breakReminderTime > 0 {
+                                
+                                Toggle(isOn: $viewModel.breakReminder){
+                                    
+                                    Text("Break Reminder").bold()
+                                    
+                                }.toggleStyle(CustomToggleStyle())
+                                    .padding(.horizontal)
+                                    .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                                    .padding(.vertical, 10)
+                                    .glassModifier(cornerRadius: 20)
+                                
+                                    .onAppear {
+                                        viewModel.breakReminder = selectedJob.breakReminder
+                                    }
+                                
                             }
+                                
+                        }
+                        
+                       
+                        
+                        
                         
                         Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
                             Text("Pay Multiplier: x\(viewModel.payMultiplier, specifier: "%.2f")").bold()
@@ -246,9 +254,7 @@ struct ActionView: View {
                             viewModel.endBreak(endDate: actionDate, viewContext: context)
                             dismiss()
                         }
-                       
-                    default:
-                        fatalError("Unsupported action type")
+             
                     }
                     
                 

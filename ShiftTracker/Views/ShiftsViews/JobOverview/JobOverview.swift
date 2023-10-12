@@ -64,19 +64,25 @@ struct JobOverview: View {
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         let weekFetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         let lastTenFetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        
+        
+        
+        let oneWeekAgo = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: Date().endOfDay) ?? Date()
+        
+        let weekFetchDatePredicate = NSPredicate(format: "shiftStartDate >= %@", oneWeekAgo as NSDate)
+        
         if let jobID = job?.objectID {
             fetchRequest.predicate = NSPredicate(format: "job == %@", jobID)
-            
-            
-            let oneWeekAgo = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: Date().endOfDay) ?? Date()
-            
-            let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [NSPredicate(format: "job == %@", jobID), NSPredicate(format: "shiftStartDate >= %@", oneWeekAgo as NSDate)])
+ 
+            let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [NSPredicate(format: "job == %@", jobID), weekFetchDatePredicate])
             
             weekFetchRequest.predicate = compoundPredicate
             
             lastTenFetchRequest.predicate = NSPredicate(format: "job == %@", jobID)
             
             
+        } else {
+            weekFetchRequest.predicate = weekFetchDatePredicate
         }
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
         weekFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
@@ -309,13 +315,18 @@ struct JobOverview: View {
                 
                 .swipeActions {
                     
-                    Button(role: .destructive) {
+                    Button(action: {
+                        
                         shiftStore.deleteOldShift(shift, in: viewContext)
                         shiftManager.shiftAdded.toggle()
                         
-                    } label: {
+                    }){
                         Image(systemName: "trash")
-                    }
+                            .foregroundStyle(.red)
+                        
+                        
+                    }.tint(.clear)
+                    
                     
                 }
                 

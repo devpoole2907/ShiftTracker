@@ -254,7 +254,7 @@ struct JobView: View {
             }.frame(height: 80)
             
             TextField("Company Name", text: $jobViewModel.name)
-            
+                .minimumScaleFactor(0.5)
                 .font(.title)
                 .bold()
                 .roundedFontDesign()
@@ -593,6 +593,10 @@ struct JobView: View {
                     dismiss()
                     
                     CustomConfirmationAlert(action: {
+                        
+                        
+                  
+                        
                         
                         jobViewModel.deleteJob(in: viewContext, selectedJobManager: selectedJobManager){
                             notificationManager.scheduleNotifications()

@@ -66,16 +66,16 @@ struct AllScheduledShiftsView: View {
                                     }
                                     .swipeActions {
                                         
-                                        Button(role: .destructive) {
+                                        Button(action: {
                                             shiftStore.deleteOldShift(oldShift, in: viewContext)
                                             
                                             Task {
                                                 await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
                                             }
                                             
-                                        } label: {
+                                        }) {
                                             Image(systemName: "trash")
-                                        }
+                                        }.tint(Color.clear)
                                     }
                                     
                                 }
@@ -86,7 +86,7 @@ struct AllScheduledShiftsView: View {
                                                                     .padding(.trailing)
                                                           
                                                           
-                                                                    .swipeActions {
+                                                                    .swipeActions(allowsFullSwipe: false) {
                                                                         if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {
                                                                             ScheduledShiftRowSwipeButtons(shift: shift)
                                                                         }

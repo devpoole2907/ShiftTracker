@@ -119,14 +119,11 @@ class ShiftStore: ObservableObject {
         if let index = shifts.firstIndex(where: {$0.id == shift.shiftID}) {
             
             changedShift = shifts.remove(at: index)
-            var shiftToUpdate = SingleScheduledShift(oldShift: shift)
+            let shiftToUpdate = SingleScheduledShift(oldShift: shift)
             shifts.append(shiftToUpdate)
             changedShift = shiftToUpdate
             
         }
-        
-        
-        
     }
     
     

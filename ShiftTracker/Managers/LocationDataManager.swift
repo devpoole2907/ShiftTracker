@@ -211,9 +211,12 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
 
         let context = PersistenceController.shared.container.viewContext
         if let location = try? context.existingObject(with: locationID) as? JobLocation {
+            
+            print("Region exited, sending notification") // debugging
             if let job = location.job {
                 if job.autoClockOut {
-                    print("Region exited, sending notification") // debugging
+                    
+                    print("auto clock out is enabled")
                     
                     if let jobName = job.name {
                         notificationManager.sendLocationNotification(with: "ShiftTracker Pro", body: "Looks like you're leaving \(jobName) - clocking you out. Open ShiftTracker and see how much you made!")
@@ -225,9 +228,6 @@ class LocationDataManager : NSObject, ObservableObject, CLLocationManagerDelegat
                         notificationManager.sendLocationNotification(with: "Looks like you're leaving \(jobName)...", body: "Don't forget to clock out - open ShiftTracker and see how much you made today!")
                     }
 
-                    print("Region exited, sending notification") // debugging
-
-                    NotificationCenter.default.post(name: .didExitRegion, object: nil)
                 }
                 
                 lastRegionChange = now

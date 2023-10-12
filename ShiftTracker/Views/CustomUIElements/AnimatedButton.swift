@@ -19,8 +19,6 @@ struct AnimatedButton: View {
 
     var body: some View {
         
-        let foregroundColor: Color = colorScheme == .dark ? .black : .white
-        
         Button(action: action) {
             Text(title)
                 .frame(minWidth: getRect().width / 3 - 10)

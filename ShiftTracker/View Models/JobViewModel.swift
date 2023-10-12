@@ -212,7 +212,26 @@ class JobViewModel: ObservableObject {
         
     }
     
-     func deleteJob(in viewContext: NSManagedObjectContext, selectedJobManager: JobSelectionManager, completion: () -> Void) {
+    @MainActor func deleteJob(in viewContext: NSManagedObjectContext, selectedJobManager: JobSelectionManager, completion: () -> Void) {
+         
+         let scheduleModel = SchedulingViewModel()
+        
+        // need to delete any system calendar events first before deleting
+         
+         if let shifts = job?.scheduledShifts as? Set<ScheduledShift> {
+             
+             for shift in shifts {
+
+                 if let eventID = shift.calendarEventID {
+                     scheduleModel.deleteEventFromCalendar(eventIdentifier: eventID)
+                 }
+                 
+                 
+             }
+             
+         }
+         
+         //
         
         if job!.uuid == selectedJobManager.selectedJobUUID {
             

@@ -27,7 +27,6 @@ struct RepeatEndPicker: View {
         
         
         self._selectedRepeatEnd = selectedRepeatEnd
-        let defaultRepeatEnd = calendar.date(byAdding: .month, value: 2, to: startDate)!
         self._selectedIndex = State(initialValue: self.options.firstIndex(of: "\(2) months")!)
         // set the selectedIndex to the index of the default repeat end option
     }

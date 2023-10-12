@@ -25,6 +25,7 @@ struct SettingsView: View {
     
     @Binding var navPath: [Int]
 
+    private let authManager = AuthManager()
     
     var body: some View {
         
@@ -150,7 +151,7 @@ struct SettingsView: View {
                             .onChange(of: viewModel.authEnabled) { newValue in
                             if newValue {
                                 Task {
-                                    let success = await viewModel.authenticateUser()
+                                    let success = await authManager.authenticateUser()
                                     if success {
                                         viewModel.isAuthenticated = true
                                     } else {
@@ -312,18 +313,9 @@ struct SettingsView: View {
             
         
     }
-    
 
-    
-    
-    
 }
 
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView(navPath: .constant([])).environmentObject(ThemeDataManager())
-    }
-}
 
 
 

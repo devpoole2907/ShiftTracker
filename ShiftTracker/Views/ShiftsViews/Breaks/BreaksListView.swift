@@ -137,8 +137,7 @@ struct BreaksListView: View {
                         .disabled(!viewModel.isEditing)
                     }
                 }.padding()
-                    .background(.thinMaterial .opacity(0.5),in:
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .glassModifier(cornerRadius: 20)
                 
                 
                 
@@ -153,19 +152,23 @@ struct BreaksListView: View {
                 }
                 
             }
+
             
-            .swipeActions(edge: .trailing) {
+            .swipeActions {
                 if viewModel.isEditing {
-                    Button(role: .destructive, action: { delete(at: index)
-                    }) {
+                    Button(action: {
+                        withAnimation {delete(at: index)
+                        }}){
                         Image(systemName: "trash")
-                    }
+                    }.tint(Color.clear)
+                    
                 }
+                
             }
             
             
             
-            .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+            .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
         }
         
@@ -201,8 +204,7 @@ struct BreaksListView: View {
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                     }.padding()
-                        .background(.thinMaterial .opacity(0.5),in:
-                                        RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .glassModifier(cornerRadius: 20)
                     
                 } header: {
                     
@@ -214,19 +216,25 @@ struct BreaksListView: View {
                     }
                     
                 }
+
                 
                 
-                .swipeActions(edge: .trailing) {
-                  
-                        Button(role: .destructive, action: { deleteTempBreak(at: index)
-                        }) {
+                .swipeActions {
+                    if viewModel.isEditing {
+                        Button(action: {
+                            withAnimation {
+                                deleteTempBreak(at: index)
+                            }
+                        }){
                             Image(systemName: "trash")
-                        }
+                        }.tint(Color.clear)
+                        
+                    }
                     
                 }
                 
                 
-                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
             }
             

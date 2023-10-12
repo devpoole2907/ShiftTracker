@@ -79,7 +79,7 @@ struct TimerView: View {
     
     var body: some View {
         
-        var timeDigits = digitsFromTimeString(timeString: viewModel.timeElapsed.stringFromTimeInterval())
+        let timeDigits = digitsFromTimeString(timeString: viewModel.timeElapsed.stringFromTimeInterval())
         
         let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
         

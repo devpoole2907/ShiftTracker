@@ -68,13 +68,18 @@ struct ScheduledShiftsView: View {
                     .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                     
                     .swipeActions {
-                        Button(role: .destructive) {
-                            shiftStore.deleteOldShift(shift, in: viewContext)
-                            
-                        } label: {
+                        
+                        Button(action: {
+                            withAnimation {
+                                shiftStore.deleteOldShift(shift, in: viewContext)
+                            }
+                        }){
                             Image(systemName: "trash")
-                        }
+                        }.tint(Color.clear)
+                        
                     }
+                    
+                    
                     
                     
                     
@@ -98,7 +103,7 @@ struct ScheduledShiftsView: View {
                             ScheduledShiftListRow(shift: shift)
                                 .environmentObject(shiftStore)
                                 .environmentObject(scheduleModel)
-                                .swipeActions {
+                                .swipeActions(allowsFullSwipe: false) {
                                     
                                     
                                     if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {

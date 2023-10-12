@@ -314,3 +314,37 @@ enum ReminderTime: String, CaseIterable, Identifiable {
         }
     }
 }
+
+enum Tab: String, CaseIterable {
+    case home = "Home"
+    case timesheets = "Timesheets"
+    case schedule = "Schedule"
+    case settings = "Settings"
+    
+    var image: String? {
+        switch self {
+        case .home:
+            return "Home"
+        case .timesheets:
+            return "Timesheets"
+        case .schedule:
+            return "Schedule"
+        case .settings:
+            return "Settings"
+        
+        }
+    }
+    
+    var systemImage: String? {
+        switch self {
+        case .home:
+            return "house.fill"
+        case .timesheets:
+            return "clock.fill"
+        case .schedule:
+            return "calendar"
+        case .settings:
+            return "gear"
+        }
+    }
+}

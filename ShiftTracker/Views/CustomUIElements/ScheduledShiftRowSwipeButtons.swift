@@ -18,7 +18,8 @@ struct ScheduledShiftRowSwipeButtons: View {
     var showText: Bool = false
     
     var body: some View {
-        Button(role: .destructive) {
+        
+        Button(action: {
             withAnimation {
                 scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
                 
@@ -27,28 +28,27 @@ struct ScheduledShiftRowSwipeButtons: View {
             Task {
                 await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
             }
-            
-        } label: {
+        }){
             HStack {
                 if showText {
                     Text("Delete")
                 }
                 Image(systemName: "trash")
             }
-        }
-        Button(role: .none){
+        }.tint(Color.clear)
+        
+        Button(action: {
             scheduleModel.selectedShiftToEdit = shift
-        } label: {
+        }){
             HStack{
                 if showText {
                     Text("Edit")
                 }
                 Image(systemName: "pencil")
             }
-        }
- 
-        Button(role: .none){
-           
+        }.tint(Color.clear)
+
+        Button(action: {
             if shift.calendarEventID == nil { // an event doesnt exist in the calendar
                 
                 scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
@@ -65,26 +65,22 @@ struct ScheduledShiftRowSwipeButtons: View {
                 shift.calendarEventID = nil
                 scheduleModel.saveShifts(in: viewContext)
             }
-            
-        } label: {
+        }){
             HStack {
                 if showText {
                     Text(shift.calendarEventID == nil ? "Add to Calendar" : "Remove from Calendar")
                 }
                 Image(systemName: shift.calendarEventID == nil ? "calendar.badge.plus" : "calendar.badge.minus")
             }
-        }.tint(Color.pink)
-        
-    
-        
-        Button(role: .cancel) {
-            
+        }.tint(Color.clear)
+ 
+        Button(action: {
             CustomConfirmationAlert(action: {
                 withAnimation {
                     scheduleModel.cancelRepeatingShiftSeries(shift: shift, with: shiftStore, using: viewContext)
                 }
             }, title: "End all future repeating shifts for this shift?").showAndStack()
-        } label: {
+        }){
             HStack {
                 if showText {
                     Text("End Repeat")
@@ -92,5 +88,7 @@ struct ScheduledShiftRowSwipeButtons: View {
                 Image(systemName: "clock.arrow.2.circlepath")
             }
         }.disabled(!shift.isRepeating)
+            .tint(Color.clear)
+
     }
 }

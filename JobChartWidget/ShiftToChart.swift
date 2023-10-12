@@ -15,7 +15,6 @@ struct ShiftToChart: Identifiable {
     
     init(shift: OldShift) {
         let start = shift.shiftStartDate!
-        let end = shift.shiftEndDate!
         self.hoursCount = shift.duration / 3600.0
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE" // set format to display abbreviated day of the week (e.g. "Mon")

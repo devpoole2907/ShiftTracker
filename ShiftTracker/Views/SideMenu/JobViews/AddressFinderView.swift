@@ -68,12 +68,6 @@ struct AddressFinderView: View {
     
     var body: some View {
         
-        
-        
-        let addressBackgroundColor: Color = colorScheme == .dark ? Color.orange.opacity(0.5) : Color.orange.opacity(0.8)
-        let bottomBackgroundColor: Color = colorScheme == .dark ? Color(.systemGray6) : .white
-        
-        
         NavigationStack{
                 VStack(spacing: 10) {
                     ZStack(alignment: .topTrailing){

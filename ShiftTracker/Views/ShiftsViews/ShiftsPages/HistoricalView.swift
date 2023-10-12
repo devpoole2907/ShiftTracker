@@ -418,7 +418,10 @@ struct HistoricalView: View {
                         }
                         
                         .swipeActions {
-                            Button(role: .destructive) {
+                         
+                            
+                            Button(action: {
+                                
                                 withAnimation {
                                     shiftStore.deleteOldShift(shift, in: viewContext)
                                     if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
@@ -436,9 +439,15 @@ struct HistoricalView: View {
                                         }
                                     }
                                 }
-                            } label: {
+                                
+                            }){
                                 Image(systemName: "trash")
                             }
+                            
+                            .tint(.clear)
+                            
+                            
+                            
                         }
                         
                     }

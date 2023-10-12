@@ -109,8 +109,43 @@ struct DetailView: View {
         ZStack(alignment: .bottomTrailing){
             List{
                 Section{
-                    LazyVStack{
+                    
      
+                        
+                       
+                    VStack {
+                        shiftDatePickers
+                        
+                        
+                        payPanels
+                        
+                        if viewModel.tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
+                            
+                            tipsPanel
+                            
+                        }
+                        
+                        
+                        
+                        if viewModel.selectedTaxPercentage > 0 || viewModel.taxEnabled {
+                            
+                            EstTaxPicker(taxPercentage: $viewModel.selectedTaxPercentage, isEditing: $viewModel.isEditing)
+                        }
+                        
+                        notesField
+                        
+                        overtimePanel.padding(.vertical, 5)
+                        
+                    }
+
+                    .padding(.horizontal, 10)
+
+
+                    
+                    
+                } header: {
+                    
+                    VStack {
                         if !viewModel.areAllTempBreaksWithin {
                             HStack {
                                 
@@ -124,40 +159,17 @@ struct DetailView: View {
                             .frame(width: UIScreen.main.bounds.width - 60)
                             
                         }
-                      
+                        
                         statsPanel
-   
+                        
                         TagPicker($viewModel.selectedTags, from: tags).allowsHitTesting(viewModel.isEditing)
                             .padding(.horizontal, 15)
-                            .padding(.vertical, 5)
-                        
-                        shiftDatePickers
-                        
-                        payPanels
-                        
-                        if viewModel.tipsEnabled || Double(viewModel.selectedTotalTips) ?? 0 > 0 {
-  
-                            tipsPanel
-
-                        }
-
-                        if viewModel.selectedTaxPercentage > 0 || viewModel.taxEnabled {
-                            
-                            EstTaxPicker(taxPercentage: $viewModel.selectedTaxPercentage, isEditing: $viewModel.isEditing)
-                        }
-                        
-                        notesField
-                        
-                        overtimePanel.padding(.vertical, 5)
-
-                    }.padding(.horizontal, 10)
-
-
-                    
+                            .padding(.top, 5)
+                    }.textCase(nil)
                     
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
-                    .listRowInsets(.init(top: 0, leading: 0, bottom: 10, trailing: 0))
+                    .listRowInsets(.init(top: 20, leading: 0, bottom: 10, trailing: 0))
 
 
                     .sheet(isPresented: $viewModel.isAddingBreak){
@@ -198,7 +210,7 @@ struct DetailView: View {
                 
             } .scrollContentBackground(.hidden)
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-            
+               
             
             
                 .background {
@@ -319,6 +331,8 @@ struct DetailView: View {
         
         let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
         
+        let textColor = colorScheme == .dark ? Color.white : Color.black
+        
         return ZStack {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Material.ultraThinMaterial)
@@ -343,6 +357,7 @@ struct DetailView: View {
                             .lineLimit(1)
                             .allowsTightening(true)
                             .minimumScaleFactor(0.5)
+                            .foregroundStyle(textColor)
                     }
                     
                 }
@@ -358,7 +373,7 @@ struct DetailView: View {
                     
                             Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.originalPay)) ?? "")")
                                 .font(.caption)
-                            
+                                .foregroundStyle(textColor)
                          
                             
                             
@@ -371,7 +386,7 @@ struct DetailView: View {
                               
                             Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.overtimeEarnings)) ?? "")")
                                 .font(.caption)
-                            
+                                .foregroundStyle(textColor)
                               
                             
                             

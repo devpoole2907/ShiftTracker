@@ -245,7 +245,7 @@ struct ContentView: View {
                     
                     
                     if let jobSelected = selectedJobManager.fetchJob(in: context) {
-                        viewModel.startShift(using: context, startDate: shiftStartDate, job: selectedJobManager.fetchJob(in: context)!)
+                        viewModel.startShift(using: context, startDate: shiftStartDate, job: jobSelected)
                         
                         viewModel.loadSelectedTags()
                         

@@ -74,7 +74,8 @@ struct ShiftsList: View {
                 .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                 
                 .swipeActions {
-                    Button(role: .destructive) {
+                    
+                    Button(action: {
                         shiftStore.deleteOldShift(shift, in: viewContext)
                         
                         if sortSelection.oldShifts.isEmpty {
@@ -82,10 +83,11 @@ struct ShiftsList: View {
                             navPath.removeLast()
                             
                         }
-                        
-                    } label: {
+                    }){
                         Image(systemName: "trash")
                     }
+                    
+                    .tint(.clear)
                 }
 
             }

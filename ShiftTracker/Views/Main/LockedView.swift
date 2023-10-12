@@ -9,67 +9,69 @@ import SwiftUI
 import LocalAuthentication
 
 struct LockedView: View {
-    @Binding var isAuthenticated: Bool
     
     @Environment(\.colorScheme) var colorScheme
-
-    private func authenticateUser() {
-        let context = LAContext()
-        var error: NSError?
-
-        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-            let reason = "Unlock ShiftTracker"
-
-            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, error in
-                DispatchQueue.main.async {
-                    if success {
-                        isAuthenticated = false
-                    } else {
-                        // Handle the authentication error here if needed
-                    }
-                }
-            }
-        } else {
-            // Handle the case where biometric authentication is not available
-        }
-    }
+    @Environment(\.dismiss) var dismiss
+    
+    @EnvironmentObject var themeManager: ThemeDataManager
+    
+    private let authManager = AuthManager()
 
     var body: some View {
         
-        let textColor: Color = colorScheme == .dark ? .black : .white
+        let textColor: Color = colorScheme == .dark ? .white : .black
         
-        VStack(spacing: 20) {
+        VStack {
             Spacer()
-            Image(systemName: "lock.fill")
-                .font(.largeTitle)
             
-            Text("ShiftTracker is locked.")
-                .font(.title)
-                .bold()
-                .padding(.bottom, 20)
-            Spacer()
-            Button(action: {
-                authenticateUser()
-            }) {
-                Text("Unlock")
-                    .font(.title)
+            VStack {
+                
+                Image(systemName: "lock.fill")
+                    .font(.largeTitle)
+                
+                Text("ShiftTracker is locked.")
+                    .font(.title2)
                     .bold()
-                    .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                    
-            }
-            .padding()
-            .foregroundColor(textColor)
-                .bold()
-                .background(Color.accentColor)
-                .cornerRadius(20)
-        }.onAppear{
-            authenticateUser()
+                    .padding()
+                
+                Text("Please unlock to continue.")
+                    .font(.callout)
+                    .roundedFontDesign()
+       
+                
+            }.padding(.vertical, 30)
+                .padding(.horizontal
+                ).glassModifier(cornerRadius: 20)
+            
+            
+            
+            Spacer()
+            
+            ActionButtonView(title: "Unlock", backgroundColor: .black, textColor: textColor, icon: "faceid", buttonWidth: getRect().width - 100, action: authUser)
+            
+                .padding(.vertical)
+            
+        
+        }
+        
+        
+        .onAppear{
+         //   authUser()
         }
     }
+    
+    func authUser() {
+        Task {
+            let success = await authManager.authenticateUser()
+            if success {
+                dismiss()
+            }
+        }
+    }
+    
 }
 
-struct LockedView_Previews: PreviewProvider {
-    static var previews: some View {
-        LockedView(isAuthenticated: .constant(true))
-    }
+#Preview {
+    LockedView()
 }
+

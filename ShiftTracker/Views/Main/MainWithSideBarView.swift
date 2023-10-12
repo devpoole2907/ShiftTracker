@@ -16,7 +16,6 @@ struct MainWithSideBarView: View {
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.title, ascending: true)]) private var jobs: FetchedResults<Job>
     
     @AppStorage("AuthEnabled") private var authEnabled: Bool = false
-        @State private var showingLockedView = false
     
     @AppStorage("isFirstLaunch", store: UserDefaults(suiteName: "group.com.poole.james.ShiftTracker")) var isFirstLaunch = true
     
@@ -30,30 +29,32 @@ struct MainWithSideBarView: View {
     @State private var schedulePath = NavigationPath()
     
     @StateObject var jobSelectionModel = JobSelectionManager()
-    @EnvironmentObject var navigationState: NavigationState
     @StateObject var scheduleModel = SchedulingViewModel()
     @StateObject var sortSelection = SortSelection(in: PersistenceController.shared.container.viewContext)
-    
     @StateObject var shiftManager = ShiftDataManager.shared
     
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
-    
-    private let notificationManager = ShiftNotificationManager.shared
+    @EnvironmentObject var navigationState: NavigationState
     
     @Environment(\.managedObjectContext) private var context
     
+    private let notificationManager = ShiftNotificationManager.shared
 
-    
-    
     @GestureState var gestureOffset: CGFloat = 0
     
     @State private var isSubscriptionChecked: Bool = false
     
     
     private func checkIfLocked() {
+        
+        print("checking if auth enabled...")
+        
             if authEnabled {
-                showingLockedView = true
+                print("auth enabled!")
+                navigationState.activeCover = .lockedView
+            } else {
+                print("auth is not enabled.")
             }
         }
     
@@ -64,196 +65,10 @@ struct MainWithSideBarView: View {
             NavigationView{
             ZStack(alignment: .bottom){
                 Group{
-                    TabView(selection: $navigationState.currentTab) {
-                        NavigationStack{
-                            ContentView()
-                                .blur(radius: navigationState.calculatedBlur)
-                                .blur(radius: isFirstLaunch ? 50 : 0)
-                                .allowsHitTesting(!navigationState.showMenu)
-                            
-                                .background {
-                                    
-                                    themeManager.contentDynamicBackground.ignoresSafeArea()
-                                }
-                            
-                        
-                        }
-                        .environment(\.managedObjectContext, context)
-                        .environmentObject(ContentViewModel.shared)
-                        .environmentObject(jobSelectionModel)
-                        .environmentObject(navigationState)
-                        
-                     
-                        
-                        .navigationBarTitleDisplayMode(.inline)
-                        .navigationBarHidden(true)
-                        .tag(Tab.home)
-                        
-                        
-                        ZStack(alignment: .bottomTrailing) {
-                            NavigationStack(path: $path){
-                                JobOverview(navPath: $path, job: jobSelectionModel.fetchJob(in: context))
-                                    .blur(radius: navigationState.calculatedBlur)
-                                    .allowsHitTesting(!navigationState.showMenu)
-                                
-                                    .background {
-                                        
-                                        themeManager.overviewDynamicBackground.ignoresSafeArea()
-                                    }
-                                
-                                
-                            }
-                            .environment(\.managedObjectContext, context)
-                            .environmentObject(jobSelectionModel)
-                            .environmentObject(navigationState)
-                            .environmentObject(sortSelection)
-                            .environmentObject(shiftManager)
-                            
-                            if shiftManager.showModePicker {
-                                
-                                CustomSegmentedPicker(selection: $shiftManager.statsMode, items: StatsMode.allCases)
-                                
-                                    .frame(maxHeight: 30)
-                                
-                                    .glassModifier(cornerRadius: 20)
-                                
-                                    .frame(maxWidth: 165)
-                                
-                                
-                                    .padding()
-                                
-                                
-                                
-                                    .haptics(onChangeOf: shiftManager.statsMode, type: .soft)
-                                
-                                    .contextMenu{
-                                        ForEach(0..<shiftManager.statsModes.count) { index in
-                                            Button(action: {
-                                                withAnimation {
-                                                    shiftManager.statsMode = StatsMode(rawValue: index) ?? .earnings
-                                                    shiftManager.shiftDataLoaded.send(())
-                                                }
-                                            }) {
-                                                HStack {
-                                                    
-                                                    Text(shiftManager.statsModes[index])
-                                                        .textCase(nil)
-                                                    if index == shiftManager.statsMode.rawValue {
-                                                        Spacer()
-                                                        Image(systemName: "checkmark")
-                                                            .foregroundColor(.accentColor) // Customize the color if needed
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                
-                            }
-                            
-                            
-                            
-                        }.ignoresSafeArea(.keyboard)
-                            .tag(Tab.timesheets)
-                            
-                        
-                        
-                        NavigationStack(path: $schedulePath){
-                            ScheduleView(navPath: $schedulePath)
-                                .blur(radius: navigationState.calculatedBlur)
-                                .allowsHitTesting(!navigationState.showMenu)
-                            
-                                .background {
-                                    
-                                    themeManager.scheduleDynamicBackground.ignoresSafeArea()
-                                }
-                            
-                        }
-                        .environment(\.managedObjectContext, context)
-                        .environmentObject(navigationState)
-                        .environmentObject(jobSelectionModel)
-                        .environmentObject(scheduleModel)
-                        .environmentObject(shiftManager)
-                        .navigationBarTitleDisplayMode(.inline)
-                        
-                        .tag(Tab.schedule)
-                        NavigationStack(path: $settingsPath){
-                            SettingsView(navPath: $settingsPath)
-                                .blur(radius: navigationState.calculatedBlur)
-                                .allowsHitTesting(!navigationState.showMenu)
-                               
-                                .background {
-                                    
-                                    themeManager.settingsDynamicBackground.ignoresSafeArea()
-                                }
-                            
-                        }
-                        .environment(\.managedObjectContext, context)
-                        .environmentObject(navigationState)
-                        .environmentObject(SettingsViewModel.shared)
-                        .navigationBarTitleDisplayMode(.inline)
-                        
-                        .tag(Tab.settings)
-                        
-                        
-                    }
                     
-                    
-                    .ignoresSafeArea(.keyboard)
-                    
-                    
-                    
-                    VStack(spacing: 0){
-                        HStack(spacing: 0) {
-                            TabButton(tab: .home, useSystemImage: true)
-                            TabButton(tab: .timesheets, useSystemImage: true, action: {
-                                
-                                if path.isEmpty {
-                                    
-                                    navigationState.showMenu.toggle()
-                                    
-                                } else {
-                                    // broken ios 17 beta 4
-                                    
-                                    
-                                    
-                                    path = NavigationPath()
-                                    
-                                    
-                                    
-                                    
-                                }
-                                
-                                
-                            })
-                            TabButton(tab: .schedule, useSystemImage: true, action: {
-                                
-                                if schedulePath.isEmpty {
-                                    navigationState.showMenu.toggle()
-                                } else {
-                                    schedulePath = NavigationPath()
-                                }
-                                
-                                
-                            })
-                            TabButton(tab: .settings, useSystemImage: true, action: {
-                                
-                                if settingsPath.isEmpty {
-                                    
-                                    navigationState.showMenu.toggle()
-                                    
-                                } else {
-                                    
-                                    settingsPath = []
-                                    
-                                }
-                                
-                            })
-                        }
-                        .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
-                        .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
-                        .ignoresSafeArea(.keyboard)
-                        
-                    }.ignoresSafeArea(.keyboard)
+                    tabsViews
+             
+                    tabButtons
                     
                         .blur(radius: Double((navigationState.offset / navigationState.sideBarWidth) * 4))
                     
@@ -358,7 +173,7 @@ struct MainWithSideBarView: View {
             .fullScreenCover(item: $navigationState.activeCover){ cover in
                 switch cover {
                 case .lockedView:
-                    LockedView(isAuthenticated: $showingLockedView)
+                    LockedView().customSheetBackground()
                 case .jobView:
                     JobView(isEditJobPresented: .constant(true), selectedJobForEditing: .constant(nil))
                         .environmentObject(ContentViewModel.shared)
@@ -369,6 +184,7 @@ struct MainWithSideBarView: View {
             
          
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                print("I have entered the foreground")
                 checkIfLocked()
             }
             
@@ -479,15 +295,7 @@ func onEnd(value: DragGesture.Value) {
                 navigationState.showMenu.toggle()
                 
             }
-            
-            
-        
-                
-                
-            
-            
-            
-        
+
             
         } label: {
             if useSystemImage, let systemImage = tab.systemImage {
@@ -511,51 +319,202 @@ func onEnd(value: DragGesture.Value) {
         }
     }
     
-
-    
-    
-    
-}
-
-struct MainWithSideBarView_Previews: PreviewProvider {
-    static var previews: some View {
-        //MainWithSideBarView(currentTab: .constant(.home))
-        MainWithSideBarView()
-    }
-}
-
-
-enum Tab: String, CaseIterable {
-    case home = "Home"
-    case timesheets = "Timesheets"
-    case schedule = "Schedule"
-    case settings = "Settings"
-    
-    var image: String? {
-        switch self {
-        case .home:
-            return "Home"
-        case .timesheets:
-            return "Timesheets"
-        case .schedule:
-            return "Schedule"
-        case .settings:
-            return "Settings"
+    var tabsViews: some View {
+        TabView(selection: $navigationState.currentTab) {
+            NavigationStack{
+                ContentView()
+                    .blur(radius: navigationState.calculatedBlur)
+                    .blur(radius: isFirstLaunch ? 50 : 0)
+                    .allowsHitTesting(!navigationState.showMenu)
+                
+                    .background {
+                        
+                        themeManager.contentDynamicBackground.ignoresSafeArea()
+                    }
+                
+            
+            }
+            .environment(\.managedObjectContext, context)
+            .environmentObject(ContentViewModel.shared)
+            .environmentObject(jobSelectionModel)
+            .environmentObject(navigationState)
+            
+         
+            
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarHidden(true)
+            .tag(Tab.home)
+            
+            
+            ZStack(alignment: .bottomTrailing) {
+                NavigationStack(path: $path){
+                    JobOverview(navPath: $path, job: jobSelectionModel.fetchJob(in: context))
+                        .blur(radius: navigationState.calculatedBlur)
+                        .allowsHitTesting(!navigationState.showMenu)
+                    
+                        .background {
+                            
+                            themeManager.overviewDynamicBackground.ignoresSafeArea()
+                        }
+                    
+                    
+                }
+                .environment(\.managedObjectContext, context)
+                .environmentObject(jobSelectionModel)
+                .environmentObject(navigationState)
+                .environmentObject(sortSelection)
+                .environmentObject(shiftManager)
+                
+                if shiftManager.showModePicker {
+                    
+                    CustomSegmentedPicker(selection: $shiftManager.statsMode, items: StatsMode.allCases)
+                    
+                        .frame(maxHeight: 30)
+                    
+                        .glassModifier(cornerRadius: 20)
+                    
+                        .frame(maxWidth: 165)
+                    
+                    
+                        .padding()
+                    
+                    
+                    
+                        .haptics(onChangeOf: shiftManager.statsMode, type: .soft)
+                    
+                        .contextMenu{
+                            ForEach(0..<shiftManager.statsModes.count) { index in
+                                Button(action: {
+                                    withAnimation {
+                                        shiftManager.statsMode = StatsMode(rawValue: index) ?? .earnings
+                                        shiftManager.shiftDataLoaded.send(())
+                                    }
+                                }) {
+                                    HStack {
+                                        
+                                        Text(shiftManager.statsModes[index])
+                                            .textCase(nil)
+                                        if index == shiftManager.statsMode.rawValue {
+                                            Spacer()
+                                            Image(systemName: "checkmark")
+                                                .foregroundColor(.accentColor) // Customize the color if needed
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    
+                }
+                
+                
+                
+            }.ignoresSafeArea(.keyboard)
+                .tag(Tab.timesheets)
+                
+            
+            
+            NavigationStack(path: $schedulePath){
+                ScheduleView(navPath: $schedulePath)
+                    .blur(radius: navigationState.calculatedBlur)
+                    .allowsHitTesting(!navigationState.showMenu)
+                
+                    .background {
+                        
+                        themeManager.scheduleDynamicBackground.ignoresSafeArea()
+                    }
+                
+            }
+            .environment(\.managedObjectContext, context)
+            .environmentObject(navigationState)
+            .environmentObject(jobSelectionModel)
+            .environmentObject(scheduleModel)
+            .environmentObject(shiftManager)
+            .navigationBarTitleDisplayMode(.inline)
+            
+            .tag(Tab.schedule)
+            NavigationStack(path: $settingsPath){
+                SettingsView(navPath: $settingsPath)
+                    .blur(radius: navigationState.calculatedBlur)
+                    .allowsHitTesting(!navigationState.showMenu)
+                   
+                    .background {
+                        
+                        themeManager.settingsDynamicBackground.ignoresSafeArea()
+                    }
+                
+            }
+            .environment(\.managedObjectContext, context)
+            .environmentObject(navigationState)
+            .environmentObject(SettingsViewModel.shared)
+            .navigationBarTitleDisplayMode(.inline)
+            
+            .tag(Tab.settings)
+            
+            
+        }
         
-        }
+        
+        .ignoresSafeArea(.keyboard)
     }
     
-    var systemImage: String? {
-        switch self {
-        case .home:
-            return "house.fill"
-        case .timesheets:
-            return "clock.fill"
-        case .schedule:
-            return "calendar"
-        case .settings:
-            return "gear"
-        }
+
+    var tabButtons: some View {
+        VStack(spacing: 0){
+            HStack(spacing: 0) {
+                TabButton(tab: .home, useSystemImage: true)
+                TabButton(tab: .timesheets, useSystemImage: true, action: {
+                    
+                    if path.isEmpty {
+                        
+                        navigationState.showMenu.toggle()
+                        
+                    } else {
+                        // broken ios 17 beta 4
+                        
+                        
+                        
+                        path = NavigationPath()
+                        
+                        
+                        
+                        
+                    }
+                    
+                    
+                })
+                TabButton(tab: .schedule, useSystemImage: true, action: {
+                    
+                    if schedulePath.isEmpty {
+                        navigationState.showMenu.toggle()
+                    } else {
+                        schedulePath = NavigationPath()
+                    }
+                    
+                    
+                })
+                TabButton(tab: .settings, useSystemImage: true, action: {
+                    
+                    if settingsPath.isEmpty {
+                        
+                        navigationState.showMenu.toggle()
+                        
+                    } else {
+                        
+                        settingsPath = []
+                        
+                    }
+                    
+                })
+            }
+            .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
+            .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
+            .ignoresSafeArea(.keyboard)
+            
+        }.ignoresSafeArea(.keyboard)
     }
+    
+    
+    
 }
+
 

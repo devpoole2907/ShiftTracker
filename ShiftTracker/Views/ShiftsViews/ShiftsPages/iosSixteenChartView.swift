@@ -179,7 +179,7 @@ struct iosSixteenChartView: View {
                                         let location = value.location
                                         
                                         if let date: Date = proxy.value(atX: location.x){
-                                            let calendar = Calendar.current
+                                   
                                             print("date is \(date)")
                                             
                                             historyModel.chartSelection = date
