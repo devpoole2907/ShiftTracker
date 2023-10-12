@@ -21,7 +21,10 @@ struct HighlightedText: View {
                 Text("..")
                     .font(selectedJobManager.fetchJob(in: viewContext) != nil ? .callout : .caption)
                     .bold()
-                ForEach(parts, id: \.0) { part, isHighlighted in
+                ForEach(parts.indices, id: \.self) { index in
+                    
+                    let (part, isHighlighted) = parts[index]
+                    
                     if isHighlighted {
                         Text(part)
                             .bold()
@@ -47,6 +50,11 @@ struct HighlightedText: View {
     
     
     func highlightSnippet(in text: String, highlight: String) -> [(String, Bool)]? {
+        
+        print("Full Text: \(text)")
+        print("Highlight: \(highlight)")
+
+        
         guard let range = text.range(of: highlight, options: .caseInsensitive) else {
             return nil
         }
@@ -63,30 +71,34 @@ struct HighlightedText: View {
     func separateText(_ fullText: String, highlight: String) -> [(String, Bool)] {
         var separatedText: [(String, Bool)] = []
         let lowercasedHighlight = highlight.lowercased()
-        let parts = fullText.lowercased().components(separatedBy: lowercasedHighlight)
+        let lowercasedFullText = fullText.lowercased()
         
-        for (i, part) in parts.enumerated() {
-            if i != parts.count - 1 {
-                if let partRange = fullText.range(of: part, options: .caseInsensitive),
-                   let endIndex = fullText.index(partRange.upperBound, offsetBy: lowercasedHighlight.count, limitedBy: fullText.endIndex) {
-                    let nextPart = String(fullText[partRange.upperBound..<endIndex])
-                    separatedText.append((part, false))
-                    separatedText.append((nextPart, true))
-                } else if part.isEmpty {
-                    // Special case when the highlight is at the start
-                    let startIndex = fullText.startIndex
-                    if let endIndex = fullText.index(startIndex, offsetBy: lowercasedHighlight.count, limitedBy: fullText.endIndex) {
-                        let nextPart = String(fullText[startIndex..<endIndex])
-                        separatedText.append((nextPart, true))
-                    }
-                }
-            } else {
-                separatedText.append((part, false))
+        var lastIndex = fullText.startIndex
+        
+        while let range = lowercasedFullText.range(of: lowercasedHighlight, range: lastIndex..<fullText.endIndex) {
+            let preText = String(fullText[lastIndex..<range.lowerBound])
+            let highlightedText = String(fullText[range])
+            
+            if !preText.isEmpty {
+                separatedText.append((preText, false))
             }
+            
+            separatedText.append((highlightedText, true))
+            
+            lastIndex = range.upperBound
+        }
+        
+        let postText = String(fullText[lastIndex..<fullText.endIndex])
+        
+        if !postText.isEmpty {
+            separatedText.append((postText, false))
         }
         
         return separatedText
     }
+
+    
+    
     
     
     

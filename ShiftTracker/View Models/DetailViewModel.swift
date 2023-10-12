@@ -97,6 +97,7 @@ class DetailViewModel: ObservableObject {
         self.overtimeAppliedAfter = shift.timeBeforeOvertime
         self.job = shift.job
         self.originalJob = shift.job
+        self.notes = shift.shiftNote ?? ""
         
     }
     
