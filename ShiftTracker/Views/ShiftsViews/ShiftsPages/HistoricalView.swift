@@ -488,17 +488,20 @@ struct HistoricalView: View {
                 
                 if !isAnimating {
                 if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
-                    let reversedShifts = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.enumerated().reversed()
-                    let count = reversedShifts.count
-                    ForEach(reversedShifts, id: \.element.objectID) { index, shift in
+                    let reversedIndices = Array(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.indices.reversed())
+                    let count = reversedIndices.count
+                    ForEach(reversedIndices, id: \.self) { index in
                         let normalizedIndex = count - 1 - index
+                        
+                        let shift = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts[index]
+                        
                         NavigationLink(value: shift) {
                             ShiftDetailRow(shift: shift)
                             
                             
                         }
                         
-                        .swipeActions {
+                       .swipeActions {
                          
                             
                             Button(action: {
