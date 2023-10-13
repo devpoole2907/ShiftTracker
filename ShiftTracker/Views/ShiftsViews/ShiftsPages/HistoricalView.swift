@@ -494,6 +494,7 @@ struct HistoricalView: View {
                         let normalizedIndex = count - 1 - index
                         
                         let shift = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts[index]
+                        let currentObjectID = shift.objectID
                         
                         NavigationLink(value: shift) {
                             ShiftDetailRow(shift: shift)
@@ -535,7 +536,7 @@ struct HistoricalView: View {
                         }
                         
                         .id(normalizedIndex + 1)
-                        
+                        .tag(currentObjectID)
                     }
                 }
                 
