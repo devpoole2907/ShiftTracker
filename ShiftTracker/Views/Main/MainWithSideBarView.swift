@@ -363,17 +363,10 @@ func onEnd(value: DragGesture.Value) {
                 
                 .introspect(.navigationStack, on: .iOS(.v16, .v17)) { controller in
                     print("I am introspecting!")
-                    
-                    let job = jobSelectionModel.fetchJob(in: context)
-                    
-       
-                    
-                    let jobColor: UIColor = UIColor(red: CGFloat(job?.colorRed ?? 1.0), green: CGFloat(job?.colorGreen ?? 1.0), blue: CGFloat(job?.colorBlue ?? 1.0), alpha: 1.0)
+
                     
                     let largeFontSize: CGFloat = UIFont.preferredFont(forTextStyle: .largeTitle).pointSize
                     let inlineFontSize: CGFloat = UIFont.preferredFont(forTextStyle: .body).pointSize
-                    
-                
 
                     // Here we get San Francisco with the desired weight
                     let largeSystemFont = UIFont.systemFont(ofSize: largeFontSize, weight: .bold)
@@ -396,33 +389,20 @@ func onEnd(value: DragGesture.Value) {
                         inlineFont = inlineSystemFont
                     }
                     
-                    var largeAttributes: [NSAttributedString.Key: Any] = [
+                    let largeAttributes: [NSAttributedString.Key: Any] = [
                         .font: largeFont
                     ]
-                  
-                    if job != nil {
-                        largeAttributes = [
-                            .font: largeFont,
-                            .foregroundColor: jobColor
-                        ]
-                    }
-                      
-                    
-                    
+
                     let inlineAttributes: [NSAttributedString.Key: Any] = [
                         .font: inlineFont
                     ]
-                    
-                  
-                    
-                    
-                   
                                         
                     controller.navigationBar.titleTextAttributes = inlineAttributes
                     
                     controller.navigationBar.largeTitleTextAttributes = largeAttributes
-               
                     
+                    
+               
                 }
                 
                 
