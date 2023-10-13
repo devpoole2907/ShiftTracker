@@ -118,7 +118,7 @@ struct JobOverview: View {
                         
                         
                         recentShiftsSection
-                            .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
+                           
                             .background {
                                 Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
                             }
@@ -368,6 +368,8 @@ struct JobOverview: View {
                    
                 }
                 
+                .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
+                
                 
                 
             }
@@ -376,6 +378,7 @@ struct JobOverview: View {
         } header: {
             
             statsSection.id(0)
+                .frame(maxWidth: .infinity)
             
           
         
@@ -423,7 +426,7 @@ struct JobOverview: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         
         return Group {
-        VStack(alignment: .leading, spacing: 16){
+        VStack(alignment: .center, spacing: 16){
             HStack(spacing: 8){
                 VStack(spacing: 0) {
                     
@@ -469,6 +472,7 @@ struct JobOverview: View {
             
         }
             .frame(maxHeight: 244)
+      
 
         
     }   .textCase(nil)

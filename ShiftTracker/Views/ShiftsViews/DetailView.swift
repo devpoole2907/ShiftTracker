@@ -25,7 +25,7 @@ struct DetailView: View {
     @EnvironmentObject var themeManager: ThemeDataManager
     
     let breakManager = BreaksManager()
-    
+
     @FetchRequest(
         entity: Job.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]
@@ -110,7 +110,27 @@ struct DetailView: View {
             List{
                 Section{
                     
-     
+                    VStack{
+                        if !viewModel.areAllTempBreaksWithin {
+                            HStack {
+                                
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                Text("Breaks are not within the shift start & end dates.").bold()
+                                    .roundedFontDesign()
+                                
+                            }
+                            .padding()
+                            .glassModifier(cornerRadius: 20)
+                            .frame(width: UIScreen.main.bounds.width - 60)
+                            
+                        }
+                        
+                        statsPanel
+                        
+                        TagPicker($viewModel.selectedTags, from: tags).allowsHitTesting(viewModel.isEditing)
+                            .padding(.horizontal, 15)
+                            .padding(.top, 5)
+                    }
                         
                        
                     VStack {
@@ -136,40 +156,16 @@ struct DetailView: View {
                         
                         overtimePanel.padding(.vertical, 5)
                         
-                    }
+                    }.padding(.top, 10)
 
-                    .padding(.horizontal, 10)
+             
 
 
                     
-                    
-                } header: {
-                    
-                    VStack {
-                        if !viewModel.areAllTempBreaksWithin {
-                            HStack {
-                                
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                Text("Breaks are not within the shift start & end dates.").bold()
-                                    .roundedFontDesign()
-                                
-                            }
-                            .padding()
-                            .glassModifier(cornerRadius: 20)
-                            .frame(width: UIScreen.main.bounds.width - 60)
-                            
-                        }
-                        
-                        statsPanel
-                        
-                        TagPicker($viewModel.selectedTags, from: tags).allowsHitTesting(viewModel.isEditing)
-                            .padding(.horizontal, 15)
-                            .padding(.top, 5)
-                    }.textCase(nil)
                     
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
-                    .listRowInsets(.init(top: 20, leading: 0, bottom: 10, trailing: 0))
+                    .listRowInsets(.init(top: 0, leading: 10, bottom: 10, trailing: 10))
 
 
                     .sheet(isPresented: $viewModel.isAddingBreak){
@@ -211,6 +207,9 @@ struct DetailView: View {
             } .scrollContentBackground(.hidden)
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                
+                .listStyle(.inset)
+            
+             
             
             
                 .background {
@@ -701,7 +700,7 @@ struct DetailView: View {
      
             
         BreaksListView(shift: viewModel.shift).environmentObject(viewModel)
-                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .listRowInsets(.init(top: 0, leading: 10, bottom: 0, trailing: 10))
         
     }
     
@@ -870,6 +869,4 @@ struct DetailView: View {
     
     
 }
-
-
 
