@@ -102,13 +102,17 @@ struct CurrentBreaksListView: View {
                 }.padding(.vertical, 2)
             
             
-            .swipeActions {
-                Button(role: .destructive) {
-                    viewModel.deleteSpecificBreak(breakItem: breakItem)
-                } label: {
-                    Image(systemName: "trash")
-                }.disabled(breakItem.endDate == nil)
-            }
+                
+                .swipeActions {
+                    Button(action: {
+                        withAnimation {
+                            viewModel.deleteSpecificBreak(breakItem: breakItem)
+                        }
+                    }){
+                        Image(systemName: "trash")
+                    }.disabled(breakItem.endDate == nil)
+                        .tint(Color.clear)
+                }
             
         
     

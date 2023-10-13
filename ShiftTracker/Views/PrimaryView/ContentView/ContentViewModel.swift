@@ -365,6 +365,7 @@ class ContentViewModel: ObservableObject {
         if let index = tempBreaks.firstIndex(where: { $0 == breakItem }) {
             tempBreaks.remove(at: index)
         }
+        saveTempBreaksToUserDefaults()
     }
     
     func previousBreakEndDate(for breakItem: TempBreak) -> Date? {
