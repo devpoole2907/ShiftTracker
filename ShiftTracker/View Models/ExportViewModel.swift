@@ -14,6 +14,20 @@ class ExportViewModel: ObservableObject {
     @Published var selectedDateRange: DateRange = .all
     @Published var isShareSheetShowing = false
     
+    var selectedShifts: Set<NSManagedObjectID>? = nil
+    var shifts: FetchedResults<OldShift>? = nil
+    var arrayShifts: [OldShift]? = nil
+    var job: Job?
+    var viewContext: NSManagedObjectContext
+    
+    init(shifts: FetchedResults<OldShift>? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, job: Job? = nil, viewContext: NSManagedObjectContext, arrayShifts: [OldShift]? = nil){
+        self.selectedShifts = selectedShifts
+        self.shifts = shifts
+        self.job = job
+        self.viewContext = viewContext
+        self.arrayShifts = arrayShifts
+    }
+    
     struct ExportColumn: Identifiable {
         let id: String
         let title: String
@@ -52,9 +66,38 @@ class ExportViewModel: ObservableObject {
         }
     }
     
+    private func shouldInclude(shift: OldShift) -> Bool {
+        if let selectedShifts = selectedShifts {
+            return selectedShifts.contains(shift.objectID)
+        } else {
+            return isShiftWithinDateRange(shift: shift)
+        }
+    }
+    
+    private func isShiftWithinDateRange(shift: OldShift) -> Bool {
+
+        guard let startDate = shift.shiftStartDate else {
+               return false
+           }
+        
+        switch selectedDateRange {
+        case .all:
+            return true
+        case .year:
+            return Calendar.current.isDate(startDate, equalTo: Date(), toGranularity: .year)
+        case .sixMonths:
+            return Calendar.current.isDateInLastSixMonths(startDate)
+        case .thisMonth:
+            return Calendar.current.isDate(startDate, equalTo: Date(), toGranularity: .month)
+        case .thisWeek:
+            return Calendar.current.isDate(startDate, equalTo: Date(), toGranularity: .weekOfYear)
+        }
+
+        }
     
     
-    func exportCSV(shifts: FetchedResults<OldShift>, viewContext: NSManagedObjectContext, job: Job?) {
+    
+    func exportCSV() {
         
         
         var fileName = "export.csv"
@@ -67,22 +110,17 @@ class ExportViewModel: ObservableObject {
         
         let path = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
         var csvText = selectedColumns.filter { $0.isSelected }.map { $0.title }.joined(separator: ",") + "\n"
+
         
-        let filteredShifts: [OldShift] = shifts.filter { shift in
-            switch selectedDateRange {
-            case .all:
-                return true
-            case .year:
-                return Calendar.current.isDate(shift.shiftStartDate ?? Date(), equalTo: Date(), toGranularity: .year)
-            case .sixMonths:
-                return Calendar.current.isDateInLastSixMonths(shift.shiftStartDate ?? Date())
-            case .thisMonth:
-                return Calendar.current.isDate(shift.shiftStartDate ?? Date(), equalTo: Date(), toGranularity: .month)
-            case .thisWeek:
-                return Calendar.current.isDate(shift.shiftStartDate ?? Date(), equalTo: Date(), toGranularity: .weekOfYear)
-            }
+        var filteredShifts: [OldShift] = []
+
+        if let theShifts = shifts {
+            filteredShifts = theShifts.filter { shouldInclude(shift: $0) }
+        } else if let arrayShifts = arrayShifts {
+            filteredShifts = arrayShifts.filter { shouldInclude(shift: $0) }
         }
         
+
         
         for shift in filteredShifts {
             

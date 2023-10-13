@@ -9,13 +9,15 @@ import SwiftUI
 import CoreData
 
 struct ConfigureExportView: View {
-    @ObservedObject var viewModel: ExportViewModel = ExportViewModel()
-    var shifts: FetchedResults<OldShift>
-    var job: Job?
+    @ObservedObject var viewModel: ExportViewModel
     
     @Environment(\.dismiss) var dismiss
-    @Environment(\.managedObjectContext) var viewContext
     @Environment(\.colorScheme) var colorScheme
+    
+    
+    init(shifts: FetchedResults<OldShift>? = nil, job: Job? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, arrayShifts: [OldShift]? = nil) {
+        self.viewModel = ExportViewModel(shifts: shifts, selectedShifts: selectedShifts, job: job, viewContext: PersistenceController.shared.container.viewContext, arrayShifts: arrayShifts)
+    }
     
     var body: some View {
         
@@ -39,21 +41,22 @@ struct ConfigureExportView: View {
                         .glassModifier(cornerRadius: 20)
             
                 
-            
-                    HStack {
-                        Text("Date Range").bold()
-                        Spacer()
-                        Picker("Date Range", selection: $viewModel.selectedDateRange) {
-                            ForEach(ExportViewModel.DateRange.allCases, id: \.self) { range in
-                                Text(range.title).tag(range)
-                            }
-                        }.bold()
-                            .pickerStyle(.menu)
-                    }
+                    if viewModel.selectedShifts == nil {
+                        
+                        HStack {
+                            Text("Date Range").bold()
+                            Spacer()
+                            Picker("Date Range", selection: $viewModel.selectedDateRange) {
+                                ForEach(ExportViewModel.DateRange.allCases, id: \.self) { range in
+                                    Text(range.title).tag(range)
+                                }
+                            }.bold()
+                                .pickerStyle(.menu)
+                        }
                         .padding(.horizontal)
                         .padding(.vertical, 7)
                         .glassModifier(cornerRadius: 20)
-                    
+                    }
                 
                 
                 }.padding(.horizontal)
@@ -65,8 +68,8 @@ struct ConfigureExportView: View {
                     
                     dismiss()
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-                        viewModel.exportCSV(shifts: shifts, viewContext: viewContext, job: job)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                        viewModel.exportCSV()
                     }
                     
                     

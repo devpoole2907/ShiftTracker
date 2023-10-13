@@ -510,11 +510,12 @@ struct DetailView: View {
                 
                 Spacer()
                 
-                DatePicker("Start: ", selection: $viewModel.selectedStartDate)
+                DatePicker("Start: ", selection: $viewModel.selectedStartDate, in: .distantPast...Date().endOfDay)
                     .labelsHidden()
                     .onChange(of: viewModel.selectedStartDate) { _ in
-                        if viewModel.selectedStartDate > viewModel.selectedEndDate {
-                            viewModel.selectedStartDate = viewModel.selectedEndDate
+                        
+                        if viewModel.selectedEndDate > viewModel.selectedStartDate.addingTimeInterval(86400) || viewModel.selectedStartDate > viewModel.selectedEndDate {
+                            viewModel.selectedEndDate = viewModel.selectedStartDate.addingTimeInterval(36400)
                         }
                     }
                     .disabled(!viewModel.isEditing)
@@ -534,13 +535,15 @@ struct DetailView: View {
                 
                 Spacer()
                 
-                DatePicker("", selection: $viewModel.selectedEndDate)
+                DatePicker("", selection: $viewModel.selectedEndDate, in: viewModel.selectedStartDate...viewModel.selectedStartDate.addingTimeInterval(86400))
+                
+         //       DatePicker("", selection: $viewModel.selectedEndDate)
                     .labelsHidden()
-                    .onChange(of: viewModel.selectedEndDate) { _ in
-                        if viewModel.selectedEndDate < viewModel.selectedStartDate {
-                            viewModel.selectedEndDate = viewModel.selectedStartDate
+                    .onChange(of: viewModel.selectedEndDate) { endDate in
+                        if endDate < viewModel.selectedStartDate {
+                            viewModel.selectedEndDate = viewModel.selectedStartDate.addingTimeInterval(36400)
                         }
-                        
+
                     }.disabled(!viewModel.isEditing)
                     .scaleEffect(viewModel.isEditing ? 1.01 : 1.0)
                     .animation(.easeInOut(duration: 0.2), value: viewModel.isEditing)

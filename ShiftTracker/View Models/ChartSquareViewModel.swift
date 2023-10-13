@@ -23,7 +23,7 @@ class ChartSquareViewModel: ObservableObject {
                 
                 let daysAgo = Calendar.current.dateComponents([.day], from: startDate, to: Date()).day ?? 0
                 
-                if daysAgo < 7 {
+                if daysAgo < 7 && daysAgo >= 0 {
                     var valueToAdd = 0.0
                     
                     switch statsMode {

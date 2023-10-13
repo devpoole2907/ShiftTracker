@@ -19,7 +19,9 @@ struct HistoricalView: View {
     @EnvironmentObject var shiftStore: ShiftStore
     
     @EnvironmentObject var shiftManager: ShiftDataManager
+    @EnvironmentObject var scrollManager: ScrollManager
     @EnvironmentObject var selectedJobManager: JobSelectionManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
@@ -35,21 +37,45 @@ struct HistoricalView: View {
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
                 ZStack(alignment: .bottomLeading){
+                    ScrollViewReader { proxy in
+                        List(selection: $historyModel.selection) {
+                            
+                            chartSection.id(0)
+                               
+                            shiftsSection .background {
+                                Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
+                            }
+                            
+                        }.scrollContentBackground(.hidden)
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                        
+                            .background {
+                                themeManager.overviewDynamicBackground.ignoresSafeArea()
+                            }
+                        
+                            .customSectionSpacing()
+                        
+                            .onPreferenceChange(ScrollOffsetKey.self) { offset in
+                                if !(offset <= 0) && !scrollManager.timeSheetsScrolled {
+                                    print("offset is \(offset)")
+                                    scrollManager.timeSheetsScrolled = true
+                                }
+                            }
 
-                    List(selection: $historyModel.selection) {
+                            
+                            .onChange(of: scrollManager.scrollOverviewToTop) { value in
+                                            if value {
+                                                withAnimation {
+                                                    proxy.scrollTo(0, anchor: .top)
+                                                }
+                                                DispatchQueue.main.async {
+                                                
+                                                    scrollManager.scrollOverviewToTop = false
+                                                }
+                                            }
+                                        }
                         
-                        chartSection
-                        
-                        shiftsSection
-                        
-                    }.scrollContentBackground(.hidden)
-                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                    
-                        .background {
-                            themeManager.overviewDynamicBackground.ignoresSafeArea()
-                        }
-                    
-                        .customSectionSpacing()
+                    }
 
                     PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: historyModel.aggregatedShifts.count)
                         .frame(maxWidth: 175)
@@ -69,6 +95,23 @@ struct HistoricalView: View {
                     HStack(spacing: 10){
                         
                         EditButton()
+                        
+                        Divider().frame(height: 10)
+                        
+                        Button(action: {
+                            
+                            if purchaseManager.hasUnlockedPro {
+                                historyModel.showExportView.toggle()
+                            } else {
+                                
+                                historyModel.showingProView.toggle()
+                                
+                            }
+                            
+                           
+                        }){
+                            Image(systemName: "square.and.arrow.up").bold()
+                        }.disabled(historyModel.selection.isEmpty)
                         
                         Divider().frame(height: 10)
                         
@@ -96,7 +139,7 @@ struct HistoricalView: View {
                         .opacity(editMode!.wrappedValue.isEditing ? 0.5 : 1.0)
 
                         .onChange(of: historyModel.historyRange) { value in
-                            
+                            scrollManager.timeSheetsScrolled = false
                             withAnimation {
                                 self.isAnimating = true
                             }
@@ -152,6 +195,12 @@ struct HistoricalView: View {
                     NavBarIconView(appeared: $historyModel.appeared, isLarge: $historyModel.showLargeIcon, job: job)
                         .padding(.trailing, 20)
                         .offset(x: 0, y: -55)
+                    
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                scrollManager.timeSheetsScrolled = false
+                            }
+                        }
 
                 }
                 
@@ -164,7 +213,10 @@ struct HistoricalView: View {
             // this is bad code. I am not proud of it. But it will work.
             
             withAnimation {
-                self.isAnimating = true
+                if historyModel.aggregatedShifts.isEmpty {
+                    // only appear to load if its the first time loading the aggregated shifts
+                    self.isAnimating = true
+                }
             }
             
             
@@ -220,6 +272,24 @@ struct HistoricalView: View {
         }
         
         .navigationTitle(historyModel.getCurrentDateRangeString())
+        
+        .sheet(isPresented: $historyModel.showExportView) {
+            
+            ConfigureExportView(shifts: shifts, job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: historyModel.selection)
+                .presentationDetents([.large])
+                .customSheetRadius(35)
+                .customSheetBackground()
+        
+        }
+        
+
+        
+        .fullScreenCover(isPresented: $historyModel.showingProView) {
+            ProView()
+                .environmentObject(purchaseManager)
+            
+                .customSheetBackground()
+        }
         
      /*   .toolbar {
             if !historyModel.showLargeIcon {
@@ -357,6 +427,13 @@ struct HistoricalView: View {
                             .tag(index)
                         
                         
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    scrollManager.timeSheetsScrolled = false
+                                }
+                            }
+                        
+                        
                         
                     }
                     
@@ -401,6 +478,7 @@ struct HistoricalView: View {
         }.frame(minHeight: 300)
             .listRowInsets(.init(top: 20, leading: 0, bottom: 20, trailing: 0))
             .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+        
     }
     
     var shiftsSection: some View {
@@ -410,7 +488,10 @@ struct HistoricalView: View {
                 
                 if !isAnimating {
                 if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
-                    ForEach(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.reversed(), id: \.objectID) { shift in
+                    let reversedShifts = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.enumerated().reversed()
+                    let count = reversedShifts.count
+                    ForEach(reversedShifts, id: \.element.objectID) { index, shift in
+                        let normalizedIndex = count - 1 - index
                         NavigationLink(value: shift) {
                             ShiftDetailRow(shift: shift)
                             
@@ -449,6 +530,8 @@ struct HistoricalView: View {
                             
                             
                         }
+                        
+                        .id(normalizedIndex + 1)
                         
                     }
                 }

@@ -18,6 +18,8 @@ struct ShiftsList: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var themeManager: ThemeDataManager
+    @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var scrollManager: ScrollManager
 
     @EnvironmentObject var sortSelection: SortSelection
 
@@ -26,12 +28,13 @@ struct ShiftsList: View {
     @Environment(\.editMode) private var editMode
     @Environment(\.dismissSearch) private var dismissSearch
     
-    @State private var isShareSheetShowing = false
-    
-    
-    @State private var showingAddShiftSheet: Bool = false
+    @State private var showExportView = false
+    @State private var showingProView = false
     
     @State private var showingSearch: Bool = false
+    
+    @State private var scrollPos: Int? = 0
+    
     
     @Binding var navPath: NavigationPath
     
@@ -41,93 +44,140 @@ struct ShiftsList: View {
     var body: some View {
         
         ZStack(alignment: .bottomTrailing){
-        List(selection: $selection){
-            ForEach(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }, id: \.objectID) { shift in
-                ZStack {
-                    NavigationLink(value: shift) {
-                        ShiftDetailRow(shift: shift)
-                    }
-                    if !sortSelection.searchTerm.isEmpty {
-                        HStack {
-                            Spacer()
-                            VStack(alignment: .trailing){
-                                if selectedJobManager.fetchJob(in: viewContext) == nil {
-                                    Spacer()
-                                    
-                                }
-                                HStack{
-                                    Spacer()
-                                    
-                                    HighlightedText(text: shift.shiftNote ?? "", highlight: sortSelection.searchTerm)
-                                        .padding(.vertical, selectedJobManager.fetchJob(in: viewContext) == nil ? 2 : 5)
-                                        .background(Color.gray.opacity(0.1))
-                                        .cornerRadius(6)
-                                        .padding(.bottom, selectedJobManager.fetchJob(in: viewContext) == nil ? 5 : 0)
-                                        .padding(.trailing, selectedJobManager.fetchJob(in: viewContext) == nil ? 0 : 12)
-                                }
-                            }.frame(maxWidth: 180)
-                                .frame(alignment: .trailing)
+            ScrollViewReader { proxy in
+            List(selection: $selection){
+                ForEach(Array(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }.enumerated()), id: \.element.objectID) { index, shift in
+                    ZStack {
+                        NavigationLink(value: shift) {
+                            ShiftDetailRow(shift: shift)
                         }
-                    }
-                }
-                .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-                .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-                
-                .swipeActions {
-                    
-                    Button(action: {
-                        withAnimation {
-                            shiftStore.deleteOldShift(shift, in: viewContext)
-                            
-                            // duct tape fix
-                           sortSelection.fetchShifts()
-                            
-                            if sortSelection.oldShifts.isEmpty {
-                                // navigates back if all shifts are deleted
-                                navPath.removeLast()
-                                
+                        if !sortSelection.searchTerm.isEmpty {
+                            HStack {
+                                Spacer()
+                                VStack(alignment: .trailing){
+                                    if selectedJobManager.fetchJob(in: viewContext) == nil {
+                                        Spacer()
+                                        
+                                    }
+                                    HStack{
+                                        Spacer()
+                                        
+                                        HighlightedText(text: shift.shiftNote ?? "", highlight: sortSelection.searchTerm)
+                                            .padding(.vertical, selectedJobManager.fetchJob(in: viewContext) == nil ? 2 : 5)
+                                            .background(Color.gray.opacity(0.1))
+                                            .cornerRadius(6)
+                                            .padding(.bottom, selectedJobManager.fetchJob(in: viewContext) == nil ? 5 : 0)
+                                            .padding(.trailing, selectedJobManager.fetchJob(in: viewContext) == nil ? 0 : 12)
+                                    }
+                                }.frame(maxWidth: 180)
+                                    .frame(alignment: .trailing)
                             }
                         }
-                    }){
-                        Image(systemName: "trash")
+                    }
+                    .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+                    .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                    
+                    .background {
+                        if index == 0 {
+                            GeometryReader { geometry in
+                                                Color.clear.preference(key: ScrollOffsetKey.self, value: geometry.frame(in: .global).minY)
+                                            }
+                            
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    scrollManager.timeSheetsScrolled = false
+                                }
+                            }
+                        }
                     }
                     
-                    .tint(.clear)
+                    .swipeActions {
+                        
+                        Button(action: {
+                            withAnimation {
+                                shiftStore.deleteOldShift(shift, in: viewContext)
+                                
+                                // duct tape fix
+                                sortSelection.fetchShifts()
+                                
+                                if sortSelection.oldShifts.isEmpty {
+                                    // navigates back if all shifts are deleted
+                                    navPath.removeLast()
+                                    
+                                }
+                            }
+                        }){
+                            Image(systemName: "trash")
+                        }
+                        
+                        .tint(.clear)
+                    }
+                    
+                    .id(index)
+                    
                 }
-
-            }
-            Section {
-                Spacer(minLength: 100)
-            }.listRowBackground(Color.clear)
-                .opacity(0)
-
-        }.customSearchable(searchText: $sortSelection.searchTerm, isPresented: $showingSearch, prompt: "Search Notes")
-
+                
+                
+                
+                
+                Section {
+                    Spacer(minLength: 100)
+                }.listRowBackground(Color.clear)
+                    .opacity(0)
+                
+               
+            }.customSearchable(searchText: $sortSelection.searchTerm, isPresented: $showingSearch, prompt: "Search Notes")
+            
             
                 .onSubmit(of: .search, sortSelection.fetchShifts)
             
-                
-               
-            .tint(Color.gray)
-            .scrollContentBackground(.hidden)
-                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-          
-                    .background {
-                        themeManager.overviewDynamicBackground.ignoresSafeArea()
+            
+            
+            
+                .tint(Color.gray)
+                .scrollContentBackground(.hidden)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+            
+                .background {
+                    themeManager.overviewDynamicBackground.ignoresSafeArea()
+                }
+            
+            
+            
+                .onAppear {
+                    
+                    print(sortSelection.selectedSort)
+                    
+                    if navigationState.gestureEnabled || sortSelection.oldShifts.isEmpty {
+                        navigationState.gestureEnabled = false
+                        sortSelection.fetchShifts()
                     }
-
-            .onAppear {
-                
-                print(sortSelection.selectedSort)
-                
-                if navigationState.gestureEnabled || sortSelection.oldShifts.isEmpty {
-                    navigationState.gestureEnabled = false
-                    sortSelection.fetchShifts()
+                    
+                    
+                    
                 }
                 
+                .onPreferenceChange(ScrollOffsetKey.self) { offset in
+                    if !(offset <= 0) && !scrollManager.timeSheetsScrolled {
+                        print("offset is \(offset)")
+                        scrollManager.timeSheetsScrolled = true
+                    }
+                }
+
                 
-                
-            }
+                .onChange(of: scrollManager.scrollOverviewToTop) { value in
+                                if value {
+                                    withAnimation {
+                                        proxy.scrollTo(0, anchor: .top)
+                                    }
+                                    DispatchQueue.main.async {
+                                    
+                                        scrollManager.scrollOverviewToTop = false
+                                    }
+                                }
+                            }
+            
+        }
             
             VStack(alignment: .trailing) {
                 
@@ -136,6 +186,25 @@ struct ShiftsList: View {
                 HStack(spacing: 10){
                     
                     EditButton()
+                    
+                    Divider().frame(height: 10)
+                    
+                   
+                    
+                    Button(action: {
+                        
+                        if purchaseManager.hasUnlockedPro {
+                            showExportView.toggle()
+                        } else {
+                            
+                            showingProView.toggle()
+                            
+                        }
+                        
+                       
+                    }){
+                        Image(systemName: "square.and.arrow.up").bold()
+                    }.disabled(selection.isEmpty)
                     
                     Divider().frame(height: 10)
                     
@@ -187,8 +256,23 @@ struct ShiftsList: View {
 
         .navigationTitle(sortSelection.selectedSort.name)
 
-        
+        .sheet(isPresented: $showExportView) {
             
+            ConfigureExportView(job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: selection, arrayShifts: sortSelection.oldShifts)
+                .presentationDetents([.large])
+                .customSheetRadius(35)
+                .customSheetBackground()
+        
+        }
+        
+
+        
+        .fullScreenCover(isPresented: $showingProView) {
+            ProView()
+                .environmentObject(purchaseManager)
+            
+                .customSheetBackground()
+        }
         
     }
     
@@ -207,5 +291,13 @@ struct ShiftsList: View {
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
+    }
+}
+
+struct ScrollOffsetKey: PreferenceKey {
+    typealias Value = CGFloat
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
     }
 }

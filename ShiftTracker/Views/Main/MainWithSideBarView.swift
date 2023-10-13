@@ -32,6 +32,7 @@ struct MainWithSideBarView: View {
     @StateObject var scheduleModel = SchedulingViewModel()
     @StateObject var sortSelection = SortSelection(in: PersistenceController.shared.container.viewContext)
     @StateObject var shiftManager = ShiftDataManager.shared
+    @StateObject var scrollManager = ScrollManager()
     
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
@@ -364,6 +365,7 @@ func onEnd(value: DragGesture.Value) {
                 .environmentObject(navigationState)
                 .environmentObject(sortSelection)
                 .environmentObject(shiftManager)
+                .environmentObject(scrollManager)
                 
                 if shiftManager.showModePicker {
                     
@@ -464,20 +466,18 @@ func onEnd(value: DragGesture.Value) {
                 TabButton(tab: .home, useSystemImage: true)
                 TabButton(tab: .timesheets, useSystemImage: true, action: {
                     
-                    if path.isEmpty {
+                // scroll to top if any view in timesheets tab has been scrolled, otherwise pop to root or open side menu
+                    
+                    if scrollManager.timeSheetsScrolled {
+                        scrollManager.scrollOverviewToTop.toggle()
+                        scrollManager.timeSheetsScrolled = false
+                    } else if path.isEmpty {
                         
                         navigationState.showMenu.toggle()
                         
                     } else {
-                        // broken ios 17 beta 4
-                        
-                        
-                        
                         path = NavigationPath()
-                        
-                        
-                        
-                        
+  
                     }
                     
                     
@@ -516,5 +516,6 @@ func onEnd(value: DragGesture.Value) {
     
     
 }
+
 
 

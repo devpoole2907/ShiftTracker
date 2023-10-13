@@ -35,6 +35,9 @@ class HistoryViewModel: ObservableObject {
     
     @Published var selection = Set<NSManagedObjectID>()
     
+    @Published var showExportView = false
+    @Published var showingProView = false
+    
    lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
 

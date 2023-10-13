@@ -145,9 +145,12 @@ class DetailViewModel: ObservableObject {
         var totalBreakDuration: TimeInterval = 0.0
         
         if let shift = shift {
-            let allBreaks = shift.breaks as! Set<Break>
+            if let allBreaks = shift.breaks as? Set<Break> {
+                totalBreakDuration = self.totalBreakDuration(for: allBreaks)
+            }
+         
             
-            totalBreakDuration = self.totalBreakDuration(for: allBreaks)
+            
    
         } else {
             totalBreakDuration = totalTempBreakDuration(for: tempBreaks)

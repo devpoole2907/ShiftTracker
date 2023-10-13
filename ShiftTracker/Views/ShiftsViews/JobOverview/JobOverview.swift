@@ -19,6 +19,7 @@ struct JobOverview: View {
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var selectedJobManager: JobSelectionManager
+    @EnvironmentObject var scrollManager: ScrollManager
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
@@ -112,18 +113,43 @@ struct JobOverview: View {
         
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
-                List{
-                      
+                ScrollViewReader { proxy in
+                    List{
+                        
+                        
+                        recentShiftsSection
+                            .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
+                            .background {
+                                Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
+                            }
+                        
+                        
+                        
+                    }.scrollContentBackground(.hidden)
+                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                        .customSectionSpacing()
+                    
+                        .onPreferenceChange(ScrollOffsetKey.self) { offset in
+                            if !(offset <= 0) && !scrollManager.timeSheetsScrolled {
+                                print("offset is \(offset)")
+                                scrollManager.timeSheetsScrolled = true
+                            }
+                        }
 
-                    recentShiftsSection
-                        .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
-                  
-               
+                        
+                        .onChange(of: scrollManager.scrollOverviewToTop) { value in
+                            if value && navPath.isEmpty { // dont scroll up if theres anything in the nav path, only scroll if we looking at this view
+                                            withAnimation {
+                                                proxy.scrollTo(0, anchor: .top)
+                                            }
+                                            DispatchQueue.main.async {
+                                            
+                                                scrollManager.scrollOverviewToTop = false
+                                            }
+                                        }
+                                    }
                     
-                    
-                }.scrollContentBackground(.hidden)
-                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                    .customSectionSpacing()
+                }
                 
                 floatingButtons
                 
@@ -149,12 +175,13 @@ struct JobOverview: View {
             .navigationDestination(for: Int.self) { value in
                 
                 if value == 1 {
-                    ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection)
+                    ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection) .environmentObject(scrollManager)
                         .onAppear {
                             withAnimation {
                                 shiftManager.showModePicker = false
                             }
                         }
+                    
                 } else if value == 2 {
                     HistoricalView()
                 }
@@ -304,7 +331,7 @@ struct JobOverview: View {
         
         return Section{
             
-            ForEach(lastTenShifts, id: \.self) { shift in
+            ForEach(Array(lastTenShifts.enumerated()), id: \.element.objectID) { index, shift in
                 
                 NavigationLink(value: shift) {
                     ShiftDetailRow(shift: shift)
@@ -330,13 +357,25 @@ struct JobOverview: View {
                     
                 }
                 
+                .id(index + 1)
+                
+                .onAppear {
+                    if index == 0 {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            scrollManager.timeSheetsScrolled = false
+                        }
+                    }
+                   
+                }
+                
+                
                 
             }
             
             
         } header: {
             
-            statsSection
+            statsSection.id(0)
             
           
         
