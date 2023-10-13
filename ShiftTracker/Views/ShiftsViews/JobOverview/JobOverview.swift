@@ -113,43 +113,25 @@ struct JobOverview: View {
         
         GeometryReader { geo in
             ZStack(alignment: .bottomTrailing){
-                ScrollViewReader { proxy in
+           
                     List{
                         
                         
-                        recentShiftsSection
-                           
-                            .background {
-                                Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
-                            }
                         
+                        recentShiftsSection
+                            .onAppear {
+                                scrollManager.timeSheetsScrolled = false
+                            }
+                 
                         
                         
                     }.scrollContentBackground(.hidden)
                         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                         .customSectionSpacing()
                     
-                        .onPreferenceChange(ScrollOffsetKey.self) { offset in
-                            if !(offset <= 0) && !scrollManager.timeSheetsScrolled {
-                                print("offset is \(offset)")
-                                scrollManager.timeSheetsScrolled = true
-                            }
-                        }
-
-                        
-                        .onChange(of: scrollManager.scrollOverviewToTop) { value in
-                            if value && navPath.isEmpty { // dont scroll up if theres anything in the nav path, only scroll if we looking at this view
-                                            withAnimation {
-                                                proxy.scrollTo(0, anchor: .top)
-                                            }
-                                            DispatchQueue.main.async {
-                                            
-                                                scrollManager.scrollOverviewToTop = false
-                                            }
-                                        }
-                                    }
+                     
                     
-                }
+                
                 
                 floatingButtons
                 
@@ -331,7 +313,7 @@ struct JobOverview: View {
         
         return Section{
             
-            ForEach(Array(lastTenShifts.enumerated()), id: \.element.objectID) { index, shift in
+            ForEach(lastTenShifts, id: \.objectID) { shift in
                 
                 NavigationLink(value: shift) {
                     ShiftDetailRow(shift: shift)
@@ -357,17 +339,8 @@ struct JobOverview: View {
                     
                 }
                 
-                .id(index + 1)
-                
-                .onAppear {
-                    if index == 0 {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            scrollManager.timeSheetsScrolled = false
-                        }
-                    }
-                   
-                }
-                
+            
+            
                 .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
                 
                 
@@ -377,7 +350,7 @@ struct JobOverview: View {
             
         } header: {
             
-            statsSection.id(0)
+            statsSection
                 .frame(maxWidth: .infinity)
             
           
