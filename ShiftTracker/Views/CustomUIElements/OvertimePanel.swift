@@ -19,15 +19,17 @@ struct OvertimePanel: View {
         VStack(alignment: .leading, spacing: 10){
             Toggle(isOn: $enabled) {
                 HStack {
-                    Text("Overtime")
+                    Text("Overtime").bold()
                 }
             }
             .toggleStyle(CustomToggleStyle())
             
             Stepper(value: $rate, in: 1.25...3, step: 0.25) {
                 
-                
-                Text("Rate: \(rate, specifier: "%.2f")x")
+                HStack(spacing: 3) {
+                    Text("Rate:").bold()
+                    Text("\(rate, specifier: "%.2f")x")
+                }
                 
             }.disabled(!enabled)
             
@@ -35,7 +37,7 @@ struct OvertimePanel: View {
                 
                 HStack {
                     
-                    Text("Apply after:")
+                    Text("Apply after:").bold()
                     TimePicker(timeInterval: $applyAfter)
                         .frame(maxHeight: 75)
                         .frame(maxWidth: getRect().width - 100)

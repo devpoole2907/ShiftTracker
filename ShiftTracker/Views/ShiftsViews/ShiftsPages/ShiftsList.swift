@@ -63,13 +63,14 @@ struct ShiftsList: View {
                                         Spacer()
                                         
                                         HighlightedText(text: shift.shiftNote ?? "", highlight: sortSelection.searchTerm)
-                                            .padding(.vertical, selectedJobManager.fetchJob(in: viewContext) == nil ? 2 : 5)
+                                            .padding(.vertical, selectedJobManager.fetchJob(in: viewContext) == nil ? 2 : 3)
                                             .background(Color.gray.opacity(0.1))
                                             .cornerRadius(6)
                                             .padding(.bottom, selectedJobManager.fetchJob(in: viewContext) == nil ? 5 : 0)
                                             .padding(.trailing, selectedJobManager.fetchJob(in: viewContext) == nil ? 0 : 12)
                                     }
                                 }.frame(maxWidth: 180)
+                                    .frame(maxHeight: 20)
                                     .frame(alignment: .trailing)
                             }
                         }

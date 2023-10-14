@@ -57,12 +57,14 @@ struct ShiftDetailRow: View {
         
         let shiftStartDate = shift.shiftStartDate ?? Date()
         let shiftEndDate = shift.shiftEndDate ?? Date()
-        let duration = shiftEndDate.timeIntervalSince(shiftStartDate) / 3600.0
+        let duration = shift.duration / 3600.0
         
         let dateString = dateFormatter.string(from: shiftStartDate)
         let payString = String(format: "%.2f", shift.totalPay)
         let taxedPay = String(format: "%.2f", shift.taxedPay)
         let payMultiplier = String(format: "%.2f", shift.payMultiplier)
+        
+        let breakDuration = shift.breakDuration / 3600.0
         
         let job = shift.job
         
@@ -122,7 +124,13 @@ struct ShiftDetailRow: View {
                         .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
                         .cornerRadius(6)
                 }
-                
+                    if shift.breakDuration > 0 {
+                        Text(shiftManager.formatTime(timeInHours: breakDuration))
+                            .foregroundStyle(themeManager.breaksColor)
+                            .roundedFontDesign()
+                            .font(.subheadline)
+                            .bold()
+                    }
             }
                 
                 

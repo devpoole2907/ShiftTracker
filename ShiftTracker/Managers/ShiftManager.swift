@@ -43,6 +43,11 @@ class ShiftDataManager: ObservableObject {
      func formatTime(timeInHours: Double) -> String {
         let hours = Int(timeInHours)
         let minutes = Int((timeInHours - Double(hours)) * 60)
+         
+         if hours == 0 {
+             return "\(minutes)m"
+         }
+         
         return "\(hours)h \(minutes)m"
     }
     

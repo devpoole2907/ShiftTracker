@@ -40,20 +40,6 @@ class BreaksManager {
         }
     }
     
-    func addBreak(oldShift: OldShift, startDate: Date, endDate: Date, isUnpaid: Bool, context: NSManagedObjectContext) {
-        let newBreak = Break(context: context)
-        newBreak.startDate = startDate
-        newBreak.endDate = endDate
-        newBreak.isUnpaid = isUnpaid
-        oldShift.addToBreaks(newBreak)
-
-        do {
-            try context.save()
-        } catch {
-            print("Error adding break: \(error)")
-        }
-    }
-    
      func saveChanges(in context: NSManagedObjectContext) {
             do {
                 try context.save()

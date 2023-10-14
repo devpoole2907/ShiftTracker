@@ -53,9 +53,13 @@ class DetailViewModel: ObservableObject {
     
     @Published var tempBreaks: [TempBreak] = []
     
+    @Published var breaks: [Break] = []
+    
     @Published var isEditing: Bool = false
     
-    init(selectedStartDate: Date = Date(), selectedEndDate: Date = Date().addingTimeInterval(60 * 60), selectedBreakStartDate: Date = Date(), selectedBreakEndDate: Date = Date().addingTimeInterval(10 * 60), selectedTaxPercentage: Double = 0.0, selectedHourlyPay: String = "0.00", shiftDuration: TimeInterval = 0.0, selectedTotalTips: String = "0.00", addTipsToTotal: Bool = false, payMultiplier: Double = 1.0, multiplierEnabled: Bool = false, notes: String = "", selectedTags: Set<Tag> = [], shiftID: UUID = UUID(), isEditing: Bool = false, job: Job? = nil) {
+    var presentedAsSheet: Bool = false
+    
+    init(selectedStartDate: Date = Date(), selectedEndDate: Date = Date().addingTimeInterval(60 * 60), selectedBreakStartDate: Date = Date(), selectedBreakEndDate: Date = Date().addingTimeInterval(10 * 60), selectedTaxPercentage: Double = 0.0, selectedHourlyPay: String = "0.00", shiftDuration: TimeInterval = 0.0, selectedTotalTips: String = "0.00", addTipsToTotal: Bool = false, payMultiplier: Double = 1.0, multiplierEnabled: Bool = false, notes: String = "", selectedTags: Set<Tag> = [], shiftID: UUID = UUID(), isEditing: Bool = false, job: Job? = nil, presentedAsSheet: Bool = false) {
         self.selectedStartDate = selectedStartDate
         self.selectedEndDate = selectedEndDate
         self.selectedBreakStartDate = selectedBreakStartDate
@@ -73,9 +77,11 @@ class DetailViewModel: ObservableObject {
         self.job = job
         self.originalJob = job
         self.overtimeAppliedAfter = job?.overtimeAppliedAfter ?? 0
+        
+        self.presentedAsSheet = presentedAsSheet
     }
     
-    init(shift: OldShift){
+    init(shift: OldShift, presentedAsSheet: Bool){
         
         self.selectedStartDate = shift.shiftStartDate ?? Date()
         self.selectedEndDate = shift.shiftEndDate ?? Date()
@@ -98,6 +104,14 @@ class DetailViewModel: ObservableObject {
         self.job = shift.job
         self.originalJob = shift.job
         self.notes = shift.shiftNote ?? ""
+        
+        if let shiftBreaks = shift.breaks as? Set<Break> {
+            let sortedBreaks = shiftBreaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
+            self.breaks = sortedBreaks
+        }
+        
+        self.presentedAsSheet = presentedAsSheet
+        
         
     }
     
@@ -269,13 +283,17 @@ class DetailViewModel: ObservableObject {
     
     
     
-    func saveShift(_ shift: OldShift, in viewContext: NSManagedObjectContext){
+    func saveShift(_ shift: OldShift, in viewContext: NSManagedObjectContext, dismiss: DismissAction, breakAction: @escaping () -> Void){
         
         let allBreaks = (shift.breaks?.allObjects as? [Break]) ?? []
         
-        if !setupShift(shift, breaks: allBreaks) {
+        if !setupShift(shift, breaks: breaks) {
             
-            OkButtonPopup(title: "Saved breaks are not within the shift start and end dates.").showAndStack()
+            if presentedAsSheet {
+                dismiss()
+            }
+            
+            OkButtonPopup(title: "Breaks are not within the shift start and end dates.", action: breakAction).showAndStack()
             
             return
             
@@ -284,8 +302,14 @@ class DetailViewModel: ObservableObject {
         withAnimation {
             isEditing = false
         }
-            
-
+      
+        
+        for newBreak in breaks {
+            if !allBreaks.contains(newBreak) {
+                addBreak(oldShift: shift, context: viewContext, newBreak: newBreak)
+            }
+        }
+       
         
         do {
             
@@ -302,14 +326,20 @@ class DetailViewModel: ObservableObject {
     
     
     
-    @MainActor func addShift(in viewContext: NSManagedObjectContext, with shiftStore: ShiftStore, job: Job) {
+    @MainActor func addShift(in viewContext: NSManagedObjectContext, with shiftStore: ShiftStore, job: Job, dismiss: DismissAction, breakAction: @escaping () -> Void) {
         
         let newShift = OldShift(context: viewContext)
         let tempBreaks = self.tempBreaks as [AnyObject]
         
         if !setupShift(newShift, breaks: tempBreaks) {
             
-            OkButtonPopup(title: "Saved breaks are not within the shift start and end dates.").showAndStack()
+            // CALL DISMISS
+            if presentedAsSheet {
+                dismiss()
+            }
+            
+            
+            OkButtonPopup(title: "Breaks are not within the shift start and end dates.", action: breakAction).showAndStack()
             
             
             
@@ -342,6 +372,31 @@ class DetailViewModel: ObservableObject {
         
         
         
+    }
+    
+    // moved from BreaksManager, DetaiViewModel cannot be a target for Activity timer extension its too much work to rewrite
+    // rewritten, only called to save each break put into breaks array
+    func addBreak(oldShift: OldShift, context: NSManagedObjectContext, newBreak: Break) {
+
+        oldShift.addToBreaks(newBreak)
+        
+        do {
+            try context.save()
+            
+            
+            
+            
+        } catch {
+            print("Error adding break: \(error)")
+        }
+    }
+    // creates a break when adding
+    func createBreak(oldShift: OldShift, context: NSManagedObjectContext) {
+        let newBreak = Break(context: context)
+        newBreak.startDate = self.selectedBreakStartDate
+        newBreak.endDate = self.selectedBreakEndDate
+        newBreak.isUnpaid = self.isUnpaid
+        self.breaks.append(newBreak)
     }
     
     

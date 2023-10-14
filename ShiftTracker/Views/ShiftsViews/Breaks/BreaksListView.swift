@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct BreaksListView: View {
-    var breaks: [Break]? = nil
+    
     
     @Environment(\.managedObjectContext) private var context
     
@@ -19,26 +19,18 @@ struct BreaksListView: View {
     
     let breakManager = BreaksManager()
     
-    var shift: OldShift?
+     var showRealBreaks: Bool
     
     @State private var isAddingBreak = false
     @State private var newBreakStartDate = Date()
     @State private var newBreakEndDate = Date()
     @State private var isUnpaid = false
     
-    var minimumStartDate: Date {
-        return shift?.shiftStartDate ?? Date()
-    }
-    
-    var maximumEndDate: Date {
-        return shift?.shiftEndDate ?? Date()
-    }
-    
     private func delete(at index: Int) {
         
-            let breakToDelete = breaks![index]
+        let breakToDelete = viewModel.breaks[index]
             breakManager.deleteBreak(context: context, breakToDelete: breakToDelete)
-        
+        viewModel.breaks.remove(at: index)
     }
     
     private func deleteTempBreak(at index: Int) {
@@ -50,37 +42,20 @@ struct BreaksListView: View {
         formatter.dateFormat = "dd/MM/yyyy   h:mm a"
         return formatter.string(from: date)
     }
-    
-    init(shift: OldShift? = nil){
-        
-        if let shift = shift {
-            
-            self.shift = shift
-            
-            if let shiftBreaks = shift.breaks as? Set<Break> {
-                let sortedBreaks = shiftBreaks.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
-                self.breaks = sortedBreaks
-            } else {
-                self.breaks = []
-            }
-            
-            
-        }
-        
-        
-    }
-    
+
     
     var body: some View {
         
-        if let _ = shift, let breaks = breaks {
+      //  if let breaks = breaks {
+        
+        if showRealBreaks {
             
-            if breaks.isEmpty {
+        if viewModel.breaks.isEmpty {
                 BreaksHeaderView()
             }
             
             
-        ForEach(Array(breaks.enumerated()), id: \.element) { index, breakItem in
+        ForEach(Array(viewModel.breaks.enumerated()), id: \.element) { index, breakItem in
             Section{
                 VStack(alignment: .leading){
                     
@@ -95,8 +70,8 @@ struct BreaksListView: View {
                         DatePicker("Start:", selection: Binding(
                             get: { breakItem.startDate ?? Date() },
                             set: { newValue in
-                                let minStartDate = breakManager.previousBreakEndDate(for: breakItem, breaks: breaks) ?? minimumStartDate
-                                if newValue >= minStartDate && newValue <= maximumEndDate {
+                                let minStartDate = breakManager.previousBreakEndDate(for: breakItem, breaks: viewModel.breaks) ?? viewModel.selectedStartDate
+                                if newValue >= minStartDate && newValue <= viewModel.selectedEndDate {
                                     breakItem.startDate = newValue
                                     if let endDate = breakItem.endDate, endDate < newValue {
                                         breakItem.endDate = newValue
@@ -122,7 +97,7 @@ struct BreaksListView: View {
                         DatePicker("End:", selection: Binding(
                             get: { breakItem.endDate ?? Date() },
                             set: { newValue in
-                                if let startDate = breakItem.startDate, newValue >= startDate && newValue <= maximumEndDate {
+                                if let startDate = breakItem.startDate, newValue >= startDate && newValue <= viewModel.selectedEndDate {
                                     breakItem.endDate = newValue
                                 }
                                 
@@ -173,7 +148,7 @@ struct BreaksListView: View {
         }
         
         
-        } else { // must be temp breaks, no shift passed to view
+        } else {
             
             if viewModel.tempBreaks.isEmpty {
                 BreaksHeaderView()

@@ -35,8 +35,6 @@ struct DetailView: View {
     
     @State private var savedShift = false
     
-    var presentedAsSheet: Bool
-    
     @Binding var activeSheet: ActiveSheet?
     @Binding var navPath: NavigationPath
     @FocusState private var focusedField: Field?
@@ -54,7 +52,7 @@ struct DetailView: View {
         
         if let shift = shift {
             
-            self._viewModel = StateObject(wrappedValue: DetailViewModel(shift: shift))
+            self._viewModel = StateObject(wrappedValue: DetailViewModel(shift: shift, presentedAsSheet: presentedAsSheet))
             
         } else if let job = job {
             let calendar = Calendar.current
@@ -67,12 +65,11 @@ struct DetailView: View {
                 
             }
             
-            self._viewModel = StateObject(wrappedValue: DetailViewModel(selectedStartDate: newShiftStartDate, selectedEndDate: newShiftEndDate ?? Date(), selectedTaxPercentage: job.tax, selectedHourlyPay: "\(job.hourlyPay)", shiftID: UUID(), isEditing: true, job: job))
+            self._viewModel = StateObject(wrappedValue: DetailViewModel(selectedStartDate: newShiftStartDate, selectedEndDate: newShiftEndDate ?? Date(), selectedTaxPercentage: job.tax, selectedHourlyPay: "\(job.hourlyPay)", shiftID: UUID(), isEditing: true, job: job, presentedAsSheet: presentedAsSheet))
             
             
         }
-        
-        self.presentedAsSheet = presentedAsSheet
+
         _activeSheet = activeSheet ?? Binding.constant(nil)
         _navPath = navPath
         
@@ -172,8 +169,15 @@ struct DetailView: View {
                         
                         if let shift = viewModel.shift {
                             
-                            BreakInputView(startDate: viewModel.selectedStartDate, endDate: viewModel.selectedEndDate, buttonAction: { breakManager.addBreak(oldShift: shift, startDate: viewModel.selectedBreakStartDate, endDate: viewModel.selectedBreakEndDate, isUnpaid: viewModel.isUnpaid, context: viewContext)
-                                viewModel.isAddingBreak = false}).environmentObject(viewModel)
+                            BreakInputView(buttonAction: {
+                                
+                                viewModel.createBreak(oldShift: shift, context: viewContext)
+                                
+                             
+                                viewModel.isAddingBreak = false
+                                
+                            }
+                            ).environmentObject(viewModel)
                             
                             
                                 .presentationDetents([ .fraction(0.35)])
@@ -182,7 +186,7 @@ struct DetailView: View {
                             
                         } else {
                             
-                            BreakInputView(startDate: viewModel.selectedStartDate, endDate: viewModel.selectedEndDate, buttonAction: {
+                            BreakInputView(buttonAction: {
                                 let currentBreak = TempBreak(startDate: viewModel.selectedBreakStartDate, endDate: viewModel.selectedBreakEndDate, isUnpaid: viewModel.isUnpaid)
                                 viewModel.tempBreaks.append(currentBreak)
                                 viewModel.isAddingBreak = false
@@ -213,7 +217,7 @@ struct DetailView: View {
             
             
                 .background {
-                    if !presentedAsSheet {
+                    if !viewModel.presentedAsSheet {
                         themeManager.overviewDynamicBackground.ignoresSafeArea()
                     } else {
                         Color.clear.ignoresSafeArea()
@@ -244,7 +248,7 @@ struct DetailView: View {
                 
                 
                 
-                if presentedAsSheet {
+                if viewModel.presentedAsSheet {
                     
                     viewModel.displayedCount += 1
                     
@@ -280,7 +284,7 @@ struct DetailView: View {
             .toolbar {
                 
                 
-                if presentedAsSheet{
+                if viewModel.presentedAsSheet{
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CloseButton()
                     }
@@ -395,45 +399,45 @@ struct DetailView: View {
                     }  .roundedFontDesign()
                        
                 }
+                if viewModel.selectedTaxPercentage > 0 || Double(viewModel.selectedTotalTips) ?? -1 > 0 {
+                        HStack(spacing: 10){
+                     if viewModel.selectedTaxPercentage > 0 {
+                     HStack(spacing: 2){
+                     Image(systemName: "chart.line.downtrend.xyaxis")
+                     .font(.system(size: 15).monospacedDigit())
+                     
+                     Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.taxedPay)) ?? "")")
+                     .font(.system(size: 20).monospacedDigit())
+                     .bold()
+                     .lineLimit(1)
+                     .allowsTightening(true)
+                     }.foregroundStyle(themeManager.taxColor)
+                     .roundedFontDesign()
+                     
+                     }
+                     if Double(viewModel.selectedTotalTips) ?? -1 > 0 {
+                     HStack(spacing: 2){
+                     Image(systemName: "chart.line.uptrend.xyaxis")
+                     .font(.system(size: 15).monospacedDigit())
+                     
+                     Text("\(currencyFormatter.string(from: NSNumber(value: Double(viewModel.selectedTotalTips) ?? 0)) ?? "")")
+                     .font(.system(size: 20).monospacedDigit())
+                     .bold()
+                     .lineLimit(1)
+                     }.foregroundStyle(themeManager.tipsColor)
+                     .roundedFontDesign()
+                     }
+                     }  .minimumScaleFactor(0.5)
+                     
+                     .padding(.horizontal, 20)
+                     
+                     
+                     .frame(maxWidth: .infinity)
+                     .padding(.vertical, 5)
+                     
+                }
                 
-                HStack(spacing: 10){
-                    if viewModel.selectedTaxPercentage > 0 {
-                        HStack(spacing: 2){
-                            Image(systemName: "chart.line.downtrend.xyaxis")
-                                .font(.system(size: 15).monospacedDigit())
-                            
-                            Text("\(currencyFormatter.string(from: NSNumber(value: viewModel.taxedPay)) ?? "")")
-                                .font(.system(size: 20).monospacedDigit())
-                                .bold()
-                                .lineLimit(1)
-                                .allowsTightening(true)
-                        }.foregroundStyle(themeManager.taxColor)
-                            .roundedFontDesign()
-                        
-                    }
-                    if Double(viewModel.selectedTotalTips) ?? 0 > 0 {
-                        HStack(spacing: 2){
-                            Image(systemName: "chart.line.uptrend.xyaxis")
-                                .font(.system(size: 15).monospacedDigit())
-                            
-                            Text("\(currencyFormatter.string(from: NSNumber(value: Double(viewModel.selectedTotalTips) ?? 0)) ?? "")")
-                                .font(.system(size: 20).monospacedDigit())
-                                .bold()
-                                .lineLimit(1)
-                        }.foregroundStyle(themeManager.tipsColor)
-                            .roundedFontDesign()
-                    }
-                }  .minimumScaleFactor(0.5)
-                
-                .padding(.horizontal, 20)
-                
-                
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 5)
-                
-                
-                
-                Divider().frame(maxWidth: 200)
+                Divider().frame(maxWidth: 200).frame(maxHeight: 5)
                 
                 HStack(spacing: 0) {
                     ForEach(0..<timeDigits.count, id: \.self) { index in
@@ -572,6 +576,7 @@ struct DetailView: View {
                 Spacer()
                 
                 CurrencyTextField(placeholder: "Hourly Pay", text: $viewModel.selectedHourlyPay)
+
                     .disabled(!viewModel.isEditing)
                     .focused($focusedField, equals: .field1)
                     .keyboardType(.decimalPad)
@@ -665,7 +670,7 @@ struct DetailView: View {
                 .padding(.horizontal)
                 .glassModifier(cornerRadius: 20)
             
-            TextEditor(text: $viewModel.notes)
+            UIKitTextEditor(text: $viewModel.notes)
                 .disabled(!viewModel.isEditing)
                 .focused($focusedField, equals: .field3)
             
@@ -698,9 +703,10 @@ struct DetailView: View {
     
     var breaksList: some View {
      
-            
-        BreaksListView(shift: viewModel.shift).environmentObject(viewModel)
-                .listRowInsets(.init(top: 0, leading: 10, bottom: 0, trailing: 10))
+        BreaksListView(showRealBreaks: viewModel.shift != nil).environmentObject(viewModel)
+            .listRowInsets(.init(top: 0, leading: 10, bottom: 0, trailing: 10))
+      /*  BreaksListView(shift: viewModel.shift)
+              */
         
     }
     
@@ -764,7 +770,9 @@ struct DetailView: View {
                             
                             Button(action: {
                                 
-                                viewModel.saveShift(shift, in: viewContext)
+                                viewModel.saveShift(shift, in: viewContext, dismiss: dismiss, breakAction: {
+                                    viewModel.presentedAsSheet ? activeSheet = .detailSheet : nil
+                                })
                                 
                                 savedShift = true
                                 
@@ -808,7 +816,7 @@ struct DetailView: View {
                         
                         Button(action: {
                             viewModel.showingDeleteAlert = true
-                            if presentedAsSheet{
+                            if viewModel.presentedAsSheet{
                                 dismiss()
                             }
                             
@@ -816,7 +824,7 @@ struct DetailView: View {
                                 shiftStore.deleteOldShift(shift, in: viewContext)
                                 dismiss()
                                 
-                            }, cancelAction: { presentedAsSheet ? activeSheet = .detailSheet : nil}, title: "Are you sure you want to delete this shift?").showAndStack()
+                            }, cancelAction: { viewModel.presentedAsSheet ? activeSheet = .detailSheet : nil}, title: "Are you sure you want to delete this shift?").showAndStack()
                             
                             
                             
@@ -832,7 +840,10 @@ struct DetailView: View {
                     Button(action: {
                         
                         if let job = viewModel.job {
-                            viewModel.addShift(in: viewContext, with: shiftStore, job: job)
+                            viewModel.addShift(in: viewContext, with: shiftStore, job: job, dismiss: dismiss, breakAction: {
+                                viewModel.presentedAsSheet ? activeSheet = .detailSheet : nil
+                                viewModel.presentedAsSheet ? activeSheet = .detailSheet : nil
+                            })
                         } else {
                             dismiss()
                             OkButtonPopup(title: "Error adding shift.").showAndStack()

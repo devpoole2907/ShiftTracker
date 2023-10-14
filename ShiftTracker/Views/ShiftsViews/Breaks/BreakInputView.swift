@@ -12,22 +12,22 @@ struct BreakInputView: View {
     @EnvironmentObject var viewModel: DetailViewModel
     @EnvironmentObject var themeManager: ThemeDataManager
 
-    var startDate: Date
-    var endDate: Date
     var buttonAction: () -> Void
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     
-    init(startDate: Date, endDate: Date, buttonAction: @escaping () -> Void){
+    init(buttonAction: @escaping () -> Void){
 
-        self.startDate = startDate
-        self.endDate = endDate
         self.buttonAction = buttonAction
         
     }
 
     var body: some View {
         NavigationStack{
+            
+            let startDate = viewModel.selectedStartDate
+            let endDate = viewModel.selectedEndDate
+            
         VStack(alignment: .leading, spacing: 15){
             VStack(alignment: .leading){
                 HStack{
