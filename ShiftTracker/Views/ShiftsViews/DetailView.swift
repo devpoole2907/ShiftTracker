@@ -21,8 +21,10 @@ struct DetailView: View {
     @Environment(\.requestReview) var requestReview
     
     @EnvironmentObject var jobSelectionManager: JobSelectionManager
+    @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var shiftStore: ShiftStore
     @EnvironmentObject var themeManager: ThemeDataManager
+    @EnvironmentObject var scrollManager: ScrollManager
     
     let breakManager = BreaksManager()
 
@@ -245,9 +247,9 @@ struct DetailView: View {
         
             .onAppear{
                 
-                
-                
-                
+                if navigationState.currentTab == .timesheets {
+                    scrollManager.timeSheetsScrolled = false
+                }
                 if viewModel.presentedAsSheet {
                     
                     viewModel.displayedCount += 1

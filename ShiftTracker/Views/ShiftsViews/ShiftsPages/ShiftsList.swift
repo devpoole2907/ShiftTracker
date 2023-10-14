@@ -33,7 +33,7 @@ struct ShiftsList: View {
     
     @State private var showingSearch: Bool = false
     
-    @State private var scrollPos: Int? = 0
+    @State private var scrollPos: CGFloat = 0
     
     
     @Binding var navPath: NavigationPath
@@ -153,7 +153,7 @@ struct ShiftsList: View {
                         navigationState.gestureEnabled = false
                         sortSelection.fetchShifts()
                     }
-                    
+                  
                     
                     
                 }
@@ -162,6 +162,7 @@ struct ShiftsList: View {
                     if !(offset <= 0) && !scrollManager.timeSheetsScrolled {
                         print("offset is \(offset)")
                         scrollManager.timeSheetsScrolled = true
+                        self.scrollPos = offset
                     }
                 }
 
@@ -177,7 +178,8 @@ struct ShiftsList: View {
                                     }
                                 }
                             }
-            
+                
+              
         }
             
             VStack(alignment: .trailing) {
@@ -256,6 +258,13 @@ struct ShiftsList: View {
         }.ignoresSafeArea(.keyboard)
 
         .navigationTitle(sortSelection.selectedSort.name)
+        
+        .onAppear {
+            print("scroll pos is \(scrollPos)")
+            if scrollPos > 50 {
+                scrollManager.timeSheetsScrolled = true
+            }
+        }
 
         .sheet(isPresented: $showExportView) {
             
