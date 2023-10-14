@@ -330,7 +330,7 @@ struct DetailView: View {
     var statsPanel: some View {
         
         let timeDigits = digitsFromTimeString(timeString: viewModel.adaptiveShiftDuration.stringFromTimeInterval())
-        let breakDigits = viewModel.shift != nil ? digitsFromTimeString(timeString: viewModel.totalBreakDuration(for: (viewModel.shift!.breaks as? Set<Break> ?? Set<Break>())).stringFromTimeInterval()) : digitsFromTimeString(timeString: viewModel.totalTempBreakDuration(for: viewModel.tempBreaks).stringFromTimeInterval())
+        let breakDigits = viewModel.shift != nil ? digitsFromTimeString(timeString: viewModel.totalBreakDuration(for: viewModel.breaks).stringFromTimeInterval()) : digitsFromTimeString(timeString: viewModel.totalTempBreakDuration(for: viewModel.tempBreaks).stringFromTimeInterval())
         
         let gradientColors = colorScheme == .dark ? darkGradientColors : lightGradientColors
         
@@ -465,7 +465,7 @@ struct DetailView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.bottom,
                          
-                         ((viewModel.shift != nil && viewModel.shift?.breaks != nil && viewModel.totalBreakDuration(for: viewModel.shift!.breaks as! Set<Break>) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
+                         ((viewModel.shift != nil && viewModel.shift?.breaks != nil && viewModel.totalBreakDuration(for: viewModel.breaks) > 0) || viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0) ? 0 : 20
                          
                          
                 )
@@ -475,7 +475,7 @@ struct DetailView: View {
                 
                 
                 
-                if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (viewModel.shift != nil && viewModel.shift?.breaks != nil && viewModel.totalBreakDuration(for: viewModel.shift!.breaks as! Set<Break>) > 0) {
+                if viewModel.totalTempBreakDuration(for: viewModel.tempBreaks) > 0 || (viewModel.shift != nil && viewModel.shift?.breaks != nil && viewModel.totalBreakDuration(for: viewModel.breaks) > 0) {
                     HStack(spacing: 0) {
                         ForEach(0..<breakDigits.count, id: \.self) { index in
                             RollingDigit(digit: breakDigits[index])
@@ -685,7 +685,11 @@ struct DetailView: View {
     
     var overtimePanel: some View {
         return OvertimePanel(enabled: $viewModel.overtimeEnabled, rate: $viewModel.overtimeRate, applyAfter: $viewModel.overtimeAppliedAfter) {
-            // add sheet for ios 16.1 <
+            // sheet action version for iOS 16.0:
+            
+            viewModel.showingOvertimeSheet.toggle()
+            
+            
         }.disabled(!viewModel.isEditing)
             .onChange(of: viewModel.overtimeEnabled) { value in
                    guard let overtimeTag = tags.first(where: { $0.name?.lowercased() == "overtime" }) else {
@@ -699,6 +703,14 @@ struct DetailView: View {
                        viewModel.selectedTags.remove(overtimeTag)
                    }
                }
+        
+            .sheet(isPresented: $viewModel.showingOvertimeSheet) {
+                TimePicker(timeInterval: $viewModel.overtimeAppliedAfter)
+                    .environment(\.managedObjectContext, viewContext)
+                    .presentationDragIndicator(.visible)
+                    .presentationDetents([ .fraction(0.4)])
+            }
+        
     }
     
     var breaksList: some View {

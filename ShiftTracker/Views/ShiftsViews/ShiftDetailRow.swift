@@ -195,6 +195,15 @@ struct ShiftDetailRow: View {
                                 .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
                                 .cornerRadius(6)
                         }
+                        
+                        if shift.breakDuration > 0 {
+                            Text(shiftManager.formatTime(timeInHours: breakDuration))
+                                .foregroundStyle(themeManager.breaksColor)
+                                .roundedFontDesign()
+                                .font(.caption)
+                                .bold()
+                        }
+                        
                     }
                     Text(showTime ? "\(timeFormatter.string(from: shiftStartDate )) - \(timeFormatter.string(from: shiftEndDate ))" : dateString)
                         .roundedFontDesign()

@@ -57,6 +57,8 @@ class DetailViewModel: ObservableObject {
     
     @Published var isEditing: Bool = false
     
+    @Published var showingOvertimeSheet = false
+    
     var presentedAsSheet: Bool = false
     
     init(selectedStartDate: Date = Date(), selectedEndDate: Date = Date().addingTimeInterval(60 * 60), selectedBreakStartDate: Date = Date(), selectedBreakEndDate: Date = Date().addingTimeInterval(10 * 60), selectedTaxPercentage: Double = 0.0, selectedHourlyPay: String = "0.00", shiftDuration: TimeInterval = 0.0, selectedTotalTips: String = "0.00", addTipsToTotal: Bool = false, payMultiplier: Double = 1.0, multiplierEnabled: Bool = false, notes: String = "", selectedTags: Set<Tag> = [], shiftID: UUID = UUID(), isEditing: Bool = false, job: Job? = nil, presentedAsSheet: Bool = false) {
@@ -115,7 +117,7 @@ class DetailViewModel: ObservableObject {
         
     }
     
-    func totalBreakDuration(for breaks: Set<Break>) -> TimeInterval {
+    func totalBreakDuration(for breaks: [Break]) -> TimeInterval {
         let paidBreaks = breaks.filter { $0.isUnpaid == true }
         let totalDuration = paidBreaks.reduce(0) { (sum, breakItem) -> TimeInterval in
             let breakDuration = breakItem.endDate?.timeIntervalSince(breakItem.startDate ?? Date())
@@ -159,9 +161,9 @@ class DetailViewModel: ObservableObject {
         var totalBreakDuration: TimeInterval = 0.0
         
         if let shift = shift {
-            if let allBreaks = shift.breaks as? Set<Break> {
-                totalBreakDuration = self.totalBreakDuration(for: allBreaks)
-            }
+        
+                totalBreakDuration = self.totalBreakDuration(for: breaks)
+            
          
             
             
@@ -246,8 +248,9 @@ class DetailViewModel: ObservableObject {
         shift.overtimeEnabled = overtimeEnabled
         shift.overtimeRate = overtimeRate
         shift.timeBeforeOvertime = overtimeAppliedAfter
+
+        let unpaidBreaks = breaks.filter { $0.isUnpaid == true }
         
-        let unpaidBreaks = (shift.breaks?.allObjects as? [Break])?.filter { $0.isUnpaid == true } ?? []
             let totalBreakDuration = unpaidBreaks.reduce(0) { $0 + $1.endDate!.timeIntervalSince($1.startDate!) }
             shift.breakDuration = totalBreakDuration
             let shiftDuration = selectedEndDate.timeIntervalSince(selectedStartDate)
