@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "DALL·E 2023-10-15 12.06.02 - Photo of a full-frame hourglass icon, against a deep gray gradient. The design occupies the entire image space, reflecting Apple's minimalist style in.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "DALL·E 2023-10-15 12.06.02 - Photo of a full-frame hourglass icon, against a deep gray gradient. The design occupies the entire image space, reflecting Apple's minimalist style in 1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "DALL·E 2023-10-15 12.06.02 - Photo of a full-frame hourglass icon, against a deep gray gradient. The design occupies the entire image space, reflecting Apple's minimalist style in 2.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -12,7 +12,9 @@ final class AppIconManager: ObservableObject {
     
     enum AppIcon: String, CaseIterable, Identifiable {
         case primary = "AppIcon"
-        case lightMode = "AppIcon-light"
+        case hourglassDark = "HourglassDarkIcon"
+        case darkModeFlat = "DarkModeIcon"
+        case lightModeFlat = "LightModeIcon"
         case alphaIcon = "AlphaIcon"
         case alphaIcon2 = "AlphaIcon2"
         case betaIcon = "BetaIcon"
@@ -31,8 +33,12 @@ final class AppIconManager: ObservableObject {
             switch self{
             case .primary:
                 return "Default"
-            case .lightMode:
-                return "Light"
+            case .hourglassDark:
+                return "Hourglass Dark"
+            case .darkModeFlat:
+                return "Dark Flat"
+            case .lightModeFlat:
+                return "Light Flat"
             case .alphaIcon:
                 return "Alpha"
             case .alphaIcon2:
