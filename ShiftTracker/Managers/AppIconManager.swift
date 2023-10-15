@@ -15,6 +15,7 @@ final class AppIconManager: ObservableObject {
         case hourglassDark = "HourglassDarkIcon"
         case darkModeFlat = "DarkModeIcon"
         case lightModeFlat = "LightModeIcon"
+        case calendarTick = "CalendarTickIcon"
         case alphaIcon = "AlphaIcon"
         case alphaIcon2 = "AlphaIcon2"
         case betaIcon = "BetaIcon"
@@ -39,6 +40,8 @@ final class AppIconManager: ObservableObject {
                 return "Dark Flat"
             case .lightModeFlat:
                 return "Light Flat"
+            case .calendarTick:
+                return "Minimalistic Calendar"
             case .alphaIcon:
                 return "Alpha"
             case .alphaIcon2:
