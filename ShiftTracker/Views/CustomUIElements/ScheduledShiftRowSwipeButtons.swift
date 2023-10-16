@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import CoreData
+import PopupView
 
 struct ScheduledShiftRowSwipeButtons: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
@@ -51,19 +53,142 @@ struct ScheduledShiftRowSwipeButtons: View {
         Button(action: {
             if shift.calendarEventID == nil { // an event doesnt exist in the calendar
                 
-                scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
-                    if success {
-                        print("Successfully added shift to calendar")
-                        scheduleModel.addEventKitID(shift: shift, eventID: eventID)
-                        scheduleModel.saveShifts(in: viewContext)
-                    } else {
-                        print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                // if shift is repeating, ask to add all future ones
+                
+                if shift.isRepeating {
+                    CustomTripleActionPopup(action: {
+                        scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
+                            if success {
+                                print("Successfully added shift to calendar")
+                                scheduleModel.addEventKitID(shift: shift, eventID: eventID)
+                                scheduleModel.saveShifts(in: viewContext)
+                            } else {
+                                print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                            }
+                        }
+                    }, secondAction: {
+                        
+                        // make this its own func
+                        
+                        if let repeatID = shift.repeatIdString, let startDate = shift.startDate {
+                        
+                        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+                        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                            NSPredicate(format: "repeatIdString == %@", repeatID),
+                            NSPredicate(format: "startDate >= %@", startDate as NSDate)
+                        ])
+                        
+                        do {
+                            if let shiftsToSync = try viewContext.fetch(request) as? [ScheduledShift] {
+                                print("Number of repeating shifts found: \(shiftsToSync.count)")
+                                for shift in shiftsToSync {
+                                    
+                                    if shift.calendarEventID == nil {
+                                        
+                                        scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
+                                            if success {
+                                                print("Successfully added shift to calendar")
+                                                
+                                                scheduleModel.addEventKitID(shift: shift, eventID: eventID)
+                                                scheduleModel.saveShifts(in: viewContext)
+                                            } else {
+                                                print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                                            }
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                            
+                            
+                            try viewContext.save()
+                            print("Successfully synced the scheduled shifts with the system calendar.")
+                            
+                            
+                        } catch {
+                            print("Failed to update the corresponding shifts.")
+                        }
+                        
+                    }
+                        
+                        
+                    }, title: "Add shift to system calendar?", firstActionText: "Just this one", secondActionText: "All repeating shifts").showAndStack()
+                    
+                } else {
+
+                    // else add single
+                    
+                    scheduleModel.addShiftToCalendar(shift: shift, viewContext: viewContext) { (success, error, eventID) in
+                        if success {
+                            print("Successfully added shift to calendar")
+                            scheduleModel.addEventKitID(shift: shift, eventID: eventID)
+                            scheduleModel.saveShifts(in: viewContext)
+                        } else {
+                            print("Failed to add shift to calendar: \(String(describing: error?.localizedDescription))")
+                        }
                     }
                 }
-            } else { // one does exist
-                scheduleModel.deleteEventFromCalendar(eventIdentifier: shift.calendarEventID ?? "")
-                shift.calendarEventID = nil
-                scheduleModel.saveShifts(in: viewContext)
+                
+                
+            }
+            else { // one does exist
+                
+                
+                // if shift is repeating, ask to remove all future repeating ones
+                
+                if shift.isRepeating {
+                    CustomTripleActionPopup(action: {
+                        
+                        scheduleModel.deleteEventFromCalendar(eventIdentifier: shift.calendarEventID ?? "")
+                        shift.calendarEventID = nil
+                        scheduleModel.saveShifts(in: viewContext)
+                
+                    }, secondAction: {
+                        
+                        // make this its own func
+                        
+                        if let repeatID = shift.repeatIdString, let startDate = shift.startDate {
+                        
+                        let request: NSFetchRequest<NSFetchRequestResult> = ScheduledShift.fetchRequest()
+                        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                            NSPredicate(format: "repeatIdString == %@", repeatID),
+                            NSPredicate(format: "startDate >= %@", startDate as NSDate)
+                        ])
+                        
+                        do {
+                            if let shiftsToSync = try viewContext.fetch(request) as? [ScheduledShift] {
+                                print("Number of repeating shifts found: \(shiftsToSync.count)")
+                                for shift in shiftsToSync {
+                                    
+                                    scheduleModel.deleteEventFromCalendar(eventIdentifier: shift.calendarEventID ?? "")
+                                    shift.calendarEventID = nil
+                                    scheduleModel.saveShifts(in: viewContext)
+                                
+                                    
+                                }
+                            }
+                            
+                            
+                            try viewContext.save()
+                            print("Successfully synced the scheduled shifts with the system calendar.")
+                            
+                            
+                        } catch {
+                            print("Failed to update the corresponding shifts.")
+                        }
+                        
+                    }
+                        
+                        
+                    }, title: "Remove shift from system calendar?", firstActionText: "Just this one", secondActionText: "All repeating shifts").showAndStack()
+                } else {
+                    
+                    // else deletes calendar event for this one only.
+                    
+                    scheduleModel.deleteEventFromCalendar(eventIdentifier: shift.calendarEventID ?? "")
+                    shift.calendarEventID = nil
+                    scheduleModel.saveShifts(in: viewContext)
+                }
             }
         }){
             HStack {
