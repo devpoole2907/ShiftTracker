@@ -1,31 +1,41 @@
 //
-//  CurrencyTextField.swift
+//  CustomUIKitTextField.swift
 //  ShiftTracker
 //
-//  Created by James Poole on 5/07/23.
+//  Created by James Poole on 16/10/23.
 //
 
 import SwiftUI
 import UIKit
-// uiviewrepresentable instead of using swiftui because keyboard toolbars are broken in swiftui
-struct CurrencyTextField: UIViewRepresentable {
+
+struct CustomUIKitTextField: UIViewRepresentable {
     var placeholder: String
     @Binding var text: String
+    var centerAlign: Bool = false
+    var rounded: Bool = false
+    var largeFont: Bool = true
     
     func makeUIView(context: Context) -> UITextField {
         let textField = UITextField()
         textField.delegate = context.coordinator
         textField.placeholder = placeholder
-        textField.keyboardType = .decimalPad
-        textField.textAlignment = .right
         textField.clearButtonMode = .whileEditing
+        
+        let fontSize: CGFloat = largeFont ? UIFont.preferredFont(forTextStyle: .title1).pointSize : UIFont.preferredFont(forTextStyle: .body).pointSize
+        
+        var font = UIFont.boldSystemFont(ofSize: fontSize)
+        
+        if rounded {
+            if let roundedDescriptor = font.fontDescriptor.withDesign(.rounded) {
+                font = UIFont(descriptor: roundedDescriptor, size: fontSize) // Modified this line
+            }
+        }
+        textField.font = font
+        if centerAlign {
+            textField.textAlignment = .center
+        }
         addToolbar(textField, context: context)
         
-        let currencyLabel = UILabel()
-        currencyLabel.text = Locale.current.currencySymbol ?? "$"
-        currencyLabel.sizeToFit()
-        textField.leftView = currencyLabel
-        textField.leftViewMode = .always
         
         return textField
     }
@@ -47,19 +57,22 @@ struct CurrencyTextField: UIViewRepresentable {
         textField.inputAccessoryView = toolbar
     }
     
-    
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
-    
-    
     class Coordinator: NSObject, UITextFieldDelegate {
-        var parent: CurrencyTextField
-        var textField: UITextField?  // Keep a weak reference to the UITextField
+        var parent: CustomUIKitTextField
         
-        init(_ parent: CurrencyTextField) {
+        init(_ parent: CustomUIKitTextField) {
             self.parent = parent
+        }
+        
+        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            if let newValue = textField.text as NSString? {
+                parent.text = newValue.replacingCharacters(in: range, with: string)
+            }
+            return true
         }
         
         func textFieldShouldClear(_ textField: UITextField) -> Bool {
@@ -67,19 +80,8 @@ struct CurrencyTextField: UIViewRepresentable {
                     return true
                 }
         
-        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            self.textField = textField  // Assign the weak reference
-            if let newValue = textField.text as NSString? {
-                parent.text = newValue.replacingCharacters(in: range, with: string)
-            }
-            return true
-        }
-        
         @objc func doneButtonTapped() -> Void {
             hideKeyboard()
         }
     }
-    
 }
-
-

@@ -127,41 +127,33 @@ struct iosSixteenChartView: View {
             .customChartXSelectionModifier(selection: $historyModel.chartSelection.animation(.default))
             
             .chartXAxis {
-                
-                
-                if historyModel.historyRange == .month {
-                    
-                
-                    AxisMarks(values: .stride(by: .day, count: 1)) { value in
-                        if let date = value.as(Date.self) {
-                            let components = Calendar.current.dateComponents([.day], from: date)
-                            if let day = components.day, (day - 1) % 7 == 0 {
-                                AxisValueLabel(dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
-                            }
-                        }
-                    }
-
-                                    
-                    
-                } else {
-                    AxisMarks(values: .stride(by: historyModel.historyRange == .week ? .day : .month, count: 1)) { value in
-                        if let date = value.as(Date.self) {
-                            
-                            if historyModel.historyRange == .week {
-                                AxisValueLabel(shiftManager.dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
-                                
-                            } else {
-                                AxisValueLabel(format: .dateTime.month(), centered: true, collisionResolution: .disabled)
-                            }
-                            
-                            
-                        } else {
-                            AxisValueLabel()
-                        }
-                        
-                    }
-                }
-            }
+                 
+                 
+                 if historyModel.historyRange == .month {
+                     
+                     AxisMarks(preset: .automatic)
+                     
+                                     
+                     
+                 } else {
+                     AxisMarks(values: .stride(by: historyModel.historyRange == .week ? .day : .month, count: 1)) { value in
+                         if let date = value.as(Date.self) {
+                             
+                             if historyModel.historyRange == .week {
+                                 AxisValueLabel(shiftManager.dateFormatter.string(from: date), centered: true, collisionResolution: .disabled)
+                                 
+                             } else {
+                                 AxisValueLabel(format: .dateTime.month(), centered: true, collisionResolution: .disabled)
+                             }
+                             
+                             
+                         } else {
+                             AxisValueLabel()
+                         }
+                         
+                     }
+                 }
+             }
         
         // will leave this custom modifier here for if in future the issue is fixed.
         

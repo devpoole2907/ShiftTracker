@@ -444,7 +444,7 @@ struct JobOverview: View {
             }
             
         }
-            .frame(maxHeight: 244)
+            .frame(height: 250)
       
 
         

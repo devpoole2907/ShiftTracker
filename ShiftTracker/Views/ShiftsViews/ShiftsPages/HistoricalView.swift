@@ -41,6 +41,8 @@ struct HistoricalView: View {
                         List(selection: $historyModel.selection) {
                             
                             chartSection.id(0)
+                            // if we are editing, disable tab changing
+                                .disabled((editMode?.wrappedValue.isEditing ?? true))
                                
                             shiftsSection .background {
                                 Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
@@ -87,6 +89,8 @@ struct HistoricalView: View {
                             print("Selected tab is \(value)")
                             //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
                         }
+                    // if we are editing, disable tab changing
+                        .disabled((editMode?.wrappedValue.isEditing ?? true))
 
                 }
 

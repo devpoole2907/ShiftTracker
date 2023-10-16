@@ -247,6 +247,7 @@
 		7CF4D0DD2AD2220F001A891E /* ExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */; };
 		7CF4D0DF2AD24770001A891E /* ScheduledShiftRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0DE2AD24770001A891E /* ScheduledShiftRow.swift */; };
 		7CF4D0E12AD25F1F001A891E /* OvertimePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */; };
+		7CFE77982ADCCD0E0004F9B9 /* CustomUIKitTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFE77972ADCCD0E0004F9B9 /* CustomUIKitTextField.swift */; };
 		7CFF521B2AD5230C00BB3AD6 /* StatsSquareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF521A2AD5230C00BB3AD6 /* StatsSquareViewModel.swift */; };
 		7CFF521D2AD52C3100BB3AD6 /* ChartSquareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF521C2AD52C3100BB3AD6 /* ChartSquareViewModel.swift */; };
 		7CFF521F2AD52D2100BB3AD6 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CFF521E2AD52D2100BB3AD6 /* ActivityIndicator.swift */; };
@@ -513,6 +514,7 @@
 		7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportViewModel.swift; sourceTree = "<group>"; };
 		7CF4D0DE2AD24770001A891E /* ScheduledShiftRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftRow.swift; sourceTree = "<group>"; };
 		7CF4D0E02AD25F1F001A891E /* OvertimePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvertimePanel.swift; sourceTree = "<group>"; };
+		7CFE77972ADCCD0E0004F9B9 /* CustomUIKitTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIKitTextField.swift; sourceTree = "<group>"; };
 		7CFF521A2AD5230C00BB3AD6 /* StatsSquareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsSquareViewModel.swift; sourceTree = "<group>"; };
 		7CFF521C2AD52C3100BB3AD6 /* ChartSquareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSquareViewModel.swift; sourceTree = "<group>"; };
 		7CFF521E2AD52D2100BB3AD6 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
@@ -811,6 +813,7 @@
 				7CC9851B2AD3CC900001BA57 /* MultiplierView.swift */,
 				7CFF521E2AD52D2100BB3AD6 /* ActivityIndicator.swift */,
 				7C780CFF2ADA33190021635E /* UIKitTextEditor.swift */,
+				7CFE77972ADCCD0E0004F9B9 /* CustomUIKitTextField.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -1493,6 +1496,7 @@
 				1A5B0BAB2A5503510021572B /* ShakeModifier.swift in Sources */,
 				7C934D3A2A6522F9004F2622 /* PurchaseManager.swift in Sources */,
 				7CC9851C2AD3CC900001BA57 /* MultiplierView.swift in Sources */,
+				7CFE77982ADCCD0E0004F9B9 /* CustomUIKitTextField.swift in Sources */,
 				7CFF521F2AD52D2100BB3AD6 /* ActivityIndicator.swift in Sources */,
 				1AC048BD29E0D07700355767 /* ContentViewModel.swift in Sources */,
 				1A4AB18929FDE9BE00AA62BC /* GlobalFunctions+Extensions.swift in Sources */,

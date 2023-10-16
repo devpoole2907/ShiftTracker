@@ -253,12 +253,9 @@ struct JobView: View {
                 
             }.frame(height: 80)
             
-            TextField("Company Name", text: $jobViewModel.name)
+            CustomUIKitTextField(placeholder: "Company Name", text: $jobViewModel.name, centerAlign: true, rounded: true)
                 .minimumScaleFactor(0.5)
-                .font(.title)
                 .bold()
-                .roundedFontDesign()
-                .foregroundStyle(jobViewModel.selectedColor.gradient)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
                 .padding(.vertical, 10)
@@ -277,8 +274,7 @@ struct JobView: View {
     
     var titleAndHourlyPanel: some View {
         return Group {
-        TextField("Job Title", text: $jobViewModel.title)
-            .roundedFontDesign()
+            CustomUIKitTextField(placeholder: "Job Title", text: $jobViewModel.title, largeFont: false)
             .padding(.horizontal)
             .padding(.vertical, 10)
             .glassModifier(cornerRadius: 20)
