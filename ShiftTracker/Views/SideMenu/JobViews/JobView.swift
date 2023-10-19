@@ -458,7 +458,7 @@ struct JobView: View {
         return VStack(alignment: .leading, spacing: 10){
             Toggle(isOn: $jobViewModel.rosterReminder){
                 
-                Text("Roster reminders")
+                Text("Roster reminders").bold()
                 
             }.toggleStyle(CustomToggleStyle())
                 .padding(.horizontal)
@@ -487,7 +487,7 @@ struct JobView: View {
         return VStack(alignment: .leading, spacing: 10){
             Toggle(isOn: $jobViewModel.breakReminder){
                 
-                Text("Break reminder")
+                Text("Break reminder").bold()
                 
             }.toggleStyle(CustomToggleStyle())
             
