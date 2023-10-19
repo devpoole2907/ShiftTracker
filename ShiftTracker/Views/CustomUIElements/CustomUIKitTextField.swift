@@ -20,6 +20,7 @@ struct CustomUIKitTextField: UIViewRepresentable {
         textField.delegate = context.coordinator
         textField.placeholder = placeholder
         textField.clearButtonMode = .whileEditing
+        textField.autocorrectionType = .no
         
         let fontSize: CGFloat = largeFont ? UIFont.preferredFont(forTextStyle: .title1).pointSize : UIFont.preferredFont(forTextStyle: .body).pointSize
         
