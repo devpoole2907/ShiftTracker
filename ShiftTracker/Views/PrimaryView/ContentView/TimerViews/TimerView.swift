@@ -63,8 +63,10 @@ struct TimerView: View {
         let overtimePay = viewModel.overtimeEnabled ? (adjustedTimeElapsed - viewModel.timeElapsedUntilOvertime) / 3600.0 * viewModel.hourlyPay * viewModel.overtimeRate : 0
         
         let pay = basePay + overtimePay
+        
+        return pay < 0 ? 0 : viewModel.isMultiplierEnabled ? pay * viewModel.payMultiplier : pay
 
-        return viewModel.isMultiplierEnabled ? pay * viewModel.payMultiplier : pay < 0 ? 0 : pay
+   
     }
 
 
@@ -164,7 +166,9 @@ struct TimerView: View {
             .frame(maxWidth: .infinity)
             .padding(.bottom)
 
-            
+            .onChange(of: viewModel.timeElapsed) { value in
+                print("time elapsed is \(value)")
+            }
             
            
             
