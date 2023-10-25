@@ -40,12 +40,18 @@ struct JobOverview: View {
             let duration = Int.random(in: 2...12) * 3600  
             let endDate = Calendar.current.date(byAdding: .second, value: duration, to: currentDate)!
             
+            let hourlyPay = 30.0
+            
+            let totalPay = hourlyPay * Double(duration / 3600)
+            
             oldShift.shiftStartDate = currentDate
             oldShift.shiftEndDate = endDate
             oldShift.duration = Double(duration)
-            oldShift.totalPay = Double.random(in: 100...300)
-            oldShift.taxedPay = oldShift.totalPay * 0.9
+            oldShift.hourlyPay = 30.0
+            oldShift.totalPay = totalPay
+            oldShift.taxedPay = totalPay * 0.9
             oldShift.tax = 0.1
+            oldShift.totalTips = Double(Int.random(in: 5...48))
             oldShift.job = selectedJob
             oldShift.shiftID = UUID()
 
@@ -279,14 +285,15 @@ struct JobOverview: View {
                 }
             }
             
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    generateTestData()
-                }){
-                    Text("Test Data")
-                }
-            }
-            
+              if overviewModel.job != nil {
+                  ToolbarItem(placement: .topBarLeading) {
+                      Button(action: {
+                          generateTestData()
+                      }){
+                          Text("Test Data")
+                      }
+                  }
+              }
             
             if !overviewModel.showLargeIcon && overviewModel.job != nil {
                 ToolbarItem(placement: .topBarTrailing) {

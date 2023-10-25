@@ -28,11 +28,11 @@ struct CalendarView: UIViewRepresentable {
         print("visible date is \(visibleDate.date)")
         
         let startDateComponents = view.calendar.dateComponents([.year, .month, .day], from: interval.start)
-            dateSelection.setSelected(startDateComponents, animated: true)
+        dateSelection.setSelected(startDateComponents, animated: true)
         
         context.coordinator.dateSelection = dateSelection
         
-       
+        
         
         dateSelection.setSelected(Date().dateComponents, animated: true)
         print("date is set to \(startDateComponents)")
@@ -50,34 +50,34 @@ struct CalendarView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
         print("I have updated the calendar UI.")
-
+        
         let calendar = Calendar.current
         let visibleDate = uiView.visibleDateComponents.date!
         let futureDate = calendar.date(byAdding: .day, value: 31, to: visibleDate)!
-
+        
         let relevantShifts = shiftStore.shifts.filter { shift in
             let shiftDate = shift.dateComponents.date!
             return shiftDate >= visibleDate && shiftDate <= futureDate
         }
-
+        
         for shift in relevantShifts {
             uiView.reloadDecorations(forDateComponents: [shift.dateComponents], animated: true)
         }
-
+        
         if let changedEvent = shiftStore.changedShift {
             let changedEventDate = changedEvent.dateComponents.date!
-
+            
             if changedEventDate >= visibleDate && changedEventDate <= futureDate {
                 print("an event was changed.")
                 uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
                 shiftStore.changedShift = nil
             }
         }
-
+        
         if let changedEvents = shiftStore.batchDeletedShifts {
             for changedEvent in changedEvents {
                 let changedEventDate = changedEvent.dateComponents.date!
-
+                
                 if changedEventDate >= visibleDate && changedEventDate <= futureDate {
                     uiView.reloadDecorations(forDateComponents: [changedEvent.dateComponents], animated: true)
                     shiftStore.batchDeletedShifts = nil
@@ -94,19 +94,19 @@ struct CalendarView: UIViewRepresentable {
             
         }
         
-    
+        
         
         
         if let selectedDate = scheduleModel.dateSelected?.date {
-                if selectedDate >= visibleDate && selectedDate <= futureDate {
-                    uiView.reloadDecorations(forDateComponents: [scheduleModel.dateSelected!], animated: true)
-                }
+            if selectedDate >= visibleDate && selectedDate <= futureDate {
+                uiView.reloadDecorations(forDateComponents: [scheduleModel.dateSelected!], animated: true)
             }
+        }
         
         
     }
-
-
+    
+    
     
     class Coordinator: NSObject, UICalendarViewDelegate, UICalendarSelectionSingleDateDelegate {
         var parent: CalendarView
@@ -135,40 +135,40 @@ struct CalendarView: UIViewRepresentable {
                               size: .large)
             }
             let singleShift = foundShifts.first!
-        
+            
             
             
             let job = singleShift.job
             
             
             let currentDate = Date()
-let isBeforeNow = singleShift.endDate > currentDate
-
-let color = UIColor(red: CGFloat(job?.colorRed ?? 0.0 ),
-                    green: CGFloat(job?.colorGreen ?? 0.0 ),
-                    blue: CGFloat(job?.colorBlue ?? 0.0 ),
-                    alpha: isBeforeNow ? 1 : 0.5)
-
-return .image(UIImage(systemName: job?.icon ?? "briefcase.fill"),
-              color: color,
-              size: .large)
+            let isBeforeNow = singleShift.endDate > currentDate
+            
+            let color = UIColor(red: CGFloat(job?.colorRed ?? 0.0 ),
+                                green: CGFloat(job?.colorGreen ?? 0.0 ),
+                                blue: CGFloat(job?.colorBlue ?? 0.0 ),
+                                alpha: isBeforeNow ? 1 : 0.5)
+            
+            return .image(UIImage(systemName: job?.icon ?? "briefcase.fill"),
+                          color: color,
+                          size: .large)
             
             
         }
-    
+        
         func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
             withAnimation{
                 parent.scheduleModel.dateSelected = dateComponents
             }
             
-         //   print("setting date selected to \(dateComponents?.date)")
+            //   print("setting date selected to \(dateComponents?.date)")
             
-           if dateComponents == nil {
-                        // User has deselected a date, so reselect the current date
-                        let currentDateComponents = Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: Date())
-                        dateSelection?.setSelected(currentDateComponents, animated: true)
-               parent.scheduleModel.dateSelected = Date().dateComponents
-                    }
+            if dateComponents == nil {
+                // User has deselected a date, so reselect the current date
+                let currentDateComponents = Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: Date())
+                dateSelection?.setSelected(currentDateComponents, animated: true)
+                parent.scheduleModel.dateSelected = Date().dateComponents
+            }
             
             guard let dateComponents else { return }
             
@@ -176,12 +176,12 @@ return .image(UIImage(systemName: job?.icon ?? "briefcase.fill"),
             let foundEvents = shiftStore.shifts
                 .filter {$0.startDate.startOfDay == dateComponents.date?.startOfDay}
             if !foundEvents.isEmpty {
-     
+                
                 parent.scheduleModel.displayEvents.toggle()
                 
             }
             
-          //  print("the tapped date is : \(dateComponents.date)")
+            //  print("the tapped date is : \(dateComponents.date)")
             
             
         }

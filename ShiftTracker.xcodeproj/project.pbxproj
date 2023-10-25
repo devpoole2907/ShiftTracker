@@ -211,6 +211,8 @@
 		7CAC9B762A762D410048F818 /* ShiftEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAC9B752A762D410048F818 /* ShiftEntry.swift */; };
 		7CAC9B772A76352F0048F818 /* TempBreak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF3A96229E2773F00D1A7B5 /* TempBreak.swift */; };
 		7CAF46BE2AD0293300584749 /* KeyboardDoneButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */; };
+		7CB0D23E2AE8C7DE00CF508E /* MockupWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB0D23D2AE8C7DE00CF508E /* MockupWelcomeView.swift */; };
+		7CB0D2402AE8CD8F00CF508E /* MockupContinueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB0D23F2AE8CD8F00CF508E /* MockupContinueView.swift */; };
 		7CBEB11C2AC02B4D002DC7D6 /* MockupLockscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */; };
 		7CC2C6C22AC6AC9100F15E74 /* RepeatEndPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */; };
 		7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */; };
@@ -483,6 +485,8 @@
 		7CAC9B732A762AAC0048F818 /* LockscreenWidgetProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockscreenWidgetProvider.swift; sourceTree = "<group>"; };
 		7CAC9B752A762D410048F818 /* ShiftEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftEntry.swift; sourceTree = "<group>"; };
 		7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDoneButton.swift; sourceTree = "<group>"; };
+		7CB0D23D2AE8C7DE00CF508E /* MockupWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupWelcomeView.swift; sourceTree = "<group>"; };
+		7CB0D23F2AE8CD8F00CF508E /* MockupContinueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupContinueView.swift; sourceTree = "<group>"; };
 		7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupLockscreenView.swift; sourceTree = "<group>"; };
 		7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatEndPicker.swift; sourceTree = "<group>"; };
 		7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftRowSwipeButtons.swift; sourceTree = "<group>"; };
@@ -1018,6 +1022,8 @@
 				7C7B46B92AC1689700D87140 /* MockupMapView.swift */,
 				7C7B46BB2AC16DF800D87140 /* MockupScheduleView.swift */,
 				7C7B46BD2AC170F300D87140 /* MockupStatisticsView.swift */,
+				7CB0D23D2AE8C7DE00CF508E /* MockupWelcomeView.swift */,
+				7CB0D23F2AE8CD8F00CF508E /* MockupContinueView.swift */,
 			);
 			path = MockupViews;
 			sourceTree = "<group>";
@@ -1385,6 +1391,7 @@
 				7C0F154F2AB8EEA4008D5464 /* AddressFinderMap.swift in Sources */,
 				1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */,
 				7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */,
+				7CB0D2402AE8CD8F00CF508E /* MockupContinueView.swift in Sources */,
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
 				7CF01D752ACBEE2F00EBC36C /* AggregatedShift.swift in Sources */,
@@ -1515,6 +1522,7 @@
 				1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
 				7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */,
+				7CB0D23E2AE8C7DE00CF508E /* MockupWelcomeView.swift in Sources */,
 				1A8D4AD82A4EDE4300EEB334 /* CloseButton.swift in Sources */,
 				1A0D86EC2A51783B00EA4438 /* ChartSquare.swift in Sources */,
 				7C16AEF92AC54C4F00C0B58E /* JobIconView.swift in Sources */,

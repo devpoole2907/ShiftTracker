@@ -24,7 +24,6 @@ struct ContentViewButtonsView: View {
     
         let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
         let disabledButtonColor: Color = Color("SquaresColor")
-        let foregroundColor: Color = colorScheme == .dark ? .black : .white
         
     Section{
         HStack(spacing: 0){

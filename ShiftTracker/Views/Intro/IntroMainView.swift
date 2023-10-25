@@ -173,7 +173,7 @@ struct IntroView<ActionView: View>: View {
                         
                         Spacer(minLength: 10)
                         
-                        Button{
+                        AnimatedButton(action: {
                             
                             if filteredPages.firstIndex(of: intro) == 4 {
                                 locationManager.requestAlwaysAuthorization()
@@ -181,16 +181,11 @@ struct IntroView<ActionView: View>: View {
                                 requestNotificationPerms()
                             }
                             changeIntro()
-                                
-                                
-                        } label: {
-                            Text("Next")
-                            .fontWeight(.semibold)
-                           // .foregroundColor(colorScheme == .dark ? .black : .white)
-                            .frame(width: size.width * 0.4)
-                            .padding(.vertical, 15)
-                            .glassModifier()
-                        }.frame(maxWidth: .infinity)
+                            
+                            
+                        }, title: "Next", backgroundColor: colorScheme == .dark ? .black : .white, isDisabled: false)
+                        
+                       .frame(maxWidth: .infinity)
                         
                 
                             Button{

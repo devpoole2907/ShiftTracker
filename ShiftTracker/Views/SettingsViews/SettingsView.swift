@@ -219,7 +219,7 @@ struct SettingsView: View {
                     Text("Made by James Poole")
                         .foregroundColor(.gray.opacity(0.3))
                         .font(.caption)
-                    Text("Icons by Louie Kolodzinksi")
+                    Text("With help from Louie Kolodzinksi")
                         .foregroundColor(.gray.opacity(0.3))
                         .font(.caption)
                 }.padding(.vertical)
