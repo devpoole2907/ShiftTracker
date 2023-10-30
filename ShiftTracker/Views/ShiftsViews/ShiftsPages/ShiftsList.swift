@@ -260,7 +260,17 @@ struct ShiftsList: View {
         .navigationTitle(sortSelection.selectedSort.name)
         .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false)
         
-      
+      .toolbar {
+    if editMode?.wrappedValue.isEditing ?? false {
+        ToolbarItem(placement: .topBarLeading) {
+            Button(action: {
+                
+            }){
+                Text("Select All")
+                }
+        }
+    }
+}
         
         .onAppear {
             print("scroll pos is \(scrollPos)")
