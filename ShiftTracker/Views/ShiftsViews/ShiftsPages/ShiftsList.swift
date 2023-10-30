@@ -258,7 +258,7 @@ struct ShiftsList: View {
         }.ignoresSafeArea(.keyboard)
 
         .navigationTitle(sortSelection.selectedSort.name)
-        
+        .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false)
         .onAppear {
             print("scroll pos is \(scrollPos)")
             if scrollPos > 50 {
