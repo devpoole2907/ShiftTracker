@@ -12,7 +12,7 @@ import Haptics
 
 struct HistoricalView: View {
     
-    @Environment(\.editMode) private var editMode
+    @State var editMode = EditMode.inactive
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -42,13 +42,14 @@ struct HistoricalView: View {
                             
                             chartSection.id(0)
                             // if we are editing, disable tab changing
-                                .disabled((editMode?.wrappedValue.isEditing ?? true))
+                                .disabled(editMode.isEditing)
                                
                             shiftsSection .background {
                                 Color.clear.preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
                             }
                             
                         }.scrollContentBackground(.hidden)
+                            .tint(Color.gray)
                             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                         
                             .background {
@@ -90,7 +91,7 @@ struct HistoricalView: View {
                             //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
                         }
                     // if we are editing, disable tab changing
-                        .disabled((editMode?.wrappedValue.isEditing ?? true))
+                        .disabled(editMode.isEditing)
 
                 }
 
@@ -139,8 +140,8 @@ struct HistoricalView: View {
                         .frame(width: 165)
                         .frame(maxHeight: 30)
                     
-                        .disabled(editMode?.wrappedValue.isEditing ?? false)
-                        .opacity(editMode!.wrappedValue.isEditing ? 0.5 : 1.0)
+                        .disabled(editMode.isEditing)
+                        .opacity(editMode.isEditing ? 0.5 : 1.0)
 
                         .onChange(of: historyModel.historyRange) { value in
                             scrollManager.timeSheetsScrolled = false
@@ -189,7 +190,7 @@ struct HistoricalView: View {
                 }
             }
             
-        }
+        } .environment(\.editMode, $editMode)
         
         .overlay(alignment: .topTrailing){
             
@@ -275,7 +276,7 @@ struct HistoricalView: View {
     
         }
         
-        .navigationTitle(historyModel.getCurrentDateRangeString())
+        .navigationTitle(historyModel.selection.isEmpty ? historyModel.getCurrentDateRangeString() : "\(historyModel.selection.count) selected")
         
         .sheet(isPresented: $historyModel.showExportView) {
             
@@ -368,6 +369,9 @@ struct HistoricalView: View {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
+            
+            editMode = .inactive
+            
         }
     }
     

@@ -25,9 +25,9 @@ struct ShiftsList: View {
 
     
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.editMode) private var editMode
     @Environment(\.dismissSearch) private var dismissSearch
     
+    @State var editMode = EditMode.inactive
     @State private var showExportView = false
     @State private var showingProView = false
     
@@ -42,11 +42,14 @@ struct ShiftsList: View {
     
     
     var body: some View {
-        
+        let allShifts = sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }
         ZStack(alignment: .bottomTrailing){
             ScrollViewReader { proxy in
             List(selection: $selection){
-                ForEach(Array(sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }.enumerated()), id: \.element.objectID) { index, shift in
+                
+            
+                
+                ForEach(Array(allShifts.enumerated()), id: \.element.objectID) { index, shift in
                     ZStack {
                         NavigationLink(value: shift) {
                             ShiftDetailRow(shift: shift)
@@ -211,7 +214,7 @@ struct ShiftsList: View {
                     
                     Divider().frame(height: 10)
                     
-                    if editMode?.wrappedValue.isEditing == true {
+                    if editMode.isEditing {
                         
                         Button(action: {
                             CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
@@ -257,10 +260,31 @@ struct ShiftsList: View {
         
         }.ignoresSafeArea(.keyboard)
 
-        .navigationTitle(sortSelection.selectedSort.name)
-        .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false)
+            .navigationTitle(!selection.isEmpty ? "\(selection.count) selected" : sortSelection.selectedSort.name)
+            .navigationBarBackButtonHidden(editMode.isEditing)
         
-      
+        .toolbar{
+            if editMode.isEditing {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        
+                        if selection.isEmpty {
+                            let objectIDs = allShifts.map { shift in
+                                return shift.objectID
+                            }
+                            
+                            selection = Set(objectIDs)
+                        } else {
+                            selection = Set()
+                        }
+                        
+                    }){
+                        Text(selection.isEmpty ? "Select All" : "Unselect All")
+                    }
+                }
+            }
+        }
+        .environment(\.editMode, $editMode)
         
         .onAppear {
             print("scroll pos is \(scrollPos)")
@@ -303,6 +327,9 @@ struct ShiftsList: View {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
             }
+            
+            editMode = .inactive
+            
         }
     }
 }
