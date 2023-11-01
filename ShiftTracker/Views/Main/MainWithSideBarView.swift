@@ -64,76 +64,22 @@ struct MainWithSideBarView: View {
     var body: some View {
         ZStack{
             NavigationView{
-            ZStack(alignment: .bottom){
-                Group{
+                ZStack(alignment: .bottom){
+                
                     
                     tabsViews
              
+              
                     tabButtons
+              
                     
-                        .blur(radius: Double((navigationState.offset / navigationState.sideBarWidth) * 4))
+                    //    .blur(radius: Double((navigationState.offset / navigationState.sideBarWidth) * 4))
                     
-                }  .frame(width: getRect().width)
                     .ignoresSafeArea(.keyboard)
-                
-                
-                
-                SideMenu()
-                    .disabled(!navigationState.showMenu)
-                    .environmentObject(navigationState)
-                    .environmentObject(ContentViewModel.shared)
-                    .environmentObject(jobSelectionModel)
-                    .environmentObject(themeManager)
-                
-                    .frame(width: getRect().width + 12 + navigationState.sideBarWidth)
-                    .offset(x: -navigationState.sideBarWidth / 2)
-                    .offset(x: navigationState.offset > 0 ? navigationState.offset + 12 : 0)
-                
-                
-                if (navigationState.currentTab == .settings && settingsPath.isEmpty) || (navigationState.currentTab == .home || navigationState.currentTab == .schedule) || (navigationState.currentTab == .timesheets && path.isEmpty) {
-                    
-                    HStack {
-                        if navigationState.showMenu {
-                            Spacer()
-                        }
-                        VStack {
-                            Spacer()
-                        }
-                        .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 175 : 190)
-                        .frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? UIScreen.main.bounds.height - 90 : UIScreen.main.bounds.height - 160)
-                        
-                        
-                        .contentShape(Rectangle())
-                 
-                        .onTapGesture {
-                            withAnimation{
-                                if navigationState.showMenu {
-                                    navigationState.showMenu = false
-                                }
-                            }
-                        }
-                        .gesture(
-                            navigationState.gestureEnabled ? DragGesture()
-                                .updating($gestureOffset, body: { value, out, _ in
-                                    
-                                    out = value.translation.width
-                                    
-                                })
-                                .onEnded(onEnd(value:)) : nil
-                        )
-                        if !navigationState.showMenu{
-                            Spacer()
-                        }
-                        
-                        
-                    }
-                    
-                    
-                    
-                }
+
                 
             }.ignoresSafeArea(.keyboard)
-            
+                    .frame(width: getRect().width)
             
             
             
@@ -237,8 +183,66 @@ struct MainWithSideBarView: View {
                 
             }
             
+        
+            
+            SideMenu()
+                .disabled(!navigationState.showMenu || isFirstLaunch)
+                .environmentObject(navigationState)
+                .environmentObject(ContentViewModel.shared)
+                .environmentObject(jobSelectionModel)
+                .environmentObject(themeManager)
+            
+                .frame(width: getRect().width + 12 + navigationState.sideBarWidth)
+                .offset(x: -navigationState.sideBarWidth / 2)
+                .offset(x: navigationState.offset > 0 ? navigationState.offset + 12 : 0)
+            
+            
+            if (navigationState.currentTab == .settings && settingsPath.isEmpty) || (navigationState.currentTab == .home || navigationState.currentTab == .schedule) || (navigationState.currentTab == .timesheets && path.isEmpty) {
+                
+                HStack {
+                    if navigationState.showMenu {
+                        Spacer()
+                    }
+                    VStack {
+                        Spacer()
+                    }
+                    .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 175 : 190)
+               
+                    // setting this to height will break the views, pushing the nav bar down on ios 17.1 or above...
+                       .frame(maxHeight: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? UIScreen.main.bounds.height - 90 : UIScreen.main.bounds.height - 160)
+                    
+                    
+                    .contentShape(Rectangle())
+             
+                    .onTapGesture {
+                        withAnimation{
+                            if navigationState.showMenu {
+                                navigationState.showMenu = false
+                            }
+                        }
+                    }
+                    .gesture(
+                        navigationState.gestureEnabled ? DragGesture()
+                            .updating($gestureOffset, body: { value, out, _ in
+                                
+                                out = value.translation.width
+                                
+                            })
+                            .onEnded(onEnd(value:)) : nil
+                    )
+                    if !navigationState.showMenu{
+                        Spacer()
+                    }
+                    
+                    
+                }
+                
+                
+                
+            }
+            
             if isFirstLaunch {
-                IntroMainView(isFirstLaunch: $isFirstLaunch)
+                IntroMainView(isFirstLaunch: $isFirstLaunch).frame(width: getRect().width)
                     .onAppear {
                         
                         themeManager.resetColorsToDefaults()
@@ -248,6 +252,7 @@ struct MainWithSideBarView: View {
                     }
                 
             }
+            
         }.ignoresSafeArea(.keyboard)
  
     }
