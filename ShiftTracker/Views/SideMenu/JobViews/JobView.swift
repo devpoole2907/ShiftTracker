@@ -190,7 +190,9 @@ struct JobView: View {
                 
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton()
+                    CloseButton {
+                        hideKeyboard()
+                    }
                 }
                 
             }
