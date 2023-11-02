@@ -198,7 +198,7 @@ struct ScheduledShiftRowSwipeButtons: View {
                 Image(systemName: shift.calendarEventID == nil ? "calendar.badge.plus" : "calendar.badge.minus")
             }
         }.tint(Color.clear)
- 
+ if shift.isRepeating {
         Button(action: {
             CustomConfirmationAlert(action: {
                 withAnimation {
@@ -212,8 +212,8 @@ struct ScheduledShiftRowSwipeButtons: View {
                 }
                 Image(systemName: "clock.arrow.2.circlepath")
             }
-        }.disabled(!shift.isRepeating)
+        }
             .tint(Color.clear)
-
+}
     }
 }
