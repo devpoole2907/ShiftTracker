@@ -41,7 +41,7 @@ struct OkButtonPopup: CentrePopup {
         .glassModifier(cornerRadius: 30)
         .triggersHapticFeedbackWhenAppear()
         
-   //     .frame(maxWidth: getRect().width - 50)
+        .frame(maxWidth: getRect().width - 50)
     }
     
     func createTitle() -> some View {
@@ -110,7 +110,7 @@ struct CustomConfirmationAlert: CentrePopup {
        // .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
         
-     //   .frame(maxWidth: getRect().width - 50)
+        .frame(maxWidth: getRect().width - 50)
         
         
     }
@@ -186,7 +186,7 @@ struct CustomTripleActionPopup: CentrePopup {
         .glassModifier(cornerRadius: 30)
        // .shadow(radius: 10)
         .triggersHapticFeedbackWhenAppear()
-
+        .frame(maxWidth: getRect().width - 50)
         
     }
     
@@ -233,21 +233,6 @@ struct CustomTripleActionPopup: CentrePopup {
     
 }
 
-struct CustomTopPopup: TopPopup {
-    func createContent() -> some View {
-        HStack(spacing: 0){
-            Text("Cheese")
-        } .padding(.vertical, 20)
-            .padding(.leading, 24)
-            .padding(.trailing, 16)
-    }
-    
-    func configurePopup(popup: TopPopupConfig) -> TopPopupConfig {
-        popup.horizontalPadding(20)
-            .topPadding(42)
-            .cornerRadius(16)
-    }
-    
-}
+
 
 
