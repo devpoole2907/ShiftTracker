@@ -190,7 +190,12 @@ struct JobView: View {
                 
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    CloseButton()
+                    CloseButton {
+                        hideKeyboard()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                            dismiss()
+                        }
+                    }
                 }
                 
             }
