@@ -12,7 +12,6 @@
 		1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */; };
 		1A12241029C92D2E0036D04C /* TabBar in Frameworks */ = {isa = PBXBuildFile; productRef = 1A12240F29C92D2E0036D04C /* TabBar */; };
 		1A13F19529D02914009BE6B0 /* ProView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A13F19429D02914009BE6B0 /* ProView.swift */; };
-		1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */; };
 		1A1914192A15D43B000D0F8B /* UpcomingShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A1914182A15D43B000D0F8B /* UpcomingShiftView.swift */; };
 		1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A19141A2A15DC02000D0F8B /* CurrentShiftView.swift */; };
 		1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A19141C2A15F96D000D0F8B /* SelectedJobView.swift */; };
@@ -329,7 +328,6 @@
 		1A0F5F1829F11EC1003C83F0 /* ActionButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButtonView.swift; sourceTree = "<group>"; };
 		1A12240D29C928EB0036D04C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A13F19429D02914009BE6B0 /* ProView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProView.swift; sourceTree = "<group>"; };
-		1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllScheduledShiftsView.swift; sourceTree = "<group>"; };
 		1A1914182A15D43B000D0F8B /* UpcomingShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingShiftView.swift; sourceTree = "<group>"; };
 		1A19141A2A15DC02000D0F8B /* CurrentShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentShiftView.swift; sourceTree = "<group>"; };
 		1A19141C2A15F96D000D0F8B /* SelectedJobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedJobView.swift; sourceTree = "<group>"; };
@@ -643,7 +641,6 @@
 				1AD72A8929F3511A00534342 /* ScheduledShiftsView.swift */,
 				1AA6A7B429EEAF7A00B13057 /* CalendarView.swift */,
 				1AB7D69729FB97C000326AAA /* ScheduleView.swift */,
-				1A1914162A12F4EE000D0F8B /* AllScheduledShiftsView.swift */,
 				7CAB871B2A59892D00A08219 /* CreateShiftForm.swift */,
 				7C11323D2ACA976200E983FD /* ScheduledShiftListRow.swift */,
 				7CF4D0DE2AD24770001A891E /* ScheduledShiftRow.swift */,
@@ -1519,7 +1516,6 @@
 				7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */,
 				7C7B46BC2AC16DF800D87140 /* MockupScheduleView.swift in Sources */,
 				7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */,
-				1A1914172A12F4EE000D0F8B /* AllScheduledShiftsView.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
 				7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */,
 				7CB0D23E2AE8C7DE00CF508E /* MockupWelcomeView.swift in Sources */,

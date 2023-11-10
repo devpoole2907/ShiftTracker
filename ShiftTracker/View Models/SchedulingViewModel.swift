@@ -21,8 +21,6 @@ class SchedulingViewModel: ObservableObject {
     
     @Published var selectedShiftToEdit: ScheduledShift?
     
-    
-    @Published var groupedShifts: [Date: [SingleScheduledShift]] = [:]
     @Published var isEmpty: Bool = false
     
     @Published var displayEvents = false
@@ -33,8 +31,6 @@ class SchedulingViewModel: ObservableObject {
     @Published var jobToDelete: Job?
     
     @Published var activeSheet: ActiveScheduleSheet?
-    
-    @Published var showAllScheduledShiftsView = false
     
     @Published var dateSelected: DateComponents? = Date().startOfDay.dateComponents
     
@@ -52,21 +48,6 @@ class SchedulingViewModel: ObservableObject {
             displayedOldShifts = allShifts.filter { ($0.shiftStartDate! as Date) >= startOfDay && ($0.shiftStartDate! as Date) < endOfDay }
         }
     }
-    
-     func loadGroupedShifts(shiftStore: ShiftStore, scheduleModel: SchedulingViewModel) async {
-      
-            let newGroupedShifts = Dictionary(grouping: shiftStore.shifts, by: { $0.startDate.startOfTheDay() })
-            
-            let isEmpty = newGroupedShifts.isEmpty
-        
-            await MainActor.run {
-                withAnimation {
-                    scheduleModel.groupedShifts = newGroupedShifts
-                    
-                    scheduleModel.isEmpty = isEmpty
-                }
-            }
-        }
     
     func fetchScheduledShift(id: UUID, in viewContext: NSManagedObjectContext) -> ScheduledShift? {
         let request: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()

@@ -26,10 +26,6 @@ struct ScheduledShiftRowSwipeButtons: View {
                 scheduleModel.deleteShift(shift, with: shiftStore, using: viewContext)
                 
             }
-            
-            Task {
-                await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
-            }
         }){
             HStack {
                 if showText {

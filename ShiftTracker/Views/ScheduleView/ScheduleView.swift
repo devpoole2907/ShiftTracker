@@ -59,9 +59,7 @@ struct ScheduleView: View {
                 
                 
                 
-            }.blur(radius: scheduleModel.showAllScheduledShiftsView ? 2 : 0)
-                .animation(.easeInOut(duration: 0.3), value: scheduleModel.showAllScheduledShiftsView)
-            
+            }
                 .scrollContentBackground(.hidden)
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                
@@ -72,11 +70,7 @@ struct ScheduleView: View {
                    
                 }
             
-      
-            if scheduleModel.showAllScheduledShiftsView {
-                allScheduledShifts
-            }
-            
+  
        floatingButtons
             
             
@@ -107,7 +101,7 @@ struct ScheduleView: View {
                     
                 }
             }
-        }.haptics(onChangeOf: scheduleModel.showAllScheduledShiftsView, type: .light)
+        }
         
         
             .sheet(item: $scheduleModel.activeSheet){ item in
@@ -197,48 +191,15 @@ struct ScheduleView: View {
             scheduleModel.fetchShifts(allShifts: allShifts)
             
         }
-        
-        .onAppear {
- 
-            
-            Task {
-                await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
-            }
-            
-            
-        }
+
     }
-    
-    var allScheduledShifts: some View {
-        return
-            AllScheduledShiftsView(navPath: $navPath)
-            .animation(.easeInOut(duration: 1.0), value: scheduleModel.showAllScheduledShiftsView)
-                .onDisappear{
-                    
-                    
-                    scheduleModel.shouldScrollToNextShift = true
-                    
-                }
-            
-         
-                .task {
-                        await scheduleModel.loadGroupedShifts(shiftStore: shiftStore, scheduleModel: scheduleModel)
-                    }
-                
-            
-        
-    }
+
     
     var floatingButtons: some View {
         return VStack{
             
             HStack(spacing: 10){
-                
-                if !scheduleModel.showAllScheduledShiftsView {
-                    
-                    
-                    
-                    
+
                     let dateSelectedDate = scheduleModel.dateSelected?.date ?? Date()
                     
                     if isBeforeEndOfToday(dateSelectedDate) && !Calendar.current.isDateInToday(dateSelectedDate) {
@@ -333,7 +294,7 @@ struct ScheduleView: View {
                                 .bold()
                             
                             
-                        }.disabled(scheduleModel.showAllScheduledShiftsView)
+                        }
                         
                         
                         
@@ -367,36 +328,17 @@ struct ScheduleView: View {
                             Image(systemName: "plus").customAnimatedSymbol(value: $scheduleModel.activeSheet)
                                 .bold()
                         }
-                        .disabled(scheduleModel.showAllScheduledShiftsView)
+                     
                         
                         
                         
                     }
                     
                     
-                    Divider().frame(height: 10)
-                    
-                }
                 
                 
-                Button(action: {
-                    withAnimation(.easeInOut(duration: 0.4)) {
-                        scheduleModel.shouldScrollToNextShift = true
-                        scheduleModel.showAllScheduledShiftsView.toggle()
-                        
-                    }
-                }) {
-                    Image(systemName: "list.bullet")
-                        .customAnimatedSymbol(value: $scheduleModel.showAllScheduledShiftsView)
-                        .foregroundStyle(scheduleModel.showAllScheduledShiftsView ? (colorScheme == .dark ? .black : .white) : Color.accentColor)
-                        .bold()
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(scheduleModel.showAllScheduledShiftsView ? (colorScheme == .dark ? .white : .black) : .clear)
-                                .padding(-5)
-                        )
-                }
                 
+             
                 
                 
                 
