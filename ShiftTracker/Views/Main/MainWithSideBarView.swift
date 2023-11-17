@@ -69,14 +69,14 @@ struct MainWithSideBarView: View {
                     
                     tabsViews
              
-              
-                    tabButtons
-              
-                    
-                    //    .blur(radius: Double((navigationState.offset / navigationState.sideBarWidth) * 4))
-                    
-                    .ignoresSafeArea(.keyboard)
-
+                    if !navigationState.hideTabBar {
+                        tabButtons
+                        
+                        
+                        //    .blur(radius: Double((navigationState.offset / navigationState.sideBarWidth) * 4))
+                        
+                            .ignoresSafeArea(.keyboard)
+                    }
                 
             }.ignoresSafeArea(.keyboard)
                     .frame(width: getRect().width)
@@ -95,6 +95,8 @@ struct MainWithSideBarView: View {
                 }
             
         }
+            
+            
           
             .animation(.easeOut, value: navigationState.offset == 0)
             .onChange(of: navigationState.showMenu) { newValue in
@@ -504,7 +506,7 @@ func onEnd(value: DragGesture.Value) {
             .tag(Tab.settings)
             
             
-        }
+        } 
         
         
         .ignoresSafeArea(.keyboard)
@@ -517,7 +519,7 @@ func onEnd(value: DragGesture.Value) {
                 TabButton(tab: .home, useSystemImage: true)
                 TabButton(tab: .timesheets, useSystemImage: true, action: {
                     
-                // scroll to top if any view in timesheets tab has been scrolled, otherwise pop to root or open side menu
+                    // scroll to top if any view in timesheets tab has been scrolled, otherwise pop to root or open side menu
                     
                     if scrollManager.timeSheetsScrolled {
                         scrollManager.scrollOverviewToTop.toggle()
@@ -528,7 +530,7 @@ func onEnd(value: DragGesture.Value) {
                         
                     } else {
                         path = NavigationPath()
-  
+                        
                     }
                     
                     
@@ -560,7 +562,6 @@ func onEnd(value: DragGesture.Value) {
             .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
             .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
             .ignoresSafeArea(.keyboard)
-            
         }.ignoresSafeArea(.keyboard)
     }
     

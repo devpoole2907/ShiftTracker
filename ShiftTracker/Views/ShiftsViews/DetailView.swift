@@ -108,7 +108,6 @@ struct DetailView: View {
         ZStack(alignment: .bottomTrailing){
             List{
                 Section{
-                    
                     VStack{
                         if !viewModel.areAllTempBreaksWithin {
                             HStack {
@@ -161,7 +160,7 @@ struct DetailView: View {
 
 
                     
-                    
+                  
                 }.listRowSeparator(.hidden)
                     .listRowBackground(Color.clear)
                     .listRowInsets(.init(top: 0, leading: 10, bottom: 10, trailing: 10))
@@ -236,16 +235,15 @@ struct DetailView: View {
             
         }.ignoresSafeArea(.keyboard)
         
-        
-        
-        
-        
-        
-        
+
             .navigationTitle(viewModel.shift == nil ? "Add Shift" : "Shift Details")
             .navigationBarTitleDisplayMode(.inline)
         
+            .toolbar(.hidden, for: .tabBar)
+        
             .onAppear{
+                
+                
                 
                 if navigationState.currentTab == .timesheets {
                     scrollManager.timeSheetsScrolled = false
@@ -266,9 +264,24 @@ struct DetailView: View {
                     }
                     
                     
+                } else {
+                    // hide the bar bar, we arent a sheet
+                    
+              
+                        withAnimation {
+                            navigationState.hideTabBar = true
+                        }
+                    
+                   
                 }
                 
                 
+            }
+        
+            .onDisappear {
+                withAnimation {
+                    navigationState.hideTabBar = false
+                }
             }
         
         
@@ -658,7 +671,8 @@ struct DetailView: View {
                 .disabled(!viewModel.isEditing)
             
         }.padding(.horizontal)
-            .padding(.vertical)
+            .padding(.top, 5)
+            .padding(.bottom, 16)
             .glassModifier(cornerRadius: 20)
             .padding(.bottom, 10)
     }

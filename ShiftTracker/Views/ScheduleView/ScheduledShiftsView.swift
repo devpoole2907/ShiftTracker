@@ -60,7 +60,7 @@ struct ScheduledShiftsView: View {
                         
                         
                         DetailView(shift: shift, navPath: $navPath)
-                        
+                         
                         
                     }
                     

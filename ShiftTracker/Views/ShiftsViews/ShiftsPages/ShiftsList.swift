@@ -45,10 +45,8 @@ struct ShiftsList: View {
         let allShifts = sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }
         ZStack(alignment: .bottomTrailing){
             ScrollViewReader { proxy in
-            List(selection: $selection){
-                
-            
-                
+                List(selection: editMode.isEditing ? $selection : .constant(Set<NSManagedObjectID>())) {
+
                 ForEach(Array(allShifts.enumerated()), id: \.element.objectID) { index, shift in
                     ZStack {
                         NavigationLink(value: shift) {
@@ -81,17 +79,18 @@ struct ShiftsList: View {
                     .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                     .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
                     
+                    
                     .background {
+                        
+                        // we dont need the geometry reader, performance is better just doing this
                         if index == 0 {
-                            GeometryReader { geometry in
-                                                Color.clear.preference(key: ScrollOffsetKey.self, value: geometry.frame(in: .global).minY)
-                                            }
-                            
-                            .onAppear {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            Color.clear
+                                .onDisappear {
+                                    scrollManager.timeSheetsScrolled = true
+                                }
+                                .onAppear {
                                     scrollManager.timeSheetsScrolled = false
                                 }
-                            }
                         }
                     }
                     
@@ -161,18 +160,9 @@ struct ShiftsList: View {
                     
                 }
                 
-                .onPreferenceChange(ScrollOffsetKey.self) { offset in
-                    if !(offset <= 0) && !scrollManager.timeSheetsScrolled {
-                        print("offset is \(offset)")
-                        scrollManager.timeSheetsScrolled = true
-                        self.scrollPos = offset
-                    }
-                }
-
-                
                 .onChange(of: scrollManager.scrollOverviewToTop) { value in
                                 if value {
-                                    withAnimation {
+                                    withAnimation(.spring) {
                                         proxy.scrollTo(0, anchor: .top)
                                     }
                                     DispatchQueue.main.async {
@@ -180,6 +170,9 @@ struct ShiftsList: View {
                                         scrollManager.scrollOverviewToTop = false
                                     }
                                 }
+                    
+                    
+                    
                             }
                 
               
@@ -286,13 +279,13 @@ struct ShiftsList: View {
         }
         .environment(\.editMode, $editMode)
         
-        .onAppear {
+      /*  .onAppear {
             print("scroll pos is \(scrollPos)")
             if scrollPos > 50 {
                 scrollManager.timeSheetsScrolled = true
             }
         }
-
+*/
         .sheet(isPresented: $showExportView) {
             
             ConfigureExportView(job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: selection, arrayShifts: sortSelection.oldShifts)
@@ -331,13 +324,5 @@ struct ShiftsList: View {
             editMode = .inactive
             
         }
-    }
-}
-
-struct ScrollOffsetKey: PreferenceKey {
-    typealias Value = CGFloat
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value += nextValue()
     }
 }

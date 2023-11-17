@@ -116,8 +116,7 @@ struct JobOverview: View {
     @Binding var navPath: NavigationPath
     
     var body: some View {
-        
-        GeometryReader { geo in
+
             ZStack(alignment: .bottomTrailing){
            
                     List{
@@ -140,23 +139,20 @@ struct JobOverview: View {
                 
                 
                 floatingButtons
-                
-                .onChange(of: geo.frame(in: .global).minY) { minY in
-                    
-                    withAnimation {
-                        overviewModel.checkTitlePosition(geometry: geo)
-                    }
-                }
+           
                 
             }.ignoresSafeArea(.keyboard)
             
             .navigationDestination(for: OldShift.self) { shift in
                 DetailView(shift: shift, navPath: $navPath)
+       
                     .onAppear {
                         withAnimation {
                             shiftManager.showModePicker = false
                         }
                     }
+                
+        
                 
             }
             
@@ -176,7 +172,6 @@ struct JobOverview: View {
                 
             }
             
-        }
         .sheet(item: $overviewModel.activeSheet) { sheet in
             
             switch sheet {
@@ -246,6 +241,8 @@ struct JobOverview: View {
         // adds icon to navigation title header
         
         .overlay(alignment: .topTrailing){
+            
+            // it'll always be hidden underneath the tab bar, for perf reasons i dont want a geo reader in this view anymore
             
             if overviewModel.showLargeIcon && overviewModel.job != nil && overviewModel.job?.name?.count ?? 0 <= 16 {
              
