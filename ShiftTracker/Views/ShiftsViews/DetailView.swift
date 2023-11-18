@@ -243,11 +243,6 @@ struct DetailView: View {
         
             .onAppear{
                 
-                
-                
-                if navigationState.currentTab == .timesheets {
-                    scrollManager.timeSheetsScrolled = false
-                }
                 if viewModel.presentedAsSheet {
                     
                     viewModel.displayedCount += 1

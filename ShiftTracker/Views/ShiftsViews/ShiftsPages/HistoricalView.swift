@@ -22,6 +22,7 @@ struct HistoricalView: View {
     @EnvironmentObject var scrollManager: ScrollManager
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var navigationState: NavigationState
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
@@ -80,110 +81,7 @@ struct HistoricalView: View {
             
             
             
-            HStack(alignment: .bottom) {
-                
-                PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: historyModel.aggregatedShifts.count)
-                    .frame(maxWidth: 175)
-                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                
-                    .padding()
-                
-                    .onChange(of: historyModel.selectedTab){ value in
-                        print("Selected tab is \(value)")
-                        //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
-                    }
-                // if we are editing, disable tab changing
-                    .disabled(editMode.isEditing)
-                
-                Spacer()
-            
-            VStack(alignment: .trailing){
-                
-                HStack(spacing: 10){
-                    
-                    EditButton()
-                    
-                    Divider().frame(height: 10)
-                    
-                    Button(action: {
-                        
-                        if purchaseManager.hasUnlockedPro {
-                            historyModel.showExportView.toggle()
-                        } else {
-                            
-                            historyModel.showingProView.toggle()
-                            
-                        }
-                        
-                        
-                    }){
-                        Image(systemName: "square.and.arrow.up").bold()
-                    }.disabled(historyModel.selection.isEmpty)
-                    
-                    Divider().frame(height: 10)
-                    
-                    Button(action: {
-                        CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                    }) {
-                        Image(systemName: "trash")
-                            .bold()
-                        
-                            .customAnimatedSymbol(value: $historyModel.selection)
-                    }.disabled(historyModel.selection.isEmpty)
-                        .tint(.red)
-                    
-                }.padding()
-                    .glassModifier(cornerRadius: 20)
-                
-                CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
-                
-                    .glassModifier(cornerRadius: 20)
-                
-                    .frame(width: 165)
-                    .frame(maxHeight: 30)
-                
-                    .disabled(editMode.isEditing)
-                    .opacity(editMode.isEditing ? 0.5 : 1.0)
-                
-                    .onChange(of: historyModel.historyRange) { value in
-                        scrollManager.timeSheetsScrolled = false
-                        withAnimation {
-                            self.isAnimating = true
-                        }
-                        
-                        Task {
-                            
-                            
-                            let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
-                            await MainActor.run {
-                                withAnimation {
-                                    historyModel.aggregatedShifts = newAggregatedShifts
-                                }
-                            }
-                            
-                            
-                            try await Task.sleep(nanoseconds: 300_000_000)
-                            
-                            
-                            await MainActor.run {
-                                historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
-                                withAnimation {
-                                    self.isAnimating = false
-                                }
-                            }
-                            
-                            
-                            
-                            
-                        }
-                        
-                        
-                    }
-                
-                Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
-            }  .padding(.horizontal)
-            
-        }
+        floatingButtons.padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
 
             }
      
@@ -199,7 +97,8 @@ struct HistoricalView: View {
                         .padding(.trailing, 20)
                         .offset(x: 0, y: -55)
                     
-                 
+                        .opacity(scrollManager.timeSheetsScrolled ? 0 : 1).animation(.easeInOut, value: scrollManager.timeSheetsScrolled)
+                    
 
                 }
                 
@@ -553,6 +452,113 @@ struct HistoricalView: View {
         
     }
         
+    }
+    
+    var floatingButtons: some View {
+        HStack(alignment: .bottom) {
+            
+            PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: historyModel.aggregatedShifts.count)
+                .frame(maxWidth: 175)
+                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+            
+                .padding()
+            
+                .onChange(of: historyModel.selectedTab){ value in
+                    print("Selected tab is \(value)")
+                    //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
+                }
+            // if we are editing, disable tab changing
+                .disabled(editMode.isEditing)
+            
+            Spacer()
+        
+        VStack(alignment: .trailing){
+            
+            HStack(spacing: 10){
+                
+                EditButton()
+                
+                Divider().frame(height: 10)
+                
+                Button(action: {
+                    
+                    if purchaseManager.hasUnlockedPro {
+                        historyModel.showExportView.toggle()
+                    } else {
+                        
+                        historyModel.showingProView.toggle()
+                        
+                    }
+                    
+                    
+                }){
+                    Image(systemName: "square.and.arrow.up").bold()
+                }.disabled(historyModel.selection.isEmpty)
+                
+                Divider().frame(height: 10)
+                
+                Button(action: {
+                    CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                }) {
+                    Image(systemName: "trash")
+                        .bold()
+                    
+                        .customAnimatedSymbol(value: $historyModel.selection)
+                }.disabled(historyModel.selection.isEmpty)
+                    .tint(.red)
+                
+            }.padding()
+                .glassModifier(cornerRadius: 20)
+            
+            CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
+            
+                .glassModifier(cornerRadius: 20)
+            
+                .frame(width: 165)
+                .frame(maxHeight: 30)
+            
+                .disabled(editMode.isEditing)
+                .opacity(editMode.isEditing ? 0.5 : 1.0)
+            
+                .onChange(of: historyModel.historyRange) { value in
+                    scrollManager.timeSheetsScrolled = false
+                    withAnimation {
+                        self.isAnimating = true
+                    }
+                    
+                    Task {
+                        
+                        
+                        let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
+                        await MainActor.run {
+                            withAnimation {
+                                historyModel.aggregatedShifts = newAggregatedShifts
+                            }
+                        }
+                        
+                        
+                        try await Task.sleep(nanoseconds: 300_000_000)
+                        
+                        
+                        await MainActor.run {
+                            historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
+                            withAnimation {
+                                self.isAnimating = false
+                            }
+                        }
+                        
+                        
+                        
+                        
+                    }
+                    
+                    
+                }
+            
+            Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
+        }  .padding(.horizontal)
+        
+    }
     }
     
 }

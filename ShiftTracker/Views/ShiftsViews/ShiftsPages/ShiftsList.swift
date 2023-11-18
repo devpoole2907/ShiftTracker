@@ -178,78 +178,9 @@ struct ShiftsList: View {
               
         }
             
-            VStack(alignment: .trailing) {
-                
-                VStack{
-                
-                HStack(spacing: 10){
-                    
-                    EditButton()
-                    
-                    Divider().frame(height: 10)
-                    
-                   
-                    
-                    Button(action: {
-                        
-                        if purchaseManager.hasUnlockedPro {
-                            showExportView.toggle()
-                        } else {
-                            
-                            showingProView.toggle()
-                            
-                        }
-                        
-                       
-                    }){
-                        Image(systemName: "square.and.arrow.up").bold()
-                    }.disabled(selection.isEmpty)
-                    
-                    Divider().frame(height: 10)
-                    
-                    if editMode.isEditing {
-                        
-                        Button(action: {
-                            CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                        }) {
-                            Image(systemName: "trash").customAnimatedSymbol(value: $selection)
-                                .bold()
-                        }.disabled(selection.isEmpty)
-                            .tint(.red)
-                        
-                    } else {
-                        
-                        SortSelectionView(selectedSortItem: $sortSelection.selectedSort, sorts: ShiftNSSort.sorts)
-                            .onChange(of: sortSelection.selectedSort) { _ in
-                                sortSelection.fetchShifts()
-                            }
-                        
-                    }
-                    
-                    
-                    
-                    
-                }.padding()
-                        .glassModifier(cornerRadius: 20)
-
-            }
-                
-                TagSortView(selectedFilters: $sortSelection.selectedFilters)
-                    .frame(width: UIScreen.main.bounds.width - 20)
-                    .frame(maxHeight: 40)
-                    .padding(5)
-                    .glassModifier(cornerRadius: 20)
-                
-                    .padding(.bottom, 5)
-                
-                    .onChange(of: sortSelection.selectedFilters) { _ in
-                        
-                        sortSelection.fetchShifts()
-                        
-                    }
-                
-                
-            }
+            floatingButtons .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+            
+       
         
         }.ignoresSafeArea(.keyboard)
 
@@ -279,13 +210,7 @@ struct ShiftsList: View {
         }
         .environment(\.editMode, $editMode)
         
-      /*  .onAppear {
-            print("scroll pos is \(scrollPos)")
-            if scrollPos > 50 {
-                scrollManager.timeSheetsScrolled = true
-            }
-        }
-*/
+
         .sheet(isPresented: $showExportView) {
             
             ConfigureExportView(job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: selection, arrayShifts: sortSelection.oldShifts)
@@ -325,4 +250,80 @@ struct ShiftsList: View {
             
         }
     }
+    
+    var floatingButtons: some View {
+        VStack(alignment: .trailing) {
+            
+            VStack{
+            
+            HStack(spacing: 10){
+                
+                EditButton()
+                
+                Divider().frame(height: 10)
+                
+               
+                
+                Button(action: {
+                    
+                    if purchaseManager.hasUnlockedPro {
+                        showExportView.toggle()
+                    } else {
+                        
+                        showingProView.toggle()
+                        
+                    }
+                    
+                   
+                }){
+                    Image(systemName: "square.and.arrow.up").bold()
+                }.disabled(selection.isEmpty)
+                
+                Divider().frame(height: 10)
+                
+                if editMode.isEditing {
+                    
+                    Button(action: {
+                        CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                    }) {
+                        Image(systemName: "trash").customAnimatedSymbol(value: $selection)
+                            .bold()
+                    }.disabled(selection.isEmpty)
+                        .tint(.red)
+                    
+                } else {
+                    
+                    SortSelectionView(selectedSortItem: $sortSelection.selectedSort, sorts: ShiftNSSort.sorts)
+                        .onChange(of: sortSelection.selectedSort) { _ in
+                            sortSelection.fetchShifts()
+                        }
+                    
+                }
+                
+                
+                
+                
+            }.padding()
+                    .glassModifier(cornerRadius: 20)
+
+        }
+            
+            TagSortView(selectedFilters: $sortSelection.selectedFilters)
+                .frame(width: UIScreen.main.bounds.width - 20)
+                .frame(maxHeight: 40)
+                .padding(5)
+                .glassModifier(cornerRadius: 20)
+            
+                .padding(.bottom, 5)
+            
+                .onChange(of: sortSelection.selectedFilters) { _ in
+                    
+                    sortSelection.fetchShifts()
+                    
+                }
+            
+            
+        }
+    }
+    
 }

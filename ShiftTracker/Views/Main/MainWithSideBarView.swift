@@ -433,6 +433,8 @@ func onEnd(value: DragGesture.Value) {
                     
                         .padding()
                     
+                        .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+                   
                     
                     
                         .haptics(onChangeOf: shiftManager.statsMode, type: .soft)

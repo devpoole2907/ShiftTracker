@@ -71,7 +71,7 @@ struct ScheduleView: View {
                 }
             
   
-       floatingButtons
+       floatingButtons.padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
             
             
             
@@ -176,6 +176,8 @@ struct ScheduleView: View {
             CalendarView(interval: interval, shiftStore: shiftStore)
                 .padding()
                 .tint(colorScheme == .dark ? .white.opacity(0.7) : nil)
+            
+         
             
         } header: {
             

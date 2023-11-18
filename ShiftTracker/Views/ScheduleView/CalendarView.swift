@@ -25,6 +25,8 @@ struct CalendarView: UIViewRepresentable {
         
         let visibleDate = view.visibleDateComponents
         
+      
+        
         print("visible date is \(visibleDate.date)")
         
         let startDateComponents = view.calendar.dateComponents([.year, .month, .day], from: interval.start)

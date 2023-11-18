@@ -128,6 +128,7 @@ struct JobOverview: View {
                                 scrollManager.timeSheetsScrolled = false
                             }
                  
+                 
                         
                         
                     }.scrollContentBackground(.hidden)
@@ -139,6 +140,7 @@ struct JobOverview: View {
                 
                 
                 floatingButtons
+                    .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
            
                 
             }.ignoresSafeArea(.keyboard)
@@ -250,6 +252,7 @@ struct JobOverview: View {
                     .padding(.trailing, 20)
                     .offset(x: 0, y: -55)
                 
+   
             }
         }
 
@@ -259,6 +262,12 @@ struct JobOverview: View {
         .onChange(of: selectedJobManager.selectedJobUUID) { jobUUID in
             
             overviewModel.job = selectedJobManager.fetchJob(with: jobUUID, in: viewContext)
+        }
+        
+        .onChange(of: scrollManager.timeSheetsScrolled) { change in
+            
+            print("scroll manager changed to: \(change)")
+            
         }
         
         .fullScreenCover(isPresented: $overviewModel.isEditJobPresented) {
