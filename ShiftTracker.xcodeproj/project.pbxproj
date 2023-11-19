@@ -241,6 +241,7 @@
 		7CD8A3472A88A5650011A1C0 /* ShiftDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00629C686A200A23F33 /* ShiftDataModel.xcdatamodeld */; };
 		7CD8A3732A88ACBD0011A1C0 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A22F00B29C68A1D00A23F33 /* PersistenceController.swift */; };
 		7CD907482ABEB36200D2862D /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 7CD907472ABEB36200D2862D /* SwiftUIIntrospect */; };
+		7CE826C02B09E897002DDC28 /* CustomEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE826BF2B09E897002DDC28 /* CustomEditButton.swift */; };
 		7CEE1D712AD759C600C9435D /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEE1D702AD759C600C9435D /* AuthManager.swift */; };
 		7CF01D752ACBEE2F00EBC36C /* AggregatedShift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */; };
 		7CF01D772ACBEE4600EBC36C /* DayOrMonthAggregate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */; };
@@ -510,6 +511,7 @@
 		7CD8A3452A88A4B10011A1C0 /* JobChartWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JobChartWidgetExtension.entitlements; sourceTree = "<group>"; };
 		7CD8A3502A88AB1A0011A1C0 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		7CD8A35B2A88AB1A0011A1C0 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
+		7CE826BF2B09E897002DDC28 /* CustomEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomEditButton.swift; sourceTree = "<group>"; };
 		7CEE1D702AD759C600C9435D /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregatedShift.swift; sourceTree = "<group>"; };
 		7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayOrMonthAggregate.swift; sourceTree = "<group>"; };
@@ -817,6 +819,7 @@
 				7CFF521E2AD52D2100BB3AD6 /* ActivityIndicator.swift */,
 				7C780CFF2ADA33190021635E /* UIKitTextEditor.swift */,
 				7CFE77972ADCCD0E0004F9B9 /* CustomUIKitTextField.swift */,
+				7CE826BF2B09E897002DDC28 /* CustomEditButton.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -1435,6 +1438,7 @@
 				7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift in Sources */,
 				7CAF46BE2AD0293300584749 /* KeyboardDoneButton.swift in Sources */,
 				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
+				7CE826C02B09E897002DDC28 /* CustomEditButton.swift in Sources */,
 				1A19141D2A15F96D000D0F8B /* SelectedJobView.swift in Sources */,
 				7C2C2F8B2AA6CD9D0074E32E /* SettingsRow.swift in Sources */,
 				7C2A18E82AA0278A00518789 /* NavigationState.swift in Sources */,

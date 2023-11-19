@@ -256,7 +256,9 @@ struct ShiftsList: View {
             
             HStack(spacing: 10){
                 
-                EditButton()
+                CustomEditButton(editMode: $editMode, action: {
+                    selection.removeAll()
+                })
                 
                 Divider().frame(height: 10)
                 

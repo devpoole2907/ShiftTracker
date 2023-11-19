@@ -35,10 +35,10 @@ struct HistoricalView: View {
     
     var body: some View {
         
-  
+        
         ZStack(alignment: .bottomTrailing){
             ScrollViewReader { proxy in
-                    
+                
                 List(selection: editMode.isEditing ? $historyModel.selection : .constant(Set<NSManagedObjectID>())) {
                     
                     chartSection.id(0)
@@ -81,25 +81,25 @@ struct HistoricalView: View {
             
             
             
-        floatingButtons.padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
-
-            }
-     
+            floatingButtons.padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
             
-         .environment(\.editMode, $editMode)
+        }
+        
+        
+        .environment(\.editMode, $editMode)
         
         .overlay(alignment: .topTrailing){
             
             if let job = selectedJobManager.fetchJob(in: viewContext) {
                 if historyModel.showLargeIcon {
-
+                    
                     NavBarIconView(appeared: $historyModel.appeared, isLarge: $historyModel.showLargeIcon, job: job)
                         .padding(.trailing, 20)
                         .offset(x: 0, y: -55)
                     
                         .opacity(scrollManager.timeSheetsScrolled ? 0 : 1).animation(.easeInOut, value: scrollManager.timeSheetsScrolled)
                     
-
+                    
                 }
                 
             }
@@ -121,36 +121,36 @@ struct HistoricalView: View {
             
             Task {
                 
-                 
-                        let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
-                        await MainActor.run {
-                            withAnimation {
-                                historyModel.aggregatedShifts = newAggregatedShifts
-                            }
-                        }
-                    
-                    
+                
+                let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
+                await MainActor.run {
+                    withAnimation {
+                        historyModel.aggregatedShifts = newAggregatedShifts
+                    }
+                }
+                
+                
                 try await Task.sleep(nanoseconds: 300_000_000)
                 
                 
-                            await MainActor.run {
-                                if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || historyModel.appeared == false {
-                                    historyModel.selectedTab = newAggregatedShifts.count - 1
-                                    
-                                    
-                                    print("selected tab set to last one")
-                                }
-                                withAnimation {
-                                    self.isAnimating = false
-                                }
-                            }
+                await MainActor.run {
+                    if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || historyModel.appeared == false {
+                        historyModel.selectedTab = newAggregatedShifts.count - 1
                         
-                    
+                        
+                        print("selected tab set to last one")
+                    }
+                    withAnimation {
+                        self.isAnimating = false
+                    }
+                }
+                
+                
                 
                 
             }
             
-
+            
             withAnimation {
                 shiftManager.showModePicker = true
             }
@@ -166,7 +166,7 @@ struct HistoricalView: View {
                 }
                 
             }
-    
+            
         }
         
         .navigationTitle(historyModel.selection.isEmpty ? historyModel.getCurrentDateRangeString() : "\(historyModel.selection.count) selected")
@@ -177,10 +177,10 @@ struct HistoricalView: View {
                 .presentationDetents([.large])
                 .customSheetRadius(35)
                 .customSheetBackground()
-        
+            
         }
         
-
+        
         
         .fullScreenCover(isPresented: $historyModel.showingProView) {
             ProView()
@@ -189,24 +189,24 @@ struct HistoricalView: View {
                 .customSheetBackground()
         }
         
-     /*   .toolbar {
-            if !historyModel.showLargeIcon {
-                
-                if let job = selectedJobManager.fetchJob(in: viewContext) {
-                    
-                    if !historyModel.showLargeIcon {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            
-                            NavBarIconView(appeared: $historyModel.appeared, isLarge: $historyModel.showLargeIcon, job: .constant(job)).frame(maxHeight: 25)
-                            
-                            
-                        }
-                    }
-                }
-            }
-        }*/
+        /*   .toolbar {
+         if !historyModel.showLargeIcon {
+         
+         if let job = selectedJobManager.fetchJob(in: viewContext) {
+         
+         if !historyModel.showLargeIcon {
+         ToolbarItem(placement: .topBarTrailing) {
+         
+         NavBarIconView(appeared: $historyModel.appeared, isLarge: $historyModel.showLargeIcon, job: .constant(job)).frame(maxHeight: 25)
+         
+         
+         }
+         }
+         }
+         }
+         }*/
     }
-
+    
     private func deleteItems() {
         withAnimation {
             
@@ -257,7 +257,7 @@ struct HistoricalView: View {
                 if historyModel.aggregatedShifts.isEmpty {
                     dismiss()
                 }
-           
+                
             } catch {
                 let nsError = error as NSError
                 fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -274,66 +274,66 @@ struct HistoricalView: View {
                 TabView(selection: $historyModel.selectedTab.animation(.default)) {
                     
                     if !isAnimating {
-                    
-                    
-                    ForEach(historyModel.aggregatedShifts.indices, id: \.self) { index in
                         
-                        let dateRange = historyModel.getDateRange(startDate: historyModel.aggregatedShifts[index].startDate)
                         
-                        VStack {
-                            HStack{
-                                VStack(alignment: .leading){
-                                    Text("Total")
-                                        .font(.headline)
+                        ForEach(historyModel.aggregatedShifts.indices, id: \.self) { index in
+                            
+                            let dateRange = historyModel.getDateRange(startDate: historyModel.aggregatedShifts[index].startDate)
+                            
+                            VStack {
+                                HStack{
+                                    VStack(alignment: .leading){
+                                        Text("Total")
+                                            .font(.headline)
+                                            .bold()
+                                            .roundedFontDesign()
+                                            .foregroundColor(.gray)
+                                        
+                                        Text(
+                                            shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: historyModel.aggregatedShifts[index].totalEarnings)) ?? "0")" :
+                                                shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalHours) :
+                                                shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalBreaks)
+                                        )
+                                        .font(.title2)
                                         .bold()
-                                        .roundedFontDesign()
-                                        .foregroundColor(.gray)
-                                    
-                                    Text(
-                                        shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: historyModel.aggregatedShifts[index].totalEarnings)) ?? "0")" :
-                                            shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalHours) :
-                                            shiftManager.formatTime(timeInHours: historyModel.aggregatedShifts[index].totalBreaks)
-                                    )
-                                    .font(.title2)
-                                    .bold()
+                                        
+                                        
+                                    }
+                                    Spacer()
                                     
                                     
+                                    
+                                    
+                                    
+                                }.padding(.top, 5)
+                                    .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
+                                
+                                let barMarks = historyModel.aggregatedShifts[index].dailyOrMonthlyAggregates
+                                
+                                // gotta do it this way, for some reason doing the check in the chartView fails and builds anyway for ios 16 causing a crash
+                                if #available(iOS 17.0, *){
+                                    
+                                    ChartView(dateRange: dateRange, shifts: barMarks)
+                                        .environmentObject(historyModel)
+                                        .padding(.leading)
+                                    
+                                } else {
+                                    iosSixteenChartView(dateRange: dateRange, shifts: barMarks)
+                                        .environmentObject(historyModel)
+                                        .padding(.leading)
                                 }
-                                Spacer()
                                 
                                 
-                                
-                                
-                                
-                            }.padding(.top, 5)
-                                .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
-                            
-                            let barMarks = historyModel.aggregatedShifts[index].dailyOrMonthlyAggregates
-                            
-                            // gotta do it this way, for some reason doing the check in the chartView fails and builds anyway for ios 16 causing a crash
-                            if #available(iOS 17.0, *){
-                                
-                                ChartView(dateRange: dateRange, shifts: barMarks)
-                                    .environmentObject(historyModel)
-                                    .padding(.leading)
-                                
-                            } else {
-                                iosSixteenChartView(dateRange: dateRange, shifts: barMarks)
-                                    .environmentObject(historyModel)
-                                    .padding(.leading)
-                            }
+                            } .padding(.horizontal)
+                                .tag(index)
                             
                             
-                        } .padding(.horizontal)
-                            .tag(index)
+                            
+                            
+                            
+                            
+                        }
                         
-                        
-                        
-                        
-                        
-                        
-                    }
-                    
                     } else {
                         ActivityIndicator(isAnimating: isAnimating)
                     }
@@ -384,73 +384,73 @@ struct HistoricalView: View {
             Section {
                 
                 if !isAnimating {
-                if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
-                    let reversedIndices = Array(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.indices.reversed())
-                    let count = reversedIndices.count
-                    ForEach(reversedIndices, id: \.self) { index in
-                        let normalizedIndex = count - 1 - index
-                        
-                        let shift = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts[index]
-                        let currentObjectID = shift.objectID
-                        
-                        NavigationLink(value: shift) {
-                            ShiftDetailRow(shift: shift)
+                    if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
+                        let reversedIndices = Array(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.indices.reversed())
+                        let count = reversedIndices.count
+                        ForEach(reversedIndices, id: \.self) { index in
+                            let normalizedIndex = count - 1 - index
                             
+                            let shift = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts[index]
+                            let currentObjectID = shift.objectID
                             
-                        }
-                        
-                       .swipeActions {
-                         
-                            
-                            Button(action: {
+                            NavigationLink(value: shift) {
+                                ShiftDetailRow(shift: shift)
                                 
-                                withAnimation {
-                                    shiftStore.deleteOldShift(shift, in: viewContext)
-                                    if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
-                                        historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
-                                    }
-                                    
-                                    historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
-                                    
-                                    if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
-                                        historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
-                                        
-                                        // changes the current tab if it empties
-                                        if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
-                                            historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
-                                        }
-                                    }
-                                }
                                 
-                            }){
-                                Image(systemName: "trash")
                             }
                             
-                            .tint(.clear)
+                            .swipeActions {
+                                
+                                
+                                Button(action: {
+                                    
+                                    withAnimation {
+                                        shiftStore.deleteOldShift(shift, in: viewContext)
+                                        if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
+                                            historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
+                                        }
+                                        
+                                        historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
+                                        
+                                        if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
+                                            historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
+                                            
+                                            // changes the current tab if it empties
+                                            if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
+                                                historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
+                                            }
+                                        }
+                                    }
+                                    
+                                }){
+                                    Image(systemName: "trash")
+                                }
+                                
+                                .tint(.clear)
+                                
+                                
+                                
+                            }
                             
-                            
-                            
+                            .id(normalizedIndex + 1)
+                            .tag(currentObjectID)
                         }
-                        
-                        .id(normalizedIndex + 1)
-                        .tag(currentObjectID)
                     }
-                }
-                
+                    
                 } else {
                     ActivityIndicator(isAnimating: isAnimating).frame(maxWidth: .infinity)
                 }
+                
+                
+            }
+            .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
+            .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
             
+            Section {
+                Spacer(minLength: 100)
+            }.listRowBackground(Color.clear)
             
         }
-        .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-        
-        Section {
-            Spacer(minLength: 100)
-        }.listRowBackground(Color.clear)
-        
-    }
         
     }
     
@@ -471,97 +471,97 @@ struct HistoricalView: View {
                 .disabled(editMode.isEditing)
             
             Spacer()
-        
-        VStack(alignment: .trailing){
             
-            HStack(spacing: 10){
+            VStack(alignment: .trailing){
                 
-                EditButton()
-                
-                Divider().frame(height: 10)
-                
-                Button(action: {
+                HStack(spacing: 10){
                     
-                    if purchaseManager.hasUnlockedPro {
-                        historyModel.showExportView.toggle()
-                    } else {
+                    CustomEditButton(editMode: $editMode, action: {
+                        historyModel.selection.removeAll()
+                    })
+                    
+                    Divider().frame(height: 10)
+                    
+                    Button(action: {
                         
-                        historyModel.showingProView.toggle()
-                        
-                    }
-                    
-                    
-                }){
-                    Image(systemName: "square.and.arrow.up").bold()
-                }.disabled(historyModel.selection.isEmpty)
-                
-                Divider().frame(height: 10)
-                
-                Button(action: {
-                    CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                }) {
-                    Image(systemName: "trash")
-                        .bold()
-                    
-                        .customAnimatedSymbol(value: $historyModel.selection)
-                }.disabled(historyModel.selection.isEmpty)
-                    .tint(.red)
-                
-            }.padding()
-                .glassModifier(cornerRadius: 20)
-            
-            CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
-            
-                .glassModifier(cornerRadius: 20)
-            
-                .frame(width: 165)
-                .frame(maxHeight: 30)
-            
-                .disabled(editMode.isEditing)
-                .opacity(editMode.isEditing ? 0.5 : 1.0)
-            
-                .onChange(of: historyModel.historyRange) { value in
-                    scrollManager.timeSheetsScrolled = false
-                    withAnimation {
-                        self.isAnimating = true
-                    }
-                    
-                    Task {
-                        
-                        
-                        let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
-                        await MainActor.run {
-                            withAnimation {
-                                historyModel.aggregatedShifts = newAggregatedShifts
-                            }
+                        if purchaseManager.hasUnlockedPro {
+                            historyModel.showExportView.toggle()
+                        } else {
+                            
+                            historyModel.showingProView.toggle()
+                            
                         }
                         
                         
-                        try await Task.sleep(nanoseconds: 300_000_000)
+                    }){
+                        Image(systemName: "square.and.arrow.up").bold()
+                    }.disabled(historyModel.selection.isEmpty)
+                    
+                    Divider().frame(height: 10)
+                    
+                    Button(action: {
+                        CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                    }) {
+                        Image(systemName: "trash")
+                            .bold()
                         
+                            .customAnimatedSymbol(value: $historyModel.selection)
+                    }.disabled(historyModel.selection.isEmpty)
+                        .tint(.red)
+                    
+                }.padding()
+                    .glassModifier(cornerRadius: 20)
+                
+                CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
+                
+                    .glassModifier(cornerRadius: 20)
+                
+                    .frame(width: 165)
+                    .frame(maxHeight: 30)
+                
+                    .disabled(editMode.isEditing)
+                    .opacity(editMode.isEditing ? 0.5 : 1.0)
+                
+                    .onChange(of: historyModel.historyRange) { value in
+                        scrollManager.timeSheetsScrolled = false
+                        withAnimation {
+                            self.isAnimating = true
+                        }
                         
-                        await MainActor.run {
-                            historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
-                            withAnimation {
-                                self.isAnimating = false
+                        Task {
+                            
+                            
+                            let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
+                            await MainActor.run {
+                                withAnimation {
+                                    historyModel.aggregatedShifts = newAggregatedShifts
+                                }
                             }
+                            
+                            
+                            try await Task.sleep(nanoseconds: 300_000_000)
+                            
+                            
+                            await MainActor.run {
+                                historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
+                                withAnimation {
+                                    self.isAnimating = false
+                                }
+                            }
+                            
+                            
+                            
+                            
                         }
                         
                         
-                        
-                        
                     }
-                    
-                    
-                }
+                
+                Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
+            }  .padding(.horizontal)
             
-            Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
-        }  .padding(.horizontal)
-        
-    }
+        }
     }
     
 }
-
-
 
