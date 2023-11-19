@@ -35,11 +35,9 @@ struct ShiftsList: View {
     
     @State private var scrollPos: CGFloat = 0
     
-    
     @Binding var navPath: NavigationPath
     
     @State private var selection = Set<NSManagedObjectID>()
-    
     
     var body: some View {
         let allShifts = sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }

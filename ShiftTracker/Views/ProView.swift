@@ -32,188 +32,86 @@ struct ProView: View {
             
             ZStack{
                 backgroundColor.opacity(hasAppeared ? 0 : 1)
-                    
+                
                     .edgesIgnoringSafeArea(.all)
                 
-            
-            VStack{
-                HStack{
-                    Text("ShiftTracker")
-                        .font(.title)
-                        .bold()
-                    Text("PRO")
-                        .font(.largeTitle)
-                        .fontWeight(.heavy)
-                        .foregroundStyle(proButtonColor.gradient)
-                }
                 
-                VStack(alignment: .leading){
-                    HStack {
-                        Image(systemName: "clipboard")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Multiple Jobs")
-                            .font(.title2)
-                            .bold()
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
-                    HStack {
-                        Image(systemName: "play.rectangle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Live Activities")
-                            .font(.title2)
-                            .bold()
-                        //.foregroundColor(textColor)
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
-                    HStack {
-                        Image(systemName: "location")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Location based clock in & clock out")
-                            .font(.title2)
-                            .bold()
-                        //.foregroundColor(textColor)
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
-                    HStack {
-                        Image(systemName: "paintpalette")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Custom Themes")
-                            .font(.title2)
-                            .bold()
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
-                    HStack {
-                        Image(systemName: "square.and.arrow.up")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Data Exporting")
-                            .font(.title2)
-                            .bold()
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
-                    
-                    HStack {
-                        Image(systemName: "photo.on.rectangle.angled")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
-                            .foregroundColor(proButtonColor)
-                        Spacer().frame(width: 15)
-                        Text("Custom App Icons")
-                            .font(.title2)
-                            .bold()
-                    }.listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .padding(.vertical, 5)
-                    
-                    
-                    /*  HStack {
-                     Image(systemName: "timer")
-                     .resizable()
-                     .aspectRatio(contentMode: .fit)
-                     .frame(width: 40, height: 40)
-                     .foregroundColor(proButtonColor)
-                     Spacer().frame(width: 15)
-                     Text("Automatic Breaks")
-                     .font(.title2)
-                     .bold()
-                     }.listRowSeparator(.hidden)
-                     .listRowBackground(Color.clear)
-                     .padding(.vertical, 5)
-                     HStack {
-                     Image(systemName: "paperclip")
-                     .resizable()
-                     .aspectRatio(contentMode: .fit)
-                     .frame(width: 40, height: 40)
-                     .foregroundColor(proButtonColor)
-                     Spacer().frame(width: 15)
-                     Text("Invoice Generation")
-                     .font(.title2)
-                     .bold()
-                     }.listRowSeparator(.hidden)
-                     .listRowBackground(Color.clear)
-                     .padding(.vertical, 5)*/
-                }.padding(.horizontal, 30)
-                
-                VStack(alignment: .leading, spacing: 10) {
+                VStack{
                     HStack{
-                        Text("UNLOCK")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(upgradeButtonTextColor)
+                        Text("ShiftTracker")
+                            .font(.title)
+                            .bold()
                         Text("PRO")
                             .font(.largeTitle)
                             .fontWeight(.heavy)
                             .foregroundStyle(proButtonColor.gradient)
-                        Text("FEATURES")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundStyle(upgradeButtonTextColor)
                     }
                     
-                    .foregroundColor(textColor)
-                }
-                .padding()
-                .cornerRadius(20)
-                .frame(maxWidth: .infinity)
-                
-                
-                HStack(spacing: 10){
-                    ForEach(purchaseManager.products, id: \.subscription) { product in
+                    VStack(alignment: .leading){
                         
-                        PurchaseButton(product: product)
-                        
-                        
-                    }
+                        ForEach(proFeatures, id: \.self) { feature in
+                            
+                            FeatureRow(image: feature.image, text: feature.text)
+                            
+                        }
+
+                    }.padding(.horizontal, 30)
                     
-                }.padding(.horizontal, 30)
-                
-                Button(action: {
-                    
-                    Task {
-                        
-                        do {
-                            try await AppStore.sync()
-                        } catch {
-                            print(error)
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack{
+                            Text("UNLOCK")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundStyle(upgradeButtonTextColor)
+                            Text("PRO")
+                                .font(.largeTitle)
+                                .fontWeight(.heavy)
+                                .foregroundStyle(proButtonColor.gradient)
+                            Text("FEATURES")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundStyle(upgradeButtonTextColor)
                         }
                         
-                        
+                        .foregroundColor(textColor)
                     }
+                    .padding()
+                    .cornerRadius(20)
+                    .frame(maxWidth: .infinity)
                     
-                }) {
-                    Text("Restore")
-                        .bold()
-                        .roundedFontDesign()
-                }.padding()
+                    
+                    HStack(spacing: 10){
+                        ForEach(purchaseManager.products, id: \.subscription) { product in
+                            
+                            PurchaseButton(product: product)
+                            
+                            
+                        }
+                        
+                    }.padding(.horizontal, 30)
+                    
+                    Button(action: {
+                        
+                        Task {
+                            
+                            do {
+                                try await AppStore.sync()
+                            } catch {
+                                print(error)
+                            }
+                            
+                            
+                        }
+                        
+                    }) {
+                        Text("Restore")
+                            .bold()
+                            .roundedFontDesign()
+                    }.padding()
+                    
+                }
                 
             }
-            
-        }
             
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -261,6 +159,32 @@ struct ProView: View {
     }
 }
 
+
+struct FeatureRow: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
+    let image: String
+    let text: String
+    
+    var body: some View {
+        let proButtonColor: Color = colorScheme == .dark ? Color.orange : Color.cyan
+        HStack {
+            Image(systemName: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 40, height: 40)
+                .foregroundColor(proButtonColor)
+            Spacer().frame(width: 15)
+            Text(text)
+                .font(.title2)
+                .bold()
+        }.listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+            .padding(.vertical, 5)
+    }
+}
+
 struct PurchaseButton: View {
     
     @EnvironmentObject var purchaseManager: PurchaseManager
@@ -285,13 +209,11 @@ struct PurchaseButton: View {
                 }
             }
             
-            
-            
-            
         }){
             
             VStack{
-                Text(product.id == "pro_month" ? "MONTHLY" : "LIFETIME")
+                // says upgrade instead of lifetime for now, maybe return and introduce monthly sub again later
+                Text(product.id == "pro_month" ? "MONTHLY" : "UPGRADE")
                     .font(.title2)
                     .fontWeight(.heavy)
                     .foregroundColor(upgradeButtonTextColor)
@@ -316,6 +238,7 @@ struct PurchaseButton: View {
     }
     
 }
+
 
 
 struct ProView_Previews: PreviewProvider {

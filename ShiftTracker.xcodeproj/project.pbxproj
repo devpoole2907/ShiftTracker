@@ -212,6 +212,7 @@
 		7CAF46BE2AD0293300584749 /* KeyboardDoneButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */; };
 		7CB0D23E2AE8C7DE00CF508E /* MockupWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB0D23D2AE8C7DE00CF508E /* MockupWelcomeView.swift */; };
 		7CB0D2402AE8CD8F00CF508E /* MockupContinueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB0D23F2AE8CD8F00CF508E /* MockupContinueView.swift */; };
+		7CB5494B2B09BE4B001E4328 /* ProFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CB5494A2B09BE4B001E4328 /* ProFeature.swift */; };
 		7CBEB11C2AC02B4D002DC7D6 /* MockupLockscreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */; };
 		7CC2C6C22AC6AC9100F15E74 /* RepeatEndPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */; };
 		7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */; };
@@ -485,6 +486,7 @@
 		7CAF46BD2AD0293300584749 /* KeyboardDoneButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardDoneButton.swift; sourceTree = "<group>"; };
 		7CB0D23D2AE8C7DE00CF508E /* MockupWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupWelcomeView.swift; sourceTree = "<group>"; };
 		7CB0D23F2AE8CD8F00CF508E /* MockupContinueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupContinueView.swift; sourceTree = "<group>"; };
+		7CB5494A2B09BE4B001E4328 /* ProFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProFeature.swift; sourceTree = "<group>"; };
 		7CBEB11B2AC02B4D002DC7D6 /* MockupLockscreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupLockscreenView.swift; sourceTree = "<group>"; };
 		7CC2C6C12AC6AC9100F15E74 /* RepeatEndPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatEndPicker.swift; sourceTree = "<group>"; };
 		7CC2C6C32AC6AD9B00F15E74 /* ScheduledShiftRowSwipeButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledShiftRowSwipeButtons.swift; sourceTree = "<group>"; };
@@ -1082,6 +1084,7 @@
 				7CAB87152A5878C900A08219 /* ShiftStore.swift */,
 				7CF01D742ACBEE2F00EBC36C /* AggregatedShift.swift */,
 				7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */,
+				7CB5494A2B09BE4B001E4328 /* ProFeature.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1424,6 +1427,7 @@
 				7C1132422ACA9B9200E983FD /* CustomListSectionSpacingModifier.swift in Sources */,
 				7C62185C2AD0C3D800E67245 /* JobViewModel.swift in Sources */,
 				7C1AA4662A7510DA00330A54 /* LiveActivityAttributes.swift in Sources */,
+				7CB5494B2B09BE4B001E4328 /* ProFeature.swift in Sources */,
 				7C0AC1322A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */,
 				7C1132442ACA9BE000E983FD /* CustomDisableListSelectionModifier.swift in Sources */,
 				7CFF521B2AD5230C00BB3AD6 /* StatsSquareViewModel.swift in Sources */,

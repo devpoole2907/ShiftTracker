@@ -13,7 +13,7 @@ import CoreData
 class PurchaseManager: ObservableObject {
     
     
-    private let productIds = ["pro_month", "pro_lifetime"]
+    private let productIds = ["pro_lifetime"]
     
     @Published
     private(set) var products: [Product] = []
@@ -29,15 +29,15 @@ class PurchaseManager: ObservableObject {
     
     var hasUnlockedPro: Bool {
         
-        return true // temporary for testflight
+    //    return true // temporary for testflight
     
-     /*   if self.purchasedProductIDs.contains("pro_lifetime") {
+        if self.purchasedProductIDs.contains("pro_lifetime") {
                     return true
                 }
         
         return (subscriptionExpiryDate ?? Date()) > Date()
         
-     */
+     
         
     }
     

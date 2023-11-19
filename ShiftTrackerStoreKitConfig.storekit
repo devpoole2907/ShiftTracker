@@ -20,7 +20,7 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "29.99",
+      "displayPrice" : "9.99",
       "familyShareable" : true,
       "internalID" : "6467845893",
       "localizations" : [
@@ -71,7 +71,7 @@
     "_billingIssuesEnabled" : false,
     "_developerTeamID" : "L9DB7QA9DE",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 717492508.871243,
+    "_lastSynchronizedDate" : 722056976.07028794,
     "_locale" : "en_US",
     "_storefront" : "NZL",
     "_storeKitErrors" : [
