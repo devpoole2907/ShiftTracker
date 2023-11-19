@@ -54,8 +54,18 @@ struct DayOrMonthAggregate: Hashable, Identifiable {
     
     
     var formattedEarnings: String {
-            return "$\(String(format: "%.2f", totalEarnings))"
+        
+            return "\(currencyFormatter.currencySymbol ?? "")\(String(format: "%.2f", totalEarnings))"
+        
+       
         }
+    
+    private var currencyFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        return formatter
+    }
     
     
     init(date: Date, totalEarnings: Double, totalHours: Double, totalBreaks: Double, historyRange: HistoryRange, calendar: Calendar) {
