@@ -180,7 +180,7 @@ struct ScheduleView: View {
             
                 .glassModifier()
                 .padding(.horizontal)
-         
+         .padding(.top, 8)
             
         }
         .listRowBackground(Color.clear)
