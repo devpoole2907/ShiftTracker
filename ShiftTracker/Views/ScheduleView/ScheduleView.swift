@@ -59,7 +59,7 @@ struct ScheduleView: View {
                 
                 
                 
-            }
+            }.listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                
@@ -177,6 +177,8 @@ struct ScheduleView: View {
                 .padding()
                 .tint(colorScheme == .dark ? .white.opacity(0.7) : nil)
             
+                .glassModifier()
+                .padding(.horizontal)
          
             
         } header: {
@@ -184,7 +186,7 @@ struct ScheduleView: View {
             Color.clear
             
         }
-        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+        .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
         .listRowInsets(.init(top: -10, leading: 0, bottom: -10, trailing: 0))
 

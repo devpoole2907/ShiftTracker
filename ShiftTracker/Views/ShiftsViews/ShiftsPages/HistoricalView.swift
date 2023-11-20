@@ -42,6 +42,10 @@ struct HistoricalView: View {
                 List(selection: editMode.isEditing ? $historyModel.selection : .constant(Set<NSManagedObjectID>())) {
                     
                     chartSection.id(0)
+                        .padding(.vertical, 10)
+                        .glassModifier()
+                        .padding(.horizontal)
+                        .listRowSeparator(.hidden)
                     
                         .onDisappear {
                             scrollManager.timeSheetsScrolled = true
@@ -58,7 +62,7 @@ struct HistoricalView: View {
                 }.scrollContentBackground(.hidden)
                     .tint(Color.gray)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-                
+                    .listStyle(.plain)
                     .background {
                         themeManager.overviewDynamicBackground.ignoresSafeArea()
                     }
@@ -374,7 +378,7 @@ struct HistoricalView: View {
             
         }.frame(minHeight: 300)
             .listRowInsets(.init(top: 20, leading: 0, bottom: 20, trailing: 0))
-            .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+            .listRowBackground(Color.clear)
         
     }
     
@@ -444,7 +448,7 @@ struct HistoricalView: View {
                 
             }
             .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-            .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+            .listRowBackground(Color.clear)
             
             Section {
                 Spacer(minLength: 100)

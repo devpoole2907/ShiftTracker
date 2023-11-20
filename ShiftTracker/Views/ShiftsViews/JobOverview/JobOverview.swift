@@ -116,12 +116,37 @@ struct JobOverview: View {
     @Binding var navPath: NavigationPath
     
     var body: some View {
+        
+        let textColor: Color = colorScheme == .dark ? .white : .black
 
             ZStack(alignment: .bottomTrailing){
            
                     List{
                         
+                        Section {
+                            statsSection
+                                .frame(maxWidth: .infinity)
+                        }.listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                         
+                        Section {
+                            NavigationLink(value: 1) {
+                                
+                                Text("Latest Shifts")
+                                 
+                                    .foregroundStyle(textColor)
+                                    .padding(.leading, overviewModel.job != nil ? 4 : 8)
+                                    .font(.title2)
+                                    .bold()
+                                
+                                Image(systemName: "chevron.right")
+                                    .bold()
+                                    .foregroundStyle(.gray)
+                                Spacer()
+                                
+                            }
+                        }.listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                         
                         recentShiftsSection
                             .onAppear {
@@ -135,7 +160,7 @@ struct JobOverview: View {
                         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                         .customSectionSpacing()
                     
-                     
+                        .listStyle(.plain)
                     
                 
                 
@@ -361,20 +386,9 @@ struct JobOverview: View {
             }
             
             
-        } header: {
-            
-            statsSection
-                .frame(maxWidth: .infinity)
-            
-          
-        
-            
-            
-            
-            
         }
         
-        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+        .listRowBackground(Color.clear)
     }
     
     var floatingButtons: some View {
@@ -409,8 +423,6 @@ struct JobOverview: View {
     
     var statsSection: some View {
         
-        let textColor: Color = colorScheme == .dark ? .white : .black
-        
         return Group {
         VStack(alignment: .center, spacing: 16){
             HStack(spacing: 8){
@@ -440,21 +452,7 @@ struct JobOverview: View {
             }.frame(width: getRect().width - 44)
             
             
-            NavigationLink(value: 1) {
-                
-                Text("Latest Shifts")
-                 
-                    .foregroundStyle(textColor)
-                    .padding(.leading, overviewModel.job != nil ? 4 : 8)
-                    .font(.title2)
-                    .bold()
-                
-                Image(systemName: "chevron.right")
-                    .bold()
-                    .foregroundStyle(.gray)
-                Spacer()
-                
-            }
+          
             
         }
             .frame(height: 250)

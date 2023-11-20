@@ -75,8 +75,7 @@ struct ShiftsList: View {
                         }
                     }
                     .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
-                    .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-                    
+                    .listRowBackground(Color.clear)
                     
                     .background {
                         
@@ -127,7 +126,9 @@ struct ShiftsList: View {
                     .opacity(0)
                 
                
-            }.customSearchable(searchText: $sortSelection.searchTerm, isPresented: $showingSearch, prompt: "Search Notes")
+                }.listStyle(.plain)
+                
+                .customSearchable(searchText: $sortSelection.searchTerm, isPresented: $showingSearch, prompt: "Search Notes")
             
             
                 .onSubmit(of: .search, sortSelection.fetchShifts)
