@@ -174,7 +174,7 @@ struct JobOverview: View {
                     ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection) .environmentObject(scrollManager)
                         .onAppear {
                             withAnimation {
-                               // shiftManager.showModePicker = false
+                               shiftManager.showModePicker = false
                             }
                         }
                     
