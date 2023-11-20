@@ -174,16 +174,13 @@ struct ScheduleView: View {
         let interval = DateInterval(start: .distantPast, end: .distantFuture)
         return Section{
             CalendarView(interval: interval, shiftStore: shiftStore)
-                .padding()
+                .padding(.horizontal)
+                .padding(.vertical, 5)
                 .tint(colorScheme == .dark ? .white.opacity(0.7) : nil)
             
                 .glassModifier()
                 .padding(.horizontal)
          
-            
-        } header: {
-            
-            Color.clear
             
         }
         .listRowBackground(Color.clear)

@@ -28,13 +28,17 @@ struct ChartSquare: View {
     }
     
     var body: some View {
-        NavigationLink(value: 2) {
+        
+        ZStack {
+            NavigationLink(value: 2) { EmptyView() }.opacity(0.0)
+            
             VStack(alignment: .center) {
                 
                 navHeader
                 weeklyChart
                 
             }
+            
         }
         .padding(.vertical, 8)
         .glassModifier(cornerRadius: 12, applyPadding: false)

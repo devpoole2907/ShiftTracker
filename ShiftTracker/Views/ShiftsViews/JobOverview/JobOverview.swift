@@ -117,7 +117,7 @@ struct JobOverview: View {
     
     var body: some View {
         
-        let textColor: Color = colorScheme == .dark ? .white : .black
+        
 
             ZStack(alignment: .bottomTrailing){
            
@@ -128,25 +128,7 @@ struct JobOverview: View {
                                 .frame(maxWidth: .infinity)
                         }.listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
-                        
-                        Section {
-                            NavigationLink(value: 1) {
-                                
-                                Text("Latest Shifts")
-                                 
-                                    .foregroundStyle(textColor)
-                                    .padding(.leading, overviewModel.job != nil ? 4 : 8)
-                                    .font(.title2)
-                                    .bold()
-                                
-                                Image(systemName: "chevron.right")
-                                    .bold()
-                                    .foregroundStyle(.gray)
-                                Spacer()
-                                
-                            }
-                        }.listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
+                 
                         
                         recentShiftsSection
                             .onAppear {
@@ -186,12 +168,17 @@ struct JobOverview: View {
             .navigationDestination(for: Int.self) { value in
                 
                 if value == 1 {
+                    
+                   // Text("test")
+                    
                     ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection) .environmentObject(scrollManager)
                         .onAppear {
                             withAnimation {
-                                shiftManager.showModePicker = false
+                               // shiftManager.showModePicker = false
                             }
                         }
+                    
+                    
                     
                 } else if value == 2 {
                     HistoricalView()
@@ -347,9 +334,26 @@ struct JobOverview: View {
     
     var recentShiftsSection: some View {
         
-      
+        let textColor: Color = colorScheme == .dark ? .white : .black
         
         return Section{
+            
+            ZStack {
+                NavigationLink(value: 1) { EmptyView() }.opacity(0.0)
+                HStack {
+                    Text("Latest Shifts")
+                     
+                        .foregroundStyle(textColor)
+                        .padding(.leading, overviewModel.job != nil ? 4 : 8)
+                        .font(.title2)
+                        .bold()
+                    
+                    Image(systemName: "chevron.right")
+                        .bold()
+                        .foregroundStyle(.gray)
+                    Spacer()
+                } //This will be the view that you want to display to the user
+            }
             
             ForEach(lastTenShifts, id: \.objectID) { shift in
                 

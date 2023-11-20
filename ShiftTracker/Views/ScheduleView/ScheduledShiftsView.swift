@@ -46,6 +46,10 @@ struct ScheduledShiftsView: View {
         
         Section {
             
+            Text(dateFormatter.string(from: scheduleModel.dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
+                .padding(.top, 25)
+                .padding(.leading, 5)
+                .listRowBackground(Color.clear)
             if !oldShiftsViewModel.displayedOldShifts.isEmpty {
                 
                 ForEach(oldShiftsViewModel.displayedOldShifts, id: \.objectID){ shift in
@@ -125,14 +129,10 @@ struct ScheduledShiftsView: View {
             
                 
                 
-        } header: {
+        }
             
-            Text(dateFormatter.string(from: scheduleModel.dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
-                    
-                
-                
-            
-        }.listRowInsets(.init(top: 0, leading: 8, bottom: 5, trailing: 0))
+           
+        .listRowInsets(.init(top: 0, leading: 8, bottom: 5, trailing: 0))
 
         
         .sheet(item: $scheduleModel.selectedShiftToEdit, onDismiss: {
