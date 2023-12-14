@@ -39,6 +39,7 @@ struct MainWithSideBarView: View {
     @EnvironmentObject var navigationState: NavigationState
     
     @Environment(\.managedObjectContext) private var context
+    @Environment(\.colorScheme) private var colorScheme
     
     private let notificationManager = ShiftNotificationManager.shared
 
@@ -336,8 +337,12 @@ func onEnd(value: DragGesture.Value) {
                     .allowsHitTesting(!navigationState.showMenu)
                 
                     .background {
-                        
-                        themeManager.contentDynamicBackground.ignoresSafeArea()
+                        // this could be worked into the themeManagers pure dark mode?
+                        if colorScheme == .dark {
+                            themeManager.contentDynamicBackground.ignoresSafeArea()
+                        } else {
+                            Color.clear.ignoresSafeArea()
+                        }
                     }
                 
             
@@ -360,9 +365,15 @@ func onEnd(value: DragGesture.Value) {
                         .blur(radius: navigationState.calculatedBlur)
                         .allowsHitTesting(!navigationState.showMenu)
                     
+                   
+                    
                         .background {
-                            
-                            themeManager.overviewDynamicBackground.ignoresSafeArea()
+                            // this could be worked into the themeManagers pure dark mode?
+                            if colorScheme == .dark {
+                                themeManager.overviewDynamicBackground.ignoresSafeArea()
+                            } else {
+                                Color.clear.ignoresSafeArea()
+                            }
                         }
                     
                     
@@ -475,9 +486,15 @@ func onEnd(value: DragGesture.Value) {
                     .blur(radius: navigationState.calculatedBlur)
                     .allowsHitTesting(!navigationState.showMenu)
                 
+                 
+                
                     .background {
-                        
-                        themeManager.scheduleDynamicBackground.ignoresSafeArea()
+                        // this could be worked into the themeManagers pure dark mode?
+                        if colorScheme == .dark {
+                            themeManager.scheduleDynamicBackground.ignoresSafeArea()
+                        } else {
+                            Color.clear.ignoresSafeArea()
+                        }
                     }
                 
             }
@@ -493,10 +510,15 @@ func onEnd(value: DragGesture.Value) {
                 SettingsView(navPath: $settingsPath)
                     .blur(radius: navigationState.calculatedBlur)
                     .allowsHitTesting(!navigationState.showMenu)
-                   
+                
+                
                     .background {
-                        
-                        themeManager.settingsDynamicBackground.ignoresSafeArea()
+                        // this could be worked into the themeManagers pure dark mode?
+                        if colorScheme == .dark {
+                            themeManager.settingsDynamicBackground.ignoresSafeArea()
+                        } else {
+                            Color.clear.ignoresSafeArea()
+                        }
                     }
                 
             }
