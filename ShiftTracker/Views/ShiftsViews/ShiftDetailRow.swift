@@ -139,7 +139,7 @@ struct ShiftDetailRow: View {
                     .foregroundColor(.gray)
                     .font(.footnote)
                     .bold()
-            }
+            } .padding(.horizontal, 5)
 
             
                 
@@ -247,7 +247,8 @@ struct ShiftDetailRow: View {
                  
                 
             }.frame(alignment: .leading)
-            
+                .padding(.horizontal, 5)
+
             
         }
         
