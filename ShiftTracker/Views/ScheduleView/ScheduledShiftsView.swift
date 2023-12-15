@@ -48,7 +48,7 @@ struct ScheduledShiftsView: View {
             
             Text(dateFormatter.string(from: scheduleModel.dateSelected?.date ?? Date())).textCase(nil).foregroundStyle(colorScheme == .dark ? .white : .black).font(.title2).bold()
                 .padding(.top, 25)
-                .padding(.leading, 5)
+                .padding(.leading, 15)
                 .listRowBackground(Color.clear)
             if !oldShiftsViewModel.displayedOldShifts.isEmpty {
                 

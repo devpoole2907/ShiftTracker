@@ -90,6 +90,8 @@ class ThemeDataManager: ObservableObject {
     
     // just doing it this way instead of using the modifier, the modifier causes black screen issues when changing tabs.
     
+    // we made a function too, that also caused issues with the gradient changing/delay changing when changing tabs, so doing it copy paste over and over seems to be the best for now...
+    
     var settingsDynamicBackground: AnyView {
             if pureDark {
                 return AnyView(Color.clear)

@@ -15,6 +15,7 @@ struct HistoricalView: View {
     @State var editMode = EditMode.inactive
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) private var colorScheme
     
     @EnvironmentObject var shiftStore: ShiftStore
     
@@ -64,7 +65,12 @@ struct HistoricalView: View {
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                     .listStyle(.plain)
                     .background {
-                        themeManager.overviewDynamicBackground.ignoresSafeArea()
+                        // this could be worked into the themeManagers pure dark mode?
+                        if colorScheme == .dark {
+                            themeManager.overviewDynamicBackground.ignoresSafeArea()
+                        } else {
+                            Color.clear.ignoresSafeArea()
+                        }
                     }
                 
                     .customSectionSpacing()

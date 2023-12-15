@@ -141,7 +141,15 @@ struct ShiftsList: View {
                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
             
                 .background {
-                    themeManager.overviewDynamicBackground.ignoresSafeArea()
+                    // this could be worked into the themeManagers pure dark mode?
+                    
+                    
+                    // weirdly enough it looks good switching to the settings background here
+                    if colorScheme == .dark {
+                        themeManager.settingsDynamicBackground.ignoresSafeArea()
+                    } else {
+                        Color.clear.ignoresSafeArea()
+                    }
                 }
             
             

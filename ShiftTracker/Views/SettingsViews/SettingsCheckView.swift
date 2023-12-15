@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsCheckView: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
+    @Environment(\.colorScheme) var colorScheme
     
     var image: String
     var headline: String
@@ -46,7 +47,14 @@ struct SettingsCheckView: View {
             
         }.scrollContentBackground(.hidden)
         
-            .background(themeManager.settingsDynamicBackground.ignoresSafeArea())
+            .background {
+                // this could be worked into the themeManagers pure dark mode?
+                if colorScheme == .dark {
+                    themeManager.settingsDynamicBackground.ignoresSafeArea()
+                } else {
+                    Color.clear.ignoresSafeArea()
+                }
+            }
     }
     
     

@@ -218,7 +218,7 @@ struct DetailView: View {
             
             
                 .background {
-                    if !viewModel.presentedAsSheet {
+                    if !viewModel.presentedAsSheet && colorScheme == .dark {
                         themeManager.overviewDynamicBackground.ignoresSafeArea()
                     } else {
                         Color.clear.ignoresSafeArea()

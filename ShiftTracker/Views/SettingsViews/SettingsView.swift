@@ -255,7 +255,14 @@ struct SettingsView: View {
                         
                      //   ThemeView(showingProView: $viewModel.showingProView)
                         
-                        ThemesList(showingProView: $viewModel.showingProView)   .background(themeManager.settingsDynamicBackground.ignoresSafeArea())
+                        ThemesList(showingProView: $viewModel.showingProView) .background {
+                            // this could be worked into the themeManagers pure dark mode?
+                            if colorScheme == .dark {
+                                themeManager.settingsDynamicBackground.ignoresSafeArea()
+                            } else {
+                                Color.clear.ignoresSafeArea()
+                            }
+                        }
                         
                         
                     }
@@ -263,24 +270,59 @@ struct SettingsView: View {
                         
                         SettingsCheckView(image: locationManager.authorizationStatus != .authorizedAlways ? "exclamationmark.triangle" : "checkmark.circle", headline: locationManager.authorizationStatus != .authorizedAlways ? "Location settings are not set to always." : "You're all set.", subheadline: locationManager.authorizationStatus != .authorizedAlways ? "Please go to the Settings app and navigate to \"Privacy & Security\", \"Location Services\", and enable \"Always\" permissions for ShiftTracker." : "Location settings are set to always.", checkmarkColor: locationManager.authorizationStatus != .authorizedAlways ? .orange : .green)
                     
-                        .navigationTitle("Location")   .background(themeManager.settingsDynamicBackground.ignoresSafeArea())
+                        .navigationTitle("Location")   .background {
+                            // this could be worked into the themeManagers pure dark mode?
+                            if colorScheme == .dark {
+                                themeManager.settingsDynamicBackground.ignoresSafeArea()
+                            } else {
+                                Color.clear.ignoresSafeArea()
+                            }
+                        }
                         
                     } else if i == 2 {
                         
-                        SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notifications are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange)  .background(themeManager.settingsDynamicBackground.ignoresSafeArea()) .navigationTitle("Notifications")
+                        SettingsCheckView(image: notificationManager.authorizationStatus == .authorized ? "checkmark.circle" : "exclamationmark.triangle", headline: notificationManager.authorizationStatus == .authorized ? "You're all set." : "Notifications are not set to 'Allow'.", subheadline: notificationManager.authorizationStatus == .authorized ? "Notifications are enabled." : "Please go to the Settings app and navigate to \"Notifications\", \"ShiftTracker\", and enable \"Allow Notifications\" permissions for ShiftTracker.", checkmarkColor: notificationManager.authorizationStatus == .authorized ? .green : .orange) .background {
+                            // this could be worked into the themeManagers pure dark mode?
+                            if colorScheme == .dark {
+                                themeManager.settingsDynamicBackground.ignoresSafeArea()
+                            } else {
+                                Color.clear.ignoresSafeArea()
+                            }
+                        } .navigationTitle("Notifications")
                         
                     } else if i == 3 {
                         
-                        AppearanceView()  .background(themeManager.settingsDynamicBackground.ignoresSafeArea())
+                        AppearanceView() .background {
+                            // this could be worked into the themeManagers pure dark mode?
+                            if colorScheme == .dark {
+                                themeManager.settingsDynamicBackground.ignoresSafeArea()
+                            } else {
+                                Color.clear.ignoresSafeArea()
+                            }
+                        }
                         
                     } else if i == 4 {
                         
-                        TipView()  .background(themeManager.settingsDynamicBackground.ignoresSafeArea())
+                        TipView()  .background {
+                            // this could be worked into the themeManagers pure dark mode?
+                            if colorScheme == .dark {
+                                themeManager.settingsDynamicBackground.ignoresSafeArea()
+                            } else {
+                                Color.clear.ignoresSafeArea()
+                            }
+                        }
                         
                         
                     } else {
                         
-                        AppIconView().environmentObject(iconManager)  .background(themeManager.settingsDynamicBackground.ignoresSafeArea())
+                        AppIconView().environmentObject(iconManager)   .background {
+                            // this could be worked into the themeManagers pure dark mode?
+                            if colorScheme == .dark {
+                                themeManager.settingsDynamicBackground.ignoresSafeArea()
+                            } else {
+                                Color.clear.ignoresSafeArea()
+                            }
+                        }
                         
                     }
                     
