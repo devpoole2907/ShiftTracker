@@ -52,7 +52,7 @@ struct ContentViewButtonsView: View {
                 AnimatedButton(
                     action: {
                         CustomConfirmationAlert(action: {
-                            viewModel.endShift(using: context, endDate: Date(), job: selectedJobManager.fetchJob(in: context)!)
+                            viewModel.cancelShift()
                         }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
                         
                     },

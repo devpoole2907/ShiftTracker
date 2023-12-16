@@ -701,6 +701,41 @@ class ContentViewModel: ObservableObject {
         return latestShift
     }
     
+    func cancelShift() {
+    #if os(iOS)
+        stopActivity()
+    #endif
+
+   
+        cancelBreakReminder()
+        stopTimer(timer: &timer, timeElapsed: &timeElapsed)
+        
+        
+        shiftState = .notStarted
+        shiftEnded = false
+        breakTaken = false
+        isOvertime = false
+        isMultiplierEnabled = false
+        overtimeEnabled = false
+        overtimeDuration = 0
+        timeElapsedUntilOvertime = 0
+        payMultiplier = 1.0
+
+       
+        tempBreaks.removeAll()
+        clearTempBreaksFromUserDefaults()
+        sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.breakStartedDateKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.breakEndedDateKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.breakTakenKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.overtimeEnabledKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.lastBreakElapsedKey)
+     
+        shift = nil
+    }
+
+    
     func endBreak(endDate: Date? = nil, viewContext: NSManagedObjectContext) {
         
         print("At endBreak start: totalPay=\(totalPay), totalPayAtBreakStart=\(totalPayAtBreakStart), isOnBreak=\(isOnBreak)")

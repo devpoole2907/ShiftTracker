@@ -248,6 +248,17 @@ struct ActionView: View {
                                 navigationState.activeSheet = .detailSheet
                             }
                             
+                        }.contextMenu {
+                            Button(action: {
+                                viewModel.cancelShift()
+                                dismiss()
+                            }){
+                                HStack {
+                                    Image(systemName: "clock.badge.xmark")
+                                    Text("Cancel Shift")
+                                }
+                            }
+                           
                         }
                     case .endBreak:
                         ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
