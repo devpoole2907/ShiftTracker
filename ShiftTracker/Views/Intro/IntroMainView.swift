@@ -222,10 +222,11 @@ struct IntroView<ActionView: View>: View {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.accentColor)
                         .contentShape(Rectangle())
                 }
                 .padding(10)
+                .padding(.horizontal, 4)
+                .glassModifier(cornerRadius: 50)
                 .offset(y: showView ? 0 : -200)
                 .offset(y: hideWholeView ? -200 : 0)
                 

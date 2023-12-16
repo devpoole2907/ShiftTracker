@@ -50,8 +50,7 @@ struct MockupSideMenu: View {
             
         }.foregroundStyle(.gray)
             .frame(maxWidth: 200)
-            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-        
+            .shadow(color: Color.black.opacity(0.5), radius: 10, x: 5, y: 5)
         
             .onAppear {
                 Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { _ in
