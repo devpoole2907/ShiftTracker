@@ -79,7 +79,19 @@ struct ScheduledShiftsView: View {
                             }
                         }){
                             Image(systemName: "trash")
-                        }.tint(Color.clear)
+                        }.tint(Color.red)
+                        
+                        Button(action: {
+                            
+                            scheduleModel.selectedShiftToDupe = shift
+                            
+                                
+                            scheduleModel.activeSheet = .pastShiftSheet
+  
+                            
+                        }){
+                            Image(systemName: "doc.on.doc.fill")
+                        }.tint(.gray)
                         
                     }
                 }

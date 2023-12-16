@@ -14,12 +14,14 @@ import Haptics
 struct JobOverview: View {
     
     @StateObject var overviewModel: JobOverviewViewModel
+    @StateObject var historyModel: HistoryViewModel = HistoryViewModel()
     
     @EnvironmentObject var sortSelection: SortSelection
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var scrollManager: ScrollManager
+    
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
@@ -139,7 +141,6 @@ struct JobOverview: View {
                         
                         
                     }.scrollContentBackground(.hidden)
-                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                         .customSectionSpacing()
                     
                         .listStyle(.plain)
@@ -167,26 +168,70 @@ struct JobOverview: View {
             
             .navigationDestination(for: Int.self) { value in
                 
+                // lets do some rough code here, we will save the currently navigated to destination to an int
+                
+                
+                
                 if value == 1 {
                     
                    // Text("test")
                     
-                    ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection) .environmentObject(scrollManager)
+                    
+                    
+                    ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection) .environmentObject(scrollManager).environmentObject(overviewModel)
                         .onAppear {
                             withAnimation {
                                shiftManager.showModePicker = false
                             }
+                            overviewModel.navigationLocation = 1
                         }
                     
                     
                     
                 } else if value == 2 {
-                    HistoricalView()
+                    HistoricalView().environmentObject(overviewModel).environmentObject(historyModel)
+                        .onAppear {
+                            overviewModel.navigationLocation = 2
+                        }
                 }
                 
             }
             
-        .sheet(item: $overviewModel.activeSheet) { sheet in
+            .sheet(item: $overviewModel.activeSheet, onDismiss: {
+                // we dont need the current shift anymore
+
+                overviewModel.selectedShiftToDupe = nil
+                
+                // god this is bad but hey, it works!
+                
+                if !navPath.isEmpty {
+                    // if nav stack isnt empty, we have navigated somewhere
+                    
+                    if overviewModel.navigationLocation == 1 {
+                        // if the nav location is 1, we must be in shiftslist so fetch the shifts again for the selection sorter
+                        
+                        withAnimation {
+                            sortSelection.fetchShifts()
+                            print("fetched new shifts for sort selector")
+                        }
+                        
+                    }
+                    
+                    if overviewModel.navigationLocation == 2 {
+                        
+                       
+                        // if the nav location is 2, we must be in historical view so reload the aggregates
+                        
+                        
+                        fetchHistoricalAggregates(historyModel: historyModel, shifts: shifts, selectedJobManager: selectedJobManager, isAnimating: $historyModel.isAnimating)
+                        print("reloaded aggregates for historical view")
+                        
+                    }
+                }
+                
+                
+                
+            }) { sheet in
             
             switch sheet {
                 
@@ -215,15 +260,28 @@ struct JobOverview: View {
                 
                 if overviewModel.job != nil {
                     
+                    if let shift = overviewModel.selectedShiftToDupe {
+                        NavigationStack{
+                            DetailView(shift: shift, isDuplicating: true, presentedAsSheet: true)
+                        }
+                        
+                        .presentationDetents([.large])
+                        .customSheetBackground()
+                        .customSheetRadius(35)
+                        
                     
-                    
-                    NavigationStack{
-                        DetailView(job: overviewModel.job, presentedAsSheet: true)
+                
+                    } else {
+
+                        
+                        NavigationStack{
+                            DetailView(job: overviewModel.job, presentedAsSheet: true)
+                        }
+                        
+                        .presentationDetents([.large])
+                        .customSheetBackground()
+                        .customSheetRadius(35)
                     }
-                    
-                    .presentationDetents([.large])
-                    .customSheetBackground()
-                    .customSheetRadius(35)
                 } else {
                     Text("Error")
                 }
@@ -373,10 +431,25 @@ struct JobOverview: View {
                         }
                     }){
                         Image(systemName: "trash")
-                            .foregroundStyle(.red)
+                       
                         
                         
-                    }.tint(.clear)
+                    }.tint(.red)
+                    
+                    Button(action: {
+                        
+                        overviewModel.selectedShiftToDupe = shift
+                        
+                            
+                        
+                            
+                            overviewModel.activeSheet = .addShiftSheet
+                            
+                        
+                        
+                    }){
+                        Image(systemName: "doc.on.doc.fill")
+                    }.tint(.gray)
                     
                     
                 }
@@ -484,3 +557,45 @@ struct JobOverview: View {
 }
 
 
+extension View {
+    
+    // this is bad code. I am not proud of it. But it will work to generate aggregates etc for shifts seperated by historical timelines
+    
+    @MainActor
+    func fetchHistoricalAggregates(historyModel: HistoryViewModel,
+                           shifts: FetchedResults<OldShift>,
+                           selectedJobManager: JobSelectionManager,
+                           isAnimating: Binding<Bool>) {
+
+        withAnimation {
+            if historyModel.aggregatedShifts.isEmpty {
+                isAnimating.wrappedValue = true
+            }
+        }
+
+        Task {
+            let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
+            await MainActor.run {
+                withAnimation {
+                    historyModel.aggregatedShifts = newAggregatedShifts
+                }
+            }
+
+            try await Task.sleep(nanoseconds: 300_000_000)
+
+            await MainActor.run {
+                if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || !historyModel.appeared {
+                    historyModel.selectedTab = newAggregatedShifts.count - 1
+                    print("selected tab set to last one")
+                }
+                
+                
+                withAnimation {
+                    
+                    isAnimating.wrappedValue = false
+                }
+            }
+            
+        }
+    }
+}

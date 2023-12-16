@@ -59,9 +59,13 @@ class DetailViewModel: ObservableObject {
     
     @Published var showingOvertimeSheet = false
     
+    @Published var isDuplicating = false
+    
     var presentedAsSheet: Bool = false
     
-    init(selectedStartDate: Date = Date(), selectedEndDate: Date = Date().addingTimeInterval(60 * 60), selectedBreakStartDate: Date = Date(), selectedBreakEndDate: Date = Date().addingTimeInterval(10 * 60), selectedTaxPercentage: Double = 0.0, selectedHourlyPay: String = "0.00", shiftDuration: TimeInterval = 0.0, selectedTotalTips: String = "0.00", addTipsToTotal: Bool = false, payMultiplier: Double = 1.0, multiplierEnabled: Bool = false, notes: String = "", selectedTags: Set<Tag> = [], shiftID: UUID = UUID(), isEditing: Bool = false, job: Job? = nil, presentedAsSheet: Bool = false) {
+    let navTitle: String
+    
+    init(selectedStartDate: Date = Date(), selectedEndDate: Date = Date().addingTimeInterval(60 * 60), selectedBreakStartDate: Date = Date(), selectedBreakEndDate: Date = Date().addingTimeInterval(10 * 60), selectedTaxPercentage: Double = 0.0, selectedHourlyPay: String = "0.00", shiftDuration: TimeInterval = 0.0, selectedTotalTips: String = "0.00", addTipsToTotal: Bool = false, payMultiplier: Double = 1.0, multiplierEnabled: Bool = false, notes: String = "", selectedTags: Set<Tag> = [], shiftID: UUID = UUID(), isEditing: Bool = false, job: Job? = nil, presentedAsSheet: Bool = false, breaks: Set<Break> = [], isDuplicating: Bool = false) {
         self.selectedStartDate = selectedStartDate
         self.selectedEndDate = selectedEndDate
         self.selectedBreakStartDate = selectedBreakStartDate
@@ -81,6 +85,19 @@ class DetailViewModel: ObservableObject {
         self.overtimeAppliedAfter = job?.overtimeAppliedAfter ?? 0
         
         self.presentedAsSheet = presentedAsSheet
+        
+        self.isDuplicating = isDuplicating
+        
+        if isDuplicating {
+            
+            self.tempBreaks = breaks.map { BreaksManager().convertToTempBreak(from: $0) }
+            
+            self.navTitle = "Duplicate Shift"
+        } else {
+            self.navTitle = "Add Shift"
+        }
+        
+        
     }
     
     init(shift: OldShift, presentedAsSheet: Bool){
@@ -114,6 +131,13 @@ class DetailViewModel: ObservableObject {
         
         self.presentedAsSheet = presentedAsSheet
         
+        if presentedAsSheet {
+            self.navTitle = "Shift Ended"
+        } else {
+            
+            self.navTitle = "Shift Details"
+            
+        }
         
     }
     
@@ -163,10 +187,7 @@ class DetailViewModel: ObservableObject {
         if let shift = shift {
         
                 totalBreakDuration = self.totalBreakDuration(for: breaks)
-            
-         
-            
-            
+
    
         } else {
             totalBreakDuration = totalTempBreakDuration(for: tempBreaks)

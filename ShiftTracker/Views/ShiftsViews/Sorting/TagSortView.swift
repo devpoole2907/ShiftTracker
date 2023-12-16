@@ -25,7 +25,7 @@ struct TagSortView: View {
         let filters = TagFilter.filters(from: Array(tags))
         
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
+            LazyHStack {
                 ForEach(filters, id: \.self) { filter in
                     Button(action: {
                         if self.selectedFilters.contains(filter) {
@@ -46,6 +46,6 @@ struct TagSortView: View {
                 }
             }
             .padding()
-        }
+        }.clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }

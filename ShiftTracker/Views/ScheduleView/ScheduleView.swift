@@ -61,7 +61,7 @@ struct ScheduleView: View {
                 
             }.listStyle(.plain)
                 .scrollContentBackground(.hidden)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                //.shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                
                 .background {
                     
@@ -104,7 +104,13 @@ struct ScheduleView: View {
         }
         
         
-            .sheet(item: $scheduleModel.activeSheet){ item in
+        .sheet(item: $scheduleModel.activeSheet, onDismiss: {
+            
+            // we dont need the shift to duplicate anymore
+            
+            scheduleModel.selectedShiftToDupe = nil
+            
+        }){ item in
                 
                 switch item {
                 case .scheduleSheet:
@@ -119,21 +125,41 @@ struct ScheduleView: View {
                     
                 case .pastShiftSheet:
                     
-                    NavigationStack{
-                        DetailView(job: selectedJobManager.fetchJob(in: viewContext)!, dateSelected: scheduleModel.dateSelected, presentedAsSheet: true)
-                    }
-                    
-                    .environmentObject(shiftManager)
-                    .onDisappear {
+                    if let shift = scheduleModel.selectedShiftToDupe {
+                        NavigationStack{
+                            DetailView(shift: shift, isDuplicating: true, presentedAsSheet: true)
+                        }
+                        .environmentObject(shiftManager)
+                        .onDisappear {
+                            
+                            scheduleModel.fetchShifts(allShifts: allShifts)
+                            
+                        }
                         
-                        scheduleModel.fetchShifts(allShifts: allShifts)
+                        .presentationDetents([.large])
+                        .customSheetBackground()
+                        .customSheetRadius(35)
+                        
+                    
+                
+                    } else {
+                        
+                        NavigationStack{
+                            DetailView(job: selectedJobManager.fetchJob(in: viewContext)!, dateSelected: scheduleModel.dateSelected, presentedAsSheet: true)
+                        }
+                        
+                        .environmentObject(shiftManager)
+                        .onDisappear {
+                            
+                            scheduleModel.fetchShifts(allShifts: allShifts)
+                            
+                        }
+                        
+                        .presentationDetents([.large])
+                        .customSheetRadius(35)
+                        .customSheetBackground()
                         
                     }
-                    
-                    .presentationDetents([.large])
-                    .customSheetRadius(35)
-                    .customSheetBackground()
-                    
                     
                 }
             }

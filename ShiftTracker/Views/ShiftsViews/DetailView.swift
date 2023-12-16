@@ -13,7 +13,7 @@ import StoreKit
 
 struct DetailView: View {
     
-    @StateObject var viewModel: DetailViewModel
+    @StateObject var viewModel: DetailViewModel = DetailViewModel()
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
@@ -48,13 +48,29 @@ struct DetailView: View {
         return formatter
     }
     
-    init(shift: OldShift? = nil, job: Job? = nil, dateSelected: DateComponents? = nil, presentedAsSheet: Bool = false, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<NavigationPath> = .constant(NavigationPath())) {
+    init(shift: OldShift? = nil, isDuplicating: Bool = false, job: Job? = nil, dateSelected: DateComponents? = nil, presentedAsSheet: Bool = false, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<NavigationPath> = .constant(NavigationPath())) {
         
-        self._viewModel = StateObject(wrappedValue: DetailViewModel())
+         //self._viewModel = StateObject(wrappedValue: DetailViewModel())
         
         if let shift = shift {
             
-            self._viewModel = StateObject(wrappedValue: DetailViewModel(shift: shift, presentedAsSheet: presentedAsSheet))
+            
+            if isDuplicating {
+                // shift is being duplicated, not viewed
+                
+                // COME BACK AND ADJUST ME!! I need to be a new shift, so pass the variables individually because we dont want to be directly editing the shift passed as we normally would when presenting detail view
+                
+                if let job = shift.job { // perhaps show some kind of error if this fails
+                    
+                    print("duplicating in the initialiser")
+                    self._viewModel = StateObject(wrappedValue: DetailViewModel(selectedStartDate: shift.shiftStartDate ?? Date(), selectedEndDate: shift.shiftEndDate ?? Date(), selectedTaxPercentage: shift.tax, selectedHourlyPay: "\(shift.hourlyPay)", selectedTotalTips: "\(shift.totalTips)", addTipsToTotal: shift.addTipsToTotal, payMultiplier: shift.payMultiplier, multiplierEnabled: shift.multiplierEnabled, notes: shift.shiftNote ?? "", selectedTags: shift.tags as? Set<Tag> ?? [], shiftID: UUID(), isEditing: true, job: job, presentedAsSheet: presentedAsSheet, breaks: shift.breaks as? Set<Break> ?? [], isDuplicating: true))
+                    
+                }
+                
+            } else {
+                    self._viewModel = StateObject(wrappedValue: DetailViewModel(shift: shift, presentedAsSheet: presentedAsSheet))
+            }
+    
             
         } else if let job = job {
             let calendar = Calendar.current
@@ -108,7 +124,9 @@ struct DetailView: View {
         ZStack(alignment: .bottomTrailing){
             List{
                 Section{
+                    
                     VStack{
+                        
                         if !viewModel.areAllTempBreaksWithin {
                             HStack {
                                 
@@ -210,7 +228,7 @@ struct DetailView: View {
                     .listRowInsets(EdgeInsets())
                 
             } .scrollContentBackground(.hidden)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+               // .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                
                 .listStyle(.inset)
             
@@ -236,7 +254,7 @@ struct DetailView: View {
         }.ignoresSafeArea(.keyboard)
         
 
-            .navigationTitle(viewModel.shift == nil ? "Add Shift" : "Shift Details")
+            .navigationTitle(viewModel.navTitle)
             .navigationBarTitleDisplayMode(.inline)
         
             .toolbar(.hidden, for: .tabBar)

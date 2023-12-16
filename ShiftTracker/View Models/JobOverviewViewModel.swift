@@ -13,6 +13,10 @@ class JobOverviewViewModel: ObservableObject {
     @Published var appeared: Bool = false // for icon tap
     @Published var isEditJobPresented: Bool = false
     
+    var navigationLocation: Int = 0
+    
+    @Published var selectedShiftToDupe: OldShift?
+    
     @Published var job: Job?
     
     @Published var activeSheet: ActiveOverviewSheet?

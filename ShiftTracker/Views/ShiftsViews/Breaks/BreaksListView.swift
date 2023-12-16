@@ -112,7 +112,7 @@ struct BreaksListView: View {
                         .disabled(!viewModel.isEditing)
                     }
                 }.padding()
-                    .glassModifier(cornerRadius: 20)
+                   // .glassModifier(cornerRadius: 20)
                 
                 
                 
@@ -135,7 +135,7 @@ struct BreaksListView: View {
                         withAnimation {delete(at: index)
                         }}){
                         Image(systemName: "trash")
-                    }.tint(Color.clear)
+                    }.tint(Color.red)
                     
                 }
                 
@@ -144,7 +144,7 @@ struct BreaksListView: View {
             
             
             .listRowBackground(Color.clear)
-            .listRowSeparator(.hidden)
+
         }
         
         
@@ -179,7 +179,7 @@ struct BreaksListView: View {
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                     }.padding()
-                        .glassModifier(cornerRadius: 20)
+                       // .glassModifier(cornerRadius: 20)
                     
                 } header: {
                     
@@ -202,7 +202,7 @@ struct BreaksListView: View {
                             }
                         }){
                             Image(systemName: "trash")
-                        }.tint(Color.clear)
+                        }.tint(Color.red)
                         
                     }
                     
@@ -210,7 +210,7 @@ struct BreaksListView: View {
                 
                 
                 .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+    
             }
             
             

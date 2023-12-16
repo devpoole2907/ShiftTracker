@@ -33,7 +33,7 @@ struct ScheduledShiftRowSwipeButtons: View {
                 }
                 Image(systemName: "trash")
             }
-        }.tint(Color.clear)
+        }.tint(Color.red)
         
         Button(action: {
             scheduleModel.selectedShiftToEdit = shift
@@ -44,7 +44,7 @@ struct ScheduledShiftRowSwipeButtons: View {
                 }
                 Image(systemName: "pencil")
             }
-        }.tint(Color.clear)
+        }.tint(Color.gray)
 
         Button(action: {
             if shift.calendarEventID == nil { // an event doesnt exist in the calendar
@@ -193,7 +193,7 @@ struct ScheduledShiftRowSwipeButtons: View {
                 }
                 Image(systemName: shift.calendarEventID == nil ? "calendar.badge.plus" : "calendar.badge.minus")
             }
-        }.tint(Color.clear)
+        }.tint(Color(red: Double(shift.job?.colorRed ?? 0.0), green: Double(shift.job?.colorGreen ?? 0.0), blue: Double(shift.job?.colorBlue ?? 0.0)))
  if shift.isRepeating {
         Button(action: {
             CustomConfirmationAlert(action: {
@@ -209,7 +209,7 @@ struct ScheduledShiftRowSwipeButtons: View {
                 Image(systemName: "clock.arrow.2.circlepath")
             }
         }
-            .tint(Color.clear)
+            .tint(Color.indigo)
 }
     }
 }

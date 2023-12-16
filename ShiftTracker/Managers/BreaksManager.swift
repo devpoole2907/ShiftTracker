@@ -81,4 +81,13 @@ class BreaksManager {
             }
         }
     
+    // convert break to temp break (e.g when duplicating a shift)
+    
+    func convertToTempBreak(from breakEntity: Break) -> TempBreak {
+        return TempBreak(startDate: breakEntity.startDate ?? Date(),
+                         endDate: breakEntity.endDate ?? Date(),
+                         isUnpaid: breakEntity.isUnpaid)
+    }
+
+    
 }

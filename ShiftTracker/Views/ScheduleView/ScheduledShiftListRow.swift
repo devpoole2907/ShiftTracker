@@ -95,7 +95,7 @@ struct ScheduledShiftListRow: View {
                                 Image(systemName: "ellipsis")
                                     .bold()
                                     .font(.title3)
-                            }.contentShape(Rectangle())
+                            }.contentShape(Circle())
                             
                             
                         }.padding(.top)

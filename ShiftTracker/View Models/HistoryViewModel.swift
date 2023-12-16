@@ -24,6 +24,8 @@ class HistoryViewModel: ObservableObject {
     @Published var chartSelection: Date? = nil
     @Published var visibleShifts: [OldShift]? = nil
     
+    @Published var isAnimating = false
+    
     @Published var selectedDate: Date? = nil
     @Published var aggregateValue: Double = 0.0
     

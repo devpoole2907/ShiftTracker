@@ -24,15 +24,14 @@ struct HistoricalView: View {
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var navigationState: NavigationState
+    @EnvironmentObject var overviewModel: JobOverviewViewModel
     
     @EnvironmentObject var themeManager: ThemeDataManager
     
-    @StateObject var historyModel = HistoryViewModel()
+    @EnvironmentObject var historyModel: HistoryViewModel
     
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
-    
-    @State var isAnimating = false
     
     var body: some View {
         
@@ -62,7 +61,7 @@ struct HistoricalView: View {
                     
                 }.scrollContentBackground(.hidden)
                     .tint(Color.gray)
-                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                  //  .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                     .listStyle(.plain)
                     .background {
                         // this could be worked into the themeManagers pure dark mode?
@@ -117,48 +116,7 @@ struct HistoricalView: View {
         
         .onAppear {
             
-            
-            // this is bad code. I am not proud of it. But it will work.
-            
-            withAnimation {
-                if historyModel.aggregatedShifts.isEmpty {
-                    // only appear to load if its the first time loading the aggregated shifts
-                    self.isAnimating = true
-                }
-            }
-            
-            
-            
-            Task {
-                
-                
-                let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
-                await MainActor.run {
-                    withAnimation {
-                        historyModel.aggregatedShifts = newAggregatedShifts
-                    }
-                }
-                
-                
-                try await Task.sleep(nanoseconds: 300_000_000)
-                
-                
-                await MainActor.run {
-                    if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || historyModel.appeared == false {
-                        historyModel.selectedTab = newAggregatedShifts.count - 1
-                        
-                        
-                        print("selected tab set to last one")
-                    }
-                    withAnimation {
-                        self.isAnimating = false
-                    }
-                }
-                
-                
-                
-                
-            }
+            fetchHistoricalAggregates(historyModel: historyModel, shifts: shifts, selectedJobManager: selectedJobManager, isAnimating: $historyModel.isAnimating)
             
             
             withAnimation {
@@ -283,7 +241,7 @@ struct HistoricalView: View {
             ZStack(alignment: .topTrailing){
                 TabView(selection: $historyModel.selectedTab.animation(.default)) {
                     
-                    if !isAnimating {
+                    if !historyModel.isAnimating {
                         
                         
                         ForEach(historyModel.aggregatedShifts.indices, id: \.self) { index in
@@ -345,7 +303,7 @@ struct HistoricalView: View {
                         }
                         
                     } else {
-                        ActivityIndicator(isAnimating: isAnimating)
+                        ActivityIndicator(isAnimating: historyModel.isAnimating)
                     }
                     
                 }
@@ -393,7 +351,7 @@ struct HistoricalView: View {
         return Group {
             Section {
                 
-                if !isAnimating {
+                if !historyModel.isAnimating {
                     if historyModel.aggregatedShifts.indices.contains(historyModel.selectedTab) {
                         let reversedIndices = Array(historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.indices.reversed())
                         let count = reversedIndices.count
@@ -436,7 +394,21 @@ struct HistoricalView: View {
                                     Image(systemName: "trash")
                                 }
                                 
-                                .tint(.clear)
+                                .tint(.red)
+                                
+                                Button(action: {
+                                    
+                                    overviewModel.selectedShiftToDupe = shift
+                                    
+                                        
+                                    
+                                        
+                                        overviewModel.activeSheet = .addShiftSheet
+                                    
+                                    
+                                }){
+                                    Image(systemName: "doc.on.doc.fill")
+                                }.tint(.gray)
                                 
                                 
                                 
@@ -448,7 +420,7 @@ struct HistoricalView: View {
                     }
                     
                 } else {
-                    ActivityIndicator(isAnimating: isAnimating).frame(maxWidth: .infinity)
+                    ActivityIndicator(isAnimating: historyModel.isAnimating).frame(maxWidth: .infinity)
                 }
                 
                 
@@ -457,7 +429,7 @@ struct HistoricalView: View {
             .listRowBackground(Color.clear)
             
             Section {
-                Spacer(minLength: 100)
+                Spacer(minLength: 100).listRowSeparator(.hidden)
             }.listRowBackground(Color.clear)
             
         }
@@ -486,38 +458,54 @@ struct HistoricalView: View {
                 
                 HStack(spacing: 10){
                     
+                  
+                    
+          
+          
+                    
+                    if editMode.isEditing {
+                        
+                        Group {
+                        
+                            
+                            Button(action: {
+                                
+                                if purchaseManager.hasUnlockedPro {
+                                    historyModel.showExportView.toggle()
+                                } else {
+                                    
+                                    historyModel.showingProView.toggle()
+                                    
+                                }
+                                
+                                
+                            }){
+                                Image(systemName: "square.and.arrow.up").bold()
+                            }.disabled(historyModel.selection.isEmpty)
+                            
+                            Divider().frame(height: 10)
+                            
+                            Button(action: {
+                                CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                            }) {
+                                Image(systemName: "trash")
+                                    .bold()
+                                
+                                    .customAnimatedSymbol(value: $historyModel.selection)
+                            }.disabled(historyModel.selection.isEmpty)
+                                .tint(.red)
+                            
+                            Divider().frame(height: 10)
+                            
+                        }
+                        .animation(.easeInOut, value: editMode.isEditing)
+                    }
+                    
                     CustomEditButton(editMode: $editMode, action: {
                         historyModel.selection.removeAll()
                     })
-                    
-                    Divider().frame(height: 10)
-                    
-                    Button(action: {
-                        
-                        if purchaseManager.hasUnlockedPro {
-                            historyModel.showExportView.toggle()
-                        } else {
                             
-                            historyModel.showingProView.toggle()
-                            
-                        }
-                        
-                        
-                    }){
-                        Image(systemName: "square.and.arrow.up").bold()
-                    }.disabled(historyModel.selection.isEmpty)
-                    
-                    Divider().frame(height: 10)
-                    
-                    Button(action: {
-                        CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                    }) {
-                        Image(systemName: "trash")
-                            .bold()
-                        
-                            .customAnimatedSymbol(value: $historyModel.selection)
-                    }.disabled(historyModel.selection.isEmpty)
-                        .tint(.red)
+        
                     
                 }.padding()
                     .glassModifier(cornerRadius: 20)
@@ -535,7 +523,7 @@ struct HistoricalView: View {
                     .onChange(of: historyModel.historyRange) { value in
                         scrollManager.timeSheetsScrolled = false
                         withAnimation {
-                            self.isAnimating = true
+                            historyModel.isAnimating = true
                         }
                         
                         Task {
@@ -555,7 +543,7 @@ struct HistoricalView: View {
                             await MainActor.run {
                                 historyModel.selectedTab = historyModel.aggregatedShifts.count - 1
                                 withAnimation {
-                                    self.isAnimating = false
+                                    historyModel.isAnimating = false
                                 }
                             }
                             

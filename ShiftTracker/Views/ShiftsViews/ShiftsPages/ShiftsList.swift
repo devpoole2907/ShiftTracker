@@ -20,9 +20,9 @@ struct ShiftsList: View {
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var scrollManager: ScrollManager
+    @EnvironmentObject var overviewModel: JobOverviewViewModel
 
     @EnvironmentObject var sortSelection: SortSelection
-
     
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismissSearch) private var dismissSearch
@@ -93,6 +93,8 @@ struct ShiftsList: View {
                     
                     .swipeActions {
                         
+                       
+                        
                         Button(action: {
                             withAnimation {
                                 shiftStore.deleteOldShift(shift, in: viewContext)
@@ -110,7 +112,22 @@ struct ShiftsList: View {
                             Image(systemName: "trash")
                         }
                         
-                        .tint(.clear)
+                        .tint(.red)
+                        
+                        Button(action: {
+                            
+                            overviewModel.selectedShiftToDupe = shift
+                            
+                                
+                            
+                                
+                                overviewModel.activeSheet = .addShiftSheet
+                            
+                            
+                        }){
+                            Image(systemName: "doc.on.doc.fill")
+                        }.tint(.gray)
+
                     }
                     
                     .id(index)
@@ -134,11 +151,11 @@ struct ShiftsList: View {
                 .onSubmit(of: .search, sortSelection.fetchShifts)
             
             
-            
+     
             
                 .tint(Color.gray)
                 .scrollContentBackground(.hidden)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+       
             
                 .background {
                     // this could be worked into the themeManagers pure dark mode?
@@ -186,6 +203,7 @@ struct ShiftsList: View {
         }
             
             floatingButtons .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+            
             
        
         
@@ -263,51 +281,68 @@ struct ShiftsList: View {
             
             VStack{
             
-            HStack(spacing: 10){
+                HStack(spacing: 10){
+                    
+                    
+                    
+                    Group {
+                    
+                    
+                        if editMode.isEditing {
+                        
+                    Button(action: {
+                        
+                        if purchaseManager.hasUnlockedPro {
+                            showExportView.toggle()
+                        } else {
+                            
+                            showingProView.toggle()
+                            
+                        }
+                        
+                        
+                    }){
+                        Image(systemName: "square.and.arrow.up").bold()
+                    }.disabled(selection.isEmpty)
+                    
+                    Divider().frame(height: 10)
+                    
+                  
+                        
+                        Button(action: {
+                            CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
+                        }) {
+                            Image(systemName: "trash").customAnimatedSymbol(value: $selection)
+                                .bold()
+                        }.disabled(selection.isEmpty)
+                            .tint(.red)
+                        
+                    } else {
+                        
+                        SortSelectionView(selectedSortItem: $sortSelection.selectedSort, sorts: ShiftNSSort.sorts)
+                            .onChange(of: sortSelection.selectedSort) { _ in
+                          
+                                    sortSelection.fetchShifts()
+                                
+                            }
+                        
+                    }
+                    
+                    
+                    Divider().frame(height: 10)
+                    
+                    
+                }  .animation(.easeInOut, value: editMode.isEditing)
+                
                 
                 CustomEditButton(editMode: $editMode, action: {
                     selection.removeAll()
                 })
                 
-                Divider().frame(height: 10)
                 
-               
                 
-                Button(action: {
-                    
-                    if purchaseManager.hasUnlockedPro {
-                        showExportView.toggle()
-                    } else {
-                        
-                        showingProView.toggle()
-                        
-                    }
-                    
-                   
-                }){
-                    Image(systemName: "square.and.arrow.up").bold()
-                }.disabled(selection.isEmpty)
                 
-                Divider().frame(height: 10)
-                
-                if editMode.isEditing {
-                    
-                    Button(action: {
-                        CustomConfirmationAlert(action: deleteItems, cancelAction: nil, title: "Are you sure?").showAndStack()
-                    }) {
-                        Image(systemName: "trash").customAnimatedSymbol(value: $selection)
-                            .bold()
-                    }.disabled(selection.isEmpty)
-                        .tint(.red)
-                    
-                } else {
-                    
-                    SortSelectionView(selectedSortItem: $sortSelection.selectedSort, sorts: ShiftNSSort.sorts)
-                        .onChange(of: sortSelection.selectedSort) { _ in
-                            sortSelection.fetchShifts()
-                        }
-                    
-                }
+                  
                 
                 
                 
@@ -315,15 +350,18 @@ struct ShiftsList: View {
             }.padding()
                     .glassModifier(cornerRadius: 20)
 
-        }
+            }.padding(.trailing)
             
             TagSortView(selectedFilters: $sortSelection.selectedFilters)
-                .frame(width: UIScreen.main.bounds.width - 20)
+                .frame(width: UIScreen.main.bounds.width - 100)
                 .frame(maxHeight: 40)
                 .padding(5)
                 .glassModifier(cornerRadius: 20)
             
-                .padding(.bottom, 5)
+                .padding(.bottom, 10)
+                .padding(.trailing)
+              
+              
             
                 .onChange(of: sortSelection.selectedFilters) { _ in
                     

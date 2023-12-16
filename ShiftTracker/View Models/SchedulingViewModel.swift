@@ -20,6 +20,7 @@ class SchedulingViewModel: ObservableObject {
     @Published var selectedReminderTime: ReminderTime = .fifteenMinutes
     
     @Published var selectedShiftToEdit: ScheduledShift?
+    @Published var selectedShiftToDupe: OldShift?
     
     @Published var isEmpty: Bool = false
     
