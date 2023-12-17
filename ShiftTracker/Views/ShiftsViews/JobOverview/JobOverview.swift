@@ -419,7 +419,9 @@ struct JobOverview: View {
                     ShiftDetailRow(shift: shift)
                 }
                 
-            
+            .background(ContextMenuPreview(action: {
+        navPath.append(shift)
+    }))
        
                 
                 .swipeActions {
@@ -596,6 +598,52 @@ extension View {
                 }
             }
             
+        }
+    }
+}
+
+import SwiftUI
+import UIKit
+
+struct ContextMenuPreview: UIViewRepresentable {
+    var action: () -> Void
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .clear
+        let interaction = UIContextMenuInteraction(delegate: context.coordinator)
+        view.addInteraction(interaction)
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    class Coordinator: NSObject, UIContextMenuInteractionDelegate {
+        var parent: ContextMenuPreview
+
+        init(parent: ContextMenuPreview) {
+            self.parent = parent
+        }
+
+        func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: {
+                // Return a simple Text view as the preview
+                let preview = UIHostingController(rootView: Text("Testing one two"))
+                return preview
+            }, actionProvider: { suggestedActions in
+                // Define and return UIMenu with actions here
+                // ...
+            })
+        }
+
+        func contextMenuInteraction(_ interaction: UIContextMenuInteraction, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+            animator.addCompletion {
+                self.parent.action()
+            }
         }
     }
 }
