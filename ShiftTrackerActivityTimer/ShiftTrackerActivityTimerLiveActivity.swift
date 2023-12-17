@@ -207,6 +207,7 @@ struct ShiftActivityView: View{
                 
                 
                 Text("ShiftTracker")
+                .foregroundStyle(Color.white)
                     .bold()
                 Text("PRO")
                     .font(.title2)
