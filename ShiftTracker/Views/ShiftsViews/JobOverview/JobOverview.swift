@@ -602,7 +602,6 @@ extension View {
     }
 }
 
-import SwiftUI
 import UIKit
 
 struct ContextMenuPreview: UIViewRepresentable {
@@ -637,6 +636,11 @@ struct ContextMenuPreview: UIViewRepresentable {
             }, actionProvider: { suggestedActions in
                 // Define and return UIMenu with actions here
                 // ...
+                
+                let someAction = UIAction(title: "Action", handler: { _ in
+            // Action handling code
+        })
+        return UIMenu(title: "", children: [someAction])
             })
         }
 
