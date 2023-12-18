@@ -640,7 +640,7 @@ struct ContextMenuPreview: UIViewRepresentable {
 
         func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
             return UIContextMenuConfiguration(identifier: nil, previewProvider: {
-                let detailVC = UIHostingController(rootView: DetailView(shift: self.parent.shift)
+                let detailVC = UIHostingController(rootView: DetailView(shift: self.parent.shift, isContextPreview: true)
                     .environmentObject(self.parent.themeManager)
                     .environmentObject(self.parent.navigationState))
                 return detailVC
