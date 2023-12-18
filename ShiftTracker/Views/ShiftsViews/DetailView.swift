@@ -912,6 +912,8 @@ struct DetailView: View {
                 .glassModifier(cornerRadius: 20)
             
                 .frame(height: 25)
+                
+                }
             
         }
         
@@ -925,7 +927,7 @@ struct DetailView: View {
             
         }
         
-        }
+        
         
         
         
