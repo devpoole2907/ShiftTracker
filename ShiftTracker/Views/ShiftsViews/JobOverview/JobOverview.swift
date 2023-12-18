@@ -420,7 +420,7 @@ struct JobOverview: View {
                     ShiftDetailRow(shift: shift)
                 }
                 
-            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewModel: overviewModel, viewContext: viewContext, action: {
+            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, viewModel: overviewModel, action: {
         navPath.append(shift)
     }))
        
