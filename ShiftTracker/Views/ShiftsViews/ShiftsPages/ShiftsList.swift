@@ -50,6 +50,30 @@ struct ShiftsList: View {
                         NavigationLink(value: shift) {
                             ShiftDetailRow(shift: shift)
                         }
+                        .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, deleteAction: {
+                
+                  withAnimation {
+                                shiftStore.deleteOldShift(shift, in: viewContext)
+                                
+                                // duct tape fix
+                                sortSelection.fetchShifts()
+                                
+                                if sortSelection.oldShifts.isEmpty {
+                                    // navigates back if all shifts are deleted
+                                    navPath.removeLast()
+                                    
+                                }
+                            }
+                
+            }, duplicateAction: {
+                
+                overviewModel.selectedShiftToDupe = shift
+                overviewModel.activeSheet = .addShiftSheet
+                
+            }, action: {
+        navPath.append(shift)
+    }))
+                        
                         if !sortSelection.searchTerm.isEmpty {
                             HStack {
                                 Spacer()
