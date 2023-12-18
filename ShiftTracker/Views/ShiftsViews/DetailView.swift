@@ -48,7 +48,7 @@ struct DetailView: View {
         return formatter
     }
     
-    let isContextPreview: Bool = false
+    var isContextPreview: Bool = false
     
     init(shift: OldShift? = nil, isContextPreview: Bool = false, isDuplicating: Bool = false, job: Job? = nil, dateSelected: DateComponents? = nil, presentedAsSheet: Bool = false, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<NavigationPath> = .constant(NavigationPath())) {
         
