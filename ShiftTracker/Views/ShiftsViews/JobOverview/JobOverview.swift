@@ -21,6 +21,7 @@ struct JobOverview: View {
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var scrollManager: ScrollManager
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     
     @Environment(\.colorScheme) var colorScheme
@@ -419,7 +420,7 @@ struct JobOverview: View {
                     ShiftDetailRow(shift: shift)
                 }
                 
-            .background(ContextMenuPreview(action: {
+            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewModel: overviewModel, viewContext: viewContext, action: {
         navPath.append(shift)
     }))
        
@@ -605,6 +606,11 @@ extension View {
 import UIKit
 
 struct ContextMenuPreview: UIViewRepresentable {
+    var shift: OldShift
+    var themeManager: ThemeDataManager
+    var navigationState: NavigationState
+    var viewContext: NSManagedObjectContext
+    var viewModel: JobOverviewViewModel
     var action: () -> Void
 
     func makeUIView(context: Context) -> UIView {
@@ -618,29 +624,44 @@ struct ContextMenuPreview: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {}
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
+        Coordinator(parent: self, viewContext: viewContext)
     }
 
     class Coordinator: NSObject, UIContextMenuInteractionDelegate {
         var parent: ContextMenuPreview
+        var viewContext: NSManagedObjectContext
 
-        init(parent: ContextMenuPreview) {
+        init(parent: ContextMenuPreview, viewContext: NSManagedObjectContext) {
             self.parent = parent
+            self.viewContext = viewContext
         }
 
         func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
             return UIContextMenuConfiguration(identifier: nil, previewProvider: {
-                // Return a simple Text view as the preview
-                let preview = UIHostingController(rootView: Text("Testing one two"))
-                return preview
+                let detailVC = UIHostingController(rootView: DetailView(shift: self.parent.shift)
+                    .environmentObject(self.parent.themeManager)
+                    .environmentObject(self.parent.navigationState))
+                return detailVC
             }, actionProvider: { suggestedActions in
                 // Define and return UIMenu with actions here
                 // ...
                 
-                let someAction = UIAction(title: "Action", handler: { _ in
-            // Action handling code
-        })
-        return UIMenu(title: "", children: [someAction])
+                let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
+                    // Perform delete action
+                    withAnimation {
+                        self.viewContext.delete(self.parent.shift)
+                        try? self.viewContext.save()
+                    }
+                }
+
+                let duplicateAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
+                    self.parent.viewModel.selectedShiftToDupe = self.parent.shift
+                    
+                    self.parent.viewModel.activeSheet = .addShiftSheet
+                }
+
+                // Combine actions into a UIMenu
+                return UIMenu(title: "", children: [deleteAction, duplicateAction])
             })
         }
 
