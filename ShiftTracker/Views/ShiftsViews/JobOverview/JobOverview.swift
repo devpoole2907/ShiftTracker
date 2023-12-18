@@ -616,6 +616,8 @@ struct ContextMenuPreview: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .clear
+        view.layer.cornerRadius = 20
+        view.clipsToBounds = true
         let interaction = UIContextMenuInteraction(delegate: context.coordinator)
         view.addInteraction(interaction)
         return view
