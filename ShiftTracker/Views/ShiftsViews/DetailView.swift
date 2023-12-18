@@ -292,8 +292,9 @@ struct DetailView: View {
             }
         
             .onDisappear {
+                // TESTING
                 withAnimation {
-                    navigationState.hideTabBar = false
+                    //navigationState.hideTabBar = false
                 }
             }
         
