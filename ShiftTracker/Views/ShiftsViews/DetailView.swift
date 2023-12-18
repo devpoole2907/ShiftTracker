@@ -810,6 +810,7 @@ struct DetailView: View {
             
             
             Spacer()
+            if !isContextPreview {
             VStack{
                 if let shift = viewModel.shift {
                     HStack(spacing: 10){
@@ -923,6 +924,11 @@ struct DetailView: View {
                 .customSheetBackground()
             
         }
+        
+        }
+        
+        
+        
     }
     
     
