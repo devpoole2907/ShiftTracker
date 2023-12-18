@@ -48,7 +48,9 @@ struct DetailView: View {
         return formatter
     }
     
-    init(shift: OldShift? = nil, isDuplicating: Bool = false, job: Job? = nil, dateSelected: DateComponents? = nil, presentedAsSheet: Bool = false, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<NavigationPath> = .constant(NavigationPath())) {
+    let isContextPreview: Bool = false
+    
+    init(shift: OldShift? = nil, isContextPreview: Bool = false, isDuplicating: Bool = false, job: Job? = nil, dateSelected: DateComponents? = nil, presentedAsSheet: Bool = false, activeSheet: Binding<ActiveSheet?>? = nil, navPath: Binding<NavigationPath> = .constant(NavigationPath())) {
         
          //self._viewModel = StateObject(wrappedValue: DetailViewModel())
         
@@ -91,6 +93,7 @@ struct DetailView: View {
         _activeSheet = activeSheet ?? Binding.constant(nil)
         _navPath = navPath
         
+        self.isContextPreview = isContextPreview
         
         
         
@@ -278,13 +281,13 @@ struct DetailView: View {
                     
                     
                 } else {
-                    // hide the bar bar, we arent a sheet
+                    // hide the bar bar, we arent a sheet (only if we're not a context menu preview)
                     
-              
+                    if !isContextPreview {
                         withAnimation {
                             navigationState.hideTabBar = true
                         }
-                    
+                    }
                    
                 }
                 
@@ -292,9 +295,11 @@ struct DetailView: View {
             }
         
             .onDisappear {
-                // TESTING
-                withAnimation {
-                    //navigationState.hideTabBar = false
+                // only hide the tab bar if we arent a contetx menu preview otherwise the tab bar will re appear when pushing further into the preview/naving here via the preview
+                if !isContextPreview
+                    withAnimation {
+                        navigationState.hideTabBar = false
+                    }
                 }
             }
         
