@@ -296,7 +296,7 @@ struct DetailView: View {
         
             .onDisappear {
                 // only hide the tab bar if we arent a contetx menu preview otherwise the tab bar will re appear when pushing further into the preview/naving here via the preview
-                if !isContextPreview
+                if !isContextPreview {
                     withAnimation {
                         navigationState.hideTabBar = false
                     }
