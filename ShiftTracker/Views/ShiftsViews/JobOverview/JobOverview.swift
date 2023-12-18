@@ -420,7 +420,20 @@ struct JobOverview: View {
                     ShiftDetailRow(shift: shift)
                 }
                 
-            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, viewModel: overviewModel, action: {
+            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, deleteAction: {
+                
+                  withAnimation {
+                            shiftStore.deleteOldShift(shift, in: viewContext)
+                            shiftManager.shiftAdded.toggle()
+                        }
+                
+            }, duplicateAction: {
+                
+                overviewModel.selectedShiftToDupe = shift
+                    
+                    overviewModel.activeSheet = .addShiftSheet
+                
+            }, action: {
         navPath.append(shift)
     }))
        
@@ -610,7 +623,8 @@ struct ContextMenuPreview: UIViewRepresentable {
     var themeManager: ThemeDataManager
     var navigationState: NavigationState
     var viewContext: NSManagedObjectContext
-    var viewModel: JobOverviewViewModel
+    var deleteAction: () -> Void
+    var duplicateAction: () -> Void
     var action: () -> Void
 
     func makeUIView(context: Context) -> UIView {
@@ -648,22 +662,17 @@ struct ContextMenuPreview: UIViewRepresentable {
                 // Define and return UIMenu with actions here
                 // ...
                 
-                let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
+                let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
                     // Perform delete action
-                    withAnimation {
-                        self.viewContext.delete(self.parent.shift)
-                        try? self.viewContext.save()
-                    }
+                    self.parent.deleteAction()
                 }
 
-                let duplicateAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
-                    self.parent.viewModel.selectedShiftToDupe = self.parent.shift
-                    
-                    self.parent.viewModel.activeSheet = .addShiftSheet
+                let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
+                    self.parent.duplicateAction()
                 }
 
                 // Combine actions into a UIMenu
-                return UIMenu(title: "", children: [deleteAction, duplicateAction])
+                return UIMenu(title: "", children: [deleteUIAction, duplicateUIAction])
             })
         }
 
@@ -674,3 +683,8 @@ struct ContextMenuPreview: UIViewRepresentable {
         }
     }
 }
+
+
+                    
+                    
+                    
