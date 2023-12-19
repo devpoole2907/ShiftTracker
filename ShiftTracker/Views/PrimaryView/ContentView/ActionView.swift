@@ -346,9 +346,9 @@ struct ActionView: View {
                                 .onChange(of: enableReminder) { value in
                                     
                                     if value && breakReminderTime <= 0 {
-                                        
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
                                         breakReminderTime = 6000
-                                        
+                                        }
                                         } 
                                     
                                     }
