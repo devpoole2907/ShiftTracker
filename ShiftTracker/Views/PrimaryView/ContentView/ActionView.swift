@@ -47,13 +47,10 @@ struct ActionView: View {
         self.job = job
         
         if let selectedJob = job {
-            if let reminderTime = selectedJob.breakReminderTime {
-                _breakReminderTime = State(initialValue: reminderTime)
+            
+                _breakReminderTime = State(initialValue: selectedJob.breakReminderTime)
                 _enableReminder = State(initialValue: selectedJob.breakReminder)
-            } else {
-                _breakReminderTime = State(initialValue: 0)
-                _enableReminder = State(initialValue: false)
-            }
+           
         }
 
         
