@@ -202,28 +202,33 @@ struct ContentView: View {
             case .startBreakSheet:
                 ActionView(navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
                     .environment(\.managedObjectContext, context)
+                    .environmentObject(viewModel)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
                     .customSheetRadius(35)
                     .customSheetBackground()
                 
             case .endShiftSheet:
-                ActionView(navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
+                ActionView(navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift, job: selectedJobManager.fetchJob(in: context))
                     .environment(\.managedObjectContext, context)
+                    .environmentObject(viewModel)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
                     .customSheetRadius(35)
                     .customSheetBackground()
             case .endBreakSheet:
                 ActionView(navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
                     .environment(\.managedObjectContext, context)
+                    .environmentObject(viewModel)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
                     .customSheetRadius(35)
                     .customSheetBackground()
             case .startShiftSheet:
-                ActionView(navTitle: "Start Shift", actionType: .startShift)
+                ActionView(navTitle: "Start Shift", actionType: .startShift, job: selectedJobManager.fetchJob(in: context))
                     .environment(\.managedObjectContext, context)
+                    .environmentObject(viewModel)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.96 : 0.8)])
                     .customSheetRadius(35)
                     .customSheetBackground()
+                
             }
             
             

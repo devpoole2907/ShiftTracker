@@ -19,6 +19,7 @@ struct ScheduledShiftsView: View {
     @EnvironmentObject var scheduleModel: SchedulingViewModel
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var themeManager: ThemeDataManager
     
     let shiftManager = ShiftDataManager()
     
@@ -27,7 +28,7 @@ struct ScheduledShiftsView: View {
     @Binding var navPath: NavigationPath
     
     @ObservedObject var oldShiftsViewModel: OldShiftsViewModel
-
+    
     
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -61,11 +62,28 @@ struct ScheduledShiftsView: View {
                         
                     }
                     
+                    .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: NavigationState.shared, viewContext: viewContext, deleteAction: {
+                        
+                        withAnimation {
+                            shiftStore.deleteOldShift(shift, in: viewContext)
+                        }
+                        
+                    }, duplicateAction: {
+                        
+                        scheduleModel.selectedShiftToDupe = shift
+                        
+                        
+                        scheduleModel.activeSheet = .pastShiftSheet
+                        
+                    }, action: {
+                        navPath.append(shift)
+                    }))
+                    
                     .navigationDestination(for: OldShift.self) { shift in
                         
                         
                         DetailView(shift: shift, navPath: $navPath)
-                         
+                        
                         
                     }
                     
@@ -86,9 +104,9 @@ struct ScheduledShiftsView: View {
                             
                             scheduleModel.selectedShiftToDupe = shift
                             
-                                
+                            
                             scheduleModel.activeSheet = .pastShiftSheet
-  
+                            
                             
                         }){
                             Image(systemName: "doc.on.doc.fill")
@@ -102,51 +120,51 @@ struct ScheduledShiftsView: View {
             let foundShifts = shiftStore.shifts.filter { $0.startDate.startOfDay == scheduleModel.dateSelected?.date?.startOfDay ?? Date().startOfDay}
             
             
-                if !foundShifts.isEmpty {
-                    ForEach(foundShifts) { shift in
-                        if shift.endDate > Date() && !shift.isComplete {
-                            ScheduledShiftListRow(shift: shift)
-                                .environmentObject(shiftStore)
-                                .environmentObject(scheduleModel)
-                                .swipeActions(allowsFullSwipe: false) {
-                                    
-                                    
-                                    if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {
-                                        ScheduledShiftRowSwipeButtons(shift: shift)
-                                    }
+            if !foundShifts.isEmpty {
+                ForEach(foundShifts) { shift in
+                    if shift.endDate > Date() && !shift.isComplete {
+                        ScheduledShiftListRow(shift: shift)
+                            .environmentObject(shiftStore)
+                            .environmentObject(scheduleModel)
+                            .swipeActions(allowsFullSwipe: false) {
+                                
+                                
+                                if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {
+                                    ScheduledShiftRowSwipeButtons(shift: shift)
                                 }
-                                .listRowBackground(Color.clear)
-                                .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 20))
-                        }
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(.init(top: 10, leading: 10, bottom: 10, trailing: 20))
                     }
-                
                 }
+                
+            }
             
             else if ((Calendar.current.isDateInToday(scheduleModel.dateSelected?.date ?? Date()) || !isBeforeEndOfToday(scheduleModel.dateSelected!.date ?? Date())) && scheduleModel.displayedOldShifts.isEmpty) {
-                    Section{
-                        Text("You have no shifts scheduled on this date.")
-                            .bold()
-                            .roundedFontDesign()
-                            .padding()
-                    }  .listRowBackground(Color.clear)
-                }
+                Section{
+                    Text("You have no shifts scheduled on this date.")
+                        .bold()
+                        .roundedFontDesign()
+                        .padding()
+                }  .listRowBackground(Color.clear)
+            }
             
             else/* if isBeforeEndOfToday(dateSelected?.date ?? Date()) && displayedOldShifts.isEmpty */{
-                    
-                    Text("No previous shifts found for this date.")
+                
+                Text("No previous shifts found for this date.")
                     .bold()
                     .roundedFontDesign()
-                        .padding()
-                        .listRowBackground(Color.clear)
-                }
+                    .padding()
+                    .listRowBackground(Color.clear)
+            }
             
-                
-                
+            
+            
         }
-            
-           
+        
+        
         .listRowInsets(.init(top: 0, leading: 8, bottom: 5, trailing: 0))
-
+        
         
         .sheet(item: $scheduleModel.selectedShiftToEdit, onDismiss: {
             
@@ -160,7 +178,7 @@ struct ScheduledShiftsView: View {
                 .customSheetBackground()
             
         }
-
+        
         
     }
 }

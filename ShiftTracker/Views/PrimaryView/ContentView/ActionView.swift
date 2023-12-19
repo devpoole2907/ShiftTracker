@@ -14,7 +14,6 @@ struct ActionView: View {
     
     @EnvironmentObject var themeManager: ThemeDataManager
     @EnvironmentObject var viewModel: ContentViewModel
-    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var navigationState: NavigationState
     
@@ -23,6 +22,8 @@ struct ActionView: View {
     @State private var actionDate = Date()
     @State private var isRounded = false
     @State private var showProSheet = false
+    @State private var showBreaksSheet = false
+    
     
     @AppStorage("shiftsTracked") var shiftsTracked = 0
     
@@ -31,6 +32,27 @@ struct ActionView: View {
     var pickerStartDate: Date?
     
     var actionType: ActionType
+    
+    let job: Job?
+    
+    //(navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
+    
+    
+    init(navTitle: String, pickerStartDate: Date? = nil, actionType: ActionType, job: Job? = nil) {
+        self.navTitle = navTitle
+        self.pickerStartDate = pickerStartDate
+        self.actionType = actionType
+        
+        self.job = job
+        
+        if let selectedJob = job {
+            
+            // will cause crash
+           // viewModel.breakReminder = selectedJob.breakReminder
+        }
+
+        
+    }
     
     var body: some View {
         
@@ -173,27 +195,31 @@ struct ActionView: View {
                             .padding(.vertical, 10)
                             .glassModifier(cornerRadius: 20)
                         
-                        if let selectedJob = selectedJobManager.fetchJob(in: context) {
+                      //  if let selectedJob = selectedJobManager.fetchJob(in: context) {
                             
-                            if selectedJob.breakReminderTime > 0 {
+                            Button(action: {
+                                // toggle new sheet for break reminder
                                 
-                                Toggle(isOn: $viewModel.breakReminder){
-                                    
+                                showBreaksSheet.toggle()
+                                
+                                
+                            }){
+                                HStack {
                                     Text("Break Reminder").bold()
-                                    
-                                }.toggleStyle(CustomToggleStyle())
-                                    .padding(.horizontal)
-                                    .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                                    .padding(.vertical, 10)
-                                    .glassModifier(cornerRadius: 20)
+                                    Spacer()
+                                    HStack(spacing: 3) {
+                                        Text("Disabled")
+                                        Image(systemName: "chevron.right").font(.caption)
+                                    }.foregroundStyle(.gray)
+                                }
+                            } .padding(.horizontal)
+                                .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                                .padding(.vertical, 12)
+                                .glassModifier(cornerRadius: 20)
+                            
+                        
                                 
-                                    .onAppear {
-                                        viewModel.breakReminder = selectedJob.breakReminder
-                                    }
-                                
-                            }
-                                
-                        }
+                     //   }
                         
                        
                         
@@ -235,13 +261,13 @@ struct ActionView: View {
                         
                         
                         ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
-                            viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: selectedJobManager.fetchJob(in: context)!)
+                            viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: self.job!)
                             dismiss()
                         }
                     case .endShift:
                         ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 60) {
                             
-                            self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: selectedJobManager.fetchJob(in: context)!)
+                            self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: self.job!)
                             dismiss()
                             
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -281,8 +307,49 @@ struct ActionView: View {
                 
             }
             
+            .sheet(isPresented: $showBreaksSheet) {
+                
+                if let selectedJob = job {
+                    
+                    NavigationStack {
+                        VStack {
+                            TimePicker(timeInterval: .constant(0))
+                            
+                            Toggle(isOn: $viewModel.breakReminder){
+                                
+                                Text("Break Reminder").bold()
+                                
+                            }.toggleStyle(CustomToggleStyle())
+                                .padding(.horizontal)
+                                .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                                .padding(.vertical, 10)
+                                .glassModifier(cornerRadius: 20)
+                            
+                            // change this, it cant be on appear it will need to be initialised
+                                .onAppear {
+                                    
+                                    viewModel.breakReminder = selectedJob.breakReminder
+                                }
+                            Spacer()
+                            
+                        }
+                        
+                            .trailingCloseButton()
+                            .navigationTitle("Break Reminder")
+                            .navigationBarTitleDisplayMode(.inline)
+                    }
+                        .customSheetBackground()
+                        .customSheetRadius()
+                        .presentationDetents([.fraction(0.42)])
+                } else {
+                    Text("Error")
+                }
+                
+            }
             
-            .navigationBarTitle(navTitle, displayMode: .inline)
+            
+            .navigationTitle(navTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .trailingCloseButton()
         }
         

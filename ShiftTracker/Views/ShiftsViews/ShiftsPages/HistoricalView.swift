@@ -30,6 +30,8 @@ struct HistoricalView: View {
     
     @EnvironmentObject var historyModel: HistoryViewModel
     
+    @Binding var navPath: NavigationPath
+    
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
     
@@ -61,7 +63,7 @@ struct HistoricalView: View {
                     
                 }.scrollContentBackground(.hidden)
                     .tint(Color.gray)
-                  //  .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                //  .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                     .listStyle(.plain)
                     .background {
                         // this could be worked into the themeManagers pure dark mode?
@@ -367,6 +369,37 @@ struct HistoricalView: View {
                                 
                             }
                             
+                            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: NavigationState.shared, viewContext: viewContext, deleteAction: {
+                                
+                                withAnimation {
+                                    shiftStore.deleteOldShift(shift, in: viewContext)
+                                    if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
+                                        historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
+                                    }
+                                    
+                                    historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
+                                    
+                                    if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
+                                        historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
+                                        
+                                        // changes the current tab if it empties
+                                        if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
+                                            historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
+                                        }
+                                    }
+                                }
+                                
+                            }, duplicateAction: {
+                                
+                                overviewModel.selectedShiftToDupe = shift
+                                
+                                
+                                overviewModel.activeSheet = .addShiftSheet
+                                
+                            }, action: {
+                                navPath.append(shift)
+                            }))
+                            
                             .swipeActions {
                                 
                                 
@@ -400,10 +433,10 @@ struct HistoricalView: View {
                                     
                                     overviewModel.selectedShiftToDupe = shift
                                     
-                                        
                                     
-                                        
-                                        overviewModel.activeSheet = .addShiftSheet
+                                    
+                                    
+                                    overviewModel.activeSheet = .addShiftSheet
                                     
                                     
                                 }){
@@ -458,15 +491,15 @@ struct HistoricalView: View {
                 
                 HStack(spacing: 10){
                     
-                  
                     
-          
-          
+                    
+                    
+                    
                     
                     if editMode.isEditing {
                         
                         Group {
-                        
+                            
                             
                             Button(action: {
                                 
@@ -504,8 +537,8 @@ struct HistoricalView: View {
                     CustomEditButton(editMode: $editMode, action: {
                         historyModel.selection.removeAll()
                     })
-                            
-        
+                    
+                    
                     
                 }.padding()
                     .glassModifier(cornerRadius: 20)

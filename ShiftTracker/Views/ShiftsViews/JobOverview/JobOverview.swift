@@ -34,13 +34,13 @@ struct JobOverview: View {
     let shiftStore = ShiftStore()
     
     func generateTestData() {
-
+        
         guard let selectedJob = selectedJobManager.fetchJob(in: viewContext) else { return }
         var currentDate = Calendar.current.date(byAdding: .year, value: -1, to: Date())!
         for _ in 0..<300 {
             let oldShift = OldShift(context: viewContext)
             
-            let duration = Int.random(in: 2...12) * 3600  
+            let duration = Int.random(in: 2...12) * 3600
             let endDate = Calendar.current.date(byAdding: .second, value: duration, to: currentDate)!
             
             let hourlyPay = 30.0
@@ -57,9 +57,9 @@ struct JobOverview: View {
             oldShift.totalTips = Double(Int.random(in: 5...48))
             oldShift.job = selectedJob
             oldShift.shiftID = UUID()
-
+            
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
-
+            
             do {
                 try viewContext.save()
             } catch {
@@ -83,7 +83,7 @@ struct JobOverview: View {
         
         if let jobID = job?.objectID {
             fetchRequest.predicate = NSPredicate(format: "job == %@", jobID)
- 
+            
             let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [NSPredicate(format: "job == %@", jobID), weekFetchDatePredicate])
             
             weekFetchRequest.predicate = compoundPredicate
@@ -114,59 +114,59 @@ struct JobOverview: View {
         UITableView.appearance().backgroundColor = UIColor.clear
         
     }
-
+    
     
     @Binding var navPath: NavigationPath
     
     var body: some View {
         
         
-
-            ZStack(alignment: .bottomTrailing){
-           
-                    List{
-                        
-                        Section {
-                            statsSection
-                                .frame(maxWidth: .infinity)
-                        }.listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                 
-                        
-                        recentShiftsSection
-                            .onAppear {
-                                scrollManager.timeSheetsScrolled = false
-                            }
-                 
-                 
-                        
-                        
-                    }.scrollContentBackground(.hidden)
-                        .customSectionSpacing()
-                    
-                        .listStyle(.plain)
-                    
-                
-                
-                floatingButtons
-                    .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
-           
-                
-            }.ignoresSafeArea(.keyboard)
+        
+        ZStack(alignment: .bottomTrailing){
             
+            List{
+                
+                Section {
+                    statsSection
+                        .frame(maxWidth: .infinity)
+                }.listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                
+                
+                recentShiftsSection
+                    .onAppear {
+                        scrollManager.timeSheetsScrolled = false
+                    }
+                
+                
+                
+                
+            }.scrollContentBackground(.hidden)
+                .customSectionSpacing()
+            
+                .listStyle(.plain)
+            
+            
+            
+            floatingButtons
+                .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+            
+            
+        }.ignoresSafeArea(.keyboard)
+        
             .navigationDestination(for: OldShift.self) { shift in
                 DetailView(shift: shift, navPath: $navPath)
-       
+                
                     .onAppear {
                         withAnimation {
                             shiftManager.showModePicker = false
                         }
                     }
                 
-        
+                
                 
             }
-            
+        
             .navigationDestination(for: Int.self) { value in
                 
                 // lets do some rough code here, we will save the currently navigated to destination to an int
@@ -175,14 +175,14 @@ struct JobOverview: View {
                 
                 if value == 1 {
                     
-                   // Text("test")
+                    // Text("test")
                     
                     
                     
                     ShiftsList(navPath: $navPath).environmentObject(selectedJobManager).environmentObject(shiftManager).environmentObject(navigationState).environmentObject(sortSelection) .environmentObject(scrollManager).environmentObject(overviewModel)
                         .onAppear {
                             withAnimation {
-                               shiftManager.showModePicker = false
+                                shiftManager.showModePicker = false
                             }
                             overviewModel.navigationLocation = 1
                         }
@@ -190,17 +190,17 @@ struct JobOverview: View {
                     
                     
                 } else if value == 2 {
-                    HistoricalView().environmentObject(overviewModel).environmentObject(historyModel)
+                    HistoricalView(navPath: $navPath).environmentObject(overviewModel).environmentObject(historyModel)
                         .onAppear {
                             overviewModel.navigationLocation = 2
                         }
                 }
                 
             }
-            
+        
             .sheet(item: $overviewModel.activeSheet, onDismiss: {
                 // we dont need the current shift anymore
-
+                
                 overviewModel.selectedShiftToDupe = nil
                 
                 // god this is bad but hey, it works!
@@ -220,7 +220,7 @@ struct JobOverview: View {
                     
                     if overviewModel.navigationLocation == 2 {
                         
-                       
+                        
                         // if the nav location is 2, we must be in historical view so reload the aggregates
                         
                         
@@ -233,161 +233,161 @@ struct JobOverview: View {
                 
                 
             }) { sheet in
-            
-            switch sheet {
                 
-            case .configureExportSheet:
-                
-                
-                
-                if overviewModel.job != nil {
+                switch sheet {
+                    
+                case .configureExportSheet:
                     
                     
-                    ConfigureExportView(shifts: shifts, job: overviewModel.job)
-                        .presentationDetents([.large])
-                        .customSheetRadius(35)
-                        .customSheetBackground()
                     
-                }
-                else {
-                    ConfigureExportView(shifts: shifts)
-                        .presentationDetents([.large])
-                        .customSheetRadius(35)
-                        .customSheetBackground()
-                }
-                
-                
-            case .addShiftSheet:
-                
-                if overviewModel.job != nil {
-                    
-                    if let shift = overviewModel.selectedShiftToDupe {
-                        NavigationStack{
-                            DetailView(shift: shift, isDuplicating: true, presentedAsSheet: true)
-                        }
+                    if overviewModel.job != nil {
                         
-                        .presentationDetents([.large])
-                        .customSheetBackground()
-                        .customSheetRadius(35)
                         
-                    
-                
-                    } else {
-
+                        ConfigureExportView(shifts: shifts, job: overviewModel.job)
+                            .presentationDetents([.large])
+                            .customSheetRadius(35)
+                            .customSheetBackground()
                         
-                        NavigationStack{
-                            DetailView(job: overviewModel.job, presentedAsSheet: true)
-                        }
-                        
-                        .presentationDetents([.large])
-                        .customSheetBackground()
-                        .customSheetRadius(35)
                     }
-                } else {
-                    Text("Error")
+                    else {
+                        ConfigureExportView(shifts: shifts)
+                            .presentationDetents([.large])
+                            .customSheetRadius(35)
+                            .customSheetBackground()
+                    }
+                    
+                    
+                case .addShiftSheet:
+                    
+                    if overviewModel.job != nil {
+                        
+                        if let shift = overviewModel.selectedShiftToDupe {
+                            NavigationStack{
+                                DetailView(shift: shift, isDuplicating: true, presentedAsSheet: true)
+                            }
+                            
+                            .presentationDetents([.large])
+                            .customSheetBackground()
+                            .customSheetRadius(35)
+                            
+                            
+                            
+                        } else {
+                            
+                            
+                            NavigationStack{
+                                DetailView(job: overviewModel.job, presentedAsSheet: true)
+                            }
+                            
+                            .presentationDetents([.large])
+                            .customSheetBackground()
+                            .customSheetRadius(35)
+                        }
+                    } else {
+                        Text("Error")
+                    }
+                    
+                case .symbolSheet:
+                    JobIconPicker()
+                        .environmentObject(JobViewModel(job: overviewModel.job))
+                        .environment(\.managedObjectContext, viewContext)
+                        .presentationDetents([ .medium, .fraction(0.7)])
+                        .presentationDragIndicator(.visible)
+                        .customSheetBackground()
+                        .customSheetRadius(35)
+                    
                 }
                 
-            case .symbolSheet:
-                JobIconPicker()
-                    .environmentObject(JobViewModel(job: overviewModel.job))
-                    .environment(\.managedObjectContext, viewContext)
-                    .presentationDetents([ .medium, .fraction(0.7)])
-                    .presentationDragIndicator(.visible)
-                    .customSheetBackground()
-                    .customSheetRadius(35)
                 
             }
-            
-            
-        }
-        .onAppear {
-            navigationState.gestureEnabled = true
-            
-            withAnimation {
-                shiftManager.showModePicker = true
+            .onAppear {
+                navigationState.gestureEnabled = true
+                
+                withAnimation {
+                    shiftManager.showModePicker = true
+                }
+                
+                overviewModel.appeared.toggle()
+                
             }
-            
-            overviewModel.appeared.toggle()
-            
-        }
         
         // adds icon to navigation title header
         
-        .overlay(alignment: .topTrailing){
-            
-            // it'll always be hidden underneath the tab bar, for perf reasons i dont want a geo reader in this view anymore
-            
-            if overviewModel.showLargeIcon && overviewModel.job != nil && overviewModel.job?.name?.count ?? 0 <= 16 {
-             
-                NavBarIconView(appeared: $overviewModel.appeared, isLarge: $overviewModel.showLargeIcon, job: overviewModel.job!)
-                    .padding(.trailing, 20)
-                    .offset(x: 0, y: -55)
+            .overlay(alignment: .topTrailing){
                 
-   
-            }
-        }
-
-        .navigationTitle(overviewModel.job?.name ?? "Summary")
-
-        
-        .onChange(of: selectedJobManager.selectedJobUUID) { jobUUID in
-            
-            overviewModel.job = selectedJobManager.fetchJob(with: jobUUID, in: viewContext)
-        }
-        
-        .onChange(of: scrollManager.timeSheetsScrolled) { change in
-            
-            print("scroll manager changed to: \(change)")
-            
-        }
-        
-        .fullScreenCover(isPresented: $overviewModel.isEditJobPresented) {
-            JobView(job: overviewModel.job, isEditJobPresented: $overviewModel.isEditJobPresented, selectedJobForEditing: $overviewModel.job).environmentObject(ContentViewModel.shared)
-                .customSheetBackground()
-            
-        }
-        
-          .toolbar{
-            
-            
-            ToolbarItem(placement: .topBarLeading){
-                Button{
-                    withAnimation{
-                        navigationState.showMenu.toggle()
-                    }
-                } label: {
-                    Image(systemName: "line.3.horizontal")
-                        .bold()
+                // it'll always be hidden underneath the tab bar, for perf reasons i dont want a geo reader in this view anymore
+                
+                if overviewModel.showLargeIcon && overviewModel.job != nil && overviewModel.job?.name?.count ?? 0 <= 16 {
+                    
+                    NavBarIconView(appeared: $overviewModel.appeared, isLarge: $overviewModel.showLargeIcon, job: overviewModel.job!)
+                        .padding(.trailing, 20)
+                        .offset(x: 0, y: -55)
+                    
                     
                 }
             }
-            
-              if overviewModel.job != nil {
-                  ToolbarItem(placement: .topBarLeading) {
-                      Button(action: {
-                          generateTestData()
-                      }){
-                          Text("Test Data")
-                      }
-                  }
-              }
-            
-            if !overviewModel.showLargeIcon && overviewModel.job != nil {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavBarIconView(appeared: $overviewModel.appeared, isLarge: $overviewModel.showLargeIcon, job: overviewModel.job!).frame(maxHeight: 25)
+        
+            .navigationTitle(overviewModel.job?.name ?? "Summary")
+        
+        
+            .onChange(of: selectedJobManager.selectedJobUUID) { jobUUID in
+                
+                overviewModel.job = selectedJobManager.fetchJob(with: jobUUID, in: viewContext)
+            }
+        
+            .onChange(of: scrollManager.timeSheetsScrolled) { change in
+                
+                print("scroll manager changed to: \(change)")
+                
+            }
+        
+            .fullScreenCover(isPresented: $overviewModel.isEditJobPresented) {
+                JobView(job: overviewModel.job, isEditJobPresented: $overviewModel.isEditJobPresented, selectedJobForEditing: $overviewModel.job).environmentObject(ContentViewModel.shared)
+                    .customSheetBackground()
+                
+            }
+        
+            .toolbar{
+                
+                
+                ToolbarItem(placement: .topBarLeading){
+                    Button{
+                        withAnimation{
+                            navigationState.showMenu.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .bold()
+                        
+                    }
                 }
+                
+                if overviewModel.job != nil {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: {
+                            generateTestData()
+                        }){
+                            Text("Test Data")
+                        }
+                    }
+                }
+                
+                if !overviewModel.showLargeIcon && overviewModel.job != nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavBarIconView(appeared: $overviewModel.appeared, isLarge: $overviewModel.showLargeIcon, job: overviewModel.job!).frame(maxHeight: 25)
+                    }
+                }
+                
+                ToolbarTitleMenu {
+                    toolbarMenu
+                }
+                
+                ToolbarItem(placement: .keyboard){
+                    KeyboardDoneButton()
+                }
+                
+                
             }
-            
-            ToolbarTitleMenu {
-                toolbarMenu
-            }
-            
-            ToolbarItem(placement: .keyboard){
-                KeyboardDoneButton()
-            }
-            
-            
-        }
         
     }
     
@@ -401,7 +401,7 @@ struct JobOverview: View {
                 NavigationLink(value: 1) { EmptyView() }.opacity(0.0)
                 HStack {
                     Text("Latest Shifts")
-                     
+                    
                         .foregroundStyle(textColor)
                         .padding(.leading, overviewModel.job != nil ? 4 : 8)
                         .font(.title2)
@@ -420,23 +420,23 @@ struct JobOverview: View {
                     ShiftDetailRow(shift: shift)
                 }
                 
-            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, deleteAction: {
-                
-                  withAnimation {
-                            shiftStore.deleteOldShift(shift, in: viewContext)
-                            shiftManager.shiftAdded.toggle()
-                        }
-                
-            }, duplicateAction: {
-                
-                overviewModel.selectedShiftToDupe = shift
+                .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, deleteAction: {
+                    
+                    withAnimation {
+                        shiftStore.deleteOldShift(shift, in: viewContext)
+                        shiftManager.shiftAdded.toggle()
+                    }
+                    
+                }, duplicateAction: {
+                    
+                    overviewModel.selectedShiftToDupe = shift
                     
                     overviewModel.activeSheet = .addShiftSheet
+                    
+                }, action: {
+                    navPath.append(shift)
+                }))
                 
-            }, action: {
-        navPath.append(shift)
-    }))
-       
                 
                 .swipeActions {
                     
@@ -447,7 +447,7 @@ struct JobOverview: View {
                         }
                     }){
                         Image(systemName: "trash")
-                       
+                        
                         
                         
                     }.tint(.red)
@@ -456,11 +456,11 @@ struct JobOverview: View {
                         
                         overviewModel.selectedShiftToDupe = shift
                         
-                            
                         
-                            
-                            overviewModel.activeSheet = .addShiftSheet
-                            
+                        
+                        
+                        overviewModel.activeSheet = .addShiftSheet
+                        
                         
                         
                     }){
@@ -470,8 +470,8 @@ struct JobOverview: View {
                     
                 }
                 
-            
-            
+                
+                
                 .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
                 
                 
@@ -517,42 +517,42 @@ struct JobOverview: View {
     var statsSection: some View {
         
         return Group {
-        VStack(alignment: .center, spacing: 16){
-            HStack(spacing: 8){
-                VStack(spacing: 0) {
+            VStack(alignment: .center, spacing: 16){
+                HStack(spacing: 8){
+                    VStack(spacing: 0) {
+                        
+                        StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
+                            .environmentObject(shiftManager)
+                        
+                        
+                        
+                        Spacer()
+                        
+                        ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode)
+                            .environmentObject(shiftManager)
+                        
+                    }
                     
-                    StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
-                        .environmentObject(shiftManager)
                     
-            
+                    ExportSquare(totalShifts: shifts.count, action: {
+                        overviewModel.activeSheet = .configureExportSheet
+                    })
+                    .environmentObject(shiftManager)
                     
-                    Spacer()
                     
-                    ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode)
-                        .environmentObject(shiftManager)
                     
-                }
-                
-                
-                ExportSquare(totalShifts: shifts.count, action: {
-                    overviewModel.activeSheet = .configureExportSheet
-                })
-                .environmentObject(shiftManager)
+                    
+                }.frame(width: getRect().width - 44)
                 
                 
                 
                 
-            }.frame(width: getRect().width - 44)
-            
-            
-          
-            
-        }
+            }
             .frame(height: 250)
-      
-
-        
-    }   .textCase(nil)
+            
+            
+            
+        }   .textCase(nil)
         
         
         
@@ -579,16 +579,16 @@ extension View {
     
     @MainActor
     func fetchHistoricalAggregates(historyModel: HistoryViewModel,
-                           shifts: FetchedResults<OldShift>,
-                           selectedJobManager: JobSelectionManager,
-                           isAnimating: Binding<Bool>) {
-
+                                   shifts: FetchedResults<OldShift>,
+                                   selectedJobManager: JobSelectionManager,
+                                   isAnimating: Binding<Bool>) {
+        
         withAnimation {
             if historyModel.aggregatedShifts.isEmpty {
                 isAnimating.wrappedValue = true
             }
         }
-
+        
         Task {
             let newAggregatedShifts = historyModel.generateAggregatedShifts(from: shifts, using: selectedJobManager)
             await MainActor.run {
@@ -596,9 +596,9 @@ extension View {
                     historyModel.aggregatedShifts = newAggregatedShifts
                 }
             }
-
+            
             try await Task.sleep(nanoseconds: 300_000_000)
-
+            
             await MainActor.run {
                 if historyModel.selectedTab >= newAggregatedShifts.count || historyModel.selectedTab < 0 || !historyModel.appeared {
                     historyModel.selectedTab = newAggregatedShifts.count - 1
@@ -626,7 +626,7 @@ struct ContextMenuPreview: UIViewRepresentable {
     var deleteAction: () -> Void
     var duplicateAction: () -> Void
     var action: () -> Void
-
+    
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .clear
@@ -636,27 +636,32 @@ struct ContextMenuPreview: UIViewRepresentable {
         view.addInteraction(interaction)
         return view
     }
-
+    
     func updateUIView(_ uiView: UIView, context: Context) {}
-
+    
     func makeCoordinator() -> Coordinator {
         Coordinator(parent: self, viewContext: viewContext)
     }
-
+    
     class Coordinator: NSObject, UIContextMenuInteractionDelegate {
         var parent: ContextMenuPreview
         var viewContext: NSManagedObjectContext
-
+        
         init(parent: ContextMenuPreview, viewContext: NSManagedObjectContext) {
             self.parent = parent
             self.viewContext = viewContext
         }
-
+        
         func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
             return UIContextMenuConfiguration(identifier: nil, previewProvider: {
-                let detailVC = UIHostingController(rootView: DetailView(shift: self.parent.shift, isContextPreview: true)
-                    .environmentObject(self.parent.themeManager)
-                    .environmentObject(self.parent.navigationState))
+                let detailVC = UIHostingController(rootView:
+                    
+                    
+                        DetailView(shift: self.parent.shift, isContextPreview: true)
+                            .environmentObject(self.parent.themeManager)
+                            .environmentObject(self.parent.navigationState)
+                            .padding(.top)
+                )
                 return detailVC
             }, actionProvider: { suggestedActions in
                 // Define and return UIMenu with actions here
@@ -666,16 +671,16 @@ struct ContextMenuPreview: UIViewRepresentable {
                     // Perform delete action
                     self.parent.deleteAction()
                 }
-
+                
                 let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
                     self.parent.duplicateAction()
                 }
-
+                
                 // Combine actions into a UIMenu
                 return UIMenu(title: "", children: [deleteUIAction, duplicateUIAction])
             })
         }
-
+        
         func contextMenuInteraction(_ interaction: UIContextMenuInteraction, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
             animator.addCompletion {
                 self.parent.action()
@@ -685,6 +690,6 @@ struct ContextMenuPreview: UIViewRepresentable {
 }
 
 
-                    
-                    
-                    
+
+
+
