@@ -24,6 +24,7 @@ struct ActionView: View {
     @State private var showProSheet = false
     @State private var showBreaksSheet = false
     @State private var enableReminder = false
+    @State private var breakReminderTime: TimeInterval = 0
     
     @AppStorage("shiftsTracked") var shiftsTracked = 0
     
@@ -46,9 +47,13 @@ struct ActionView: View {
         self.job = job
         
         if let selectedJob = job {
-            
-            
-           _enableReminder = State(initialValue: selectedJob.breakReminder)
+            if let reminderTime = selectedJob.breakReminderTime {
+                _breakReminderTime = State(initialValue: reminderTime)
+                _enableReminder = State(initialValue: selectedJob.breakReminder)
+            } else {
+                _breakReminderTime = State(initialValue: 0)
+                _enableReminder = State(initialValue: false)
+            }
         }
 
         
@@ -208,7 +213,11 @@ struct ActionView: View {
                                     Text("Break Reminder").bold()
                                     Spacer()
                                     HStack(spacing: 3) {
+                                        if breakReminderTime > 0 && enableReminder == true {
+                                        Text("Enabled")
+                                        } else {
                                         Text("Disabled")
+                                        }
                                         Image(systemName: "chevron.right").font(.caption)
                                     }.foregroundStyle(.gray)
                                 }
@@ -314,7 +323,18 @@ struct ActionView: View {
                     
                     NavigationStack {
                         VStack {
-                            TimePicker(timeInterval: .constant(0))
+                            TimePicker(timeInterval: $breakReminderTime)
+                            
+                            .onChange(of: breakReminderTime) { newTime in
+                                    if newTime <= 0 {
+                                        
+                                        enableReminder = false
+                                        }
+                                        
+                                        
+                                        
+                                }
+                    
                             
                             Toggle(isOn: $enableReminder){
                                 
@@ -325,6 +345,16 @@ struct ActionView: View {
                                 .frame(maxWidth: UIScreen.main.bounds.width - 80)
                                 .padding(.vertical, 10)
                                 .glassModifier(cornerRadius: 20)
+                                
+                                .onChange(of: enableReminder) { value in
+                                    
+                                    if value && breakReminderTime <= 0 {
+                                        
+                                        breakReminderTime = 6000
+                                        
+                                        } 
+                                    
+                                    }
                             
                            
                             Spacer()
