@@ -72,7 +72,7 @@ struct ShiftsList: View {
                                 
                             }, editAction: { withAnimation {
                 editMode = (editMode == .active) ? .inactive : .active
-            }}, showEdit: editMode.isEditing, action: {
+            }}, showEdit: !editMode.isEditing, action: {
                                 navPath.append(shift)
                             }))
                             
