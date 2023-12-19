@@ -54,6 +54,13 @@ struct TimePicker: View{
                 .pickerStyle(WheelPickerStyle()).frame(maxWidth: 200)
                 
             }
+        
+            .onChange(of: timeInterval) { newValue in
+                withAnimation {
+                    selectedHour = Int(newValue) / 3600
+                    selectedMinute = Int(newValue) % 3600 / 60
+                }
+                   }
             
          
     }

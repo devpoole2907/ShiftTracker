@@ -80,6 +80,7 @@ class ContentViewModel: ObservableObject {
     @Published  var showStartOvertimeAlert = false
     
     @Published var breakReminder = false
+    @Published var breakReminderTime = 0.0
     
     @Published  var timeElapsedBeforeBreak = 0.0
     
@@ -1000,7 +1001,7 @@ class ContentViewModel: ObservableObject {
             
             if job.breakReminder && breakReminder {
                 
-                scheduleBreakReminder(after: job.breakReminderTime, startDate: startDate)
+                scheduleBreakReminder(after: breakReminderTime, startDate: startDate)
             }
             
         }

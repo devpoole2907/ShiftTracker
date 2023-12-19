@@ -75,7 +75,7 @@ struct CustomToggleStyle: ToggleStyle {
                             .foregroundStyle(configuration.isOn ? tickColor : Color.gray.opacity(0.25))
                     )
                     .offset(x: configuration.isOn ? 10 : -10, y: 0)
-                    .animation(Animation.linear(duration: 0.2))
+                    .animation(Animation.linear(duration: 0.2), value: configuration.isOn)
                     .opacity(isEnabled ? 1.0 : 0.5)
             }
             .onTapGesture {

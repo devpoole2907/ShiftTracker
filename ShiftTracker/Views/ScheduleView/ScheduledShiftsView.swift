@@ -126,6 +126,13 @@ struct ScheduledShiftsView: View {
                         ScheduledShiftListRow(shift: shift)
                             .environmentObject(shiftStore)
                             .environmentObject(scheduleModel)
+                        
+                            .contextMenu {
+                                if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {
+                                    ScheduledShiftRowSwipeButtons(shift: shift, showText: true)
+                                }
+                            }
+                        
                             .swipeActions(allowsFullSwipe: false) {
                                 
                                 
