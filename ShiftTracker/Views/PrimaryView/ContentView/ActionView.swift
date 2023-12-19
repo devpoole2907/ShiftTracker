@@ -23,7 +23,7 @@ struct ActionView: View {
     @State private var isRounded = false
     @State private var showProSheet = false
     @State private var showBreaksSheet = false
-    
+    @State private var enableReminder = false
     
     @AppStorage("shiftsTracked") var shiftsTracked = 0
     
@@ -47,8 +47,8 @@ struct ActionView: View {
         
         if let selectedJob = job {
             
-            // will cause crash
-           // viewModel.breakReminder = selectedJob.breakReminder
+            
+           _enableReminder = State(initialValue: selectedJob.breakReminder)
         }
 
         
@@ -261,6 +261,7 @@ struct ActionView: View {
                         
                         
                         ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
+                            viewModel.breakReminder = self.enableReminder
                             viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: self.job!)
                             dismiss()
                         }
@@ -315,7 +316,7 @@ struct ActionView: View {
                         VStack {
                             TimePicker(timeInterval: .constant(0))
                             
-                            Toggle(isOn: $viewModel.breakReminder){
+                            Toggle(isOn: $enableReminder){
                                 
                                 Text("Break Reminder").bold()
                                 
@@ -325,11 +326,7 @@ struct ActionView: View {
                                 .padding(.vertical, 10)
                                 .glassModifier(cornerRadius: 20)
                             
-                            // change this, it cant be on appear it will need to be initialised
-                                .onAppear {
-                                    
-                                    viewModel.breakReminder = selectedJob.breakReminder
-                                }
+                           
                             Spacer()
                             
                         }
