@@ -18,6 +18,7 @@ struct ContextMenuPreview: UIViewRepresentable {
     var deleteAction: () -> Void
     var duplicateAction: () -> Void
     var editAction: (() -> Void)?
+    var showEdit: Bool = false
     var action: () -> Void
     
     func makeUIView(context: Context) -> UIView {
@@ -73,7 +74,7 @@ struct ContextMenuPreview: UIViewRepresentable {
                 
                 actions.append(duplicateUIAction)
                 
-                 if let editAction = self.parent.editAction {
+                 if self.parent.showEdit, let editAction = self.parent.editAction {
                     let editUIAction = UIAction(title: "More", image: UIImage(systemName: "ellipsis.circle")) { action in
                         editAction()
                     }
