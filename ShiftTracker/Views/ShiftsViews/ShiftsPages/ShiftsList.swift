@@ -70,9 +70,9 @@ struct ShiftsList: View {
                                 overviewModel.selectedShiftToDupe = shift
                                 overviewModel.activeSheet = .addShiftSheet
                                 
-                            }, showEdit: editMode.isEditing, editAction: { withAnimation {
+                            }, editAction: { withAnimation {
                 editMode = (editMode == .active) ? .inactive : .active
-            }}, action: {
+            }}, showEdit: editMode.isEditing, action: {
                                 navPath.append(shift)
                             }))
                             
