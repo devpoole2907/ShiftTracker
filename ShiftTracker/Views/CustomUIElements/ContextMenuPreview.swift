@@ -17,6 +17,7 @@ struct ContextMenuPreview: UIViewRepresentable {
     var viewContext: NSManagedObjectContext
     var deleteAction: () -> Void
     var duplicateAction: () -> Void
+    var editAction: (() -> Void)?
     var action: () -> Void
     
     func makeUIView(context: Context) -> UIView {
@@ -56,20 +57,31 @@ struct ContextMenuPreview: UIViewRepresentable {
                 )
                 return detailVC
             }, actionProvider: { suggestedActions in
-                // Define and return UIMenu with actions here
-                // ...
+                
+                var actions = [UIAction]()
                 
                 let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
                     // Perform delete action
                     self.parent.deleteAction()
                 }
                 
+                actions.append(deleteUIAction)
+                
                 let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
                     self.parent.duplicateAction()
                 }
                 
+                actions.append(duplicateUIAction)
+                
+                 if let editAction = self.parent.editAction {
+                    let editUIAction = UIAction(title: "More", image: UIImage(systemName: "ellipsis.circle")) { action in
+                        editAction()
+                    }
+                    actions.append(editUIAction)
+                    }
+                
                 // Combine actions into a UIMenu
-                return UIMenu(title: "", children: [deleteUIAction, duplicateUIAction])
+                return UIMenu(title: "", children: actions)
             })
         }
         
