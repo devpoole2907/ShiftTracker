@@ -21,6 +21,8 @@ struct ContextMenuPreview: UIViewRepresentable {
     @Binding var editMode: EditMode
     var action: () -> Void
     
+     private var enableEdit = false
+    
     
     init(shift: OldShift, themeManager: ThemeDataManager, navigationState: NavigationState, viewContext: NSManagedObjectContext, deleteAction: @escaping () -> Void, duplicateAction: @escaping () -> Void, editAction: (() -> Void)? = nil, editMode: Binding<EditMode>? = nil, action: @escaping () -> Void) {
         self.shift = shift
@@ -29,7 +31,20 @@ struct ContextMenuPreview: UIViewRepresentable {
         self.viewContext = viewContext
         self.deleteAction = deleteAction
         self.duplicateAction = duplicateAction
-        self._editMode = editMode ?? Binding.constant(.inactive)
+        
+        if let editingMode = editMode {
+            
+            self._editMode = editingMode
+            
+            self.enableEdit = true
+            
+            } else {
+            
+                self.enableEdit = false
+            
+            }
+        
+        
         self.editAction = editAction
         self.action = action
     }
@@ -104,8 +119,9 @@ struct ContextMenuPreview: UIViewRepresentable {
                         
                         
                     }
-                    
+                    if self.parent.enableEdit {
                     actions.append(editUIAction)
+                    }
                     
                 }
 
