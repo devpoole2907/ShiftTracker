@@ -56,8 +56,8 @@ struct HistoricalView: View {
                             scrollManager.timeSheetsScrolled = false
                         }
                     
-                    // if we are editing, disable tab changing
-                        .disabled(editMode.isEditing)
+                    // if any shifts are selected disable tab changing
+                        .disabled(!historyModel.selection.isEmpty)
                     
                     shiftsSection
                     
