@@ -41,6 +41,10 @@ struct DetailView: View {
     @Binding var navPath: NavigationPath
     @FocusState private var focusedField: Field?
     
+    // this is kind of redundant now ill just disable navigation while editing
+    // at this point, this isnt stupid all these little duct tape patches are worth it to finally get the project across the line!
+    @State private var tabBarAlreadyHidden = false
+    
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -285,7 +289,21 @@ struct DetailView: View {
                     
                     if !isContextPreview {
                         withAnimation {
-                            navigationState.hideTabBar = true
+                            
+                            // this is kind of redundant now ill just disable navigation while editing
+                            // tab bar already hidden?
+                            if navigationState.hideTabBar{
+                                // then mark it that it already was so we dont unhide it again
+                                
+                                self.tabBarAlreadyHidden = true
+                                
+                            } else {
+                                // otherwise hide it
+                                navigationState.hideTabBar = true
+                                
+                            }
+                            
+                          
                         }
                     }
                    
@@ -296,7 +314,10 @@ struct DetailView: View {
         
             .onDisappear {
                 // only hide the tab bar if we arent a contetx menu preview otherwise the tab bar will re appear when pushing further into the preview/naving here via the preview
-                if !isContextPreview {
+                
+                // this is kind of redundant now ill just disable navigation while editing
+                
+                if !isContextPreview && !tabBarAlreadyHidden {
                     withAnimation {
                         navigationState.hideTabBar = false
                     }

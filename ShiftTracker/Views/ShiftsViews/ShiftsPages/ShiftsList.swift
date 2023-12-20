@@ -70,10 +70,10 @@ struct ShiftsList: View {
                                 overviewModel.selectedShiftToDupe = shift
                                 overviewModel.activeSheet = .addShiftSheet
                                 
-                            }, editAction: { withAnimation {
-                editMode = (editMode == .active) ? .inactive : .active
-            }}, showEdit: !editMode.isEditing, action: {
-                                navPath.append(shift)
+                            }, editMode: $editMode, action: {
+                                if !editMode.isEditing {
+                                    navPath.append(shift)
+                                }
                             }))
                             
                             if !sortSelection.searchTerm.isEmpty {
@@ -278,6 +278,23 @@ struct ShiftsList: View {
                     .environmentObject(purchaseManager)
                 
                     .customSheetBackground()
+            }
+        
+        
+            .toolbar(editMode.isEditing ? .hidden : .visible, for: .tabBar)
+        
+        
+            .onChange(of: editMode.isEditing) { value in
+                withAnimation {
+                if value {
+                  
+                        navigationState.hideTabBar = true
+                        
+                    } else {
+                        navigationState.hideTabBar = false
+                    }
+                }
+                
             }
         
     }

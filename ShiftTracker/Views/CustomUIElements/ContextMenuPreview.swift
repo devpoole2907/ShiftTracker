@@ -18,8 +18,21 @@ struct ContextMenuPreview: UIViewRepresentable {
     var deleteAction: () -> Void
     var duplicateAction: () -> Void
     var editAction: (() -> Void)?
-    var showEdit: Bool = false
+    @Binding var editMode: EditMode
     var action: () -> Void
+    
+    
+    init(shift: OldShift, themeManager: ThemeDataManager, navigationState: NavigationState, viewContext: NSManagedObjectContext, deleteAction: @escaping () -> Void, duplicateAction: @escaping () -> Void, editAction: (() -> Void)? = nil, editMode: Binding<EditMode>? = nil, action: @escaping () -> Void) {
+        self.shift = shift
+        self.themeManager = themeManager
+        self.navigationState = navigationState
+        self.viewContext = viewContext
+        self.deleteAction = deleteAction
+        self.duplicateAction = duplicateAction
+        self._editMode = editMode ?? Binding.constant(.inactive)
+        self.editAction = editAction
+        self.action = action
+    }
     
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
@@ -49,37 +62,56 @@ struct ContextMenuPreview: UIViewRepresentable {
         func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
             return UIContextMenuConfiguration(identifier: nil, previewProvider: {
                 let detailVC = UIHostingController(rootView:
-                    
-                    
-                        DetailView(shift: self.parent.shift, isContextPreview: true)
-                            .environmentObject(self.parent.themeManager)
-                            .environmentObject(self.parent.navigationState)
-                            .padding(.top)
+                                                    
+                                                    
+                                                    DetailView(shift: self.parent.shift, isContextPreview: true)
+                    .environmentObject(self.parent.themeManager)
+                    .environmentObject(self.parent.navigationState)
+                    .padding(.top)
                 )
                 return detailVC
             }, actionProvider: { suggestedActions in
                 
                 var actions = [UIAction]()
                 
-                let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
-                    // Perform delete action
-                    self.parent.deleteAction()
-                }
+              
                 
-                actions.append(deleteUIAction)
-                
-                let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
-                    self.parent.duplicateAction()
-                }
-                
-                actions.append(duplicateUIAction)
-                
-                 if self.parent.showEdit, let editAction = self.parent.editAction {
+           // in the end, all actions should only be accessible if we arent editing 
+                if self.parent.editMode == .inactive {
+                    
+                    let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
+                        // Perform delete action
+                        self.parent.deleteAction()
+                    }
+                    
+                    actions.append(deleteUIAction)
+                    
+                    let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
+                        self.parent.duplicateAction()
+                    }
+                    
+                    actions.append(duplicateUIAction)
+                    
                     let editUIAction = UIAction(title: "More", image: UIImage(systemName: "ellipsis.circle")) { action in
-                        editAction()
+                        
+                    withAnimation {
+                        self.parent.editMode = (self.parent.editMode == .active) ? .inactive : .active
                     }
+                        
+                        if let editAction = self.parent.editAction {
+                            editAction()
+                        }
+                        
+                        
+                    }
+                    
                     actions.append(editUIAction)
-                    }
+                    
+                }
+
+                
+                
+                
                 
                 // Combine actions into a UIMenu
                 return UIMenu(title: "", children: actions)

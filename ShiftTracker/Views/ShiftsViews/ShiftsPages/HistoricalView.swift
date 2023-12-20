@@ -92,7 +92,7 @@ struct HistoricalView: View {
             
             
             
-            floatingButtons.padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+            floatingButtons
             
         }
         
@@ -140,6 +140,22 @@ struct HistoricalView: View {
         }
         
         .navigationTitle(historyModel.selection.isEmpty ? historyModel.getCurrentDateRangeString() : "\(historyModel.selection.count) selected")
+        
+        .toolbar(editMode.isEditing ? .hidden : .visible, for: .tabBar)
+    
+    
+        .onChange(of: editMode.isEditing) { value in
+            withAnimation {
+            if value {
+              
+                    navigationState.hideTabBar = true
+                    
+                } else {
+                    navigationState.hideTabBar = false
+                }
+            }
+            
+        }
         
         .sheet(isPresented: $historyModel.showExportView) {
             
@@ -396,8 +412,10 @@ struct HistoricalView: View {
                                 
                                 overviewModel.activeSheet = .addShiftSheet
                                 
-                            }, action: {
-                                navPath.append(shift)
+                            }, editMode: $editMode, action: {
+                                if !editMode.isEditing {
+                                    navPath.append(shift)
+                                }
                             }))
                             
                             .swipeActions {
@@ -542,13 +560,16 @@ struct HistoricalView: View {
                     
                 }.padding()
                     .glassModifier(cornerRadius: 20)
+                    .padding(.trailing)
                 
                 CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
                 
                     .glassModifier(cornerRadius: 20)
+                 
                 
                     .frame(width: 165)
                     .frame(maxHeight: 30)
+                    .padding(.trailing)
                 
                     .disabled(editMode.isEditing)
                     .opacity(editMode.isEditing ? 0.5 : 1.0)
@@ -589,7 +610,7 @@ struct HistoricalView: View {
                     }
                 
                 Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
-            }  .padding(.horizontal)
+            }  .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
             
         }
     }
