@@ -153,22 +153,17 @@ struct HistoricalView: View {
                             
                             
                             if historyModel.selection.isEmpty {
+                                // add all current tabs shifts to the selection set
+                                selectAllShiftsInCurrentTab()
                                 
-                                // add all current aggregate to the selection set
-                                
-                                
-                                /*let objectIDs = allShifts.map { shift in
-                                    return shift.objectID
-                                }
-                                
-                                historyModel.selection = Set(objectIDs)*/
+         
                             } else {
                                 historyModel.selection = Set()
                             }
                             
                         }){
                             Text(historyModel.selection.isEmpty ? "Select All" : "Unselect All")
-                        }.disabled(!historyModel.selection.isEmpty)
+                        }
                     }
                 }
             }
@@ -222,6 +217,11 @@ struct HistoricalView: View {
          }
          }*/
     }
+    
+    private func selectAllShiftsInCurrentTab() {
+        let shifts = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts
+            historyModel.selection = Set(shifts.map { $0.objectID })
+        }
     
     private func deleteItems() {
         withAnimation {
