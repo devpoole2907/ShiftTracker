@@ -140,6 +140,8 @@ struct HistoricalView: View {
         }
         
         .navigationTitle(historyModel.selection.isEmpty ? historyModel.getCurrentDateRangeString() : "\(historyModel.selection.count) selected")
+                                
+        .navigationBarBackButtonHidden(editMode.isEditing)
         
         .toolbar(editMode.isEditing ? .hidden : .visible, for: .tabBar)
     
