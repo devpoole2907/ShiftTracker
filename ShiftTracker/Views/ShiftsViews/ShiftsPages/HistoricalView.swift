@@ -530,8 +530,9 @@ struct HistoricalView: View {
                     print("Selected tab is \(value)")
                     //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
                 }
-            // if we are editing, disable tab changing
-                .disabled(editMode.isEditing)
+            
+               // if any shifts are selected disable tab changing
+                        .disabled(!historyModel.selection.isEmpty)
             
             Spacer()
             
