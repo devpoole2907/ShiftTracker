@@ -32,17 +32,16 @@ struct ContextMenuPreview: UIViewRepresentable {
         self.deleteAction = deleteAction
         self.duplicateAction = duplicateAction
         
+        
+        self.enableEdit = false
+        self._editMode = Binding.constant(.inactive)
         if let editingMode = editMode {
             
             self._editMode = editingMode
             
             self.enableEdit = true
             
-            } else {
-            
-                self.enableEdit = false
-            
-            }
+            } 
         
         
         self.editAction = editAction
