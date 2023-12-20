@@ -145,6 +145,34 @@ struct HistoricalView: View {
         
         .toolbar(editMode.isEditing ? .hidden : .visible, for: .tabBar)
     
+     .toolbar{
+                if editMode.isEditing {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: {
+                            
+                            
+                            
+                            if historyModel.selection.isEmpty {
+                                
+                                // add all current aggregate to the selection set
+                                
+                                
+                                /*let objectIDs = allShifts.map { shift in
+                                    return shift.objectID
+                                }
+                                
+                                historyModel.selection = Set(objectIDs)*/
+                            } else {
+                                historyModel.selection = Set()
+                            }
+                            
+                        }){
+                            Text(historyModel.selection.isEmpty ? "Select All" : "Unselect All")
+                        }.disabled(!historyModel.selection.isEmpty)
+                    }
+                }
+            }
+            .environment(\.editMode, $editMode)
     
         .onChange(of: editMode.isEditing) { value in
             withAnimation {
