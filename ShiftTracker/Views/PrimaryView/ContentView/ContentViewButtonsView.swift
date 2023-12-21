@@ -14,7 +14,7 @@ struct ContentViewButtonsView: View {
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var navigationState: NavigationState
     @Environment(\.colorScheme) var colorScheme
-    @Environment(\.managedObjectContext) private var context
+    @Environment(\.managedObjectContext) private var viewContext
     
     @Binding var jobShakeTimes: CGFloat
     @Binding var payShakeTimes: CGFloat
@@ -52,6 +52,7 @@ struct ContentViewButtonsView: View {
                 AnimatedButton(
                     action: {
                         CustomConfirmationAlert(action: {
+                            viewModel.uncompleteCancelledScheduledShift(viewContext: viewContext)
                             viewModel.cancelShift()
                         }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
                         

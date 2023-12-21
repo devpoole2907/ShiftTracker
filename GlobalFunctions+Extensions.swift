@@ -257,6 +257,28 @@ func formattedTimeInterval(_ timeInterval: TimeInterval) -> String {
     return "\(hours)h \(minutes)m"
 }
 
+func currentDateWithoutSeconds() -> Date {
+    let calendar = Calendar.current
+    let dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: Date())
+    return calendar.date(from: dateComponents) ?? Date()
+}
+
+func calculateCurrentPayPeriod(lastEndDate: Date, duration: Int) -> (startDate: Date, endDate: Date) {
+    let calendar = Calendar.current
+    var endDate = lastEndDate
+
+    // Iterate forward to find the first period end date after today's date
+    while endDate < Date() {
+        endDate = calendar.date(byAdding: .day, value: duration, to: endDate)!
+    }
+    
+    let startDate = calendar.date(byAdding: .day, value: -duration, to: endDate)!
+
+    return (startDate, endDate)
+}
+
+
+
 
 
 // used to create 3 default tags when the app launches

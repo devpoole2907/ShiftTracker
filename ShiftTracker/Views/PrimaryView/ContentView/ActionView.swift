@@ -7,9 +7,11 @@
 
 import SwiftUI
 import Haptics
+import CoreData
 
 struct ActionView: View {
     
+    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) var colorScheme
     
     @EnvironmentObject var themeManager: ThemeDataManager
@@ -20,6 +22,7 @@ struct ActionView: View {
     
     @Environment(\.dismiss) var dismiss
     @State private var actionDate = Date()
+    @State private var payMultiplier: Double
     @State private var isRounded = false
     @State private var showProSheet = false
     @State private var showBreaksSheet = false
@@ -28,8 +31,7 @@ struct ActionView: View {
     @State private var breakReminderDate = Date()
     
     @AppStorage("shiftsTracked") var shiftsTracked = 0
-    
-    @Environment(\.managedObjectContext) private var context
+
     let navTitle: String
     var pickerStartDate: Date?
     
@@ -37,13 +39,17 @@ struct ActionView: View {
     
     let job: Job?
     
+    var upcomingShift: ScheduledShift?
+    
     //(navTitle: "End Break", pickerStartDate: viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .endBreak)
     
     
-    init(navTitle: String, pickerStartDate: Date? = nil, actionType: ActionType, job: Job? = nil) {
+    init(navTitle: String, pickerStartDate: Date? = nil, actionType: ActionType, job: Job? = nil, scheduledShift: ScheduledShift? = nil) {
         self.navTitle = navTitle
         self.pickerStartDate = pickerStartDate
         self.actionType = actionType
+        
+        self._payMultiplier = State(initialValue: 1.0)
         
         self.job = job
         
@@ -54,6 +60,21 @@ struct ActionView: View {
             _breakReminderDate = State(initialValue: actionDate.addingTimeInterval(selectedJob.breakReminderTime))
             
         }
+        
+        if let shiftToLoad = scheduledShift {
+            self._actionDate = State(initialValue: shiftToLoad.startDate ?? Date())
+            self._payMultiplier = State(initialValue: shiftToLoad.payMultiplier)
+            _breakReminderTime = State(initialValue: shiftToLoad.breakReminderTime)
+            _enableReminder = State(initialValue: shiftToLoad.breakReminder)
+            _breakReminderDate = State(initialValue: actionDate.addingTimeInterval(shiftToLoad.breakReminderTime))
+            
+        }
+        
+        self.upcomingShift = scheduledShift
+        
+      
+        
+     
         
         
     }
@@ -234,12 +255,8 @@ struct ActionView: View {
                     
                     
                     
-                    Stepper(value: $viewModel.payMultiplier, in: 1.0...3.0, step: 0.05) {
-                        Text("Pay Multiplier: x\(viewModel.payMultiplier, specifier: "%.2f")").bold()
-                    }
-                    .onChange(of: viewModel.payMultiplier) { newMultiplier in
-                        viewModel.isMultiplierEnabled = newMultiplier > 1.0
-                        viewModel.savePayMultiplier()
+                    Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
+                        Text("Pay Multiplier: x\(payMultiplier, specifier: "%.2f")").bold()
                     }
                     .padding(.horizontal)
                     .frame(maxWidth: UIScreen.main.bounds.width - 80)
@@ -249,8 +266,6 @@ struct ActionView: View {
                     
                     
                     .onAppear {
-                        
-                        viewModel.payMultiplier = 1.0
                         
                         
                         if purchaseManager.hasUnlockedPro || shiftsTracked < 1 {
@@ -269,16 +284,36 @@ struct ActionView: View {
                     .padding(.bottom, 10)
                     
                     
-                    ActionButtonView(title: "Start Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
+                    ActionButtonView(title: upcomingShift == nil ? "Start Shift" : "Load Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
                         viewModel.breakReminder = self.enableReminder
                         viewModel.breakReminderTime = self.breakReminderTime
-                        viewModel.startShiftButtonAction(using: context, startDate: actionDate, job: self.job!)
+                        viewModel.payMultiplier = self.payMultiplier
+                        viewModel.isMultiplierEnabled = self.payMultiplier > 1.0
+                        viewModel.savePayMultiplier() //saves to user defaults
+                        
+                        if let shiftToLoad = self.upcomingShift {
+                            applyUpcomingShiftTags(upcomingShift: shiftToLoad)
+                            
+                            // mark the shift as complete, will be scheduled for deletion when ending shift - also prevents editing after starting
+                            shiftToLoad.isComplete = true
+                            
+                            try? viewContext.save()
+                            
+                        }
+                        
+                        
+                        
+                        viewModel.startShiftButtonAction(using: viewContext, startDate: actionDate, job: self.job!)
                         dismiss()
                     }
                 case .endShift:
                     ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 60) {
                         
-                        self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: actionDate, job: self.job!)
+                        // delete any scheduled shifts marked complete
+                        
+                        viewModel.deleteCompletedScheduledShifts(viewContext: viewContext)
+                        
+                        viewModel.lastEndedShift = viewModel.endShift(using: viewContext, endDate: actionDate, job: self.job!)
                         dismiss()
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -287,7 +322,9 @@ struct ActionView: View {
                         
                     }.contextMenu {
                         Button(action: {
+                            viewModel.uncompleteCancelledScheduledShift(viewContext: viewContext)
                             viewModel.cancelShift()
+                            
                             dismiss()
                         }){
                             HStack {
@@ -299,7 +336,7 @@ struct ActionView: View {
                     }
                 case .endBreak:
                     ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
-                        viewModel.endBreak(endDate: actionDate, viewContext: context)
+                        viewModel.endBreak(endDate: actionDate, viewContext: viewContext)
                         dismiss()
                     }
                     
@@ -319,7 +356,7 @@ struct ActionView: View {
             }
             
             .sheet(isPresented: $showBreaksSheet) {
-                breakReminderSheet
+                BreakReminderSheet(breakReminderDate: $breakReminderDate, breakReminderTime: $breakReminderTime, actionDate: actionDate, enableReminder: $enableReminder)
                     .customSheetBackground()
                     .customSheetRadius()
                     .presentationDetents([.fraction(0.48)])
@@ -333,84 +370,36 @@ struct ActionView: View {
         
     }
     
-    var breakReminderSheet: some View {
+    private func applyUpcomingShiftTags(upcomingShift: ScheduledShift) {
+        let associatedTags = upcomingShift.tags as? Set<Tag> ?? []
+        let associatedTagIds = associatedTags.compactMap { $0.tagID }
+                            viewModel.selectedTags = Set(associatedTagIds)
         
         
-            
-       
+        let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+           fetchRequest.predicate = NSPredicate(format: "name == %@", "Late")
+        
+        var lateTag: Tag?
+        
+        do {
+                let matchingTags = try viewContext.fetch(fetchRequest)
+            lateTag = matchingTags.first
+            } catch {
+                print("Failed to fetch late tag: \(error)")
                 
-                NavigationStack {
-                    VStack {
-                        
-                        DatePicker(
-                                            "Time",
-                                            selection: $breakReminderDate,
-                                            in: actionDate...(actionDate.addingTimeInterval(24 * 60 * 60)),
-                                            displayedComponents: [.date, .hourAndMinute]
-                        ).labelsHidden()
-                       
-                            .onChange(of: breakReminderDate) { newValue in
-                                              
-                                
-                                breakReminderTime = newValue.timeIntervalSince(actionDate)
-                                
-                                          }
-                        
-                        TimePicker(timeInterval: $breakReminderTime)
-                        
-                        
-                        
-                            .onChange(of: breakReminderTime) { newTime in
-                                if newTime <= 0 {
-                                    enableReminder = false
-                                } else {
-                                    let newReminderDate = actionDate.addingTimeInterval(newTime)
-                                    breakReminderDate = newReminderDate
-                                }
-                            }
-                        
-                        
-                        Toggle(isOn: $enableReminder){
-                            
-                            Text("Break Reminder").bold()
-                            
-                        }.toggleStyle(CustomToggleStyle())
-                            .padding(.horizontal)
-                            .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                            .padding(.vertical, 10)
-                            .glassModifier(cornerRadius: 20)
-                        
-                            .onChange(of: enableReminder) { value in
-                                
-                                if value && breakReminderTime <= 0 {
-                                    
-                                        breakReminderTime = 6000
-                                    
-                                }
-                                
-                            }
-                        
-                        
-                        Spacer()
-                        
-                    }.onAppear {
-                        
-                        
-                        breakReminderDate = actionDate.addingTimeInterval(breakReminderTime)
-                        
-                                  }
-                    
-                    .trailingCloseButton()
-                    .navigationTitle("Break Reminder")
-                    .navigationBarTitleDisplayMode(.inline)
+            }
+        
+        if let lateTag = lateTag,
+                   let lateTagId = lateTag.tagID {
+                    // if the shift is late, select the late tag
+                    if Date() > upcomingShift.startDate ?? Date() {
+                        viewModel.selectedTags.insert(lateTagId)
+                    }
                 }
-         
-           
-            
-        
-        
-        
     }
+    
+
+
 
     
 }

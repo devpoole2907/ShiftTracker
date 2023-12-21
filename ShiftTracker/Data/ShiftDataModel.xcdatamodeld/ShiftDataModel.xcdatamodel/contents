@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22222" systemVersion="23A344" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23C64" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="Break" representedClassName="Break" syncable="YES" codeGenerationType="class">
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isUnpaid" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -18,12 +18,13 @@
         <attribute name="colorRed" optional="YES" attributeType="Float" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="hourlyPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="lastPayPeriodEndedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="overtimeAppliedAfter" optional="YES" attributeType="Double" defaultValueString="12" usesScalarValueType="YES"/>
         <attribute name="overtimeEnabled" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="overtimeRate" optional="YES" attributeType="Double" defaultValueString="1.25" usesScalarValueType="YES"/>
+        <attribute name="payPeriodEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="payPeriodLength" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
-        <attribute name="payPeriodStartDay" optional="YES" attributeType="Integer 16" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="rosterDayOfWeek" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="rosterReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="rosterTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -69,9 +70,12 @@
         <relationship name="tips" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tip" inverseName="oldShift" inverseEntity="Tip"/>
     </entity>
     <entity name="ScheduledShift" representedClassName="ScheduledShift" syncable="YES" codeGenerationType="class">
+        <attribute name="breakReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="breakReminderTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="calendarEventID" optional="YES" attributeType="String"/>
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="isComplete" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isRepeating" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="multiplierEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="newRepeatID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>

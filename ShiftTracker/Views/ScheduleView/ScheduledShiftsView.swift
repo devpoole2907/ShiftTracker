@@ -109,7 +109,7 @@ struct ScheduledShiftsView: View {
                             
                             
                         }){
-                            Image(systemName: "doc.on.doc.fill")
+                            Image(systemName: "plus.square.fill.on.square.fill")
                         }.tint(.gray)
                         
                     }
@@ -133,7 +133,7 @@ struct ScheduledShiftsView: View {
                                 }
                             }
                         
-                            .swipeActions(allowsFullSwipe: false) {
+                            .swipeActions {
                                 
                                 
                                 if let shift = scheduleModel.fetchScheduledShift(id: shift.id, in: viewContext) {

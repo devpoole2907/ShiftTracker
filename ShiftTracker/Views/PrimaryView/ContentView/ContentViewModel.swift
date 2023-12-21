@@ -63,6 +63,8 @@ class ContentViewModel: ObservableObject {
         }
     }
     
+    @Published var scheduledShift: ScheduledShift? = nil
+    
     
     @AppStorage("totalPayAtBreakStart") var totalPayAtBreakStart: Double = 0.0
     @Published  var breakTimeElapsed: TimeInterval = 0
@@ -1095,6 +1097,37 @@ class ContentViewModel: ObservableObject {
         return calendar.date(from: newComponents) ?? date
     }
     
+    func deleteCompletedScheduledShifts(viewContext: NSManagedObjectContext) {
+        let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isComplete == true")
+
+        do {
+            let completedShifts = try viewContext.fetch(fetchRequest)
+            for shift in completedShifts {
+                viewContext.delete(shift)
+            }
+            try viewContext.save()
+        } catch {
+  
+            print("Error deleting completed scheduled shifts: \(error)")
+        }
+    }
+    
+    func uncompleteCancelledScheduledShift(viewContext: NSManagedObjectContext) {
+        let fetchRequest: NSFetchRequest<ScheduledShift> = ScheduledShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isComplete == true")
+
+        do {
+            let completedShifts = try viewContext.fetch(fetchRequest)
+            for shift in completedShifts {
+                shift.isComplete = false
+            }
+            try viewContext.save()
+        } catch {
+           
+            print("Error deleting completed scheduled shifts: \(error)")
+        }
+    }
     
 }
 

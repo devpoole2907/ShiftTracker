@@ -161,6 +161,9 @@
 		7C4D83032A8B6BD4006D54F9 /* ShiftToChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */; };
 		7C4D83042A8B6C76006D54F9 /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
 		7C5243792ABE70FE00356B6C /* HistoricalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5243782ABE70FE00356B6C /* HistoricalView.swift */; };
+		7C5651822B33C5EC005223DE /* BreakReminderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */; };
+		7C5651842B33DC2B005223DE /* PayPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651832B33DC2B005223DE /* PayPeriodView.swift */; };
+		7C5651862B33ECAD005223DE /* PayPeriodInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651852B33ECAD005223DE /* PayPeriodInputView.swift */; };
 		7C5F735E2ABA59CF00F698A1 /* ThemesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */; };
 		7C6218582AD0BA4E00E67245 /* JobForShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */; };
 		7C62185A2AD0BCBF00E67245 /* EstTaxPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */; };
@@ -446,6 +449,9 @@
 		7C4D82F82A8B6992006D54F9 /* SelectJobIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SelectJobIntent.intentdefinition; sourceTree = "<group>"; };
 		7C4D82FE2A8B6A29006D54F9 /* SelectJobIntentExtent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelectJobIntentExtent.entitlements; sourceTree = "<group>"; };
 		7C5243782ABE70FE00356B6C /* HistoricalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalView.swift; sourceTree = "<group>"; };
+		7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakReminderSheet.swift; sourceTree = "<group>"; };
+		7C5651832B33DC2B005223DE /* PayPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodView.swift; sourceTree = "<group>"; };
+		7C5651852B33ECAD005223DE /* PayPeriodInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodInputView.swift; sourceTree = "<group>"; };
 		7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesList.swift; sourceTree = "<group>"; };
 		7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobForShiftView.swift; sourceTree = "<group>"; };
 		7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstTaxPicker.swift; sourceTree = "<group>"; };
@@ -823,6 +829,7 @@
 				7CFE77972ADCCD0E0004F9B9 /* CustomUIKitTextField.swift */,
 				7CE826BF2B09E897002DDC28 /* CustomEditButton.swift */,
 				7CF2C83A2B3176B0004318C3 /* ContextMenuPreview.swift */,
+				7C5651852B33ECAD005223DE /* PayPeriodInputView.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -921,6 +928,7 @@
 				7CC2C6CA2AC7FDBB00F15E74 /* iosSixteenChartView.swift */,
 				7C5243782ABE70FE00356B6C /* HistoricalView.swift */,
 				1A8D4ADB2A4EFAC100EEB334 /* ShiftsList.swift */,
+				7C5651832B33DC2B005223DE /* PayPeriodView.swift */,
 			);
 			path = ShiftsPages;
 			sourceTree = "<group>";
@@ -1062,6 +1070,7 @@
 			children = (
 				1A88007029E3D98D009458BE /* BreaksListView.swift */,
 				1A30F3C32A223AA400A7BD92 /* BreakInputView.swift */,
+				7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */,
 			);
 			path = Breaks;
 			sourceTree = "<group>";
@@ -1521,6 +1530,7 @@
 				1ACA60AD29D7913700B279CB /* ShiftKeys.swift in Sources */,
 				1ADA2D1E2A9DB7E00080EBEB /* CustomSegmentedPicker.swift in Sources */,
 				1AB7D6AD29FC097700326AAA /* CustomIndicatorView.swift in Sources */,
+				7C5651842B33DC2B005223DE /* PayPeriodView.swift in Sources */,
 				1AD72A8A29F3511A00534342 /* ScheduledShiftsView.swift in Sources */,
 				1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */,
 				7C2C2F892AA6CD710074E32E /* AppearanceView.swift in Sources */,
@@ -1531,6 +1541,7 @@
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
 				7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */,
 				7CB0D23E2AE8C7DE00CF508E /* MockupWelcomeView.swift in Sources */,
+				7C5651862B33ECAD005223DE /* PayPeriodInputView.swift in Sources */,
 				1A8D4AD82A4EDE4300EEB334 /* CloseButton.swift in Sources */,
 				1A0D86EC2A51783B00EA4438 /* ChartSquare.swift in Sources */,
 				7C16AEF92AC54C4F00C0B58E /* JobIconView.swift in Sources */,
@@ -1543,6 +1554,7 @@
 				BF8191482A5A73620079E449 /* CustomThemePicker.swift in Sources */,
 				7C8CEA982A5D3836006C833F /* AddTagView.swift in Sources */,
 				1A22F00C29C68A1D00A23F33 /* PersistenceController.swift in Sources */,
+				7C5651822B33C5EC005223DE /* BreakReminderSheet.swift in Sources */,
 				7C0AC1362A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,
 				BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */,
 				7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */,

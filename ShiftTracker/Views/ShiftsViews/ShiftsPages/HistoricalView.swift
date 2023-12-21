@@ -488,7 +488,7 @@ struct HistoricalView: View {
                                     
                                     
                                 }){
-                                    Image(systemName: "doc.on.doc.fill")
+                                    Image(systemName: "plus.square.fill.on.square.fill")
                                 }.tint(.gray)
                                 
                                 

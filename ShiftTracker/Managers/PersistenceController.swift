@@ -50,8 +50,8 @@ struct PersistenceController {
             
             fatalError("Error: \(error.localizedDescription)")
             
-        }*/
-            
+        }
+            */
         
 
         container.loadPersistentStores { description, error in

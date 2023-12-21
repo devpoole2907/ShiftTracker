@@ -115,7 +115,7 @@ struct ScheduleView: View {
                 switch item {
                 case .scheduleSheet:
                     
-                    CreateShiftForm(dateSelected: $scheduleModel.dateSelected)
+                    CreateShiftForm(dateSelected: $scheduleModel.dateSelected, job: selectedJobManager.fetchJob(in: viewContext))
                     
                         .presentationDetents([.large])
                         .customSheetRadius(35)

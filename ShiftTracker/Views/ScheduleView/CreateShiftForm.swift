@@ -20,6 +20,11 @@ struct CreateShiftForm: View {
     
     @Binding var dateSelected: DateComponents?
     
+    @State private var showBreaksSheet = false
+    @State private var enableBreakReminder = false
+    @State private var breakReminderTime: TimeInterval = 0
+    @State private var breakReminderDate = Date()
+    
     @State private var selectedJob: Job?
     @State private var startDate: Date
     @State private var endDate: Date
@@ -46,7 +51,7 @@ struct CreateShiftForm: View {
     @FetchRequest(sortDescriptors: []) private var tags: FetchedResults<Tag>
     
     
-    init(dateSelected: Binding<DateComponents?>, scheduledShift: ScheduledShift? = nil) {
+    init(dateSelected: Binding<DateComponents?>, scheduledShift: ScheduledShift? = nil, job: Job? = nil) {
         _dateSelected = dateSelected
 
         let defaultDate: Date = Calendar.current.date(from: dateSelected.wrappedValue ?? DateComponents()) ?? Date()
@@ -54,6 +59,12 @@ struct CreateShiftForm: View {
         _endDate = State(initialValue: defaultDate)
         
         _scheduledShift = State(wrappedValue: scheduledShift)
+        
+        if let job = job {
+            _enableBreakReminder = State(initialValue: job.breakReminder)
+            _breakReminderTime = State(initialValue: job.breakReminderTime)
+    
+        }
         
         if let scheduledShift = scheduledShift {
             
@@ -68,6 +79,17 @@ struct CreateShiftForm: View {
                 }
             _payMultiplier = State(initialValue: scheduledShift.payMultiplier)
             _multiplierEnabled = State(initialValue: scheduledShift.multiplierEnabled)
+            
+            
+            
+                
+                _enableBreakReminder = State(initialValue: scheduledShift.breakReminder)
+                _breakReminderTime = State(initialValue: scheduledShift.breakReminderTime)
+              
+                
+            
+            
+            _breakReminderDate = State(initialValue: startDate.addingTimeInterval(scheduledShift.breakReminderTime))
             
         }
         
@@ -93,13 +115,13 @@ struct CreateShiftForm: View {
         let repeatID = UUID().uuidString
         let job = selectedJobManager.fetchJob(in: viewContext)!
         
-        let newShift = scheduleModel.createScheduledShift(startDate: startDate, endDate: endDate, shiftID: shiftID, repeatID: repeatID, job: job, selectedTags: selectedTags, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, in: viewContext)
+        let newShift = scheduleModel.createScheduledShift(startDate: startDate, endDate: endDate, shiftID: shiftID, repeatID: repeatID, job: job, selectedTags: selectedTags, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, breakReminder: enableBreakReminder, breakReminderTime: breakReminderTime, in: viewContext)
         let singleShift = SingleScheduledShift(shift: newShift)
         
         shiftStore.add(singleShift)
         
         if newShift.isRepeating {
-            scheduleModel.saveRepeatingShiftSeries(startDate: startDate, endDate: endDate, repeatEveryWeek: enableRepeat, repeatID: repeatID, job: job, shiftStore: shiftStore, selectedTags: selectedTags, selectedRepeatEnd: selectedRepeatEnd, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, in: viewContext)
+            scheduleModel.saveRepeatingShiftSeries(startDate: startDate, endDate: endDate, repeatEveryWeek: enableRepeat, repeatID: repeatID, job: job, shiftStore: shiftStore, selectedTags: selectedTags, selectedRepeatEnd: selectedRepeatEnd, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, breakReminder: enableBreakReminder, breakReminderTime: breakReminderTime, in: viewContext)
         }
         
         scheduleModel.saveShifts(in: viewContext)
@@ -119,6 +141,9 @@ struct CreateShiftForm: View {
         shiftToUpdate.reminderTime = scheduleModel.selectedReminderTime.timeInterval
         shiftToUpdate.payMultiplier = payMultiplier
         shiftToUpdate.notifyMe = scheduleModel.notifyMe
+        
+        shiftToUpdate.breakReminder = enableBreakReminder
+        shiftToUpdate.breakReminderTime = breakReminderTime
 
         
         
@@ -145,7 +170,7 @@ struct CreateShiftForm: View {
         if shiftToUpdate.isRepeating {
             CustomConfirmationAlert(action: {
                 
-                scheduleModel.updateRepeatingShiftSeries(shiftToUpdate: singleShift, newStartDate: startDate, newEndDate: endDate, newTags: selectedTags, newMultiplierEnabled: multiplierEnabled, newPayMultiplier: payMultiplier, newReminderTime: shiftToUpdate.reminderTime, newNotifyMe: scheduleModel.notifyMe, with: shiftStore, using: viewContext)
+                scheduleModel.updateRepeatingShiftSeries(shiftToUpdate: singleShift, newStartDate: startDate, newEndDate: endDate, newTags: selectedTags, newMultiplierEnabled: multiplierEnabled, newPayMultiplier: payMultiplier, newReminderTime: shiftToUpdate.reminderTime, newNotifyMe: scheduleModel.notifyMe, newBreakReminder: shiftToUpdate.breakReminder, newBreakReminderTime: shiftToUpdate.breakReminderTime, with: shiftStore, using: viewContext)
                 
             }, title: "Update all future repeating shifts too?").showAndStack()
         }
@@ -401,6 +426,34 @@ struct CreateShiftForm: View {
                             } .glassModifier(cornerRadius: 20)
                                 .padding(.horizontal)
                             
+                            Button(action: {
+                                
+                                showBreaksSheet.toggle()
+                                
+                                
+                            }){
+                                HStack {
+                                    Text("Break Reminder").bold()
+                                    Spacer()
+                                    HStack(spacing: 3) {
+                                        if breakReminderTime > 0 && enableBreakReminder == true {
+                                            HStack {
+                                                Text(getTime(angle: startAngle).addingTimeInterval(breakReminderTime), style: .time)
+                                                Divider().frame(maxHeight: 8)
+                                                Text("\(formattedTimeInterval(breakReminderTime))")
+                                            }
+                                        } else {
+                                            Text("Disabled")
+                                        }
+                                        Image(systemName: "chevron.right").font(.caption)
+                                    }.foregroundStyle(.gray)
+                                }
+                            }         .frame(height: 40)
+                                .padding(.horizontal)
+                            
+                                .glassModifier(cornerRadius: 20)
+                                .padding(.horizontal)
+                            
                             HStack{
                                 TagPicker($selectedTags, from: tags)
                             }.padding(.horizontal)
@@ -459,6 +512,13 @@ struct CreateShiftForm: View {
                 .trailingCloseButton()
                 .navigationTitle(scheduledShift == nil ? "Schedule" : "Edit Schedule")
                 .navigationBarTitleDisplayMode(.inline)
+            
+                .sheet(isPresented: $showBreaksSheet) {
+                    BreakReminderSheet(breakReminderDate: $breakReminderDate, breakReminderTime: $breakReminderTime, actionDate: getTime(angle: startAngle), enableReminder: $enableBreakReminder)
+                        .customSheetBackground()
+                        .customSheetRadius()
+                        .presentationDetents([.fraction(0.48)])
+                }
     
              
         }.onAppear {
@@ -467,6 +527,8 @@ struct CreateShiftForm: View {
             
             
         }
+        
+        
     }
     
     @ViewBuilder

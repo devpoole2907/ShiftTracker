@@ -126,12 +126,24 @@ struct JobOverview: View {
             
             List{
                 
-                Section {
+             
                     statsSection
                         .frame(maxWidth: .infinity)
-                }.listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                 
+                if let theJob = selectedJobManager.fetchJob(in: viewContext) {
+                    
+                    if theJob.payPeriodEnabled {
+                        
+                        payPeriodSection
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                        
+                    }
+                    
+                    
+                }
                 
                 recentShiftsSection
                     .onAppear {
@@ -194,6 +206,10 @@ struct JobOverview: View {
                         .onAppear {
                             overviewModel.navigationLocation = 2
                         }
+                } else if value == 3 {
+                    
+                    PayPeriodView(navPath: $navPath, job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(overviewModel)
+                    
                 }
                 
             }
@@ -308,6 +324,8 @@ struct JobOverview: View {
                 }
                 
                 overviewModel.appeared.toggle()
+                
+                
                 
             }
         
@@ -464,7 +482,7 @@ struct JobOverview: View {
                         
                         
                     }){
-                        Image(systemName: "doc.on.doc.fill")
+                        Image(systemName: "plus.square.fill.on.square.fill")
                     }.tint(.gray)
                     
                     
@@ -538,17 +556,12 @@ struct JobOverview: View {
                         overviewModel.activeSheet = .configureExportSheet
                     })
                     .environmentObject(shiftManager)
-                    
-                    
-                    
-                    
-                }.frame(width: getRect().width - 44)
-                
-                
-                
+ 
+                }
+
                 
             }
-            .frame(height: 250)
+            .frame(width: getRect().width - 44, height: 230)
             
             
             
@@ -556,6 +569,32 @@ struct JobOverview: View {
         
         
         
+    }
+    
+    var payPeriodSection: some View {
+        NavigationLink(value: 3) {
+            HStack {
+                Image(systemName: "dollarsign.circle.fill").font(.largeTitle)
+                VStack(alignment: .leading){
+                    HStack {
+                        Text("Pay Period").bold().font(.headline)
+                        Divider().frame(height: 8)
+                        Text("21/12/23 - 27/12/23")
+                            .font(.caption)
+                            .roundedFontDesign()
+                            .foregroundStyle(.gray)
+                    }
+                    Text("$2632.43") .roundedFontDesign()
+                        .foregroundStyle(.gray)
+                        .font(.subheadline)
+                }
+            }
+        }
+            .padding(.vertical, 16)
+            .padding(.horizontal, 10)
+            .frame(width: getRect().width - 44)
+            .glassModifier(cornerRadius: 12)
+           
     }
     
     var toolbarMenu: some View {

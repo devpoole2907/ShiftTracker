@@ -274,7 +274,7 @@ class SchedulingViewModel: ObservableObject {
         return calendar.date(byAdding: interval, value: value, to: date)!
     }
 
-    func createScheduledShift(startDate: Date, endDate: Date, shiftID: UUID, repeatID: String, job: Job, selectedTags: Set<Tag>, enableRepeat: Bool, payMultiplier: Double, multiplierEnabled: Bool, in viewContext: NSManagedObjectContext) -> ScheduledShift {
+    func createScheduledShift(startDate: Date, endDate: Date, shiftID: UUID, repeatID: String, job: Job, selectedTags: Set<Tag>, enableRepeat: Bool, payMultiplier: Double, multiplierEnabled: Bool, breakReminder: Bool, breakReminderTime: TimeInterval, in viewContext: NSManagedObjectContext) -> ScheduledShift {
         let newShift = ScheduledShift(context: viewContext)
         newShift.startDate = startDate
         newShift.endDate = endDate
@@ -287,6 +287,8 @@ class SchedulingViewModel: ObservableObject {
         newShift.tags = NSSet(array: Array(selectedTags))
         newShift.payMultiplier = payMultiplier
         newShift.multiplierEnabled = multiplierEnabled
+        newShift.breakReminder = breakReminder
+        newShift.breakReminderTime = breakReminderTime
         return newShift
     }
     
@@ -302,7 +304,7 @@ class SchedulingViewModel: ObservableObject {
     
 
 
-    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: String, job: Job, shiftStore: ShiftStore, selectedTags: Set<Tag>, selectedRepeatEnd: Date, enableRepeat: Bool, payMultiplier: Double, multiplierEnabled: Bool, in viewContext: NSManagedObjectContext) {
+    func saveRepeatingShiftSeries(startDate: Date, endDate: Date, repeatEveryWeek: Bool, repeatID: String, job: Job, shiftStore: ShiftStore, selectedTags: Set<Tag>, selectedRepeatEnd: Date, enableRepeat: Bool, payMultiplier: Double, multiplierEnabled: Bool, breakReminder: Bool, breakReminderTime: TimeInterval, in viewContext: NSManagedObjectContext) {
         var currentStartDate = incrementDate(startDate, by: .day, value: 1)
         var currentEndDate = incrementDate(endDate, by: .day, value: 1)
         
@@ -312,7 +314,7 @@ class SchedulingViewModel: ObservableObject {
             if selectedDays[getDayOfWeek(date: currentStartDate) - 1] {
                 let shiftID = UUID()
                 
-                let shift = createScheduledShift(startDate: currentStartDate, endDate: currentEndDate, shiftID: shiftID, repeatID: repeatEveryWeek ? repeatID : UUID().uuidString, job: job, selectedTags: selectedTags, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, in: viewContext)
+                let shift = createScheduledShift(startDate: currentStartDate, endDate: currentEndDate, shiftID: shiftID, repeatID: repeatEveryWeek ? repeatID : UUID().uuidString, job: job, selectedTags: selectedTags, enableRepeat: enableRepeat, payMultiplier: payMultiplier, multiplierEnabled: multiplierEnabled, breakReminder: breakReminder, breakReminderTime: breakReminderTime, in: viewContext)
                 let singleShift = SingleScheduledShift(shift: shift)
                 
                 repeatingShifts.append(shift)
@@ -328,7 +330,7 @@ class SchedulingViewModel: ObservableObject {
     
     // used to update future repeating shifts if the shift is repeating and is edited
     
-    func updateRepeatingShiftSeries(shiftToUpdate: SingleScheduledShift, newStartDate: Date, newEndDate: Date, newTags: Set<Tag>, newMultiplierEnabled: Bool, newPayMultiplier: Double, newReminderTime: TimeInterval, newNotifyMe: Bool, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
+    func updateRepeatingShiftSeries(shiftToUpdate: SingleScheduledShift, newStartDate: Date, newEndDate: Date, newTags: Set<Tag>, newMultiplierEnabled: Bool, newPayMultiplier: Double, newReminderTime: TimeInterval, newNotifyMe: Bool, newBreakReminder: Bool, newBreakReminderTime: TimeInterval, with shiftStore: ShiftStore, using viewContext: NSManagedObjectContext) {
         
         let repeatID = shiftToUpdate.repeatID
         let shiftDate = shiftToUpdate.startDate
@@ -368,6 +370,8 @@ class SchedulingViewModel: ObservableObject {
                         shift.reminderTime = newReminderTime
                         shift.payMultiplier = newPayMultiplier
                         shift.notifyMe = newNotifyMe
+                        shift.breakReminder = newBreakReminder
+                        shift.breakReminderTime = newBreakReminderTime
                         
                         
                         if let eventIdentifier = shift.calendarEventID {

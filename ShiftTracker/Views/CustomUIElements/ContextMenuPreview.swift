@@ -100,7 +100,7 @@ struct ContextMenuPreview: UIViewRepresentable {
                     
                     actions.append(deleteUIAction)
                     
-                    let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "doc.on.doc.fill")) { action in
+                    let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { action in
                         self.parent.duplicateAction()
                     }
                     

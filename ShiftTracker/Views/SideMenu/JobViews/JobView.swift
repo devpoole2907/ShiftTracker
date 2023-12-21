@@ -106,6 +106,8 @@ struct JobView: View {
                         
                         overtimePanel.shake(times: jobViewModel.overtimeShakeTimes)
                         
+                        payPeriodPanel
+                        
                         Spacer(minLength: 100)
                         
                     }
@@ -537,6 +539,14 @@ struct JobView: View {
         return OvertimePanel(enabled: $jobViewModel.overtimeEnabled, rate: $jobViewModel.overtimeRate, applyAfter: $jobViewModel.overtimeAppliedAfter) {
             jobViewModel.activeSheet = .overtimeSheet
         }
+    }
+    
+    var payPeriodPanel: some View {
+        
+        return PayPeriodInputView(payPeriodsEnabled: $jobViewModel.payPeriodsEnabled, payPeriodDuration: $jobViewModel.payPeriodDuration, lastPayPeriodEndedDate: $jobViewModel.lastPayPeriodEndedDate).padding(.horizontal)
+            .padding(.vertical, 10)
+            .glassModifier(cornerRadius: 20)
+        
     }
     
     var floatingButtons: some View {

@@ -45,6 +45,10 @@ class JobViewModel: ObservableObject {
     @Published var overtimeAppliedAfter: TimeInterval = 8.0
     @Published var overtimeEnabled = false
     
+    @Published var payPeriodsEnabled = false
+    @Published var payPeriodDuration: Int = 7
+    @Published var lastPayPeriodEndedDate: Date
+    
     @Published var selectedIcon: String
     
     @Published var rosterReminder: Bool
@@ -107,6 +111,9 @@ class JobViewModel: ObservableObject {
         self.selectedDay = Int(job?.rosterDayOfWeek ?? 1)
         self.selectedTime = job?.rosterTime ?? Date()
         
+        self.payPeriodsEnabled = job?.payPeriodEnabled ?? false
+        self.payPeriodDuration = Int(job?.payPeriodLength ?? 7)
+        self.lastPayPeriodEndedDate = job?.lastPayPeriodEndedDate ?? Date()
         
         
     }
@@ -145,6 +152,10 @@ class JobViewModel: ObservableObject {
         newJob.rosterDayOfWeek = Int16(selectedDay)
         newJob.breakReminder = breakReminder
         newJob.breakReminderTime = breakRemindAfter
+        
+        newJob.payPeriodEnabled = payPeriodsEnabled
+        newJob.payPeriodLength = Int16(payPeriodDuration)
+        newJob.lastPayPeriodEndedDate = lastPayPeriodEndedDate
         
         // replace this code with adding locations later when multiple address system update releases
         if let locationSet = newJob.locations, let location = locationSet.allObjects.first as? JobLocation {

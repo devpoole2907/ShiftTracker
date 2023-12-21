@@ -184,7 +184,10 @@ struct ContentView: View {
   
    
         
-        .sheet(item: $navigationState.activeSheet){ sheet in
+                .sheet(item: $navigationState.activeSheet, onDismiss: {
+                    // if we loaded a scheduled shift, set it to nil upon dismissing action view
+                    viewModel.scheduledShift = nil
+                }){ sheet in
             // CHANGE UISCREEN CONDITIONAL DETENTS TO GLOBAL VARIABLE
             switch sheet {
             case .detailSheet:
@@ -222,7 +225,7 @@ struct ContentView: View {
                     .customSheetRadius(35)
                     .customSheetBackground()
             case .startShiftSheet:
-                ActionView(navTitle: "Start Shift", actionType: .startShift, job: selectedJobManager.fetchJob(in: context))
+                ActionView(navTitle: viewModel.scheduledShift == nil ? "Start Shift" : "Load Shift", actionType: .startShift, job: selectedJobManager.fetchJob(in: context), scheduledShift: viewModel.scheduledShift)
                     .environment(\.managedObjectContext, context)
                     .environmentObject(viewModel)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.96 : 0.8)])

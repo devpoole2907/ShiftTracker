@@ -14,6 +14,7 @@ struct UpcomingShiftView: View {
     @EnvironmentObject var viewModel: ContentViewModel
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var navigationState: NavigationState
     
     @AppStorage("lastSelectedJobUUID") private var lastSelectedJobUUID: String?
     
@@ -66,53 +67,18 @@ struct UpcomingShiftView: View {
                 else if upcomingShift.startDate ?? Date() < next24Hours {
                     if let upcomingShiftJob = upcomingShift.job {
                         
-                        CustomConfirmationAlert(action: {
+              
                             if upcomingShiftJob != selectedJobManager.fetchJob(in: viewContext){
                                 selectedJobManager.selectJob(upcomingShiftJob, with: jobs, shiftViewModel: viewModel)
                             }
-                            let startDate = max(Date(), upcomingShift.startDate ?? Date())
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                
-                                
-                                
-                                let associatedTags = upcomingShift.tags as? Set<Tag> ?? []
-                                let associatedTagIds = associatedTags.compactMap { $0.tagID }
-                                                    viewModel.selectedTags = Set(associatedTagIds)
-                                
-                                
-                                let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
-                                   fetchRequest.predicate = NSPredicate(format: "name == %@", "Late")
-                                
-                                var lateTag: Tag?
-                                
-                                do {
-                                        let matchingTags = try viewContext.fetch(fetchRequest)
-                                    lateTag = matchingTags.first
-                                    } catch {
-                                        print("Failed to fetch late tag: \(error)")
-                                        
-                                    }
-                                
-                                if let lateTag = lateTag,
-                                           let lateTagId = lateTag.tagID {
-                                            // if the shift is late, select the late tag
-                                            if Date() > upcomingShift.startDate ?? Date() {
-                                                viewModel.selectedTags.insert(lateTagId)
-                                            }
-                                        }
-
-                                viewModel.payMultiplier = upcomingShift.payMultiplier
-                                viewModel.isMultiplierEnabled = upcomingShift.multiplierEnabled
-                                //testing
-                                navigationState.activeSheet = .startShiftSheet
-                                //viewModel.startShiftButtonAction(using: viewContext, startDate: startDate, job: selectedJobManager.fetchJob(in: viewContext)!)
-                                
-
-                            }
-
-                            
-                        }, title: "Load this shift and associated tags?").showAndStack()
+                   
+                            // set the current upcoming shift for the start shift sheet to load and pop the start shift sheet
+                            // action view/start shift sheet will populate all the necessary fields upon init
                         
+                                viewModel.scheduledShift = upcomingShift
+                          
+                                navigationState.activeSheet = .startShiftSheet
+        
                         
                     }
                 }
