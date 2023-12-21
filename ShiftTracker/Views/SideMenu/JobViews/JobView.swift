@@ -543,7 +543,7 @@ struct JobView: View {
     
     var payPeriodPanel: some View {
         
-        return PayPeriodInputView(payPeriodsEnabled: $jobViewModel.payPeriodsEnabled, payPeriodDuration: $jobViewModel.payPeriodDuration, lastPayPeriodEndedDate: $jobViewModel.lastPayPeriodEndedDate).padding(.horizontal)
+        return PayPeriodInputView(payPeriodsEnabled: $jobViewModel.payPeriodsEnabled, payPeriodDuration: $jobViewModel.payPeriodDuration, lastPayPeriodEndedDate: $jobViewModel.lastPayPeriodEndedDate, disablePickers: job != nil).padding(.horizontal)
             .padding(.vertical, 10)
             .glassModifier(cornerRadius: 20)
         

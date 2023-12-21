@@ -66,9 +66,11 @@ struct PayPeriodView: View {
                     
               
                     Section {
-                        chartSection.id(0)
+                        statsSection.id(0)
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
+                        
+           
                         
                         
                             .onDisappear {
@@ -90,6 +92,9 @@ struct PayPeriodView: View {
                             }
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
+                            
+                            .font(.headline)
+                            
                         }
                     }
                     
@@ -197,35 +202,48 @@ struct PayPeriodView: View {
         
     }
     
+
     
-    var chartSection: some View {
+    
+    var statsSection: some View {
         
         VStack {
-            HStack{
-                VStack(alignment: .leading){
-                    Text("Total")
-                        .font(.headline)
-                        .bold()
-                        .roundedFontDesign()
-                        .foregroundColor(.gray)
-                    
-                    Text(
-                        shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")" :
-                            shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)) :
-                            shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager))
-                    )
-                    .font(.title2)
-                    .bold()
-                    
-                    
-                }
+            
+            
+            
+            HStack(spacing: 0){
+                
+                Spacer()
+                
+                StatView(title: "Earnings", value: "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")")
+                
+                Spacer()
+      
+                StatView(title: "Hours", value: shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)))
+            Spacer()
+                StatView(title: "On Break", value: shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager)))
+                
                 Spacer()
                 
                 
+            
                 
                 
                 
-            }.padding(.top, 5)
+                
+            }//.padding(.top, 5)
+            
+            
+            // should show shift count ideally
+            
+          /*
+            Text("\(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }.count) shifts")
+                .roundedFontDesign()
+                .bold()
+                .padding()
+            */
+          
+  
               //  .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
             
                 // let barMarks = historyModel.aggregatedShifts[index].dailyOrMonthlyAggregates
@@ -244,7 +262,10 @@ struct PayPeriodView: View {
             }
             
             
-        } .padding(.horizontal)
+        }      
+        .padding()
+        .glassModifier()
+        .frame(width: getRect().width - 44)
          
         
     }
@@ -344,7 +365,7 @@ struct PayPeriodView: View {
             .onAppear {
                 
                 withAnimation {
-                    shiftManager.showModePicker = true
+                    shiftManager.showModePicker = false
                 }
                 
                 if payPeriod == nil || selectedJobManager.fetchJob(in: viewContext) == nil {
@@ -408,9 +429,27 @@ struct PayPeriodView: View {
                 .glassModifier(cornerRadius: 20)
                 .padding()
             
-            Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 50 : 40)
+           // Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 50 : 40)
         } .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
     }
     
 }
 
+struct StatView: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .center) {
+            Text(title)
+                .font(.headline)
+                .bold()
+                .roundedFontDesign()
+                .foregroundColor(.gray)
+
+            Text(value)
+                .font(.title2)
+                .bold()
+        }
+    }
+}

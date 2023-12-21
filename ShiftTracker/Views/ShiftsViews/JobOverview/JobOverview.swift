@@ -572,23 +572,13 @@ struct JobOverview: View {
     }
     
     var payPeriodSection: some View {
+        
+        
+   
+        
+        
         NavigationLink(value: 3) {
-            HStack {
-                Image(systemName: "dollarsign.circle.fill").font(.largeTitle)
-                VStack(alignment: .leading){
-                    HStack {
-                        Text("Pay Period").bold().font(.headline)
-                        Divider().frame(height: 8)
-                        Text("21/12/23 - 27/12/23")
-                            .font(.caption)
-                            .roundedFontDesign()
-                            .foregroundStyle(.gray)
-                    }
-                    Text("$2632.43") .roundedFontDesign()
-                        .foregroundStyle(.gray)
-                        .font(.subheadline)
-                }
-            }
+            PayPeriodSectionView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(overviewModel)
         }
             .padding(.vertical, 16)
             .padding(.horizontal, 10)
@@ -655,8 +645,73 @@ extension View {
     }
 }
 
+struct PayPeriodSectionView: View {
+    
+    @EnvironmentObject private var selectedJobManager: JobSelectionManager
+    @EnvironmentObject private var shiftManager: ShiftDataManager
+    
+    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
+    var shifts: FetchedResults<OldShift>
+    
+    @State private var payPeriod: (Date, Date)? = nil
+    
+    init(job: Job? = nil) {
+        
+        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)]
+    
+        if let job = job {
+            
+            let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
+         
+            fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.0 as CVarArg, payPeriod.1 as CVarArg)
+            _payPeriod = State(initialValue: payPeriod)
+            
+        }
 
-
+        _shifts = FetchRequest(fetchRequest: fetchRequest, animation: .default)
+        
+    }
+    
+    var body: some View {
+        HStack {
+            Image(systemName: "dollarsign.circle.fill").font(.largeTitle)
+            VStack(alignment: .leading){
+                HStack {
+                    Text("Pay Period").bold().font(.headline)
+                    Divider().frame(height: 8)
+                    if let payPeriod = payPeriod {
+                        Text("\(dateFormatter.string(from: payPeriod.0)) - \(dateFormatter.string(from: payPeriod.1))")
+                            .font(.caption)
+                            .roundedFontDesign()
+                            .foregroundStyle(.gray)
+                    }
+                }
+                
+                Text(
+                                        shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")" :
+                                            shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)) :
+                                            shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager))
+                                    )
+                
+                .roundedFontDesign()
+                    .foregroundStyle(.gray)
+                    .font(.subheadline)
+            }
+        }
+    
+     
+        
+    }
+    
+    
+    private var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM d"
+        return formatter
+    }()
+    
+}
 
 
 

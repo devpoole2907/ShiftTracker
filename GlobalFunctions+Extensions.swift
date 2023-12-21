@@ -281,6 +281,8 @@ func calculateCurrentPayPeriod(lastEndDate: Date, duration: Int) -> (startDate: 
 
 
 
+
+
 // used to create 3 default tags when the app launches
 
 func createTags(in viewContext: NSManagedObjectContext) {

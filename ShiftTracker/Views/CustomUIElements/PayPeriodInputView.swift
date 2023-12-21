@@ -11,6 +11,8 @@ struct PayPeriodInputView: View {
     @Binding var payPeriodsEnabled: Bool
     @Binding var payPeriodDuration: Int
     @Binding var lastPayPeriodEndedDate: Date
+    
+    var disablePickers: Bool
 
     var body: some View {
         
@@ -33,8 +35,10 @@ struct PayPeriodInputView: View {
                 }
                 
             }
-            .disabled(!payPeriodsEnabled)
-            .opacity(payPeriodsEnabled ? 1.0 : 0.5)
+            
+            // new job will need to be created if you want to change the pickers values
+            .disabled(!payPeriodsEnabled || disablePickers)
+            .opacity((payPeriodsEnabled || disablePickers) ? 1.0 : 0.5)
             
             HStack(spacing: 4) {
                 
@@ -49,8 +53,8 @@ struct PayPeriodInputView: View {
                     .labelsHidden()
                 
             }
-            .disabled(!payPeriodsEnabled)
-            .opacity(payPeriodsEnabled ? 1.0 : 0.5)
+            .disabled(!payPeriodsEnabled || disablePickers)
+            .opacity((payPeriodsEnabled || disablePickers) ? 1.0 : 0.5)
            
         
             
