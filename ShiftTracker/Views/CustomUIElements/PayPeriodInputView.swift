@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import PopupView
 
 struct PayPeriodInputView: View {
     @Binding var payPeriodsEnabled: Bool
     @Binding var payPeriodDuration: Int
     @Binding var lastPayPeriodEndedDate: Date
+    
+    @State var showTip = false
     
     var disablePickers: Bool
 
@@ -44,20 +47,33 @@ struct PayPeriodInputView: View {
                 
                 Text("Period ends")
                 Button(action: {
-                    
+                    showTip.toggle()
                 }){
                     Image(systemName: "info.circle")
                 }
                 Spacer()
                 DatePicker("Period ends", selection: $lastPayPeriodEndedDate, displayedComponents: .date)
                     .labelsHidden()
+                    .disabled(!payPeriodsEnabled || disablePickers)
                 
             }
-            .disabled(!payPeriodsEnabled || disablePickers)
+          
             .opacity((payPeriodsEnabled || disablePickers) ? 1.0 : 0.5)
            
         
             
         }
+        
+        .sheet(isPresented: $showTip){
+            NavigationStack{
+                Text("Enter the date your last pay period ended.")
+                    .trailingCloseButton()
+            }
+                .presentationDetents([.fraction(0.5)])
+                .customSheetBackground()
+                .customSheetRadius()
+                
+        }
+        
     }
 }
