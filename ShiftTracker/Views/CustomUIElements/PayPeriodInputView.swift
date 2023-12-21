@@ -69,7 +69,7 @@ struct PayPeriodInputView: View {
                 Text("Enter the date your last pay period ended.")
                     .trailingCloseButton()
             }
-                .presentationDetents([.fraction(0.5)])
+                .presentationDetents([.fraction(0.25)])
                 .customSheetBackground()
                 .customSheetRadius()
                 
