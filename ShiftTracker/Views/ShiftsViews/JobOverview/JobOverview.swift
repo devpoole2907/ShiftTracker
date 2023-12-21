@@ -147,7 +147,9 @@ struct JobOverview: View {
                 
                 recentShiftsSection
                     .onAppear {
-                        scrollManager.timeSheetsScrolled = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                            scrollManager.timeSheetsScrolled = false
+                        }
                     }
                 
                 
@@ -653,7 +655,7 @@ struct PayPeriodSectionView: View {
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
     
-    @State private var payPeriod: (Date, Date)? = nil
+    @State private var payPeriod: PayPeriod? = nil
     
     init(job: Job? = nil) {
         
@@ -664,7 +666,7 @@ struct PayPeriodSectionView: View {
             
             let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
          
-            fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.0 as CVarArg, payPeriod.1 as CVarArg)
+            fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
             _payPeriod = State(initialValue: payPeriod)
             
         }
@@ -681,8 +683,9 @@ struct PayPeriodSectionView: View {
                     Text("Pay Period").bold().font(.headline)
                     Divider().frame(height: 8)
                     if let payPeriod = payPeriod {
-                        Text("\(dateFormatter.string(from: payPeriod.0)) - \(dateFormatter.string(from: payPeriod.1))")
+                        Text("\(dateFormatter.string(from: payPeriod.startDate)) - \(dateFormatter.string(from: payPeriod.endDate))")
                             .font(.caption)
+                            .bold()
                             .roundedFontDesign()
                             .foregroundStyle(.gray)
                     }
@@ -695,6 +698,7 @@ struct PayPeriodSectionView: View {
                                     )
                 
                 .roundedFontDesign()
+                .bold()
                     .foregroundStyle(.gray)
                     .font(.subheadline)
             }

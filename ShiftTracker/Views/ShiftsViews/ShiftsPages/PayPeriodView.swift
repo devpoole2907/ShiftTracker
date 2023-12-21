@@ -28,8 +28,9 @@ struct PayPeriodView: View {
     @State private var selection = Set<NSManagedObjectID>()
     @State private var showExportView = false
     @State private var showingProView = false
-    @State private var payPeriod: (Date, Date)? = nil
+    @State private var payPeriod: PayPeriod? = nil
     @State var job: Job? = nil
+    @State private var showingPayPeriodPicker = false
     
     @Binding var navPath: NavigationPath
     
@@ -45,7 +46,7 @@ struct PayPeriodView: View {
             
             let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
          
-            fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.0 as CVarArg, payPeriod.1 as CVarArg)
+            fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
             _payPeriod = State(initialValue: payPeriod)
             _job = State(initialValue: job)
             
@@ -70,7 +71,16 @@ struct PayPeriodView: View {
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                         
-           
+                            .onAppear {
+                                
+                                withAnimation {
+                                    shiftManager.showModePicker = false
+                                }
+                                
+                                if payPeriod == nil || selectedJobManager.fetchJob(in: viewContext) == nil {
+                                    dismiss()
+                                }
+                            }
                         
                         
                             .onDisappear {
@@ -86,9 +96,9 @@ struct PayPeriodView: View {
                     } header: {
                         if let payPeriod = payPeriod {
                             HStack {
-                                Text(payPeriod.0, style: .date)
+                                Text(payPeriod.startDate, style: .date)
                                 Text("-")
-                                Text(payPeriod.1, style: .date)
+                                Text(payPeriod.endDate, style: .date)
                             }
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
@@ -129,6 +139,9 @@ struct PayPeriodView: View {
             
             floatingButtons
             
+            
+      
+            
         } .environment(\.editMode, $editMode)
         
             .onChange(of: editMode.isEditing) { value in
@@ -153,6 +166,12 @@ struct PayPeriodView: View {
                     .customSheetBackground()
                 
             }
+        
+            .sheet(isPresented: $showingPayPeriodPicker) {
+                let allPeriods = calculateAllPayPeriods(since: job?.lastPayPeriodEndedDate ?? Date(), duration: Int(job?.payPeriodLength ?? 14))
+                PayPeriodPickerView(selectedPayPeriod: $payPeriod, allPayPeriods: allPeriods)
+            }
+
         
         
             .navigationTitle(selection.isEmpty ? "Pay Period" : "\(selection.count) selected")
@@ -183,17 +202,23 @@ struct PayPeriodView: View {
                                    Text(selection.isEmpty ? "Select All" : "Unselect All")
                                }
                            }
-                       } else {
+                       }
+                // for viewing all pay periods
+                
+                /*else {
                            ToolbarItem(placement: .topBarTrailing) {
                                
                                Button(action: {
                                    // show picker with list of all pay periods. selecting one changes the payPeriod variable above
+                                   
+                                   showingPayPeriodPicker.toggle()
+                                   
                                }){
                                    Text("View All")
                                }
                                
                            }
-                       }
+                       }*/
                 
                     
                 
@@ -361,17 +386,7 @@ struct PayPeriodView: View {
             .id(index)
             
         }
-            
-            .onAppear {
-                
-                withAnimation {
-                    shiftManager.showModePicker = false
-                }
-                
-                if payPeriod == nil || selectedJobManager.fetchJob(in: viewContext) == nil {
-                    dismiss()
-                }
-            }
+           
 
         
     }
@@ -453,3 +468,7 @@ struct StatView: View {
         }
     }
 }
+
+
+
+
