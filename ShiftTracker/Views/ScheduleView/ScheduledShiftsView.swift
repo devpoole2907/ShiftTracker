@@ -29,6 +29,9 @@ struct ScheduledShiftsView: View {
     
     @ObservedObject var oldShiftsViewModel: OldShiftsViewModel
     
+    @State private var showExportView: Bool = false
+    @State private var shiftForExport: OldShift? = nil
+    
     
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -76,9 +79,15 @@ struct ScheduledShiftsView: View {
                                 duplicateShift(shift)
                         }
                         
+                        let shareUIAction = UIAction(title: "Export", image: UIImage(systemName: "square.and.arrow.up.fill")) { _ in
+                            
+                            exportShift(shift)
+                            
+                        }
                         
                         
-                        ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: NavigationState.shared, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction], action: {
+                        
+                        ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: NavigationState.shared, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction, shareUIAction], action: {
                             navPath.append(shift)
                         })
                         
@@ -106,6 +115,15 @@ struct ScheduledShiftsView: View {
                         })
                     
                         
+                        
+                    }
+                    
+                    .swipeActions(edge: .leading) {
+                        Button(action: {
+                            exportShift(shift)
+                        }){
+                            Image(systemName: "square.and.arrow.up.fill")
+                        }.tint(.gray)
                         
                     }
                     
@@ -183,6 +201,9 @@ struct ScheduledShiftsView: View {
             
         }
         
+            
+             
+        
         
     }
     
@@ -197,6 +218,11 @@ struct ScheduledShiftsView: View {
         withAnimation {
             shiftStore.deleteOldShift(shift, in: viewContext)
         }
+    }
+    
+    func exportShift(_ shift: OldShift) {
+        shiftForExport = shift
+        scheduleModel.activeSheet = .configureExportSheet
     }
     
 }

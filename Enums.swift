@@ -287,7 +287,7 @@ enum ActiveOverviewSheet: Identifiable {
 }
 
 enum ActiveScheduleSheet: Identifiable {
-    case pastShiftSheet, scheduleSheet
+    case pastShiftSheet, scheduleSheet, configureExportSheet
     
     var id: Int {
         hashValue

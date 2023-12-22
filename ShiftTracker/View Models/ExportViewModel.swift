@@ -18,14 +18,16 @@ class ExportViewModel: ObservableObject {
     var shifts: FetchedResults<OldShift>? = nil
     var arrayShifts: [OldShift]? = nil
     var job: Job?
+    var singleExportShift: OldShift? = nil
     var viewContext: NSManagedObjectContext
     
-    init(shifts: FetchedResults<OldShift>? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, job: Job? = nil, viewContext: NSManagedObjectContext, arrayShifts: [OldShift]? = nil){
+    init(shifts: FetchedResults<OldShift>? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, job: Job? = nil, viewContext: NSManagedObjectContext, arrayShifts: [OldShift]? = nil, singleExportShift: OldShift? = nil){
         self.selectedShifts = selectedShifts
         self.shifts = shifts
         self.job = job
         self.viewContext = viewContext
         self.arrayShifts = arrayShifts
+        self.singleExportShift = singleExportShift
     }
     
     struct ExportColumn: Identifiable {
@@ -113,8 +115,12 @@ class ExportViewModel: ObservableObject {
 
         
         var filteredShifts: [OldShift] = []
-
-        if let theShifts = shifts {
+        
+        // for exporting a single shift
+        if let singleExportShift = singleExportShift {
+            filteredShifts.append(singleExportShift)
+        }
+        else if let theShifts = shifts {
             filteredShifts = theShifts.filter { shouldInclude(shift: $0) }
         } else if let arrayShifts = arrayShifts {
             filteredShifts = arrayShifts.filter { shouldInclude(shift: $0) }

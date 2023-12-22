@@ -21,6 +21,7 @@ class SchedulingViewModel: ObservableObject {
     
     @Published var selectedShiftToEdit: ScheduledShift?
     @Published var selectedShiftToDupe: OldShift?
+    @Published var shiftForExport: OldShift?
     
     @Published var isEmpty: Bool = false
     

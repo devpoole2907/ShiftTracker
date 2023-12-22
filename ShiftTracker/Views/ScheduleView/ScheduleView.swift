@@ -110,6 +110,16 @@ struct ScheduleView: View {
             
             scheduleModel.selectedShiftToDupe = nil
             
+            // we dont need the shift to export anymore
+            scheduleModel.shiftForExport = nil
+            
+          
+                    
+                
+                    
+                
+        
+            
         }){ item in
                 
                 switch item {
@@ -161,6 +171,11 @@ struct ScheduleView: View {
                         
                     }
                     
+                case .configureExportSheet:
+                    ConfigureExportView(job: selectedJobManager.fetchJob(in: viewContext), singleExportShift: scheduleModel.shiftForExport)
+                        .presentationDetents([.large])
+                        .customSheetRadius(35)
+                        .customSheetBackground()
                 }
             }
         

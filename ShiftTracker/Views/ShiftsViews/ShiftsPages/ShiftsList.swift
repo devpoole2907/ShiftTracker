@@ -429,6 +429,7 @@ struct ShiftsList: View {
     }
     
     func exportShift(_ shift: OldShift) {
+        
         selection = Set(arrayLiteral: shift.objectID)
         showExportView.toggle()
     }

@@ -249,8 +249,8 @@ struct JobOverview: View {
                     }
                 }
                 // empty set value
+                overviewModel.shiftForExport = nil
                 overviewModel.shiftSelectionForExport = nil
-                
                 
                 
             }) { sheet in
@@ -266,7 +266,7 @@ struct JobOverview: View {
                     if overviewModel.job != nil {
                         
                         
-                        ConfigureExportView(shifts: shifts, job: overviewModel.job, selectedShifts: overviewModel.shiftSelectionForExport)
+                        ConfigureExportView(shifts: shifts, job: overviewModel.job, selectedShifts: overviewModel.shiftSelectionForExport, singleExportShift: overviewModel.shiftForExport)
                             .presentationDetents([.large])
                             .customSheetRadius(35)
                             .customSheetBackground()
@@ -459,9 +459,15 @@ struct JobOverview: View {
                             duplicateShift(shift)
                     }
                     
+                    let shareUIAction = UIAction(title: "Export", image: UIImage(systemName: "square.and.arrow.up.fill")) { _ in
+                        
+                        exportShift(shift)
+                        
+                    }
                     
                     
-                    ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction], action: {
+                    
+                    ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction, shareUIAction], action: {
                         navPath.append(shift)
                     })
                     
@@ -618,7 +624,7 @@ struct JobOverview: View {
     }
     
     func exportShift(_ shift: OldShift) {
-        overviewModel.shiftSelectionForExport = Set(arrayLiteral: shift.objectID)
+        overviewModel.shiftForExport = shift
         overviewModel.activeSheet = .configureExportSheet
     }
     
@@ -734,7 +740,7 @@ struct PayPeriodSectionView: View {
                 exportPayPeriod(shifts)
             }){
                 HStack {
-                    Text("Export")
+                    Text("Export Shifts")
                     Image(systemName: "square.and.arrow.up.fill")
                 }
             }
