@@ -210,7 +210,7 @@ struct MainWithSideBarView: View {
                         Spacer()
                     }
                     .frame(width: navigationState.showMenu ? 250 : (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 175 : 190)
-               
+                    
                     // setting this to height will break the views, pushing the nav bar down on ios 17.1 or above...
                        .frame(maxHeight: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? UIScreen.main.bounds.height - 90 : UIScreen.main.bounds.height - 160)
                     
@@ -224,7 +224,7 @@ struct MainWithSideBarView: View {
                             }
                         }
                     }
-                    .gesture(
+                    .highPriorityGesture(
                         navigationState.gestureEnabled ? DragGesture()
                             .updating($gestureOffset, body: { value, out, _ in
                                 
@@ -233,6 +233,7 @@ struct MainWithSideBarView: View {
                             })
                             .onEnded(onEnd(value:)) : nil
                     )
+                  
                     if !navigationState.showMenu{
                         Spacer()
                     }
