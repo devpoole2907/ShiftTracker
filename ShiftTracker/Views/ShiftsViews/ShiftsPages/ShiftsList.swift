@@ -132,6 +132,15 @@ struct ShiftsList: View {
                             
                         }
                         
+                        .swipeActions(edge: .leading) {
+                            Button(action: {
+                                exportShift(shift)
+                            }){
+                                Image(systemName: "square.and.arrow.up.fill")
+                            }.tint(.gray)
+                            
+                        }
+                        
          
                         
                         .id(index)

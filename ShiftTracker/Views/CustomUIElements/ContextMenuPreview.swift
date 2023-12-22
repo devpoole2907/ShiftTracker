@@ -83,10 +83,27 @@ struct ContextMenuPreview: UIViewRepresentable {
             }, actionProvider: { suggestedActions in
   
                 var actions = [UIAction]()
+                
+                
+                
+                let editUIAction = UIAction(title: "More", image: UIImage(systemName: "ellipsis.circle")) { action in
+                    
+                withAnimation {
+                    self.parent.editMode = (self.parent.editMode == .active) ? .inactive : .active
+                }
+                    
+            
+                    
+                    
+                }
+              
                                
                                // Add actions from the actionsArray if not editing
                                if self.parent.editMode == .inactive {
                                    actions.append(contentsOf: self.parent.actionsArray)
+                                   if self.parent.enableEdit {
+                                   actions.append(editUIAction)
+                                   }
                                }
                                
                                // Combine actions into a UIMenu

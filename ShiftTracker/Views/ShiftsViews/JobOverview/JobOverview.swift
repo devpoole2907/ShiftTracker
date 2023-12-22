@@ -249,7 +249,7 @@ struct JobOverview: View {
                     }
                 }
                 // empty set value
-                overviewModel.payPeriodShiftsToExport = nil
+                overviewModel.shiftSelectionForExport = nil
                 
                 
                 
@@ -266,7 +266,7 @@ struct JobOverview: View {
                     if overviewModel.job != nil {
                         
                         
-                        ConfigureExportView(shifts: shifts, job: overviewModel.job, selectedShifts: overviewModel.payPeriodShiftsToExport)
+                        ConfigureExportView(shifts: shifts, job: overviewModel.job, selectedShifts: overviewModel.shiftSelectionForExport)
                             .presentationDetents([.large])
                             .customSheetRadius(35)
                             .customSheetBackground()
@@ -483,6 +483,15 @@ struct JobOverview: View {
                     
                 }
                 
+                .swipeActions(edge: .leading) {
+                    Button(action: {
+                        exportShift(shift)
+                    }){
+                        Image(systemName: "square.and.arrow.up.fill")
+                    }.tint(.gray)
+                    
+                }
+                
                 
                 
                 .listRowInsets(.init(top: 10, leading: overviewModel.job != nil ? 20 : 10, bottom: 10, trailing: 20))
@@ -606,6 +615,11 @@ struct JobOverview: View {
     func duplicateShift(_ shift: OldShift) {
         overviewModel.selectedShiftToDupe = shift
         overviewModel.activeSheet = .addShiftSheet
+    }
+    
+    func exportShift(_ shift: OldShift) {
+        overviewModel.shiftSelectionForExport = Set(arrayLiteral: shift.objectID)
+        overviewModel.activeSheet = .configureExportSheet
     }
     
 }
@@ -739,7 +753,7 @@ struct PayPeriodSectionView: View {
     }()
     
     func exportPayPeriod(_ shifts: FetchedResults<OldShift>) {
-        overviewModel.payPeriodShiftsToExport = Set(shifts.map { $0.objectID })
+        overviewModel.shiftSelectionForExport = Set(shifts.map { $0.objectID })
         overviewModel.activeSheet = .configureExportSheet
     }
     
