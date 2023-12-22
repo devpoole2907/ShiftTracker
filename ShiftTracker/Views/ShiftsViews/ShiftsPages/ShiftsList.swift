@@ -50,31 +50,40 @@ struct ShiftsList: View {
                             NavigationLink(value: shift) {
                                 ShiftDetailRow(shift: shift)
                             }
-                            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, deleteAction: {
+                            
+                            .background {
                                 
-                                withAnimation {
-                                    shiftStore.deleteOldShift(shift, in: viewContext)
+                                
+                                
+                                let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { _ in
+                                   
+                                    deleteShift(shift)
+                                   
+                                }
+                                
+                                let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { _ in
                                     
-                                    // duct tape fix
-                                    sortSelection.fetchShifts()
+                                   duplicateShift(shift)
                                     
-                                    if sortSelection.oldShifts.isEmpty {
-                                        // navigates back if all shifts are deleted
-                                        navPath.removeLast()
-                                        
+                                }
+                                
+                                let shareUIAction = UIAction(title: "Export", image: UIImage(systemName: "square.and.arrow.up.fill")) { _ in
+                                    
+                                    exportShift(shift)
+                                    
+                                }
+                                
+                                
+                                
+                                ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction, shareUIAction], editMode: $editMode, action: {
+                                    if !editMode.isEditing {
+                                        navPath.append(shift)
                                     }
-                                }
+                                })
                                 
-                            }, duplicateAction: {
                                 
-                                overviewModel.selectedShiftToDupe = shift
-                                overviewModel.activeSheet = .addShiftSheet
-                                
-                            }, editMode: $editMode, action: {
-                                if !editMode.isEditing {
-                                    navPath.append(shift)
-                                }
-                            }))
+                            }
+                    
                             
                             if !sortSelection.searchTerm.isEmpty {
                                 HStack {
@@ -119,42 +128,11 @@ struct ShiftsList: View {
                         
                         .swipeActions {
                             
-                            
-                            
-                            Button(action: {
-                                withAnimation {
-                                    shiftStore.deleteOldShift(shift, in: viewContext)
-                                    
-                                    // duct tape fix
-                                    sortSelection.fetchShifts()
-                                    
-                                    if sortSelection.oldShifts.isEmpty {
-                                        // navigates back if all shifts are deleted
-                                        navPath.removeLast()
-                                        
-                                    }
-                                }
-                            }){
-                                Image(systemName: "trash")
-                            }
-                            
-                            .tint(.red)
-                            
-                            Button(action: {
-                                
-                                overviewModel.selectedShiftToDupe = shift
-                                
-                                
-                                
-                                
-                                overviewModel.activeSheet = .addShiftSheet
-                                
-                                
-                            }){
-                                Image(systemName: "plus.square.fill.on.square.fill")
-                            }.tint(.gray)
+                            OldShiftSwipeActions(deleteAction: {deleteShift(shift)}, duplicateAction: {duplicateShift(shift)})
                             
                         }
+                        
+         
                         
                         .id(index)
                         
@@ -262,7 +240,11 @@ struct ShiftsList: View {
             .environment(\.editMode, $editMode)
         
         
-            .sheet(isPresented: $showExportView) {
+            .sheet(isPresented: $showExportView, onDismiss: {
+                if selection.count <= 1 {
+                    selection = Set()
+                }
+            }) {
                 
                 ConfigureExportView(job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: selection, arrayShifts: sortSelection.oldShifts)
                     .presentationDetents([.large])
@@ -414,6 +396,32 @@ struct ShiftsList: View {
             
             
         }
+    }
+    
+    func deleteShift(_ shift: OldShift) {
+        withAnimation {
+            shiftStore.deleteOldShift(shift, in: viewContext)
+            
+            // duct tape fix
+            sortSelection.fetchShifts()
+            
+            if sortSelection.oldShifts.isEmpty {
+                // navigates back if all shifts are deleted
+                navPath.removeLast()
+                
+            }
+        }
+    }
+    
+    func duplicateShift(_ shift: OldShift) {
+        overviewModel.selectedShiftToDupe = shift
+        
+        overviewModel.activeSheet = .addShiftSheet
+    }
+    
+    func exportShift(_ shift: OldShift) {
+        selection = Set(arrayLiteral: shift.objectID)
+        showExportView.toggle()
     }
     
 }

@@ -62,22 +62,28 @@ struct ScheduledShiftsView: View {
                         
                     }
                     
-                    .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: NavigationState.shared, viewContext: viewContext, deleteAction: {
+                    .background {
                         
-                        withAnimation {
-                            shiftStore.deleteOldShift(shift, in: viewContext)
+                        let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { action in
+                   
+                          
+                            
+                            deleteShift(shift)
+                            
                         }
                         
-                    }, duplicateAction: {
+                        let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { action in
+                                duplicateShift(shift)
+                        }
                         
-                        scheduleModel.selectedShiftToDupe = shift
                         
                         
-                        scheduleModel.activeSheet = .pastShiftSheet
+                        ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: NavigationState.shared, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction], action: {
+                            navPath.append(shift)
+                        })
                         
-                    }, action: {
-                        navPath.append(shift)
-                    }))
+                        
+                    }
                     
                     .navigationDestination(for: OldShift.self) { shift in
                         
@@ -90,29 +96,20 @@ struct ScheduledShiftsView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(.init(top: 10, leading: selectedJobManager.fetchJob(in: viewContext) != nil ? 20 : 10, bottom: 10, trailing: 20))
                     
+                    
                     .swipeActions {
                         
-                        Button(action: {
-                            withAnimation {
-                                shiftStore.deleteOldShift(shift, in: viewContext)
-                            }
-                        }){
-                            Image(systemName: "trash")
-                        }.tint(Color.red)
+                        OldShiftSwipeActions(deleteAction: {
+                            deleteShift(shift)
+                        }, duplicateAction: {
+                            duplicateShift(shift)
+                        })
+                    
                         
-                        Button(action: {
-                            
-                            scheduleModel.selectedShiftToDupe = shift
-                            
-                            
-                            scheduleModel.activeSheet = .pastShiftSheet
-                            
-                            
-                        }){
-                            Image(systemName: "plus.square.fill.on.square.fill")
-                        }.tint(.gray)
                         
                     }
+                    
+                
                 }
                 
             }
@@ -188,6 +185,20 @@ struct ScheduledShiftsView: View {
         
         
     }
+    
+    func duplicateShift(_ shift: OldShift) {
+        scheduleModel.selectedShiftToDupe = shift
+        
+        
+        scheduleModel.activeSheet = .pastShiftSheet
+    }
+    
+    func deleteShift(_ shift: OldShift) {
+        withAnimation {
+            shiftStore.deleteOldShift(shift, in: viewContext)
+        }
+    }
+    
 }
 
 

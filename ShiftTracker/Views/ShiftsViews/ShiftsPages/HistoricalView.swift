@@ -182,7 +182,11 @@ struct HistoricalView: View {
             
         }
         
-        .sheet(isPresented: $historyModel.showExportView) {
+        .sheet(isPresented: $historyModel.showExportView, onDismiss: {
+            if historyModel.selection.count <= 1 {
+                historyModel.selection = Set()
+            }
+        }) {
             
             ConfigureExportView(shifts: shifts, job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: historyModel.selection)
                 .presentationDetents([.large])
@@ -342,12 +346,7 @@ struct HistoricalView: View {
                                 
                             } .padding(.horizontal)
                                 .tag(index)
-                            
-                            
-                            
-                            
-                            
-                            
+
                         }
                         
                     } else {
@@ -412,86 +411,42 @@ struct HistoricalView: View {
                             NavigationLink(value: shift) {
                                 ShiftDetailRow(shift: shift)
                                 
+                            }
+
+                            .background {
+                                
+                                let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { _ in
+                                   
+                                    deleteShift(shift)
+                                   
+                                }
+                                
+                                let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { _ in
+                                    
+                                   duplicateShift(shift)
+                                    
+                                }
+                                
+                                let shareUIAction = UIAction(title: "Export", image: UIImage(systemName: "square.and.arrow.up.fill")) { _ in
+                                    
+                                    exportShift(shift)
+                                    
+                                }
+                                
+                                
+                                
+                                ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction, shareUIAction], editMode: $editMode, action: {
+                                    if !editMode.isEditing {
+                                        navPath.append(shift)
+                                    }
+                                })
+                                
                                 
                             }
                             
-                            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: NavigationState.shared, viewContext: viewContext, deleteAction: {
-                                
-                                withAnimation {
-                                    shiftStore.deleteOldShift(shift, in: viewContext)
-                                    if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
-                                        historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
-                                    }
-                                    
-                                    historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
-                                    
-                                    if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
-                                        historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
-                                        
-                                        // changes the current tab if it empties
-                                        if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
-                                            historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
-                                        }
-                                    }
-                                }
-                                
-                            }, duplicateAction: {
-                                
-                                overviewModel.selectedShiftToDupe = shift
-                                
-                                
-                                overviewModel.activeSheet = .addShiftSheet
-                                
-                            }, editMode: $editMode, action: {
-                                if !editMode.isEditing {
-                                    navPath.append(shift)
-                                }
-                            }))
-                            
                             .swipeActions {
                                 
-                                
-                                Button(action: {
-                                    
-                                    withAnimation {
-                                        shiftStore.deleteOldShift(shift, in: viewContext)
-                                        if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
-                                            historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
-                                        }
-                                        
-                                        historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
-                                        
-                                        if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
-                                            historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
-                                            
-                                            // changes the current tab if it empties
-                                            if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
-                                                historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
-                                            }
-                                        }
-                                    }
-                                    
-                                }){
-                                    Image(systemName: "trash")
-                                }
-                                
-                                .tint(.red)
-                                
-                                Button(action: {
-                                    
-                                    overviewModel.selectedShiftToDupe = shift
-                                    
-                                    
-                                    
-                                    
-                                    overviewModel.activeSheet = .addShiftSheet
-                                    
-                                    
-                                }){
-                                    Image(systemName: "plus.square.fill.on.square.fill")
-                                }.tint(.gray)
-                                
-                                
+                                OldShiftSwipeActions(deleteAction: {deleteShift(shift)}, duplicateAction: {duplicateShift(shift)})
                                 
                             }
                             
@@ -539,11 +494,7 @@ struct HistoricalView: View {
             VStack(alignment: .trailing){
                 
                 HStack(spacing: 10){
-                    
-                    
-                    
-                    
-                    
+
                     
                     if editMode.isEditing {
                         
@@ -644,6 +595,36 @@ struct HistoricalView: View {
             }  .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
             
         }
+    }
+    
+    func deleteShift(_ shift: OldShift) {
+        withAnimation {
+            shiftStore.deleteOldShift(shift, in: viewContext)
+            if let index = historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.firstIndex(of: shift) {
+                historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.remove(at: index)
+            }
+            
+            historyModel.updateAggregatedShift(afterDeleting: shift, at: historyModel.selectedTab)
+            
+            if historyModel.aggregatedShifts[historyModel.selectedTab].originalShifts.isEmpty {
+                historyModel.aggregatedShifts.remove(at: historyModel.selectedTab)
+                
+                // changes the current tab if it empties
+                if historyModel.selectedTab >= historyModel.aggregatedShifts.count {
+                    historyModel.selectedTab = max(historyModel.aggregatedShifts.count - 1, 0)
+                }
+            }
+        }
+    }
+    
+    func duplicateShift(_ shift: OldShift) {
+        overviewModel.selectedShiftToDupe = shift
+        overviewModel.activeSheet = .addShiftSheet
+    }
+    
+    func exportShift(_ shift: OldShift) {
+        historyModel.selection = Set(arrayLiteral: shift.objectID)
+        historyModel.showExportView.toggle()
     }
     
 }

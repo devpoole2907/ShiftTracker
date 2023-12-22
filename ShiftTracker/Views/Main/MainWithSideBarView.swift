@@ -550,7 +550,6 @@ func onEnd(value: DragGesture.Value) {
                         scrollManager.timeSheetsScrolled = false
                    
                     } else if path.isEmpty {
-                        print("cock")
                         navigationState.showMenu.toggle()
                         
                     } else {

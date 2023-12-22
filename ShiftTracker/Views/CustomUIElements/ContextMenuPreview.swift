@@ -15,22 +15,19 @@ struct ContextMenuPreview: UIViewRepresentable {
     var themeManager: ThemeDataManager
     var navigationState: NavigationState
     var viewContext: NSManagedObjectContext
-    var deleteAction: () -> Void
-    var duplicateAction: () -> Void
-    var editAction: (() -> Void)?
+    var actionsArray: [UIAction]
     @Binding var editMode: EditMode
     var action: () -> Void
     
      private var enableEdit = false
     
     
-    init(shift: OldShift, themeManager: ThemeDataManager, navigationState: NavigationState, viewContext: NSManagedObjectContext, deleteAction: @escaping () -> Void, duplicateAction: @escaping () -> Void, editAction: (() -> Void)? = nil, editMode: Binding<EditMode>? = nil, action: @escaping () -> Void) {
+    init(shift: OldShift, themeManager: ThemeDataManager, navigationState: NavigationState, viewContext: NSManagedObjectContext, actionsArray: [UIAction], editMode: Binding<EditMode>? = nil, action: @escaping () -> Void) {
         self.shift = shift
         self.themeManager = themeManager
         self.navigationState = navigationState
         self.viewContext = viewContext
-        self.deleteAction = deleteAction
-        self.duplicateAction = duplicateAction
+        self.actionsArray = actionsArray
         
         
         self.enableEdit = false
@@ -44,7 +41,6 @@ struct ContextMenuPreview: UIViewRepresentable {
             } 
         
         
-        self.editAction = editAction
         self.action = action
     }
     
@@ -85,51 +81,18 @@ struct ContextMenuPreview: UIViewRepresentable {
                 )
                 return detailVC
             }, actionProvider: { suggestedActions in
-                
+  
                 var actions = [UIAction]()
-                
-              
-                
-           // in the end, all actions should only be accessible if we arent editing 
-                if self.parent.editMode == .inactive {
-                    
-                    let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash"), attributes: .destructive) { action in
-                        // Perform delete action
-                        self.parent.deleteAction()
-                    }
-                    
-                    actions.append(deleteUIAction)
-                    
-                    let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { action in
-                        self.parent.duplicateAction()
-                    }
-                    
-                    actions.append(duplicateUIAction)
-                    
-                    let editUIAction = UIAction(title: "More", image: UIImage(systemName: "ellipsis.circle")) { action in
-                        
-                    withAnimation {
-                        self.parent.editMode = (self.parent.editMode == .active) ? .inactive : .active
-                    }
-                        
-                        if let editAction = self.parent.editAction {
-                            editAction()
-                        }
-                        
-                        
-                    }
-                    if self.parent.enableEdit {
-                    actions.append(editUIAction)
-                    }
-                    
-                }
+                               
+                               // Add actions from the actionsArray if not editing
+                               if self.parent.editMode == .inactive {
+                                   actions.append(contentsOf: self.parent.actionsArray)
+                               }
+                               
+                               // Combine actions into a UIMenu
+                               return UIMenu(title: "", children: actions)
 
-                
-                
-                
-                
-                // Combine actions into a UIMenu
-                return UIMenu(title: "", children: actions)
+    
             })
         }
         

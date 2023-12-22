@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 import Haptics
+import UIKit
 
 
 
@@ -247,6 +248,8 @@ struct JobOverview: View {
                         
                     }
                 }
+                // empty set value
+                overviewModel.payPeriodShiftsToExport = nil
                 
                 
                 
@@ -258,10 +261,12 @@ struct JobOverview: View {
                     
                     
                     
+                    
+                    
                     if overviewModel.job != nil {
                         
                         
-                        ConfigureExportView(shifts: shifts, job: overviewModel.job)
+                        ConfigureExportView(shifts: shifts, job: overviewModel.job, selectedShifts: overviewModel.payPeriodShiftsToExport)
                             .presentationDetents([.large])
                             .customSheetRadius(35)
                             .customSheetBackground()
@@ -440,52 +445,40 @@ struct JobOverview: View {
                     ShiftDetailRow(shift: shift)
                 }
                 
-                .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, deleteAction: {
+                .background {
                     
-                    withAnimation {
-                        shiftStore.deleteOldShift(shift, in: viewContext)
-                        shiftManager.shiftAdded.toggle()
+                    let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { action in
+               
+                      
+                        
+                        deleteShift(shift)
+                        
                     }
                     
-                }, duplicateAction: {
+                    let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { action in
+                            duplicateShift(shift)
+                    }
                     
-                    overviewModel.selectedShiftToDupe = shift
                     
-                    overviewModel.activeSheet = .addShiftSheet
                     
-                }, action: {
-                    navPath.append(shift)
-                }))
+                    ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction], action: {
+                        navPath.append(shift)
+                    })
+                    
+                    
+                }
+                
+  
                 
                 
                 .swipeActions {
                     
-                    Button(action: {
-                        withAnimation {
-                            shiftStore.deleteOldShift(shift, in: viewContext)
-                            shiftManager.shiftAdded.toggle()
-                        }
-                    }){
-                        Image(systemName: "trash")
-                        
-                        
-                        
-                    }.tint(.red)
-                    
-                    Button(action: {
-                        
-                        overviewModel.selectedShiftToDupe = shift
-                        
-                        
-                        
-                        
-                        overviewModel.activeSheet = .addShiftSheet
-                        
-                        
-                        
-                    }){
-                        Image(systemName: "plus.square.fill.on.square.fill")
-                    }.tint(.gray)
+                    OldShiftSwipeActions(deleteAction: {
+                        deleteShift(shift)
+                    }, duplicateAction: {
+                        duplicateShift(shift)
+                    })
+                
                     
                     
                 }
@@ -586,6 +579,9 @@ struct JobOverview: View {
             .padding(.horizontal, 10)
             .frame(width: getRect().width - 44)
             .glassModifier(cornerRadius: 12)
+        
+       
+        
            
     }
     
@@ -600,6 +596,17 @@ struct JobOverview: View {
         }.disabled(overviewModel.job == nil || ContentViewModel.shared.shift != nil)
     }
     
+    func deleteShift(_ shift: OldShift) {
+        withAnimation {
+            shiftStore.deleteOldShift(shift, in: viewContext)
+            shiftManager.shiftAdded.toggle()
+        }
+    }
+    
+    func duplicateShift(_ shift: OldShift) {
+        overviewModel.selectedShiftToDupe = shift
+        overviewModel.activeSheet = .addShiftSheet
+    }
     
 }
 
@@ -651,6 +658,7 @@ struct PayPeriodSectionView: View {
     
     @EnvironmentObject private var selectedJobManager: JobSelectionManager
     @EnvironmentObject private var shiftManager: ShiftDataManager
+    @EnvironmentObject private var overviewModel: JobOverviewViewModel
     
     @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
     var shifts: FetchedResults<OldShift>
@@ -703,6 +711,21 @@ struct PayPeriodSectionView: View {
                     .font(.subheadline)
             }
         }
+        
+        .contextMenu{
+      
+           
+            
+            Button(action: {
+                exportPayPeriod(shifts)
+            }){
+                HStack {
+                    Text("Export")
+                    Image(systemName: "square.and.arrow.up.fill")
+                }
+            }
+            
+        }
     
      
         
@@ -714,6 +737,11 @@ struct PayPeriodSectionView: View {
         formatter.dateFormat = "MMM d"
         return formatter
     }()
+    
+    func exportPayPeriod(_ shifts: FetchedResults<OldShift>) {
+        overviewModel.payPeriodShiftsToExport = Set(shifts.map { $0.objectID })
+        overviewModel.activeSheet = .configureExportSheet
+    }
     
 }
 

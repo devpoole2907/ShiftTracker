@@ -166,6 +166,7 @@
 		7C5651862B33ECAD005223DE /* PayPeriodInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651852B33ECAD005223DE /* PayPeriodInputView.swift */; };
 		7C5651882B3418A8005223DE /* PayPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651872B3418A8005223DE /* PayPeriod.swift */; };
 		7C56518A2B3418C0005223DE /* PayPeriodPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651892B3418BF005223DE /* PayPeriodPickerView.swift */; };
+		7C56518C2B359E43005223DE /* OldShiftSwipeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C56518B2B359E43005223DE /* OldShiftSwipeActions.swift */; };
 		7C5F735E2ABA59CF00F698A1 /* ThemesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */; };
 		7C6218582AD0BA4E00E67245 /* JobForShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */; };
 		7C62185A2AD0BCBF00E67245 /* EstTaxPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */; };
@@ -456,6 +457,7 @@
 		7C5651852B33ECAD005223DE /* PayPeriodInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodInputView.swift; sourceTree = "<group>"; };
 		7C5651872B3418A8005223DE /* PayPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriod.swift; sourceTree = "<group>"; };
 		7C5651892B3418BF005223DE /* PayPeriodPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodPickerView.swift; sourceTree = "<group>"; };
+		7C56518B2B359E43005223DE /* OldShiftSwipeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldShiftSwipeActions.swift; sourceTree = "<group>"; };
 		7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesList.swift; sourceTree = "<group>"; };
 		7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobForShiftView.swift; sourceTree = "<group>"; };
 		7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstTaxPicker.swift; sourceTree = "<group>"; };
@@ -835,6 +837,7 @@
 				7CF2C83A2B3176B0004318C3 /* ContextMenuPreview.swift */,
 				7C5651852B33ECAD005223DE /* PayPeriodInputView.swift */,
 				7C5651892B3418BF005223DE /* PayPeriodPickerView.swift */,
+				7C56518B2B359E43005223DE /* OldShiftSwipeActions.swift */,
 			);
 			path = CustomUIElements;
 			sourceTree = "<group>";
@@ -1475,6 +1478,7 @@
 				1AB7D69629FB70F000326AAA /* SideMenu.swift in Sources */,
 				1A4E610D29C82DF9008AC8ED /* DetailView.swift in Sources */,
 				1A9855D429C55F8A003F512C /* ShiftTrackerApp.swift in Sources */,
+				7C56518C2B359E43005223DE /* OldShiftSwipeActions.swift in Sources */,
 				7CC9851A2AD3C27B0001BA57 /* CustomSearchableModifier.swift in Sources */,
 				7CAB87102A58214600A08219 /* ExportSquare.swift in Sources */,
 				1A1914232A187DF9000D0F8B /* LockedView.swift in Sources */,

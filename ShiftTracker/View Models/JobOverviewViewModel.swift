@@ -7,11 +7,13 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 class JobOverviewViewModel: ObservableObject {
     @Published var showLargeIcon = true
     @Published var appeared: Bool = false // for icon tap
     @Published var isEditJobPresented: Bool = false
+    @Published var payPeriodShiftsToExport: Set<NSManagedObjectID>? = nil
     
     var navigationLocation: Int = 0
     

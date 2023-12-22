@@ -158,7 +158,11 @@ struct PayPeriodView: View {
             }
       
         
-            .sheet(isPresented: $showExportView) {
+            .sheet(isPresented: $showExportView, onDismiss: {
+                if selection.count <= 1 {
+                    selection = Set()
+                }
+            }) {
                 
                 ConfigureExportView(shifts: shifts, job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: selection)
                     .presentationDetents([.large])
@@ -307,31 +311,38 @@ struct PayPeriodView: View {
             NavigationLink(value: shift) {
                 ShiftDetailRow(shift: shift)
             }
-      
+
             
-            .background(ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, deleteAction: {
+            .background {
                 
-                withAnimation {
-                    shiftStore.deleteOldShift(shift, in: viewContext)
-          
+                let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { _ in
+                   
+                    deleteShift(shift, filteredShifts: filteredShifts)
+                   
+                }
+                
+                let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { _ in
                     
-                    if filteredShifts.isEmpty {
-                        // navigates back if all shifts are deleted
-                        navPath.removeLast()
-                        
+                   duplicateShift(shift)
+                    
+                }
+                
+                let shareUIAction = UIAction(title: "Export", image: UIImage(systemName: "square.and.arrow.up.fill")) { _ in
+                    
+                    exportShift(shift)
+                    
+                }
+                
+                
+                
+                ContextMenuPreview(shift: shift, themeManager: themeManager, navigationState: navigationState, viewContext: viewContext, actionsArray: [deleteUIAction, duplicateUIAction, shareUIAction], editMode: $editMode, action: {
+                    if !editMode.isEditing {
+                        navPath.append(shift)
                     }
-                }
+                })
                 
-            }, duplicateAction: {
                 
-                overviewModel.selectedShiftToDupe = shift
-                overviewModel.activeSheet = .addShiftSheet
-                
-            }, editMode: $editMode, action: {
-                if !editMode.isEditing {
-                    navPath.append(shift)
-                }
-            }))
+            }
             
             .background {
                 
@@ -348,39 +359,11 @@ struct PayPeriodView: View {
             }
             
             .swipeActions {
-                
-                
-                
-                Button(action: {
-                    withAnimation {
-                        shiftStore.deleteOldShift(shift, in: viewContext)
-                
-                        if filteredShifts.isEmpty {
-                            // navigates back if all shifts are deleted
-                            navPath.removeLast()
-                            
-                        }
-                    }
-                }){
-                    Image(systemName: "trash")
-                }
-                
-                .tint(.red)
-                
-                Button(action: {
-                    
-                    overviewModel.selectedShiftToDupe = shift
-                    
-                    
-                    
-                    
-                    overviewModel.activeSheet = .addShiftSheet
-                    
-                    
-                }){
-                    Image(systemName: "plus.square.fill.on.square.fill")
-                }.tint(.gray)
-                
+                OldShiftSwipeActions(deleteAction: {
+                    deleteShift(shift, filteredShifts: filteredShifts)
+                }, duplicateAction: {
+                    duplicateShift(shift)
+                })
             }
             
             .id(index)
@@ -446,6 +429,29 @@ struct PayPeriodView: View {
             
            // Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 50 : 40)
         } .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+    }
+    
+    func deleteShift(_ shift: OldShift, filteredShifts: [OldShift]) {
+        withAnimation {
+            shiftStore.deleteOldShift(shift, in: viewContext)
+    
+            if filteredShifts.isEmpty {
+                // navigates back if all shifts are deleted
+                navPath.removeLast()
+                
+            }
+        }
+    }
+    
+    func duplicateShift(_ shift: OldShift) {
+        overviewModel.selectedShiftToDupe = shift
+        
+        overviewModel.activeSheet = .addShiftSheet
+    }
+    
+    func exportShift(_ shift: OldShift) {
+        selection = Set(arrayLiteral: shift.objectID)
+        showExportView.toggle()
     }
     
 }
