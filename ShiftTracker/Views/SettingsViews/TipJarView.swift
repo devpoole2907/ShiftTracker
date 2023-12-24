@@ -11,7 +11,7 @@ import StoreKit
 
 
 
-struct TipView: View {
+struct TipJarView: View {
     let productIDs = ["ShiftTracker_Small_Tip", "ShiftTracker_Medium_Tip", "ShiftTracker_Large_Tip"]
     @State private var showingProView = false
     
@@ -132,6 +132,6 @@ struct TipView: View {
 
 struct TipView_Previews: PreviewProvider {
     static var previews: some View {
-        TipView()
+        TipJarView()
     }
 }

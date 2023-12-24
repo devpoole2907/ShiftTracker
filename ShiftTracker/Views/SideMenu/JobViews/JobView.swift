@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 import MapKit
 import CoreData
+import TipKit
 
 struct JobView: View {
     
@@ -106,7 +107,13 @@ struct JobView: View {
                         
                         overtimePanel.shake(times: jobViewModel.overtimeShakeTimes)
                         
+                        
+                        
+                        
                         payPeriodPanel
+                        if #available(iOS 17.0, *) {
+                            TipView(PayPeriodInputTip(), arrowEdge: .top)
+                        }
                         
                         Spacer(minLength: 100)
                         

@@ -20,6 +20,8 @@ struct PayPeriodInputView: View {
     var body: some View {
         
         VStack {
+            
+
             Toggle(isOn: $payPeriodsEnabled){
                 
                 Text("Pay Periods").bold()
@@ -44,19 +46,32 @@ struct PayPeriodInputView: View {
             .opacity((payPeriodsEnabled || disablePickers) ? 1.0 : 0.5)
             
             HStack(spacing: 4) {
-                
+
                 Text("Period ends")
-                Button(action: {
-                    showTip.toggle()
-                }){
-                    Image(systemName: "info.circle")
+                
+                if #available(iOS 17.0, *) {
+                    // dont show button on ios 17, use tipkit
+            
+                    
+                } else {
+                    Button(action: {
+                        showTip.toggle()
+                    }){
+                        Image(systemName: "info.circle")
+                    }
+                    
                 }
+                
+          
+                
                 Spacer()
                 DatePicker("Period ends", selection: $lastPayPeriodEndedDate, displayedComponents: .date)
                     .labelsHidden()
                     .disabled(!payPeriodsEnabled || disablePickers)
                 
             }
+            
+       
           
             .opacity((payPeriodsEnabled || disablePickers) ? 1.0 : 0.5)
            

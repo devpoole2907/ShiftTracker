@@ -303,7 +303,7 @@ struct SettingsView: View {
                         
                     } else if i == 4 {
                         
-                        TipView()  .background {
+                        TipJarView()  .background {
                             // this could be worked into the themeManagers pure dark mode?
                             if colorScheme == .dark {
                                 themeManager.settingsDynamicBackground.ignoresSafeArea()

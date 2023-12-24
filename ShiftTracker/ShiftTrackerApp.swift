@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 import WatchConnectivity
 import PopupView
+import TipKit
 
 @main
 struct ShiftTrackerApp: App {
@@ -45,6 +46,20 @@ struct ShiftTrackerApp: App {
                 .task{
                     
                     await purchaseManager.updatePurchasedProducts()
+                    
+            if #available(iOS 17.0, *){
+                    try? Tips.resetDatastore()
+                    
+           
+                        try? Tips.configure([
+                            .displayFrequency(.immediate),
+                            .datastoreLocation(.applicationDefault)
+                            
+                            
+                            
+                        ])
+                    }
+                                        
                     
                 }
             
