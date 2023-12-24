@@ -126,14 +126,35 @@ class JobViewModel: ObservableObject {
         var newJob: Job
 
         if let job = job {
-            print("yeah job exists")
-            newJob = job
-            
-        } else {
-            newJob = Job(context: viewContext)
-            newJob.uuid = UUID()
-        }
+                // Job exists, so we are editing
+                print("yeah job exists")
+                newJob = job
+                
+                // If editing an existing job, only toggle payPeriodEnabled if it's changing.
+                // Never modify lastPayPeriodEndedDate if it's already set
+                if newJob.payPeriodEnabled != payPeriodsEnabled {
+                    newJob.payPeriodEnabled = payPeriodsEnabled
+                }
+                
+                // Ensuring lastPayPeriodEndedDate is never modified once set
+                if newJob.lastPayPeriodEndedDate != nil {
+                    // Do not allow any modification to lastPayPeriodEndedDate
+                } else if payPeriodsEnabled {
+                    // Set lastPayPeriodEndedDate only if enabling and it's currently nil
+                    newJob.lastPayPeriodEndedDate = lastPayPeriodEndedDate
+                }
+                
+            } else {
+                // Creating a new job
+                newJob = Job(context: viewContext)
+                newJob.uuid = UUID()
 
+                // Set properties for a new job
+                newJob.payPeriodEnabled = payPeriodsEnabled
+                if payPeriodsEnabled {
+                    newJob.lastPayPeriodEndedDate = lastPayPeriodEndedDate
+                }
+            }
         
         newJob.name = name
         newJob.title = title
@@ -152,11 +173,9 @@ class JobViewModel: ObservableObject {
         newJob.rosterDayOfWeek = Int16(selectedDay)
         newJob.breakReminder = breakReminder
         newJob.breakReminderTime = breakRemindAfter
-        
-        newJob.payPeriodEnabled = payPeriodsEnabled
+
         newJob.payPeriodLength = Int16(payPeriodDuration)
-        newJob.lastPayPeriodEndedDate = lastPayPeriodEndedDate
-        
+
         // replace this code with adding locations later when multiple address system update releases
         if let locationSet = newJob.locations, let location = locationSet.allObjects.first as? JobLocation {
             location.address = selectedAddress

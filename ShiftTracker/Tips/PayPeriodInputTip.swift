@@ -16,7 +16,7 @@ struct PayPeriodInputTip: TipKit.Tip {
 
 
     var message: Text? {
-        Text("Input the date your last pay period ended.")
+        Text("Input the date your last pay period ended. This cannot be modified after being set.")
     }
 
 
