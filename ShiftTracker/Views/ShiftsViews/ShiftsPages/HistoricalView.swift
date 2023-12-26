@@ -63,7 +63,6 @@ struct HistoricalView: View {
                     
                 }.scrollContentBackground(.hidden)
                     .tint(Color.gray)
-                //  .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
                     .listStyle(.plain)
                     .background {
                         // this could be worked into the themeManagers pure dark mode?
@@ -497,6 +496,7 @@ struct HistoricalView: View {
             
                // if any shifts are selected disable tab changing
                         .disabled(!historyModel.selection.isEmpty)
+                        .opacity(!historyModel.selection.isEmpty ? 0.5 : 1.0)
             
             Spacer()
             
