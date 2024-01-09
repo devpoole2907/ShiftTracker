@@ -84,6 +84,7 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                                     Text(context.attributes.jobName)
                                         .fontDesign(.rounded)
                                         .bold()
+                                        .foregroundStyle(.white)
                                     HStack(spacing: 0){
                                         Text("\(context.state.isOnBreak ? "Break s" : "S")tarted at ")
                                         Text(context.state.startTime, style: .time)
@@ -237,6 +238,7 @@ struct ShiftActivityView: View{
                                 Text(context.attributes.jobName)
                                     .fontDesign(.rounded)
                                     .bold()
+                                    .foregroundStyle(.white)
                                 HStack(spacing: 0){
                                     Text("\(context.state.isOnBreak ? "Break s" : "S")tarted at ")
                                     Text(context.state.startTime, style: .time)
