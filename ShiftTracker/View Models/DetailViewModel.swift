@@ -353,9 +353,16 @@ class DetailViewModel: ObservableObject {
     @MainActor func addShift(in viewContext: NSManagedObjectContext, with shiftStore: ShiftStore, job: Job, dismiss: DismissAction, breakAction: @escaping () -> Void) {
         
         let newShift = OldShift(context: viewContext)
-        let tempBreaks = self.tempBreaks as [AnyObject]
         
-        if !setupShift(newShift, breaks: tempBreaks) {
+        for tempBreak in self.tempBreaks {
+            if let breakEndDate = tempBreak.endDate {
+                BreaksManager().createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
+            }
+        }
+        
+        let allBreaks = (newShift.breaks?.allObjects as? [Break]) ?? []
+        
+        if !setupShift(newShift, breaks: allBreaks) {
             
             // CALL DISMISS
             if presentedAsSheet {
@@ -377,11 +384,7 @@ class DetailViewModel: ObservableObject {
         
         newShift.shiftID = UUID()
         
-        for tempBreak in self.tempBreaks {
-            if let breakEndDate = tempBreak.endDate {
-                BreaksManager().createBreak(oldShift: newShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
-            }
-        }
+        
         
         shiftStore.add(SingleScheduledShift(oldShift: newShift))
         
