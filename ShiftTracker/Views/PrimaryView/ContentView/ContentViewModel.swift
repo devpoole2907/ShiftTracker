@@ -585,8 +585,13 @@ class ContentViewModel: ObservableObject {
     }
     
     func endShift(using viewContext: NSManagedObjectContext, endDate: Date, job: Job) -> OldShift? {
+        
+        
+        let newTotalPay = computeTotalPay(for: endDate)
+        let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
+        
 #if os(iOS)
-        stopActivity()
+        stopActivity(totalPay: newTotalPay, taxedPay: newTaxedPay, shiftDuration: endDate.timeIntervalSince(shift?.startDate ?? Date()), breakDuration: totalBreakDuration(), endDate: endDate)
 #endif
         
         
@@ -616,6 +621,9 @@ class ContentViewModel: ObservableObject {
         
         
         var latestShift: OldShift? = nil
+        
+
+        
         if shiftState != .countdown {
             
             if let shift = shift {
@@ -626,8 +634,7 @@ class ContentViewModel: ObservableObject {
                 self.lastBreakElapsed = breakElapsed
                 saveLastBreak()
                 
-                let newTotalPay = computeTotalPay(for: endDate)
-                let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
+             
                 
                 latestShift = OldShift(context: viewContext)
                 latestShift!.hourlyPay = shift.hourlyPay
@@ -859,18 +866,39 @@ class ContentViewModel: ObservableObject {
         
     }
     
-    func stopActivity(){
+    func stopActivity(totalPay: Double? = nil, taxedPay: Double? = nil, shiftDuration: Double? = nil, breakDuration: Double? = nil, endDate: Date? = nil){
         if #available(iOS 16.2, *) {
-        let newState = LiveActivityAttributes.TimerStatus(startTime: Date(), totalPay: 0, isOnBreak: false)
+            
+            // update me to have an overview state containing total shift duration, total earnings and break duration
+            
+            let newState = LiveActivityAttributes.TimerStatus(startTime: Date(), totalPay: totalPay, taxedPay: taxedPay, shiftDuration: shiftDuration, breakDuration: breakDuration, endTime: endDate, isOnBreak: false)
         
             let finalContent = ActivityContent(state: newState, staleDate: nil)
+            
+           
             
             
             Task{
                 
+                // update the live activity with the final overview content
+                if let activity = currentActivity as? Activity<LiveActivityAttributes> {
+                                await activity.update(finalContent, alertConfiguration: nil)
+                            }
+                
                 for activity in Activity<LiveActivityAttributes>.activities {
+                        // dismiss live activity automatically after 1 hour
                     
-                    await activity.end(finalContent, dismissalPolicy: .immediate)
+                    if let totalPay = totalPay, let taxedPay = taxedPay {
+                        
+                        // a shift ended since these variables exist, otherwise it would be a cancelled shift - we need to show the activity for an hour letting the user dismiss it
+                        // it will display an overview state
+                        
+                        await activity.end(finalContent, dismissalPolicy: .after(.now.addingTimeInterval(3600)))
+                        
+                        // dismiss immediately no overview state
+                    } else {
+                        await activity.end(finalContent, dismissalPolicy: .immediate)
+                    }
                     
                 }
             }

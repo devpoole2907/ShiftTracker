@@ -47,13 +47,13 @@ struct ThemesList: View {
         ZStack(alignment: .bottomTrailing) {
             List(selection: $themeSelection) {
                 
-                ForEach(themes, id: \.self) { theme in
+                ForEach(themes, id: \.objectID) { theme in
                     
                     ThemeRow(theme: theme)
                         .contentShape(Rectangle())
-                        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
+                        .listRowBackground(Color.clear)
                     
-                     //   .customDisableListSelection(disabled: theme.name == "Default")
+                        .customDisableListSelection(disabled: theme.name == "Default")
                     
                         .onTapGesture {
                             if !(editMode?.wrappedValue.isEditing ?? false) {
@@ -113,18 +113,14 @@ struct ThemesList: View {
                 
                 
             }.scrollContentBackground(.hidden)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-      //  .background(Color(.systemGroupedBackground).ignoresSafeArea())
+                .listStyle(.plain)
+                .tint(Color.gray)
             
                 .background(Color.clear)
             
             VStack{
             
             HStack(spacing: 10){
-                
-                EditButton()
-                
-                Divider().frame(height: 10)
                 
                 if editMode?.wrappedValue.isEditing == true {
                     
@@ -135,6 +131,10 @@ struct ThemesList: View {
                             .bold()
                     }.disabled(themeSelection.isEmpty)
                         .tint(.red)
+                    
+                    
+                    
+                    
                     
                 } else {
                     Button(action: {
@@ -147,6 +147,14 @@ struct ThemesList: View {
                             .bold()
                     }
                 }
+                
+                Divider().frame(height: 10)
+                
+                EditButton()
+                
+               
+                
+              
                 
                 
                 
@@ -263,7 +271,7 @@ struct ThemeRow: View {
                     
                 }.padding(5)
                 
-            }//.glassModifier(cornerRadius: 20)
+            }
             
             Spacer()
             

@@ -111,7 +111,7 @@ struct CurrentBreaksListView: View {
                     }){
                         Image(systemName: "trash")
                     }.disabled(breakItem.endDate == nil)
-                        .tint(Color.clear)
+                        .tint(breakItem.endDate == nil ? Color.gray : Color.red)
                 }
             
         
@@ -131,13 +131,9 @@ struct CurrentBreaksListView: View {
                     .foregroundColor(textColor)
                 Spacer()
             }
-          //  .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
             
         }
-        .listRowBackground(Rectangle().fill(Material.ultraThinMaterial))
-       // .listRowSeparator(.hidden)
-            
             
         }
     

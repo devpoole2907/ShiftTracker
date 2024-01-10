@@ -192,6 +192,24 @@ struct ShiftActivityView: View{
     
     let context: ActivityViewContext<LiveActivityAttributes>
     
+    private var currencyFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        return formatter
+    }
+    
+    func formatTime(timeInHours: Double) -> String {
+       let hours = Int(timeInHours)
+       let minutes = Int((timeInHours - Double(hours)) * 60)
+        
+        if hours == 0 {
+            return "\(minutes)m"
+        }
+        
+       return "\(hours)h \(minutes)m"
+   }
+    
     var body: some View{
         
         let proColor = colorScheme == .dark ? Color.orange : Color.cyan
@@ -199,93 +217,172 @@ struct ShiftActivityView: View{
         let jobColor = context.state.isOnBreak ? Color.indigo : Color(red: context.attributes.jobColorRed, green: context.attributes.jobColorGreen, blue: context.attributes.jobColorBlue)
         
         VStack(alignment: .leading, spacing: 8){
-      
+            
             
             
             HStack(spacing: 2){
                 
-              
+                
                 
                 
                 Text("ShiftTracker")
-                .foregroundStyle(Color.white)
+                    .foregroundStyle(Color.white)
                     .bold()
                 Text("PRO")
                     .font(.title2)
                     .foregroundStyle(.orange.gradient)
                     .fontWeight(.heavy)
                 
-   
                 
-               
+                
+                
                 
             }// .widgetURL(URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak"))
-
-                HStack {
-                    
-                    VStack(alignment: .leading) {
-                        HStack{
-                            Image(systemName: context.attributes.jobIcon)
+            
+            HStack {
+                
+                VStack(alignment: .leading) {
+                    HStack{
+                        Image(systemName: context.attributes.jobIcon)
+                            .foregroundStyle(.white)
+                            .font(.title3)
+                            .padding(10)
+                            .background{
+                                Circle()
+                                    .foregroundStyle(Color(red: context.attributes.jobColorRed, green: context.attributes.jobColorGreen, blue: context.attributes.jobColorBlue).gradient)
+                            }
+                            .shadow(color: jobColor, radius: 3)
+                        VStack(alignment: .leading, spacing: 1){
+                            Text(context.attributes.jobName)
+                                .fontDesign(.rounded)
+                                .bold()
                                 .foregroundStyle(.white)
-                                .font(.title3)
-                                .padding(10)
-                                .background{
-                                    Circle()
-                                        .foregroundStyle(Color(red: context.attributes.jobColorRed, green: context.attributes.jobColorGreen, blue: context.attributes.jobColorBlue).gradient)
-                                }
-                                .shadow(color: jobColor, radius: 3)
-                            VStack(alignment: .leading, spacing: 1){
-                                Text(context.attributes.jobName)
-                                    .fontDesign(.rounded)
-                                    .bold()
-                                    .foregroundStyle(.white)
-                                HStack(spacing: 0){
+                            
+                            
+                            
+                            HStack(spacing: 0){
+                                
+                               
+                                
+                                if let endTime = context.state.endTime {
+                                    
+                                    Text(context.state.startTime, style: .time)
+                                    
+                                    Divider().frame(maxWidth: 10)
+                                    
+                                    Text(endTime, style: .time)
+                                    
+                                    
+                                } else {
                                     Text("\(context.state.isOnBreak ? "Break s" : "S")tarted at ")
                                     Text(context.state.startTime, style: .time)
-                                }
-                                .font(.footnote)
-                                .fontDesign(.rounded)
-                                .foregroundStyle(.gray)
-                            }
-                            
-                            if context.state.isOnBreak {
-                                Spacer()
-                                HStack(spacing: 0){
-                                    Image(systemName: context.state.unpaidBreak ? "bed.double.fill" : "cup.and.saucer.fill")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 12))
-                                        .padding(12)
-                                        .background{
-                                            Circle()
-                                                .foregroundStyle(.indigo.gradient)
-                                                .frame(width: 25, height: 25)
-                                        }
-                                    
-                                    Text(context.state.unpaidBreak ? "Unpaid" : "Paid")
-                                        .font(.caption)
-                                        .foregroundStyle(.gray)
-                                        .bold()
-                                        .fontDesign(.rounded)
-                                    
                                     
                                 }
                                 
+                            }
+                            .font(.footnote)
+                            .fontDesign(.rounded)
+                            .foregroundStyle(.gray)
+                        }
                         
+                        if context.state.isOnBreak {
+                            Spacer()
+                            HStack(spacing: 0){
+                                Image(systemName: context.state.unpaidBreak ? "bed.double.fill" : "cup.and.saucer.fill")
+                                    .foregroundStyle(.white)
+                                    .font(.system(size: 12))
+                                    .padding(12)
+                                    .background{
+                                        Circle()
+                                            .foregroundStyle(.indigo.gradient)
+                                            .frame(width: 25, height: 25)
+                                    }
+                                
+                                Text(context.state.unpaidBreak ? "Unpaid" : "Paid")
+                                    .font(.caption)
+                                    .foregroundStyle(.gray)
+                                    .bold()
+                                    .fontDesign(.rounded)
+                                
                                 
                             }
                             
-                        } // .widgetURL(URL(string: "shifttrackerapp://endshift"))
+                            
+                            
+                        }
                         
-                        
-                        
+                    } // .widgetURL(URL(string: "shifttrackerapp://endshift"))
+                    
+                    
+                    
+                    
+                }
+                
+                Spacer()
+                
+            }
+            
+            if let totalPay = context.state.totalPay, let taxedPay = context.state.taxedPay {
+                
+                VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 0){
+                    HStack {
+                        Text("\(currencyFormatter.currencySymbol ?? "")\(String(format: "%.2f", totalPay))")
+                            .fontDesign(.rounded)
+                            .bold()
+                            .padding(.horizontal, 10)
+                            .foregroundStyle(.white)
+                            .font(.title)
+                    }
+                    
+                    if taxedPay != totalPay {
+                        HStack(spacing: 2) {
+                            Image(systemName: "chart.line.downtrend.xyaxis")
+                            Text("\(currencyFormatter.currencySymbol ?? "")\(String(format: "%.2f", taxedPay))")
+                                .lineLimit(1)
+                                .allowsTightening(true)
+                                .minimumScaleFactor(0.5)
+                            
+                        }.foregroundStyle(.pink)
+                            .font(.subheadline)
+                            .roundedFontDesign()
+                            .bold()
+                            .padding(.trailing, 10)
                         
                     }
                     
-                    Spacer()
                     
                 }
-            HStack(spacing: 3){
                     
+                    if let duration = context.state.shiftDuration, let breakDuration = context.state.breakDuration {
+                        
+                        Divider().frame(maxWidth: 150).padding(.horizontal, 10)
+                        
+                        HStack {
+                            Text(formatTime(timeInHours: duration))
+                                .foregroundStyle(.orange)
+                                .roundedFontDesign()
+                                .font(.subheadline)
+                                .bold()
+                            
+                            if 1 > 0 {
+                                Text(formatTime(timeInHours: breakDuration))
+                                    .foregroundStyle(.indigo)
+                                    .roundedFontDesign()
+                                    .font(.subheadline)
+                                    .bold()
+                            }
+                        }.padding(.horizontal, 10)
+                        
+                    }
+                
+                
+            }
+                
+            } else {
+            
+            HStack(spacing: 3){
+                
                 Link(destination: URL(string: context.state.isOnBreak ? "shifttrackerapp://endbreak" : "shifttrackerapp://startbreak")!){
                     
                     
@@ -301,7 +398,7 @@ struct ShiftActivityView: View{
                         .foregroundStyle(.indigo)
                     
                 }
-                  
+                
                 Link(destination: URL(string: context.state.isOnBreak ? "shifttrackerapp://" : "shifttrackerapp://endshift")!){
                     
                     Text("End Shift")
@@ -314,20 +411,23 @@ struct ShiftActivityView: View{
                         .foregroundStyle(context.state.isOnBreak ? .gray : .red)
                 }
                 
-                    
                 
-                    
-                    Text(context.state.startTime, style: .timer)
-                        .fontDesign(.rounded)
-                        .multilineTextAlignment(.trailing)
-                        .font(.title)
-                        .bold()
-                    
-                        .foregroundStyle(jobColor)
-                     
+                
+                
+                Text(context.state.startTime, style: .timer)
+                    .fontDesign(.rounded)
+                    .multilineTextAlignment(.trailing)
+                    .font(.title)
+                    .bold()
+                
+                    .foregroundStyle(jobColor)
+                
                 
                 
             }
+            
+        }
+            
         }.padding()
             .background(.ultraThinMaterial)
         
@@ -338,7 +438,7 @@ struct ShiftActivityView: View{
 
 struct ShiftTrackerActivityTimerLiveActivity_Previews: PreviewProvider {
     static let attributes = LiveActivityAttributes(jobName: "Apple Incorporated", jobTitle: "CEO", jobIcon: "briefcase.fill", jobColorRed: 0.5, jobColorGreen: 0.1, jobColorBlue: 1.0, hourlyPay: 0)
-    static let contentState = LiveActivityAttributes.ContentState(startTime: Date().addingTimeInterval(-3200), totalPay: 220, isOnBreak: true, unpaidBreak: true)
+    static let contentState = LiveActivityAttributes.ContentState(startTime: Date().addingTimeInterval(-3200), totalPay: 220, taxedPay: 180, shiftDuration: 8.0, breakDuration: 1.0, endTime: Date().addingTimeInterval(-3000), isOnBreak: true, unpaidBreak: true)
     
     static var previews: some View {
         if #available(iOS 16.2, *) {

@@ -139,15 +139,16 @@ struct ContentView: View {
                           
                     }
                 }.listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 if viewModel.shift != nil && !viewModel.tempBreaks.isEmpty {
-                    CurrentBreaksListView()
+                    CurrentBreaksListView().listRowBackground(Color.clear)
                 }
             }
             
             
             
             .scrollContentBackground(.hidden)
-                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+            .listStyle(.plain)
                     .background {
                         
                         Color.clear
