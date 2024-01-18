@@ -18,7 +18,7 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
             VStack(alignment: .center){
                 ShiftActivityView(context: context)
             }
-            .activityBackgroundTint(Color.cyan)
+            .activityBackgroundTint(nil)
             .activitySystemActionForegroundColor(Color.black)
             
         } dynamicIsland: { context in
