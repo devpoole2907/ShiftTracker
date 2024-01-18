@@ -32,6 +32,10 @@ struct JobOverview: View {
     @FetchRequest var weeklyShifts: FetchedResults<OldShift>
     @FetchRequest var lastTenShifts: FetchedResults<OldShift>
     
+    @State private var refreshPayPeriodID = UUID()
+    @State private var lastViewedDate = Date()
+    
+    
     let shiftStore = ShiftStore()
     
     func generateTestData() {
@@ -138,8 +142,26 @@ struct JobOverview: View {
                     if theJob.payPeriodEnabled {
                         
                         payPeriodSection
+                        .id(refreshPayPeriodID)
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
+                        
+                        .onAppear {
+                            
+                            lastViewedDate = Date()
+                            
+                            }
+                            
+                            
+                            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            
+            let threshold: TimeInterval = 24 * 60 * 60
+            
+            if Date().timeIntervalSince(lastViewedDate) > threshold {
+                // The app was in the background for a long time, force refresh of pay period view
+                refreshPayPeriodID = UUID() 
+            }
+        }
                         
                     }
                     
