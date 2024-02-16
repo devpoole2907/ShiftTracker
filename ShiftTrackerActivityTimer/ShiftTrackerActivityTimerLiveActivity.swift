@@ -359,14 +359,14 @@ struct ShiftActivityView: View{
                         Divider().frame(maxWidth: 150).padding(.horizontal, 10)
                         
                         HStack {
-                            Text(formatTime(timeInHours: duration))
+                            Text(formatTime(timeInHours: duration / 3600))
                                 .foregroundStyle(.orange)
                                 .roundedFontDesign()
                                 .font(.subheadline)
                                 .bold()
                             
                             if 1 > 0 {
-                                Text(formatTime(timeInHours: breakDuration))
+                                Text(formatTime(timeInHours: breakDuration / 3600))
                                     .foregroundStyle(.indigo)
                                     .roundedFontDesign()
                                     .font(.subheadline)
