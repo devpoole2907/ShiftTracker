@@ -35,79 +35,81 @@ struct ProView: View {
                 
                     .edgesIgnoringSafeArea(.all)
                 
-                
-                VStack{
-                    HStack{
-                        Text("ShiftTracker")
-                            .font(.title)
-                            .bold()
-                        Text("PRO")
-                            .font(.largeTitle)
-                            .fontWeight(.heavy)
-                            .foregroundStyle(proButtonColor.gradient)
-                    }
-                    
-                    VStack(alignment: .leading){
-                        
-                        ForEach(proFeatures, id: \.self) { feature in
-                            
-                            FeatureRow(image: feature.image, text: feature.text)
-                            
-                        }
-
-                    }.padding(.horizontal, 30)
-                    
-                    VStack(alignment: .leading, spacing: 10) {
+                ScrollView {
+                    VStack{
                         HStack{
-                            Text("UNLOCK")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundStyle(upgradeButtonTextColor)
+                            Text("ShiftTracker")
+                                .font(.title)
+                                .bold()
                             Text("PRO")
                                 .font(.largeTitle)
                                 .fontWeight(.heavy)
                                 .foregroundStyle(proButtonColor.gradient)
-                            Text("FEATURES")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundStyle(upgradeButtonTextColor)
                         }
                         
-                        .foregroundColor(textColor)
-                    }
-                    .padding()
-                    .cornerRadius(20)
-                    .frame(maxWidth: .infinity)
-                    
-                    
-                    HStack(spacing: 10){
-                        ForEach(purchaseManager.products, id: \.subscription) { product in
+                        VStack(alignment: .leading){
                             
-                            PurchaseButton(product: product)
-                            
-                            
-                        }
-                        
-                    }.padding(.horizontal, 30)
-                    
-                    Button(action: {
-                        
-                        Task {
-                            
-                            do {
-                                try await AppStore.sync()
-                            } catch {
-                                print(error)
+                            ForEach(proFeatures, id: \.self) { feature in
+                                
+                                FeatureRow(image: feature.image, text: feature.text)
+                                
                             }
                             
-                            
-                        }
+                        }.padding(.horizontal, 30)
                         
-                    }) {
-                        Text("Restore")
-                            .bold()
-                            .roundedFontDesign()
-                    }.padding()
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack{
+                                Text("UNLOCK")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(upgradeButtonTextColor)
+                                Text("PRO")
+                                    .font(.largeTitle)
+                                    .fontWeight(.heavy)
+                                    .foregroundStyle(proButtonColor.gradient)
+                                Text("FEATURES")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(upgradeButtonTextColor)
+                            }
+                            
+                            .foregroundColor(textColor)
+                        }
+                        .padding()
+                        .cornerRadius(20)
+                        .frame(maxWidth: .infinity)
+                        
+                        
+                        HStack(spacing: 10){
+                            ForEach(purchaseManager.products, id: \.subscription) { product in
+                                
+                                PurchaseButton(product: product)
+                                
+                                
+                            }
+                            
+                        }.padding(.horizontal, 30)
+                        
+                        Button(action: {
+                            
+                            Task {
+                                
+                                do {
+                                    try await AppStore.sync()
+                                } catch {
+                                    print(error)
+                                }
+                                
+                                
+                            }
+                            
+                        }) {
+                            Text("Restore")
+                                .bold()
+                                .roundedFontDesign()
+                        }.padding()
+                        
+                    }
                     
                 }
                 
