@@ -85,8 +85,8 @@ struct ShiftTrackerActivityTimerLiveActivity: Widget {
                                         .fontDesign(.rounded)
                                         .bold()
                                         .foregroundStyle(.white)
-                                    HStack(spacing: 0){
-                                        Text("\(context.state.isOnBreak ? "Break s" : "S")tarted at ")
+                                    HStack(spacing: 2){
+                                        Image(systemName: context.state.isOnBreak ? (context.state.unpaidBreak ? "bed.double.fill" : "cup.and.saucer.fill") : "play.circle.fill")
                                         Text(context.state.startTime, style: .time)
                                     }
                                     .font(.footnote)
@@ -260,11 +260,13 @@ struct ShiftActivityView: View{
                             
                             
                             
-                            HStack(spacing: 0){
+                       
                                 
                                
                                 
                                 if let endTime = context.state.endTime {
+                                    
+                                    HStack(spacing: 0){
                                     
                                     Text(context.state.startTime, style: .time)
                                     
@@ -272,17 +274,26 @@ struct ShiftActivityView: View{
                                     
                                     Text(endTime, style: .time)
                                     
+                                }
+                                .font(.footnote)
+                                .fontDesign(.rounded)
+                                .foregroundStyle(.gray)
                                     
                                 } else {
-                                    Text("\(context.state.isOnBreak ? "Break s" : "S")tarted at ")
-                                    Text(context.state.startTime, style: .time)
+                                    
+                                    HStack(spacing: 2){
+                                        Image(systemName: context.state.isOnBreak ? (context.state.unpaidBreak ? "bed.double.fill" : "cup.and.saucer.fill") : "play.circle.fill")
+                                        Text(context.state.startTime, style: .time)
+                                        
+                                    }
+                                    .font(.footnote)
+                                    .fontDesign(.rounded)
+                                    .foregroundStyle(.gray)
+                                        
                                     
                                 }
                                 
-                            }
-                            .font(.footnote)
-                            .fontDesign(.rounded)
-                            .foregroundStyle(.gray)
+                          
                         }
                         
                         if context.state.isOnBreak {
