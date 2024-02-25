@@ -65,7 +65,7 @@ struct ContentView: View {
                             
                         }
                         else {
-                            CurrentShiftView(startDate: viewModel.shift!.startDate)
+                            CurrentShiftView()
                                 .padding(.horizontal)
                         }
                     }.frame(maxWidth: UIScreen.main.bounds.width - 40, alignment: .leading)
