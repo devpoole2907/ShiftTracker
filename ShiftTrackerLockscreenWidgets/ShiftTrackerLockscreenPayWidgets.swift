@@ -174,28 +174,29 @@ struct InlinePayWidgetView: View {
 struct CircularPayWidgetView: View {
     var entry: LockscreenWidgetProvider.Entry
     var body: some View {
-        
+        ZStack {
+         
         if let _ = entry.shiftStartDate {
             
-           /* if entry.isOnBreak{
-                Text("\(Image(systemName: "pause.circle.fill"))")
-            } else {
-                */
+            /* if entry.isOnBreak{
+             Text("\(Image(systemName: "pause.circle.fill"))")
+             } else {
+             */
             VStack(alignment: .center, spacing: 1.5) {
-            Text("$\(entry.taxedPay, specifier: "%.2f")")
+                Text("$\(entry.taxedPay, specifier: "%.2f")")
                     .fontWeight(.heavy)
                     .scaledToFit()
-                .allowsTightening(true)
-                .minimumScaleFactor(0.6)
-            Divider().frame(maxWidth: 30)
-            Text((Date().formatted(date: .omitted, time: .shortened)))
-                .font(.caption)
-                .bold()
-        }
-                
-           // }
-      
-
+                    .allowsTightening(true)
+                    .minimumScaleFactor(0.6)
+                Divider().frame(maxWidth: 30)
+                Text((Date().formatted(date: .omitted, time: .shortened)))
+                    .font(.caption)
+                    .bold()
+            }
+            
+            // }
+            
+            
             
             
         } else {
@@ -204,6 +205,8 @@ struct CircularPayWidgetView: View {
                 .font(.largeTitle)
         }
         
+        
+    }
         
     }
     

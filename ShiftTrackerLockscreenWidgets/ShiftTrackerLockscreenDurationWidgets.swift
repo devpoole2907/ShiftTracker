@@ -16,11 +16,7 @@ struct ShiftTrackerLockscreenDurationWidgetsView : View {
     var body: some View {
         
         switch family { // switches through each type of widget
-        case .accessoryCircular:
-            
-            CircularWidgetView(entry: entry)
-                
-            
+
         case .accessoryInline:
             
             InlineWidgetView(entry: entry)
@@ -142,27 +138,3 @@ struct InlineWidgetView: View {
     
 }
 
-// the circular widget
-
-struct CircularWidgetView: View {
-    var entry: LockscreenWidgetProvider.Entry
-    var body: some View {
-        
-        if let shiftStartDate = entry.shiftStartDate {
-            
-
-                Text(shiftStartDate, style: .timer)
-
-            
-            
-        } else {
-            
-            Text("No shift")
-            
-        }
-        
-        
-    }
-    
-    
-}
