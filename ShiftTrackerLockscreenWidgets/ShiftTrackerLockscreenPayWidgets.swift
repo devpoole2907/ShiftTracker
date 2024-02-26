@@ -98,26 +98,31 @@ struct RectangularPayWidgetView: View {
     var body: some View {
         
         
-        if let shiftStartDate = entry.shiftStartDate {
+        if let _ = entry.shiftStartDate {
             
-            
-            
-            
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 3) {
                 
-                
-                if entry.isOnBreak{
+                // detecting if on break seems pointless, removed for now
+            /*    if entry.isOnBreak{
                     Text("On break")
                         .font(.system(size: 20, weight: .bold))
                 } else {
+                    */
+                    Text("\(currencyFormatter.currencySymbol ?? "")\(entry.taxedPay, specifier: "%.2f")")
+                    .fontWeight(.heavy)
+                Divider().frame(maxWidth: 60)
+               
+                    Text("As at: ")
+                        + Text((Date().formatted(date: .omitted, time: .shortened))).bold()
                     
-                    Text("Current pay: \(currencyFormatter.currencySymbol ?? "")\(entry.taxedPay, specifier: "%.2f")")
-                        .bold()
+                
+           
+                 
                     
-                }
+               // }
                 
                 
-            }
+            }.roundedFontDesign()
             
         } else {
             
@@ -140,17 +145,17 @@ struct InlinePayWidgetView: View {
     var entry: LockscreenWidgetProvider.Entry
     var body: some View {
         
-        if let shiftStartDate = entry.shiftStartDate {
+          if let _ = entry.shiftStartDate {
             
-            if entry.isOnBreak{
+         /*   if entry.isOnBreak{
                 Text("On Break")
                     .bold()
-            } else {
+            } else {*/
                 
-                Text("$\(entry.taxedPay, specifier: "%.2f")")
-                    .bold()
+                Text("$\(entry.taxedPay, specifier: "%.2f") at: ")
+                + Text((Date().formatted(date: .omitted, time: .shortened)))
                 
-            }
+         //   }
             
         } else {
             
@@ -170,16 +175,25 @@ struct CircularPayWidgetView: View {
     var entry: LockscreenWidgetProvider.Entry
     var body: some View {
         
-        if let shiftStartDate = entry.shiftStartDate {
+        if let _ = entry.shiftStartDate {
             
-            if entry.isOnBreak{
+           /* if entry.isOnBreak{
                 Text("\(Image(systemName: "pause.circle.fill"))")
             } else {
+                */
+            VStack(alignment: .center, spacing: 1.5) {
+            Text("$\(entry.taxedPay, specifier: "%.2f")")
+                    .fontWeight(.heavy)
+                    .scaledToFit()
+                .allowsTightening(true)
+                .minimumScaleFactor(0.6)
+            Divider().frame(maxWidth: 30)
+            Text((Date().formatted(date: .omitted, time: .shortened)))
+                .font(.caption)
+                .bold()
+        }
                 
-                Text("$\(entry.taxedPay, specifier: "%.0f")")
-                    .font(.system(size: 20, weight: .bold))
-                
-            }
+           // }
       
 
             
@@ -187,7 +201,7 @@ struct CircularPayWidgetView: View {
         } else {
             
             Image(systemName: "briefcase.circle")
-            
+                .font(.largeTitle)
         }
         
         
