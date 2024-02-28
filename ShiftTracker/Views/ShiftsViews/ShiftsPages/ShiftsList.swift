@@ -154,6 +154,7 @@ struct ShiftsList: View {
                         Spacer(minLength: 100)
                     }.listRowBackground(Color.clear)
                         .opacity(0)
+                        .listRowSeparator(.hidden)
                     
                     
                 }.listStyle(.plain)
