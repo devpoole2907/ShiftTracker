@@ -542,7 +542,7 @@ struct HistoricalView: View {
                                 }){
                                     Text("Generate Invoice")
                                     Image(systemName: "paperplane").bold()
-                                }
+                                }.disabled(selectedJobManager.fetchJob(in: viewContext) == nil) // dont allow invoicing if no job is currently selected
                                 
                             } label: {
                                 

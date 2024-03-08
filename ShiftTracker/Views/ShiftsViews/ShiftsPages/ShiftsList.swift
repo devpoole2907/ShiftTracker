@@ -370,7 +370,7 @@ struct ShiftsList: View {
                                 }){
                                     Text("Generate Invoice")
                                     Image(systemName: "paperplane").bold()
-                                }
+                                }.disabled(selectedJobManager.fetchJob(in: viewContext) == nil) // dont allow invoicing if no job is currently selected
                                 
                             } label: {
                                 Image(systemName: "square.and.arrow.up").bold()
