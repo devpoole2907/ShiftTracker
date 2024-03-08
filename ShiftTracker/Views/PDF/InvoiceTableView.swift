@@ -28,12 +28,19 @@ struct InvoiceTableView: View {
                         ForEach(tableCells) { cell in
                             GridRow {
                                 
-                                Text("\(cell.date.formatted(date: .abbreviated, time: .omitted))")
-                                
+                                if !cell.isEmpty {
+                                    
+                                    Text("\(cell.date.formatted(date: .abbreviated, time: .omitted))")
+                                    
                                     Text("\(shiftManager.formatTime(timeInHours: cell.duration / 3600))")
-                                Text(cell.rate, format: .currency(code: "NZD"))
-                                Text(cell.pay, format: .currency(code: "NZD"))
-                                
+                                    Text(cell.rate, format: .currency(code: "NZD"))
+                                    Text(cell.pay, format: .currency(code: "NZD"))
+                                } else {
+                                    Text(" ").hidden()
+                                                           Text(" ").hidden()
+                                                           Text(" ").hidden()
+                                                           Text(" ").hidden()
+                                }
                             }
                             
                         }

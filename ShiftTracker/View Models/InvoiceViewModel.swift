@@ -13,6 +13,9 @@ class InvoiceViewModel: ObservableObject {
     
     @Published var tableCells: [ShiftTableCell] = []
     @Published var totalPay: Double = 0.0
+    @Published var showPDFViewer = false
+    
+    var url: URL? = nil
     
     var selectedShifts: Set<NSManagedObjectID>? = nil
     var shifts: FetchedResults<OldShift>? = nil
@@ -66,7 +69,7 @@ class InvoiceViewModel: ObservableObject {
         
     }
     
-    @MainActor func render() -> URL {
+    @MainActor func render() {
         
         
         
@@ -74,7 +77,7 @@ class InvoiceViewModel: ObservableObject {
         
         let url = URL.documentsDirectory.appending(path: "\(job?.name ?? "") invoice\("").pdf") // eventually put the number of the invoice here
         
-        let cellsPerPage = 40 // we need to limit how many cells can be displayed on each page, they may have selected a massive amount of shifts we dont want it to cut off
+        let cellsPerPage = 36 // we need to limit how many cells can be displayed on each page, they may have selected a massive amount of shifts we dont want it to cut off
         
         let totalPages = (tableCells.count + cellsPerPage - 1) / cellsPerPage
         
@@ -90,7 +93,7 @@ class InvoiceViewModel: ObservableObject {
         
         guard let consumer = CGDataConsumer(url: url as CFURL), let pdfContext = CGContext(consumer: consumer, mediaBox: &box, nil)
         else {
-            return url
+            return 
             // show some kinda error here!
         }
         
@@ -98,7 +101,18 @@ class InvoiceViewModel: ObservableObject {
             
             let startIndex = pageIndex * cellsPerPage
             let endIndex = min(startIndex + cellsPerPage, tableCells.count)
-            let cellsForPage = Array(tableCells[startIndex..<endIndex])
+            var cellsForPage = Array(tableCells[startIndex..<endIndex])
+            
+            var emptyCellsNeeded = cellsPerPage - cellsForPage.count
+            if emptyCellsNeeded > 0 {
+                for _ in 0..<emptyCellsNeeded {
+                    let emptyCell = ShiftTableCell(date: Date(), duration: 0, rate: 0, pay: 0, isEmpty: true)
+                    cellsForPage.append(emptyCell)
+                }
+            }
+            
+            
+            
             let isLastPage = (pageIndex == totalPages - 1)
             
             let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay))
@@ -120,7 +134,7 @@ class InvoiceViewModel: ObservableObject {
         
         pdfContext.closePDF()
         
-        return url
+        self.url = url
         
     }
     
@@ -141,6 +155,11 @@ class InvoiceViewModel: ObservableObject {
         
     }
     
+
+
+    
     
     
 }
+
+

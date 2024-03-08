@@ -18,35 +18,42 @@ struct InvoiceView: View {
     var totalPay: Double
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            
-            HStack {
-                UserDetailsView().padding([.trailing, .bottom])
-                // for pdf gen
-               Spacer(minLength: 200)
-                // for swiftui preview
-               // Spacer()
-                InvoiceDetailsView().padding(.bottom)
-            }
-            
-            ClientDetailsView()
-            
-            InvoiceTableView(tableCells: tableCells)
-            
-            Spacer()
-            
-            if isLastPage {
-                
-                TotalPayView(totalPay: totalPay)//.padding(.leading)
-                
-            }
-            
-            Spacer()
-        }.padding(20)
-            .background(Color.white)//.ignoresSafeArea()
-         //   .ignoresSafeArea()
         
-          
+      
+            VStack(alignment: .leading, spacing: 20) {
+                
+                HStack {
+                    UserDetailsView().padding([.trailing, .bottom])
+                    // for pdf gen
+                    Spacer(minLength: 200)
+                    // for swiftui preview
+                    // Spacer()
+                    InvoiceDetailsView().padding(.bottom)
+                }
+                
+                ClientDetailsView()
+                
+                InvoiceTableView(tableCells: tableCells)
+                
+                    .padding(.bottom, isLastPage ? 0 : 35) // pushes view up slightly to match final page (which is higher due to totalpayview)
+               // Spacer()
+                
+                if isLastPage {
+                    
+                    TotalPayView(totalPay: totalPay)//.padding(.leading)
+                        .padding(.bottom)
+                } else {
+                    Spacer(minLength: 30)
+                }
+                
+               // Spacer()
+            }.padding(20)
+                .background(Color.white)//.ignoresSafeArea()
+            //   .ignoresSafeArea()
+            
+
+            
+        
         
     }
 }

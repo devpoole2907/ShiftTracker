@@ -169,6 +169,7 @@
 		7C4E62C52B9B348700416DD0 /* ClientDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C42B9B348700416DD0 /* ClientDetailsView.swift */; };
 		7C4E62C72B9B349700416DD0 /* UserDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C62B9B349700416DD0 /* UserDetailsView.swift */; };
 		7C4E62C92B9B34B900416DD0 /* InvoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C82B9B34B900416DD0 /* InvoiceView.swift */; };
+		7C4E62CB2B9B444700416DD0 /* InvoicePDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62CA2B9B444700416DD0 /* InvoicePDFViewer.swift */; };
 		7C5243792ABE70FE00356B6C /* HistoricalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5243782ABE70FE00356B6C /* HistoricalView.swift */; };
 		7C5651822B33C5EC005223DE /* BreakReminderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */; };
 		7C5651842B33DC2B005223DE /* PayPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651832B33DC2B005223DE /* PayPeriodView.swift */; };
@@ -470,6 +471,7 @@
 		7C4E62C42B9B348700416DD0 /* ClientDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientDetailsView.swift; sourceTree = "<group>"; };
 		7C4E62C62B9B349700416DD0 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
 		7C4E62C82B9B34B900416DD0 /* InvoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceView.swift; sourceTree = "<group>"; };
+		7C4E62CA2B9B444700416DD0 /* InvoicePDFViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicePDFViewer.swift; sourceTree = "<group>"; };
 		7C5243782ABE70FE00356B6C /* HistoricalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalView.swift; sourceTree = "<group>"; };
 		7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakReminderSheet.swift; sourceTree = "<group>"; };
 		7C5651832B33DC2B005223DE /* PayPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodView.swift; sourceTree = "<group>"; };
@@ -1067,6 +1069,7 @@
 				7C4E62C42B9B348700416DD0 /* ClientDetailsView.swift */,
 				7C4E62C62B9B349700416DD0 /* UserDetailsView.swift */,
 				7C4E62C82B9B34B900416DD0 /* InvoiceView.swift */,
+				7C4E62CA2B9B444700416DD0 /* InvoicePDFViewer.swift */,
 			);
 			path = PDF;
 			sourceTree = "<group>";
@@ -1463,6 +1466,7 @@
 				1AEBFE012A5132B900884DBF /* StatsSquare.swift in Sources */,
 				7CAB87182A587A9200A08219 /* SingleScheduledShift.swift in Sources */,
 				7CB0D2402AE8CD8F00CF508E /* MockupContinueView.swift in Sources */,
+				7C4E62CB2B9B444700416DD0 /* InvoicePDFViewer.swift in Sources */,
 				7CAB871C2A59892D00A08219 /* CreateShiftForm.swift in Sources */,
 				1AC048C029E0D50E00355767 /* Shift.swift in Sources */,
 				7CF01D752ACBEE2F00EBC36C /* AggregatedShift.swift in Sources */,

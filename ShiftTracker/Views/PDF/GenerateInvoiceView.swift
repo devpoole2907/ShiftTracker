@@ -12,6 +12,8 @@ struct GenerateInvoiceView: View {
     
     @ObservedObject var viewModel: InvoiceViewModel
     
+    @Environment(\.colorScheme) var colorScheme
+    
     @State var username = ""
     
     init(shifts: FetchedResults<OldShift>? = nil, job: Job? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, arrayShifts: [OldShift]? = nil, singleExportShift: OldShift? = nil) {
@@ -21,6 +23,9 @@ struct GenerateInvoiceView: View {
     
     
     var body: some View {
+        
+        let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
+        let textColor: Color = colorScheme == .dark ? .white : .black
         
         NavigationStack {
             
@@ -43,26 +48,32 @@ struct GenerateInvoiceView: View {
                 
             }
                 
-                ShareLink(item: viewModel.render(), label: {
+                ActionButtonView(title: "Export", backgroundColor: buttonColor, textColor: textColor, icon: "square.and.arrow.up.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
+                    
+                   // dismiss()
+                    
+                    viewModel.render()
+                    
+                    viewModel.showPDFViewer.toggle()
                     
                     
-                    
-                    VStack(spacing: 10) {
-                        Image(systemName: "square.and.arrow.up.fill")//.customAnimatedSymbol(value: $isActionButtonTapped)
-                        //  .foregroundColor(textColor)
-                        Text("Export")
-                            .font(.subheadline)
-                            .bold()
-                        //  .foregroundColor(textColor)
-                    }
-                    .padding(.horizontal, 25)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
-                    .glassModifier(cornerRadius: 20, darker: true)
-                    //.haptics(onChangeOf: isActionButtonTapped, type: .success)
-                }).padding(.horizontal)
+                }.padding(.bottom, getRect().height == 667 ? 10 : 0)
+                
+       
             
         }
+            
+            .fullScreenCover(isPresented: $viewModel.showPDFViewer){
+                
+                if let url = viewModel.url {
+                    InvoiceViewSheet(url: url)
+                } else {
+                    Text("Error")
+                }
+                
+                
+              
+            }
             
         .toolbar{
             CloseButton()
