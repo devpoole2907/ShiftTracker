@@ -116,6 +116,8 @@ class ExportViewModel: ObservableObject {
         
         var filteredShifts: [OldShift] = []
         
+        // shifts (oldshift) is for historyview, and arrayShifts is for ShiftsList due to how the shifts are loaded differently in those views
+        
         // for exporting a single shift
         if let singleExportShift = singleExportShift {
             filteredShifts.append(singleExportShift)
@@ -165,17 +167,6 @@ class ExportViewModel: ObservableObject {
                     if let column = selectedColumns.first(where: { $0.id == "notes"}), column.isSelected {
                         row += "\(shift.shiftNote ?? "")"
                     }
-                    
-                    
-                    
-                    
-                    /*
-                     if selectedColumns.contains(where: { $0.id == "duration" }) { row += "\(shift.duration),"}
-                     if selectedColumns.contains(where: { $0.id == "hourlyRate" }) { row += "\(shift.hourlyPay),"}
-                     if selectedColumns.contains(where: { $0.id == "beforeTax" }) { row += "\(shift.totalPay),"}
-                     if selectedColumns.contains(where: { $0.id == "afterTax" }) { row += "\(shift.taxedPay),"}
-                     if selectedColumns.contains(where: { $0.id == "tips" }) { row += "\(shift.totalTips),"}
-                     if selectedColumns.contains(where: { $0.id == "notes" }) { row += "\(shift.shiftNote ?? "")"} */
                     
                     csvText += "\(row)\n"
                 }

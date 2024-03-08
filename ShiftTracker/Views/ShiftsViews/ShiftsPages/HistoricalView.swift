@@ -195,6 +195,20 @@ struct HistoricalView: View {
         }
         
         
+        .sheet(isPresented: $historyModel.showInvoiceView, onDismiss: {
+                if historyModel.selection.count <= 1 {
+                    historyModel.selection = Set()
+                }
+                
+                
+            }) {
+                GenerateInvoiceView(shifts: shifts, job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: historyModel.selection)
+                
+                    .customSheetBackground()
+                    .customSheetRadius(35)
+            }
+        
+        
         
         .fullScreenCover(isPresented: $historyModel.showingProView) {
             ProView()
@@ -494,20 +508,50 @@ struct HistoricalView: View {
                         Group {
                             
                             
-                            Button(action: {
+                            Menu {
                                 
-                                if purchaseManager.hasUnlockedPro {
-                                    historyModel.showExportView.toggle()
-                                } else {
+                                
+                                
+                                Button(action: {
                                     
-                                    historyModel.showingProView.toggle()
+                                    if purchaseManager.hasUnlockedPro {
+                                        historyModel.showExportView.toggle()
+                                    } else {
+                                        
+                                        historyModel.showingProView.toggle()
+                                        
+                                    }
                                     
+                                    
+                                }){
+                                    Text("Export to CSV")
+                                    Image(systemName: "tablecells").bold()
                                 }
                                 
+                                Button(action: {
+                                    
+                                    if purchaseManager.hasUnlockedPro {
+                                        historyModel.showInvoiceView.toggle()
+                                    } else {
+                                        
+                                        historyModel.showingProView.toggle()
+                                        
+                                    }
+                                    
+                                    
+                                }){
+                                    Text("Generate Invoice")
+                                    Image(systemName: "paperplane").bold()
+                                }
                                 
-                            }){
+                            } label: {
+                                
                                 Image(systemName: "square.and.arrow.up").bold()
+                                
+                                
                             }.disabled(historyModel.selection.isEmpty)
+                            
+                           
                             
                             Divider().frame(height: 10)
                             

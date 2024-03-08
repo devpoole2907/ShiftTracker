@@ -340,7 +340,7 @@ struct SettingsView: View {
                     
                 }
                 .toolbar{
-                    ToolbarItem(placement: .navigationBarLeading){
+                    ToolbarItem(placement: .topBarLeading){
                         Button{
                             withAnimation{
                                 navigationState.showMenu.toggle()
@@ -351,6 +351,7 @@ struct SettingsView: View {
                             
                         }
                     }
+                  
                 }
             
         

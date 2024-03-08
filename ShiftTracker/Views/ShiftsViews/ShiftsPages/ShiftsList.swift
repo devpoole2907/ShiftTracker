@@ -29,6 +29,7 @@ struct ShiftsList: View {
     
     @State var editMode = EditMode.inactive
     @State private var showExportView = false
+    @State private var showInvoiceView = false
     @State private var showingProView = false
     
     @State private var showingSearch: Bool = false
@@ -263,6 +264,17 @@ struct ShiftsList: View {
                 
             }
         
+            .sheet(isPresented: $showInvoiceView, onDismiss: {
+                if selection.count <= 1 {
+                    selection = Set()
+                }
+            }) {
+                GenerateInvoiceView(job: selectedJobManager.fetchJob(in: viewContext), selectedShifts: selection, arrayShifts: sortSelection.oldShifts)
+                
+                    .customSheetBackground()
+                    .customSheetRadius(35)
+            }
+        
         
         
             .fullScreenCover(isPresented: $showingProView) {
@@ -325,20 +337,46 @@ struct ShiftsList: View {
                         
                         if editMode.isEditing {
                             
-                            Button(action: {
+                            
+                            Menu {
                                 
-                                if purchaseManager.hasUnlockedPro {
-                                    showExportView.toggle()
-                                } else {
+                                Button(action: {
                                     
-                                    showingProView.toggle()
+                                    if purchaseManager.hasUnlockedPro {
+                                        showExportView.toggle()
+                                    } else {
+                                        
+                                        showingProView.toggle()
+                                        
+                                    }
                                     
+                                    
+                                }){
+                                    Text("Export to CSV")
+                                    Image(systemName: "tablecells").bold()
                                 }
                                 
+                                Button(action: {
+                                    
+                                    if purchaseManager.hasUnlockedPro {
+                                        showInvoiceView.toggle()
+                                    } else {
+                                        
+                                        showingProView.toggle()
+                                        
+                                    }
+                                    
+                                    
+                                }){
+                                    Text("Generate Invoice")
+                                    Image(systemName: "paperplane").bold()
+                                }
                                 
-                            }){
+                            } label: {
                                 Image(systemName: "square.and.arrow.up").bold()
                             }.disabled(selection.isEmpty)
+                            
+                           
                             
                             Divider().frame(height: 10)
                             

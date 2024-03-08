@@ -160,6 +160,8 @@
 		7C4D83022A8B6BCF006D54F9 /* ChartWidgetProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1312A88EC1C0016456E /* ChartWidgetProvider.swift */; };
 		7C4D83032A8B6BD4006D54F9 /* ShiftToChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC12D2A88EBA10016456E /* ShiftToChart.swift */; };
 		7C4D83042A8B6C76006D54F9 /* JobEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0AC1292A88EB360016456E /* JobEntry.swift */; };
+		7C4E62B92B9AF0D100416DD0 /* GenerateInvoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62B82B9AF0D100416DD0 /* GenerateInvoiceView.swift */; };
+		7C4E62BB2B9B121100416DD0 /* InvoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62BA2B9B121100416DD0 /* InvoiceViewModel.swift */; };
 		7C5243792ABE70FE00356B6C /* HistoricalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5243782ABE70FE00356B6C /* HistoricalView.swift */; };
 		7C5651822B33C5EC005223DE /* BreakReminderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */; };
 		7C5651842B33DC2B005223DE /* PayPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651832B33DC2B005223DE /* PayPeriodView.swift */; };
@@ -452,6 +454,8 @@
 		7C4D82F12A8B6944006D54F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C4D82F82A8B6992006D54F9 /* SelectJobIntent.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = SelectJobIntent.intentdefinition; sourceTree = "<group>"; };
 		7C4D82FE2A8B6A29006D54F9 /* SelectJobIntentExtent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SelectJobIntentExtent.entitlements; sourceTree = "<group>"; };
+		7C4E62B82B9AF0D100416DD0 /* GenerateInvoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateInvoiceView.swift; sourceTree = "<group>"; };
+		7C4E62BA2B9B121100416DD0 /* InvoiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceViewModel.swift; sourceTree = "<group>"; };
 		7C5243782ABE70FE00356B6C /* HistoricalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalView.swift; sourceTree = "<group>"; };
 		7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakReminderSheet.swift; sourceTree = "<group>"; };
 		7C5651832B33DC2B005223DE /* PayPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodView.swift; sourceTree = "<group>"; };
@@ -899,6 +903,7 @@
 		7C11323C2ACA96FC00E983FD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7C4E62B72B9AF0BE00416DD0 /* PDF */,
 				1A13F19429D02914009BE6B0 /* ProView.swift */,
 				1AB7D6A729FC03F400326AAA /* Intro */,
 				1ACA60BB29D8EC1200B279CB /* CustomUIElements */,
@@ -983,6 +988,7 @@
 				7CF4D0DC2AD2220F001A891E /* ExportViewModel.swift */,
 				7CFF521A2AD5230C00BB3AD6 /* StatsSquareViewModel.swift */,
 				7CFF521C2AD52C3100BB3AD6 /* ChartSquareViewModel.swift */,
+				7C4E62BA2B9B121100416DD0 /* InvoiceViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -1035,6 +1041,14 @@
 				7C4D82F12A8B6944006D54F9 /* Info.plist */,
 			);
 			path = SelectJobIntentExtent;
+			sourceTree = "<group>";
+		};
+		7C4E62B72B9AF0BE00416DD0 /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				7C4E62B82B9AF0D100416DD0 /* GenerateInvoiceView.swift */,
+			);
+			path = PDF;
 			sourceTree = "<group>";
 		};
 		7C7B46B42AC1623700D87140 /* MockupViews */ = {
@@ -1437,6 +1451,7 @@
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
 				7CF4D0E12AD25F1F001A891E /* OvertimePanel.swift in Sources */,
 				7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */,
+				7C4E62BB2B9B121100416DD0 /* InvoiceViewModel.swift in Sources */,
 				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
 				7CAB871A2A59762D00A08219 /* SchedulingViewModel.swift in Sources */,
 				7C0AC12A2A88EB360016456E /* JobEntry.swift in Sources */,
@@ -1465,6 +1480,7 @@
 				7CB5494B2B09BE4B001E4328 /* ProFeature.swift in Sources */,
 				7C0AC1322A88EC1C0016456E /* ChartWidgetProvider.swift in Sources */,
 				7C1132442ACA9BE000E983FD /* CustomDisableListSelectionModifier.swift in Sources */,
+				7C4E62B92B9AF0D100416DD0 /* GenerateInvoiceView.swift in Sources */,
 				7CFF521B2AD5230C00BB3AD6 /* StatsSquareViewModel.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowTrailingSwipeButtons.swift in Sources */,

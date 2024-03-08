@@ -267,7 +267,7 @@ struct JobView: View {
                 
             }.frame(height: 80)
             
-            CustomUIKitTextField(placeholder: "Company Name", text: $jobViewModel.name, centerAlign: true, rounded: true)
+            CustomUIKitTextField(placeholder: "Company/Client Name", text: $jobViewModel.name, centerAlign: true, rounded: true)
                 .minimumScaleFactor(0.5)
                 .bold()
                 .multilineTextAlignment(.center)

@@ -39,6 +39,7 @@ class HistoryViewModel: ObservableObject {
     
     @Published var showExportView = false
     @Published var showingProView = false
+    @Published var showInvoiceView = false
     
    lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
