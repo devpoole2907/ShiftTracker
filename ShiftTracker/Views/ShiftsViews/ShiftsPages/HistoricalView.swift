@@ -481,29 +481,13 @@ struct HistoricalView: View {
     }
     
     var floatingButtons: some View {
-        HStack(alignment: .bottom) {
-            
-            PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: historyModel.aggregatedShifts.count)
-                .frame(maxWidth: 175)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
-            
-                .padding()
-            
-                .onChange(of: historyModel.selectedTab){ value in
-                    print("Selected tab is \(value)")
-                    //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
-                }
-            
-               // if any shifts are selected disable tab changing
-                        .disabled(!historyModel.selection.isEmpty)
-                        .opacity(!historyModel.selection.isEmpty ? 0.5 : 1.0)
-            
-            Spacer()
-            
+        VStack(alignment: .trailing, spacing: 0) {
+            HStack {
+                Spacer()
             VStack(alignment: .trailing){
                 
                 HStack(spacing: 10){
-
+                    
                     
                     if editMode.isEditing {
                         
@@ -552,11 +536,13 @@ struct HistoricalView: View {
                 }.padding()
                     .glassModifier(cornerRadius: 20)
                     .padding(.trailing)
+                //  .padding(.trailing, getRect().height == 667 ? 17 : 0)
+                
                 
                 CustomSegmentedPicker(selection: $historyModel.historyRange, items: HistoryRange.allCases)
                 
                     .glassModifier(cornerRadius: 20)
-                 
+                
                 
                     .frame(width: 165)
                     .frame(maxHeight: 30)
@@ -599,9 +585,40 @@ struct HistoricalView: View {
                         
                         
                     }
+                //  .padding(.trailing, getRect().height == 667 ? 17 : 0)
+                // this is random, this change appears to simply break the alignment... why is this here? 55 for both currently works fine
+                // Spacer().frame(height: (getRect().height) == 667 || (getRect().height) == 736 ? 75 : 55)
+              //  Spacer().frame(height: 55)
                 
-                Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 75 : 55)
-            }  .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+            }
+            
+            
+        }.padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+            
+            HStack(alignment: .bottom) {
+                PageControlView(currentPage: $historyModel.selectedTab, numberOfPages: historyModel.aggregatedShifts.count)
+                    .frame(maxWidth: 165)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 5, y: 5)
+                
+                    .padding()
+                
+                    .onChange(of: historyModel.selectedTab){ value in
+                        print("Selected tab is \(value)")
+                        //  print("count of grouped shifts for page control view: \(groupedShifts.count)")
+                    }
+                
+                // if any shifts are selected disable tab changing
+                    .disabled(!historyModel.selection.isEmpty)
+                    .opacity(!historyModel.selection.isEmpty ? 0.5 : 1.0)
+                
+                Spacer().frame(maxWidth: navigationState.hideTabBar ? 0 : .infinity)
+                   // .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+                
+                
+                
+                
+                
+            }
             
         }
     }

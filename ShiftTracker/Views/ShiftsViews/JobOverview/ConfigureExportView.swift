@@ -58,9 +58,11 @@ struct ConfigureExportView: View {
                         .glassModifier(cornerRadius: 20)
                     }
                 
+                    Spacer(minLength: 150)
                 
                 }.padding(.horizontal)
             
+                
                 
             }.scrollContentBackground(.hidden)
             
@@ -73,7 +75,9 @@ struct ConfigureExportView: View {
                     }
                     
                     
-                }
+                }.padding(.bottom, getRect().height == 667 ? 10 : 0)
+                
+             
             
         }
             
