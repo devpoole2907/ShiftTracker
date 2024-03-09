@@ -86,6 +86,11 @@ class ContentViewModel: ObservableObject {
     @Published var breakReminder = false
     @Published var breakReminderTime = 0.0
     
+    @Published var clockOutReminder = false ////time based not location
+    @Published var clockOutReminderTime: TimeInterval = 0.0
+    @Published var autoClockOut = false
+    @Published var autoClockOutTime: TimeInterval = 0.0
+    
     @Published  var timeElapsedBeforeBreak = 0.0
     
     @Published  var isOnBreak = false
@@ -227,6 +232,9 @@ class ContentViewModel: ObservableObject {
         self._breakTime = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.breakTimeKey))
         self._timeElapsedBeforeBreak = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.timeElapsedBeforeBreakKey))
         
+        // to determine auto clock out when contentview appears
+        
+        self._autoClockOut = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.autoClockOutKey))
         
         // overtime stuff
         
@@ -416,6 +424,10 @@ class ContentViewModel: ObservableObject {
         sharedUserDefaults.set(isMultiplierEnabled, forKey: shiftKeys.multiplierEnabledKey)
     }
     
+    func saveAutoClockOut() {
+        sharedUserDefaults.set(autoClockOut, forKey: shiftKeys.autoClockOutKey)
+        sharedUserDefaults.set(autoClockOutTime, forKey: shiftKeys.autoClockOutTimeKey)
+    }
     
     func saveSelectedTags() {
         let tagsData = try? JSONEncoder().encode(selectedTags)
@@ -601,7 +613,7 @@ class ContentViewModel: ObservableObject {
         print("ending shift, overtime time elapsed is: \(timeElapsed - timeElapsedUntilOvertime)")
         
         // cancel any potential upcoming break reminders that may not have been triggered yet
-        cancelBreakReminder()
+        cancelReminderNotification()
         
         
         let overtimeElapsed = timeElapsed - timeElapsedUntilOvertime
@@ -617,6 +629,8 @@ class ContentViewModel: ObservableObject {
         sharedUserDefaults.removeObject(forKey: shiftKeys.breakStartedDateKey)
         sharedUserDefaults.removeObject(forKey: shiftKeys.breakEndedDateKey)
         sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey) // destroys the time elapsed before break
+        sharedUserDefaults.removeObject(forKey: shiftKeys.autoClockOutKey)
+        sharedUserDefaults.removeObject(forKey: shiftKeys.autoClockOutTimeKey)
         sharedUserDefaults.set(breakTaken, forKey: shiftKeys.breakTakenKey)
         sharedUserDefaults.set(true, forKey: shiftKeys.shiftEndedKey)
         sharedUserDefaults.set(false, forKey: shiftKeys.overtimeEnabledKey)
@@ -720,7 +734,7 @@ class ContentViewModel: ObservableObject {
     #endif
 
    
-        cancelBreakReminder()
+        cancelReminderNotification()
         stopTimer(timer: &timer, timeElapsed: &timeElapsed)
         
         
@@ -949,6 +963,10 @@ class ContentViewModel: ObservableObject {
                 shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
                 sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
                 
+                // save auto clock out bool and time
+                sharedUserDefaults.set(autoClockOut, forKey: shiftKeys.autoClockOutKey)
+                sharedUserDefaults.set(autoClockOutTime, forKey: shiftKeys.autoClockOutTimeKey)
+                
                 print("starting shift, time elapsed until overtime started was: \(timeElapsedUntilOvertime)")
                 
                 if job.overtimeEnabled {
@@ -1032,10 +1050,17 @@ class ContentViewModel: ObservableObject {
             
             UNUserNotificationCenter.current().add(request)
             
-            if job.breakReminder && breakReminder {
+            if breakReminder {
                 
-                scheduleBreakReminder(after: breakReminderTime, startDate: startDate)
+                scheduleReminderNotification(after: breakReminderTime, startDate: startDate, title: "Break Time!", body: "It's time for your break.")
             }
+            
+            if clockOutReminder {
+                
+                scheduleReminderNotification(after: clockOutReminderTime, startDate: startDate, title: "Time to clock out!", body: "Take a look at how much you earned today.")
+            }
+            
+            
             
         }
         
@@ -1043,32 +1068,36 @@ class ContentViewModel: ObservableObject {
 #endif
     }
     
-    func scheduleBreakReminder(after timeInterval: TimeInterval, startDate: Date) {
+    func scheduleReminderNotification(after timeInterval: TimeInterval, startDate: Date, title: String, body: String) {
         
-        let breakDate = startDate.addingTimeInterval(timeInterval)
-            let currentDateTime = Date()
         
-        if breakDate < currentDateTime {
-                print("break reminder time already passed")
-                return
-            }
+        let reminderDate = startDate.addingTimeInterval(timeInterval)
+        let currentDateTime = Date()
+        
+        if reminderDate < currentDateTime {
+            print("reminder time already passed")
+            return
+        }
         
         let content = UNMutableNotificationContent()
-        content.title = "Break Time!"
-        content.body = "It's time for your break."
-
+        content.title = title
+        content.body = body
+        
         let calendar = Calendar.current
-            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: breakDate)
+            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: reminderDate)
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
 
-            let request = UNNotificationRequest(identifier: "BreakReminder", content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "ReminderNotification", content: content, trigger: trigger)
 
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        
+        
+        
     }
     
     
-    func cancelBreakReminder() {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["BreakReminder"])
+    func cancelReminderNotification() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["ReminderNotification"])
     }
     
     // multiple breaks stuff:

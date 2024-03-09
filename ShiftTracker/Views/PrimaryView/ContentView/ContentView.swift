@@ -101,6 +101,22 @@ struct ContentView: View {
                         }
                     
                         .onReceive(viewModel.$timeElapsed) { value in
+                            if viewModel.autoClockOutTime > 0 {
+                            if value >= viewModel.autoClockOutTime && viewModel.autoClockOut {
+                                print("clocking out")
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                    if viewModel.shift != nil && !viewModel.isOnBreak{
+                                        self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(viewModel.autoClockOutTime), job: selectedJobManager.fetchJob(in: context)!)
+                                        
+                                        
+                                        navigationState.activeSheet = .detailSheet
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
                             
                             if value >= 86400 {
                                 DispatchQueue.main.async {
@@ -114,6 +130,8 @@ struct ContentView: View {
                             }
                             
                         }
+                    
+                       
                     
                     TagButtonView()
                         .frame(maxWidth: .infinity)

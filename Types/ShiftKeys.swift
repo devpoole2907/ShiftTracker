@@ -31,4 +31,6 @@ struct ShiftKeys {
     let selectedTags = "selectedTags"
     let payMultiplierKey = "payMultiplierKey"
     let multiplierEnabledKey = "multiplierEnabledKey"
+    let autoClockOutKey = "autoClockOutKey"
+    let autoClockOutTimeKey = "autoClockOutTimeKey"
 }

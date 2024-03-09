@@ -10,14 +10,20 @@ import SwiftUI
 struct TimePicker: View{
     
     @Binding var timeInterval: TimeInterval
+    var actionDate: Date?
+        var upperBound: Date?
     
     @State private var selectedHour = 8
     @State private var selectedMinute = 30
     
-    init(timeInterval: Binding<TimeInterval>) {
+    init(timeInterval: Binding<TimeInterval>, actionDate: Date? = nil, upperBound: Date? = nil) {
             _timeInterval = timeInterval
             _selectedHour = State(initialValue: Int(timeInterval.wrappedValue) / 3600)
             _selectedMinute = State(initialValue: Int(timeInterval.wrappedValue) % 3600 / 60)
+        
+        self.actionDate = actionDate
+               self.upperBound = upperBound
+        
         }
 
     var body: some View{
@@ -66,6 +72,16 @@ struct TimePicker: View{
     }
     
     private func updateTimeInterval() {
-            timeInterval = TimeInterval(selectedHour * 3600 + selectedMinute * 60)
+           var newTimeInterval = TimeInterval(selectedHour * 3600 + selectedMinute * 60)
+        
+        if let actionDate = actionDate, let upperBound = upperBound {
+            let newDate = actionDate.addingTimeInterval(newTimeInterval)
+            if newDate > upperBound {
+                newTimeInterval = upperBound.timeIntervalSince(actionDate)
+                selectedHour = Int(newTimeInterval) / 3600
+                selectedMinute = Int(newTimeInterval) % 3600 / 60
+            }
         }
+           timeInterval = newTimeInterval
+       }
 }

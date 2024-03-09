@@ -26,9 +26,14 @@ struct ActionView: View {
     @State private var isRounded = false
     @State private var showProSheet = false
     @State private var showBreaksSheet = false
+    @State private var showClockOutSheet = false
     @State private var enableReminder = false
     @State private var breakReminderTime: TimeInterval = 0
     @State private var breakReminderDate = Date()
+    @State private var clockOutReminderTime: TimeInterval = 0
+    @State private var clockOutReminderDate = Date()
+    @State private var enableClockOutReminder = false
+    @State private var autoClockOut = false
     
     @AppStorage("shiftsTracked") var shiftsTracked = 0
 
@@ -68,6 +73,13 @@ struct ActionView: View {
             _enableReminder = State(initialValue: shiftToLoad.breakReminder)
             _breakReminderDate = State(initialValue: actionDate.addingTimeInterval(shiftToLoad.breakReminderTime))
             
+            let shiftDuration = shiftToLoad.endDate?.timeIntervalSince(shiftToLoad.startDate ?? Date())
+            _clockOutReminderDate = State(initialValue: shiftToLoad.endDate ?? Date().addingTimeInterval(3600 * 8))
+            _clockOutReminderTime = State(initialValue: shiftDuration ?? 3600 * 8)
+            _enableClockOutReminder = State(initialValue: true)
+            
+            
+            
         }
         
         self.upcomingShift = scheduledShift
@@ -85,83 +97,223 @@ struct ActionView: View {
         let textColor: Color = colorScheme == .dark ? .white : .black
         
         NavigationStack {
-            VStack {
-                
+            ZStack(alignment: .bottom){
+            ScrollView {
                 VStack {
-                    switch actionType {
-                        
-                    case .startBreak:
-                        
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate...Date(), displayedComponents: [.date, .hourAndMinute])
+                    
+                    VStack {
+                        switch actionType {
+                            
+                        case .startBreak:
+                            
+                            if let limitStartDate = pickerStartDate {
+                                DatePicker("", selection: $actionDate, in: limitStartDate...Date(), displayedComponents: [.date, .hourAndMinute])
+                                    .datePickerStyle(.wheel)
+                                    .labelsHidden()
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .disabled(isRounded)
+                            }
+                            
+                        case .startShift:
+                            
+                            
+                            
+                            DatePicker("", selection: $actionDate, in: Date().addingTimeInterval(-(24*60*60))...Date().addingTimeInterval(24*60*60),  displayedComponents: [.date, .hourAndMinute])
                                 .datePickerStyle(.wheel)
                                 .labelsHidden()
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .disabled(isRounded)
+                            
+                        case .endShift:
+                            if let limitStartDate = pickerStartDate {
+                                DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
+                                    .datePickerStyle(.wheel)
+                                    .labelsHidden()
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .disabled(isRounded)
+                            }
+                        case .endBreak:
+                            
+                            if let limitStartDate = pickerStartDate {
+                                DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
+                                    .datePickerStyle(.wheel)
+                                    .labelsHidden()
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .disabled(isRounded)
+                            }
                         }
                         
-                    case .startShift:
-                        
-                        
-                        
-                        DatePicker("", selection: $actionDate, in: Date().addingTimeInterval(-(24*60*60))...Date().addingTimeInterval(24*60*60),  displayedComponents: [.date, .hourAndMinute])
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .disabled(isRounded)
-                        
-                    case .endShift:
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .disabled(isRounded)
-                        }
-                    case .endBreak:
-                        
-                        if let limitStartDate = pickerStartDate {
-                            DatePicker("", selection: $actionDate, in: limitStartDate... , displayedComponents: [.date, .hourAndMinute])
-                                .datePickerStyle(.wheel)
-                                .labelsHidden()
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .disabled(isRounded)
-                        }
                     }
+                    
+                    
+                    
+                    
+                    Toggle(isOn: $isRounded){
+                        Text("Auto Round")
+                            .bold()
+                    }.toggleStyle(CustomToggleStyle())
+                    
+                        .onChange(of: isRounded) { value in
+                            
+                            if isRounded == true {
+                                actionDate = viewModel.roundDate(actionDate)
+                            }
+                            // idk if it needs to set back to current date, what if you were fine tuning?
+                            
+                            /*else {
+                             actionDate = Date()
+                             }*/
+                        }
+                        .padding(.horizontal)
+                        .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                        .padding(.vertical, 10)
+                        .glassModifier(cornerRadius: 20)
+                        .padding(.bottom, actionType != .startShift ? 10 : 0)
+                    
+                    
+                    
+                   
+                        
+                        
+                
+                        
+                        if actionType == .startShift {
+                            
+                            Toggle(isOn: $viewModel.activityEnabled){
+                                Text("Live Activity")
+                                    .bold()
+                            }.toggleStyle(CustomToggleStyle())
+                            
+                            
+                            
+                                .onChange(of: viewModel.activityEnabled) { value in
+                                    
+                                    if #available(iOS 16.2, *) {
+                                        
+                                        
+                                        if value {
+                                            
+                                            if !(shiftsTracked >= 1) {
+                                                
+                                                
+                                                //viewModel.activityEnabled = true
+                                                
+                                            }
+                                            
+                                            else if !purchaseManager.hasUnlockedPro {
+                                                
+                                                showProSheet.toggle()
+                                                viewModel.activityEnabled = false
+                                                
+                                            }
+                                        }
+                                    } else {
+                                        dismiss()
+                                        OkButtonPopup(title: "Update to iOS 16.2 to use Live Activities.", action: {
+                                            viewModel.activityEnabled = false
+                                            navigationState.activeSheet = .startShiftSheet
+                                        }).showAndStack()
+                                        
+                                    }
+                                    
+                                    
+                                    
+                                }
+                            
+                                .padding(.horizontal)
+                                .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                                .padding(.vertical, 10)
+                                .glassModifier(cornerRadius: 20)
+                            
+                            GenericReminderButton(labelText: "Break Reminder", action: {
+                                showBreaksSheet.toggle()
+                            }, isEnabled: enableReminder == true, reminderTime: breakReminderTime, actionDate: actionDate)
+                            
+                            GenericReminderButton(labelText: "Clock Out Reminder", action: {
+                                showClockOutSheet.toggle()
+                            }, isEnabled: enableClockOutReminder == true, reminderTime: clockOutReminderTime, actionDate: actionDate)
+                            
+                            if enableClockOutReminder {
+                                Toggle(isOn: $autoClockOut){
+                                    Text("Auto clock out")
+                                        .bold()
+                                }.toggleStyle(CustomToggleStyle())
+                                    .padding(.horizontal)
+                                    .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                                    .padding(.vertical, 10)
+                                    .glassModifier(cornerRadius: 20)
+                                
+                                
+                                    .onChange(of: autoClockOut) { value in
+                                        
+                                        
+                                            
+                                            
+                                            if value {
+                                                
+                                               
+                                                
+                                                if !purchaseManager.hasUnlockedPro {
+                                                    
+                                                    showProSheet.toggle()
+                                                    autoClockOut = false
+                                                    
+                                                }
+                                            }
+                                        
+                                        
+                                        
+                                        
+                                    }
+                                
+                                
+                            }
+                            
+                            
+                            Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
+                                Text("Pay Multiplier: x\(payMultiplier, specifier: "%.2f")").bold()
+                            }
+                            .padding(.horizontal)
+                            .frame(maxWidth: UIScreen.main.bounds.width - 80)
+                            .padding(.vertical, 10)
+                            .glassModifier(cornerRadius: 20)
+                            
+                            
+                            
+                            .onAppear {
+                                
+                                
+                                if purchaseManager.hasUnlockedPro || shiftsTracked < 1 {
+                                    if #available(iOS 16.2, *) {
+                                        viewModel.activityEnabled = true
+                                    }
+                                    
+                                } else {
+                                    
+                                    viewModel.activityEnabled = false
+                                    
+                                }
+                                
+                            }
+                            
+                            .padding(.bottom, 10)
+                            
+                        }
+                        
+                    
+                    
+                    
                     
                 }
                 
                 
+                Spacer(minLength: 100)
                 
-                
-                Toggle(isOn: $isRounded){
-                    Text("Auto Round")
-                        .bold()
-                }.toggleStyle(CustomToggleStyle())
-                
-                    .onChange(of: isRounded) { value in
-                        
-                        if isRounded == true {
-                            actionDate = viewModel.roundDate(actionDate)
-                        } 
-                        // idk if it needs to set back to current date, what if you were fine tuning?
-                        
-                        /*else {
-                            actionDate = Date()
-                        }*/
-                    }
-                    .padding(.horizontal)
-                    .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                    .padding(.vertical, 10)
-                    .glassModifier(cornerRadius: 20)
-                    .padding(.bottom, actionType != .startShift ? 10 : 0)
-                
+            }
                 
                 
                 switch actionType {
-                    
                 case .startBreak:
-                    
                     HStack {
                         ActionButtonView(title: "Unpaid Break", backgroundColor: themeManager.breaksColor, textColor: themeManager.breaksColor, icon: "bed.double.fill", buttonWidth: UIScreen.main.bounds.width / 2 - 30) {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: true)
@@ -171,141 +323,7 @@ struct ActionView: View {
                             viewModel.startBreak(startDate: actionDate, isUnpaid: false)
                             dismiss()
                         }
-                    }
-                    
-                    
-                case .startShift:
-                    
-                    
-                    Toggle(isOn: $viewModel.activityEnabled){
-                        Text("Live Activity")
-                            .bold()
-                    }.toggleStyle(CustomToggleStyle())
-                    
-                    
-                    
-                        .onChange(of: viewModel.activityEnabled) { value in
-                            
-                            if #available(iOS 16.2, *) {
-                                
-                                
-                                if value {
-                                    
-                                    if !(shiftsTracked >= 1) {
-                                        
-                                        
-                                        //viewModel.activityEnabled = true
-                                        
-                                    }
-                                    
-                                    else if !purchaseManager.hasUnlockedPro {
-                                        
-                                        showProSheet.toggle()
-                                        viewModel.activityEnabled = false
-                                        
-                                    }
-                                }
-                            } else {
-                                dismiss()
-                                OkButtonPopup(title: "Update to iOS 16.2 to use Live Activities.", action: {
-                                    viewModel.activityEnabled = false
-                                    navigationState.activeSheet = .startShiftSheet
-                                }).showAndStack()
-                                
-                            }
-                            
-                            
-                            
-                        }
-                    
-                        .padding(.horizontal)
-                        .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                        .padding(.vertical, 10)
-                        .glassModifier(cornerRadius: 20)
-                    
-              
-                    
-                    Button(action: {
-                        
-                        showBreaksSheet.toggle()
-                        
-                        
-                    }){
-                        HStack {
-                            Text("Break Reminder").bold()
-                            Spacer()
-                            HStack(spacing: 3) {
-                                if breakReminderTime > 0 && enableReminder == true {
-                                    HStack {
-                                        Text(actionDate.addingTimeInterval(breakReminderTime), style: .time)
-                                        Divider().frame(maxHeight: 8)
-                                        Text("\(formattedTimeInterval(breakReminderTime))")
-                                    }
-                                } else {
-                                    Text("Disabled")
-                                }
-                                Image(systemName: "chevron.right").font(.caption)
-                            }.foregroundStyle(.gray)
-                        }
-                    } .padding(.horizontal)
-                        .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                        .padding(.vertical, 12)
-                        .glassModifier(cornerRadius: 20)
-        
-                    
-                    
-                    
-                    Stepper(value: $payMultiplier, in: 1.0...3.0, step: 0.05) {
-                        Text("Pay Multiplier: x\(payMultiplier, specifier: "%.2f")").bold()
-                    }
-                    .padding(.horizontal)
-                    .frame(maxWidth: UIScreen.main.bounds.width - 80)
-                    .padding(.vertical, 10)
-                    .glassModifier(cornerRadius: 20)
-                    
-                    
-                    
-                    .onAppear {
-                        
-                        
-                        if purchaseManager.hasUnlockedPro || shiftsTracked < 1 {
-                            if #available(iOS 16.2, *) {
-                                viewModel.activityEnabled = true
-                            }
-                            
-                        } else {
-                            
-                            viewModel.activityEnabled = false
-                            
-                        }
-                        
-                    }
-                    
-                    .padding(.bottom, 10)
-                    
-                    
-                    ActionButtonView(title: upcomingShift == nil ? "Start Shift" : "Load Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
-                        viewModel.breakReminder = self.enableReminder
-                        viewModel.breakReminderTime = self.breakReminderTime
-                        viewModel.payMultiplier = self.payMultiplier
-                        viewModel.isMultiplierEnabled = self.payMultiplier > 1.0
-                        viewModel.savePayMultiplier() //saves to user defaults
-                        
-                        if let shiftToLoad = self.upcomingShift {
-                            applyUpcomingShiftTags(upcomingShift: shiftToLoad)
-                            
-                            // mark the shift as complete, will be scheduled for deletion when ending shift - also prevents editing after starting
-                            shiftToLoad.isComplete = true
-                            
-                            try? viewContext.save()
-                            
-                        }
-                        
-                        
-                        
-                        viewModel.startShiftButtonAction(using: viewContext, startDate: actionDate, job: self.job!)
-                        dismiss()
-                    }
+                    }.padding(.bottom, getRect().height == 667 ? 10 : 0)
                 case .endShift:
                     ActionButtonView(title: "End Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.departure", buttonWidth: UIScreen.main.bounds.width - 60) {
                         
@@ -320,7 +338,8 @@ struct ActionView: View {
                             navigationState.activeSheet = .detailSheet
                         }
                         
-                    }.contextMenu {
+                    }.padding(.bottom, getRect().height == 667 ? 10 : 0)
+                    .contextMenu {
                         Button(action: {
                             viewModel.uncompleteCancelledScheduledShift(viewContext: viewContext)
                             viewModel.cancelShift()
@@ -338,13 +357,40 @@ struct ActionView: View {
                     ActionButtonView(title: "End Break", backgroundColor: buttonColor, textColor: textColor, icon: "deskclock.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
                         viewModel.endBreak(endDate: actionDate, viewContext: viewContext)
                         dismiss()
-                    }
-                    
+                    }.padding(.bottom, getRect().height == 667 ? 10 : 0)
+                case .startShift:
+                    ActionButtonView(title: upcomingShift == nil ? "Start Shift" : "Load Shift", backgroundColor: buttonColor, textColor: textColor, icon: "figure.walk.arrival", buttonWidth: UIScreen.main.bounds.width - 60) {
+                        viewModel.breakReminder = self.enableReminder
+                        viewModel.breakReminderTime = self.breakReminderTime
+                        viewModel.clockOutReminder = self.enableClockOutReminder
+                        viewModel.clockOutReminderTime = self.clockOutReminderTime
+                        viewModel.payMultiplier = self.payMultiplier
+                        viewModel.isMultiplierEnabled = self.payMultiplier > 1.0
+                        viewModel.savePayMultiplier() //saves to user defaults
+                        
+                        // auto clock out at the clock out reminder time:
+                        
+                        viewModel.autoClockOut = self.autoClockOut
+                        viewModel.autoClockOutTime = self.clockOutReminderTime
+                        
+                        if let shiftToLoad = self.upcomingShift {
+                            applyUpcomingShiftTags(upcomingShift: shiftToLoad)
+                            
+                            // mark the shift as complete, will be scheduled for deletion when ending shift - also prevents editing after starting
+                            shiftToLoad.isComplete = true
+                            
+                            try? viewContext.save()
+                            
+                        }
+                        
+                        
+                        
+                        viewModel.startShiftButtonAction(using: viewContext, startDate: actionDate, job: self.job!)
+                        dismiss()
+                    }.padding(.bottom, getRect().height == 667 ? 10 : 0)
                 }
-                
-                
-                
-            }
+            
+        }
             .fullScreenCover(isPresented: $showProSheet){
                 
                 
@@ -356,10 +402,30 @@ struct ActionView: View {
             }
             
             .sheet(isPresented: $showBreaksSheet) {
-                BreakReminderSheet(breakReminderDate: $breakReminderDate, breakReminderTime: $breakReminderTime, actionDate: actionDate, enableReminder: $enableReminder)
+                
+                ReminderSheet(selectedDate: $breakReminderDate, timeInterval: $breakReminderTime, actionDate: actionDate, enableReminder: $enableReminder, range: enableClockOutReminder ? actionDate...clockOutReminderDate.addingTimeInterval(-60) : actionDate...(actionDate.addingTimeInterval(24 * 60 * 60)), title: "Break Reminder")
                     .customSheetBackground()
                     .customSheetRadius()
                     .presentationDetents([.fraction(0.48)])
+            }
+            
+            .sheet(isPresented: $showClockOutSheet) {
+                
+                ReminderSheet(selectedDate: $clockOutReminderDate, timeInterval: $clockOutReminderTime, actionDate: actionDate, enableReminder: $enableClockOutReminder, range:  actionDate...(actionDate.addingTimeInterval(24 * 60 * 60)), title: "Clock Out Reminder")
+                    .customSheetBackground()
+                    .customSheetRadius()
+                    .presentationDetents([.fraction(0.48)])
+                
+                
+                    .onChange(of: clockOutReminderDate) { value in
+                        // if date is set to before the break reminder, disabled break reminder they can fix it
+                        if clockOutReminderDate < breakReminderDate {
+                            breakReminderDate = clockOutReminderDate
+                            enableReminder = false
+                        }
+                        
+                    }
+                
             }
             
             
@@ -402,5 +468,38 @@ struct ActionView: View {
 
 
     
+}
+
+struct GenericReminderButton: View {
+    var labelText: String
+    var action: () -> Void
+    var isEnabled: Bool
+    var reminderTime: TimeInterval
+    var actionDate: Date
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Text(labelText).bold()
+                Spacer()
+                HStack(spacing: 3) {
+                    if isEnabled && reminderTime > 0 {
+                        HStack {
+                            Text(actionDate.addingTimeInterval(reminderTime), style: .time)
+                            Divider().frame(maxHeight: 8)
+                            Text(formattedTimeInterval(reminderTime))
+                        }
+                    } else {
+                        Text("Disabled")
+                    }
+                    Image(systemName: "chevron.right").font(.caption)
+                }.foregroundStyle(.gray)
+            }
+        }
+        .padding(.horizontal)
+        .frame(maxWidth: UIScreen.main.bounds.width - 80)
+        .padding(.vertical, 12)
+        .glassModifier(cornerRadius: 20)
+    }
 }
 
