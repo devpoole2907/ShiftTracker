@@ -72,6 +72,7 @@ struct MainWithSideBarView: View {
              
                     if !navigationState.hideTabBar {
                         tabButtons
+                      
                         
                         
                         //    .blur(radius: Double((navigationState.offset / navigationState.sideBarWidth) * 4))
@@ -583,7 +584,7 @@ func onEnd(value: DragGesture.Value) {
                     }
                     
                 })
-            }
+            }      
             .padding(.top, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 15)
             .padding(.bottom, (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 10 : 0)
             .ignoresSafeArea(.keyboard)

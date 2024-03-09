@@ -43,12 +43,15 @@ struct AddressFinderMap: View {
         }
         
         .onAppear {
-            mapViewModel.bottomSheet = true
+            
+                mapViewModel.bottomSheet = true
+            
+            
         }
         
         .sheet(isPresented: $mapViewModel.bottomSheet){
-            
-            NavigationStack{
+
+           NavigationStack{
                 ScrollView{
                     
                     VStack(alignment: .leading, spacing: 10){
@@ -179,9 +182,13 @@ struct AddressFinderMap: View {
                     
                 
             }
+            
+                    
             .presentationDetents([.fraction(0.2), .fraction(0.35), .fraction(0.45), .fraction(0.8)])
             .presentationDragIndicator(.hidden)
-             .presentationBackground(.ultraThinMaterial)
+         
+            // broken on ios 17.4
+         //    .presentationBackground(.ultraThinMaterial)
             .presentationCornerRadius(12)
             .presentationBackgroundInteraction(.enabled)
             .interactiveDismissDisabled()
@@ -193,7 +200,6 @@ struct AddressFinderMap: View {
                     .presentationCornerRadius(12)
                     .presentationDragIndicator(isSearching ? .hidden : .visible)
                     .presentationBackgroundInteraction(.enabled)
-                
                 
                     .onAppear{
                         dismissSearch()
@@ -217,5 +223,36 @@ struct AddressFinderMap: View {
     
 
     
+    
+}
+@available(iOS 17.0, *)
+struct TestMapView: View {
+    
+   
+    var body: some View {
+    
+    Map {
+        
+        /*ForEach(mapViewModel.searchResults, id: \.self) { mapItem in
+            
+            Marker(mapItem.placemark.name ?? "Unknown", coordinate: mapItem.placemark.coordinate)
+            
+        }
+        
+        if let jobLocationCoordinate = mapViewModel.jobLocationCoordinate {
+            Marker(mapViewModel.selectedAddressString ?? "Unknown", systemImage: jobViewModel.selectedIcon, coordinate: jobLocationCoordinate).tint(jobViewModel.selectedColor)
+        }*/
+        
+        UserAnnotation()
+        
+    }
+    .mapControls{
+        MapCompass()
+        MapUserLocationButton()
+        MapPitchToggle()
+        
+    }
+    
+}
     
 }

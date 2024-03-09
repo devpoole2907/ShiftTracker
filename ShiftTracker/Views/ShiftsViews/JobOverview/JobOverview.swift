@@ -139,6 +139,8 @@ struct JobOverview: View {
                 
                 if let theJob = selectedJobManager.fetchJob(in: viewContext) {
                     
+                    // some kind of if check for invoices - unless show it, and disable it saying "generate some invoices first!"
+                    
                     if theJob.payPeriodEnabled {
                         
                         payPeriodSection
@@ -234,6 +236,15 @@ struct JobOverview: View {
                 } else if value == 3 {
                     
                     PayPeriodView(navPath: $navPath, job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(overviewModel)
+                    
+                } else if value == 4 {
+                    
+                    InvoicesListView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(selectedJobManager)
+                        .onAppear {
+                        withAnimation {
+                            shiftManager.showModePicker = false
+                        }
+                    }
                     
                 }
                 
@@ -566,6 +577,8 @@ struct JobOverview: View {
     
     var statsSection: some View {
         
+     
+        
         return Group {
             VStack(alignment: .center, spacing: 16){
                 HStack(spacing: 8){
@@ -578,16 +591,28 @@ struct JobOverview: View {
                         
                         Spacer()
                         
-                        ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode)
+                        ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode, navPath: $navPath)
                             .environmentObject(shiftManager)
                         
                     }
                     
-                    
-                    ExportSquare(totalShifts: shifts.count, action: {
-                        overviewModel.activeSheet = .configureExportSheet
-                    })
-                    .environmentObject(shiftManager)
+                    VStack(spacing: 0) {
+                        ExportSquare(totalShifts: shifts.count, action: {
+                            overviewModel.activeSheet = .configureExportSheet
+                        })
+                        .environmentObject(shiftManager)
+                        
+                        
+                        
+                        if let theJob = selectedJobManager.fetchJob(in: viewContext) {
+                            if theJob.enableInvoices {
+                                invoicesSection
+                            }
+                        } else { // no job selected, show all invoices anyway if any
+                            invoicesSection
+                        }
+                        
+                    }
  
                 }
 
@@ -620,6 +645,35 @@ struct JobOverview: View {
        
         
            
+    }
+    
+    var invoicesSection: some View {
+        
+        let headerColor: Color = colorScheme == .dark ? .white : .black
+        
+       return Button(action: {
+            navPath.append(4)
+        }){
+            HStack(spacing: 5){
+                Text("Invoices")
+                    .font(.callout)
+                    .bold()
+                    .foregroundStyle(headerColor)
+                    .padding(.leading)
+            
+            Image(systemName: "chevron.right")
+                .bold()
+                .font(.caption)
+                .font(.callout)
+                .foregroundStyle(.gray)
+                
+                Spacer()
+                
+            }
+        }.buttonStyle(PlainButtonStyle())
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+           .glassModifier(cornerRadius: 12, applyPadding: false)
     }
     
     var toolbarMenu: some View {

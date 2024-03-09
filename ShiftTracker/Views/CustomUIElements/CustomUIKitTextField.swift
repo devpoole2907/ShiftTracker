@@ -100,6 +100,7 @@ struct CustomUIKitTextField: UIViewRepresentable {
         } else {
             uiView.leftView?.isHidden = true // Always hide the alert icon if showAlertSymbol is false or nil
         }
+
     }
     
     func addToolbar(_ textField: UITextField, context: Context) {

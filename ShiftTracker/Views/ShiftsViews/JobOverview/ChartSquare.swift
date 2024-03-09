@@ -17,27 +17,36 @@ struct ChartSquare: View {
     
     @ObservedObject var viewModel: ChartSquareViewModel
     
+    @Binding var navPath: NavigationPath
+    
     var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
                 formatter.dateFormat = "E"
         return formatter
     }
     
-    init(shifts: FetchedResults<OldShift>, statsMode: StatsMode) {
+    init(shifts: FetchedResults<OldShift>, statsMode: StatsMode, navPath: Binding<NavigationPath>) {
         viewModel = ChartSquareViewModel(shifts: shifts, statsMode: statsMode)
+        _navPath = navPath
     }
     
     var body: some View {
         
         ZStack {
-            NavigationLink(value: 2) { EmptyView() }.opacity(0.0)
             
-            VStack(alignment: .center) {
-                
-                navHeader
-                weeklyChart
-                
-            }
+            Button(action: {navPath.append(2)}){
+                VStack(alignment: .center) {
+                    
+                    navHeader
+                    weeklyChart
+                    
+                }
+            }.buttonStyle(PlainButtonStyle())
+            
+            // not sure why this was like this, come back later if any issue crops up
+          //  NavigationLink(value: 2) { EmptyView() }.opacity(0.0)
+            
+            
             
         }
         .padding(.vertical, 8)

@@ -12,6 +12,7 @@ import Haptics
 struct ExportSquare: View {
     
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.managedObjectContext) var viewContext
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var purchaseManager: PurchaseManager
     
@@ -27,7 +28,7 @@ struct ExportSquare: View {
         
         let headerColor: Color = colorScheme == .dark ? .white : .black
         
-        VStack(alignment: .leading, spacing: 10){
+        VStack(alignment: .leading, spacing: 8){
             
             Text("Total Shifts")
                 .bold()
@@ -82,6 +83,9 @@ struct ExportSquare: View {
             
         }.padding()
             .glassModifier(cornerRadius: 12, applyPadding: false)
+        
+        // dont apply padding if invoices disabled, because the invoice square below is missing
+            .padding(.bottom, selectedJobManager.fetchJob(in: viewContext)?.enableInvoices ?? true ? 8 : 0)
         
             .fullScreenCover(isPresented: $showingProView) {
                 

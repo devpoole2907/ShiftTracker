@@ -100,7 +100,7 @@ struct AddTagView: View {
         return HStack{
             
             
-            CustomTextField(text: $tagModel.tagName, hint: "Add Tag", leadingIcon: !(tagModel.selectedTag?.editable ?? true) ? "exclamationmark.triangle.fill" : "number")
+            CustomTextField(text: $tagModel.tagName, hint: "Add Tag", leadingIcon: !(tagModel.selectedTag?.editable ?? true) ? "exclamationmark.triangle.fill" : "number", hasPersistentLeadingIcon: true, alignLeft: true)
                 .frame(maxHeight: 40)
                 .shake(times: tagModel.tagShakeTimes)
                 .disabled((!(tagModel.selectedTag?.editable ?? true)))

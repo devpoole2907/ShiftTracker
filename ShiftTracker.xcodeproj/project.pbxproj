@@ -104,6 +104,8 @@
 		7C1A507E2A99F31A00305171 /* PageControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A507D2A99F31900305171 /* PageControlView.swift */; };
 		7C1A9FEC2B9BBDF50079411D /* InvoiceInputPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */; };
 		7C1A9FEE2B9BD9E40079411D /* AddressDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */; };
+		7C1A9FF02B9C29020079411D /* InvoicesViewList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FEF2B9C29020079411D /* InvoicesViewList.swift */; };
+		7C1A9FF22B9C29160079411D /* InvoiceFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF12B9C29160079411D /* InvoiceFile.swift */; };
 		7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */; };
@@ -434,6 +436,8 @@
 		7C1A507D2A99F31900305171 /* PageControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControlView.swift; sourceTree = "<group>"; };
 		7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceInputPreviews.swift; sourceTree = "<group>"; };
 		7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDetailsView.swift; sourceTree = "<group>"; };
+		7C1A9FEF2B9C29020079411D /* InvoicesViewList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesViewList.swift; sourceTree = "<group>"; };
+		7C1A9FF12B9C29160079411D /* InvoiceFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceFile.swift; sourceTree = "<group>"; };
 		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerBundle.swift; sourceTree = "<group>"; };
 		7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerLiveActivity.swift; sourceTree = "<group>"; };
@@ -1076,6 +1080,7 @@
 				7C4E62CA2B9B444700416DD0 /* InvoicePDFViewer.swift */,
 				7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */,
 				7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */,
+				7C1A9FEF2B9C29020079411D /* InvoicesViewList.swift */,
 			);
 			path = PDF;
 			sourceTree = "<group>";
@@ -1164,6 +1169,7 @@
 				7CB5494A2B09BE4B001E4328 /* ProFeature.swift */,
 				7C5651872B3418A8005223DE /* PayPeriod.swift */,
 				7C4E62BC2B9B341D00416DD0 /* ShiftTableCell.swift */,
+				7C1A9FF12B9C29160079411D /* InvoiceFile.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1482,6 +1488,7 @@
 				1A30F3C42A223AA400A7BD92 /* BreakInputView.swift in Sources */,
 				1A69DA2529C98C88008FA77F /* LocationDataManager.swift in Sources */,
 				7CF4D0E12AD25F1F001A891E /* OvertimePanel.swift in Sources */,
+				7C1A9FF02B9C29020079411D /* InvoicesViewList.swift in Sources */,
 				7C82D8CC2A6222FF004DF369 /* JobRow.swift in Sources */,
 				7C4E62BB2B9B121100416DD0 /* InvoiceViewModel.swift in Sources */,
 				1A83C61B2A5794F90054E3B1 /* TimerView.swift in Sources */,
@@ -1617,6 +1624,7 @@
 				1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */,
 				7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */,
 				7C7B46BC2AC16DF800D87140 /* MockupScheduleView.swift in Sources */,
+				7C1A9FF22B9C29160079411D /* InvoiceFile.swift in Sources */,
 				7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
 				7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */,

@@ -98,7 +98,7 @@ struct JobView: View {
                             
                         }
                         
-                        
+                        invoicesPanel
                         
                         rosterReminderPanel
                         
@@ -466,7 +466,18 @@ struct JobView: View {
         }
     }
     
-
+    var invoicesPanel: some View {
+        return VStack(alignment: .leading, spacing: 10){
+            Toggle(isOn: $jobViewModel.enableInvoices){
+                
+                Text("Enable invoices").bold()
+                
+            }.toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+            
+        }.glassModifier(cornerRadius: 20)
+    }
     
     var rosterReminderPanel: some View {
         return VStack(alignment: .leading, spacing: 10){
@@ -627,7 +638,7 @@ struct JobView: View {
                         selectedJobForEditing = job
                         
                         
-                    }, title: "Are you sure? All associated previous and scheduled shifts will be deleted.").showAndStack()
+                    }, title: "Are you sure? All associated previous and scheduled shifts will be deleted. Any saved invoices will be lost.").showAndStack()
                     
                     
                 }
@@ -665,10 +676,13 @@ struct MiniMapView: View {
     
     var body: some View {
         
-    
+        
         
     
         NavigationLink(destination: AddressFinderMap().environmentObject(jobViewModel).environmentObject(mapModel)
+        
+     //   NavigationLink(destination: TestMapView()
+        
             .onDisappear{
                 jobViewModel.selectedAddress = mapModel.selectedAddressString
                 jobViewModel.selectedRadius = mapModel.selectedRadius

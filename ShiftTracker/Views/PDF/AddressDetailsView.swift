@@ -14,40 +14,32 @@ struct AddressDetailsView: View {
     @Binding var state: String
     @Binding var postalCode: String
     @Binding var country: String
+    
+    var focused: FocusState<GenerateInvoiceView.Field?>.Binding
+    
+    var isClient: Bool
+   
 
     var body: some View {
         VStack {
-            CustomUIKitTextField(placeholder: "Name/Company Name", text: $name, largeFont: false, rightAlign: true, capitaliseWords: true, showAlertSymbol: true)
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 20)
-
-            CustomUIKitTextField(placeholder: "Address", text: $streetAddress, largeFont: false, rightAlign: true, notBold: true, capitaliseWords: true, showAlertSymbol: true)
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 20)
-
-            CustomUIKitTextField(placeholder: "City", text: $city, largeFont: false, rightAlign: true, notBold: true, capitaliseWords: true, showAlertSymbol: true)
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 20)
-
-        
-            CustomUIKitTextField(placeholder: "State", text: $state, largeFont: false, rightAlign: true, notBold: true, capitaliseWords: true, showAlertSymbol: true)
-                    .padding(.horizontal)
-                    .padding(.vertical, 10)
-                    .glassModifier(cornerRadius: 20)
-
-            IntegerTextField(placeholder: "Postal Code", text: $postalCode, showAlertSymbol: true)
-                    .padding(.horizontal)
-                    .padding(.vertical, 10)
-                    .glassModifier(cornerRadius: 20)
+            CustomTextField(text: $name, hint: "Name/Company Name", capitaliseWords: true, isBold: true)
+                .focused(focused, equals: isClient ? .clientName : .userName)
             
+            CustomTextField(text: $streetAddress, hint: "Address", capitaliseWords: true)
+                .focused(focused, equals: isClient ? .clientAddress : .userAddress)
+            
+            CustomTextField(text: $city, hint: "City", capitaliseWords: true)
+                .focused(focused, equals: isClient ? .clientCity : .userCity)
+            
+            CustomTextField(text: $state, hint: "State", capitaliseWords: true)
+                .focused(focused, equals: isClient ? .clientState : .userState)
+            
+            CustomTextField(text: $postalCode, hint: "Postal Code", capitaliseWords: true).keyboardType(.numberPad)
+                .focused(focused, equals: isClient ? .clientPostalCode : .userPostalCode)
 
-            CustomUIKitTextField(placeholder: "Country", text: $country, largeFont: false, rightAlign: true, notBold: true, capitaliseWords: true, showAlertSymbol: true)
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 20)
+            
+            CustomTextField(text: $country, hint: "Country", capitaliseWords: true)
+                .focused(focused, equals: isClient ? .clientCountry : .userCountry)
         }
         .padding()
         .glassModifier(cornerRadius: 20)

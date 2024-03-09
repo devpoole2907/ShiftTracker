@@ -356,15 +356,17 @@ struct ShiftsList: View {
                                     Image(systemName: "tablecells").bold()
                                 }
                                 
+                             
+                                    // allow invoices if not pro, just dont allow export
                                 Button(action: {
                                     
-                                    if purchaseManager.hasUnlockedPro {
+                                 //   if purchaseManager.hasUnlockedPro {
                                         showInvoiceView.toggle()
-                                    } else {
+                                //    } else {
                                         
-                                        showingProView.toggle()
+                                  //      showingProView.toggle()
                                         
-                                    }
+                                 //   }
                                     
                                     
                                 }){

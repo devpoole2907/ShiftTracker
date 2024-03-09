@@ -29,9 +29,9 @@ class PurchaseManager: ObservableObject {
     
     var hasUnlockedPro: Bool {
         
-    //    return true // temporary for testflight
+       // return true // temporary for testflight
     
-        if self.purchasedProductIDs.contains("pro_lifetime") {
+              if self.purchasedProductIDs.contains("pro_lifetime") {
                     return true
                 }
         

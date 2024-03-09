@@ -35,6 +35,7 @@ class JobViewModel: ObservableObject {
     @Published var clockOutReminder = false
     @Published var autoClockOut = false
     
+    
     @Published var payShakeTimes: CGFloat = 0
     @Published var nameShakeTimes: CGFloat = 0
     @Published var titleShakeTimes: CGFloat = 0
@@ -54,6 +55,8 @@ class JobViewModel: ObservableObject {
     @Published var rosterReminder: Bool
     @Published var selectedDay: Int = 1
     @Published var selectedTime: Date
+    
+    @Published var enableInvoices = true
     
     @Published var breakReminder: Bool = false
     @Published var breakRemindAfter: TimeInterval
@@ -115,6 +118,8 @@ class JobViewModel: ObservableObject {
         self.payPeriodDuration = Int(job?.payPeriodLength ?? 7)
         self.lastPayPeriodEndedDate = job?.lastPayPeriodEndedDate ?? Date()
         
+        self.enableInvoices = job?.enableInvoices ?? true
+        
         
     }
     
@@ -129,6 +134,28 @@ class JobViewModel: ObservableObject {
                 // Job exists, so we are editing
                 print("yeah job exists")
                 newJob = job
+            
+            if name != job.name {
+                       // The name has been modified... migrate any invoices!
+                       let fileManager = FileManager.default
+                       let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+                       let oldDirectory = documentsDirectory.appendingPathComponent(job.name ?? "")
+                       let newDirectory = documentsDirectory.appendingPathComponent(name)
+                       
+                       do {
+                           try fileManager.createDirectory(at: newDirectory, withIntermediateDirectories: true, attributes: nil)
+                           if fileManager.fileExists(atPath: oldDirectory.path) {
+                               let fileURLs = try fileManager.contentsOfDirectory(at: oldDirectory, includingPropertiesForKeys: nil)
+                               for fileURL in fileURLs {
+                                   let newFileURL = newDirectory.appendingPathComponent(fileURL.lastPathComponent)
+                                   try fileManager.moveItem(at: fileURL, to: newFileURL)
+                               }
+                               try fileManager.removeItem(at: oldDirectory)
+                           }
+                       } catch {
+                           print("Error migrating invoices: \(error)")
+                       }
+                   }
                 
                 // If editing an existing job, only toggle payPeriodEnabled if it's changing.
                 // Never modify lastPayPeriodEndedDate if it's already set
@@ -169,6 +196,7 @@ class JobViewModel: ObservableObject {
         newJob.overtimeRate = overtimeRate
         newJob.icon = selectedIcon
         newJob.rosterReminder = rosterReminder
+        newJob.enableInvoices = enableInvoices
         newJob.rosterTime = selectedTime
         newJob.rosterDayOfWeek = Int16(selectedDay)
         newJob.breakReminder = breakReminder

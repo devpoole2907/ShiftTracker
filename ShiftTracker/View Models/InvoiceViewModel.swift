@@ -15,17 +15,19 @@ class InvoiceViewModel: ObservableObject {
     @Published var totalPay: Double = 0.0
     @Published var showPDFViewer = false
     
+    //show pro view if they try export and arent pro
+    @Published var showProView = false
+    
     // input variables
     
     // user input
-    
-    @Published var userName = ""
-    @Published var userStreetAddress = ""
-    @Published var userCity = ""
-    @Published var userState = ""
-    @Published var userPostalCode = ""
-    @Published var userCountry = ""
-   
+    // save users details for next time
+    @AppStorage("userName") var userName: String = ""
+    @AppStorage("userStreetAddress") var userStreetAddress = ""
+    @AppStorage("userCity") var userCity = ""
+    @AppStorage("userState") var userState = ""
+    @AppStorage("userPostalCode") var userPostalCode = ""
+    @AppStorage("userCountry") var userCountry = ""
     
     
     @Published var invoiceNumber = ""
@@ -47,9 +49,9 @@ class InvoiceViewModel: ObservableObject {
     var selectedShifts: Set<NSManagedObjectID>? = nil
     var shifts: FetchedResults<OldShift>? = nil
     var arrayShifts: [OldShift]? = nil
-    var job: Job?
+    var job: Job? = nil
     var singleExportShift: OldShift? = nil
-    var viewContext: NSManagedObjectContext
+    var viewContext: NSManagedObjectContext = PersistenceController.shared.container.viewContext
     
     
     init(shifts: FetchedResults<OldShift>? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, job: Job? = nil, viewContext: NSManagedObjectContext, arrayShifts: [OldShift]? = nil, singleExportShift: OldShift? = nil){
@@ -64,6 +66,12 @@ class InvoiceViewModel: ObservableObject {
         setupData()
         
     }
+    
+    init() {
+        // wont always need the variables above loaded to use this model (for example when viewing an old invoice)
+    }
+    
+    
     // this func is in two places, also in exportviewmodel. could consolidate it somewhere in future.
     private func shouldInclude(shift: OldShift) -> Bool {
         if let selectedShifts = selectedShifts {
@@ -77,6 +85,29 @@ class InvoiceViewModel: ObservableObject {
     }
     
     func setupData() {
+        
+        
+        if let job = job {
+            
+            jobName = job.name ?? ""
+            
+            if let firstLocation = job.locations?.anyObject() as? JobLocation {
+                let addressComponents = firstLocation.address?.split(separator: ",").map { String($0).trimmingCharacters(in: .whitespaces) }
+                
+                if let components = addressComponents {
+                    // Concatenate the street number and street name if both are present
+                    clientStreetAddress = (components.count > 1 ? components[0] + " " : "") + (components.count > 0 ? components[1] : "")
+                    clientCity = components.count > 2 ? components[2] : ""
+                    clientState = components.count > 3 ? components[3] : ""
+                    clientPostalCode = components.count > 4 ? components[4] : ""
+                    clientCountry = components.count > 5 ? components[5] : ""
+                }
+            }
+            
+            
+        }
+        
+        
         
         var filteredShifts: [OldShift] = []
         
@@ -103,7 +134,9 @@ class InvoiceViewModel: ObservableObject {
         
         let a4Size = CGSize(width: 595, height: 842)
         
-        let url = URL.documentsDirectory.appending(path: "\(job?.name ?? "") invoice\("").pdf") // eventually put the number of the invoice here
+        let jobDirectory = URL.documentsDirectory.appendingPathComponent(jobName) // creates directory under the job name
+            try? FileManager.default.createDirectory(at: jobDirectory, withIntermediateDirectories: true, attributes: nil)
+            let url = jobDirectory.appendingPathComponent("\(jobName) invoice \(invoiceNumber).pdf")
         
         let cellsPerPage = 36 // we need to limit how many cells can be displayed on each page, they may have selected a massive amount of shifts we dont want it to cut off
         
@@ -121,7 +154,7 @@ class InvoiceViewModel: ObservableObject {
         
         guard let consumer = CGDataConsumer(url: url as CFURL), let pdfContext = CGContext(consumer: consumer, mediaBox: &box, nil)
         else {
-            return 
+            return
             // show some kinda error here!
         }
         
@@ -143,7 +176,7 @@ class InvoiceViewModel: ObservableObject {
             
             let isLastPage = (pageIndex == totalPages - 1)
             
-          // let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate))
+            // let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate))
             
             let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
             
@@ -185,11 +218,10 @@ class InvoiceViewModel: ObservableObject {
         
     }
     
-
-
     
     
     
 }
+
 
 

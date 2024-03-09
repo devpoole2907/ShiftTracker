@@ -45,7 +45,7 @@ struct InvoiceInputPreviews: View {
                         .glassModifier(cornerRadius: 20)
                 
                     
-                    clientDetails
+                 //   clientDetails
                     
                     Text("Your Contact Info")
                         .bold()
@@ -54,7 +54,7 @@ struct InvoiceInputPreviews: View {
                         .glassModifier(cornerRadius: 20)
                      
                     
-                    userDetails
+                 //   userDetails
                     
                     Text("Tax Details")
                         .bold()
@@ -78,7 +78,7 @@ struct InvoiceInputPreviews: View {
         }
     }
     
-    var userDetails: some View {
+  /*  var userDetails: some View {
         
         AddressDetailsView(name: $jobName, streetAddress: $jobName, city: $jobName, state: $jobName, postalCode: $invoiceNumber, country: $jobName)
         
@@ -91,7 +91,7 @@ struct InvoiceInputPreviews: View {
 
         AddressDetailsView(name: $jobName, streetAddress: $jobName, city: $jobName, state: $jobName, postalCode: $invoiceNumber, country: $jobName)
         
-    }
+    }*/
     
     var taxDetails: some View {
         

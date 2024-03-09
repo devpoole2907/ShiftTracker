@@ -19,33 +19,77 @@ struct InvoicePDFViewer: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: PDFView, context: UIViewRepresentableContext<InvoicePDFViewer>) {
-        // we will leave this empty as we don't need to update the PDF
+
     }
 }
 
 struct InvoiceViewSheet: View {
     
+    @EnvironmentObject var viewModel: InvoiceViewModel
+    @EnvironmentObject var purchaseManager: PurchaseManager
+    @EnvironmentObject var navigationState: NavigationState
+    
+    var isSheet = false
     let url: URL
     
     var body: some View {
         
-        NavigationStack {
+ 
             ZStack(alignment: .bottomTrailing){
                 InvoicePDFViewer(url: url).ignoresSafeArea()
                 
-                ShareLink(item: url, label: {
-                    Image(systemName: "square.and.arrow.up.fill")
-                })
+             
+                if purchaseManager.hasUnlockedPro {
+                    ShareLink(item: url, label: {
+                        Image(systemName: "square.and.arrow.up.fill")
+                    })
                     .padding()
+                    .glassModifier(cornerRadius: 20)
+                    .padding()
+                    
+                    .padding(.bottom, isSheet ? 0 : 25)
+                    
+                } else {
+                    Button(action: {
+                        viewModel.showProView.toggle()
+                    }) {
+                        Image(systemName: "square.and.arrow.up.fill")
+                    }   .padding()
                         .glassModifier(cornerRadius: 20)
                         .padding()
+                    
+                        .padding(.bottom, isSheet ? 0 : 25)
+                    
+                }
                 
+            }.overlay {
+                if !purchaseManager.hasUnlockedPro {
+                    Group {
+                        Text("ShiftTracker ").font(.title).bold().foregroundColor(Color.black)
+                        +
+                        Text("PRO").font(.largeTitle).fontWeight(.heavy).foregroundColor(Color.orange)
+                    }.opacity(0.3)
+                }
             }
+        
+            
+            .fullScreenCover(isPresented: $viewModel.showProView) {
+                ProView()
+                    .environmentObject(purchaseManager)
+                
+                    .customSheetBackground()
+            }
+            
                 .toolbar {
-                    CloseButton()
+                    if isSheet {
+                        CloseButton()
+                    }
                 }
             
                 .toolbarBackground(.hidden, for: .navigationBar)
-        }
+                .toolbarBackground(.hidden, for: .bottomBar)
+                .toolbarBackground(.hidden, for: .tabBar)
+                .toolbarRole(isSheet ? .automatic : .editor) 
+     
     }
 }

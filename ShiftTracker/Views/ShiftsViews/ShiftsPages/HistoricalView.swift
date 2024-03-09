@@ -528,15 +528,16 @@ struct HistoricalView: View {
                                     Image(systemName: "tablecells").bold()
                                 }
                                 
+                                // allow invoices if not pro, just dont allow export
                                 Button(action: {
                                     
-                                    if purchaseManager.hasUnlockedPro {
+                                  //  if purchaseManager.hasUnlockedPro {
                                         historyModel.showInvoiceView.toggle()
-                                    } else {
+                                  //  } else {
                                         
-                                        historyModel.showingProView.toggle()
+                                   //     historyModel.showingProView.toggle()
                                         
-                                    }
+                                   // }
                                     
                                     
                                 }){

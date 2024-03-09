@@ -14,11 +14,17 @@ struct GenerateInvoiceView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
+    @FocusState var focusField: Field?
+    
     @State var username = ""
     
     init(shifts: FetchedResults<OldShift>? = nil, job: Job? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, arrayShifts: [OldShift]? = nil, singleExportShift: OldShift? = nil) {
         self.viewModel = InvoiceViewModel(shifts: shifts, selectedShifts: selectedShifts, job: job, viewContext: PersistenceController.shared.container.viewContext, arrayShifts: arrayShifts, singleExportShift: singleExportShift)
     }
+    
+    enum Field: CaseIterable {
+        case invoiceNo, clientName, clientAddress, clientCity, clientState, clientPostalCode, clientCountry, userName, userAddress, userCity, userState, userPostalCode, userCountry
+      }
     
     var isFormValid: Bool {
         !viewModel.userName.isEmpty &&
@@ -36,6 +42,20 @@ struct GenerateInvoiceView: View {
         !viewModel.invoiceNumber.isEmpty
     }
     
+    func updateFocus(direction: Direction) {
+        guard let currentField = focusField else { return }
+        
+        let allFields = Field.allCases
+        if let currentIndex = allFields.firstIndex(of: currentField) {
+            let nextIndex = direction == .up ? max(currentIndex - 1, 0) : min(currentIndex + 1, allFields.count - 1)
+            focusField = allFields[nextIndex]
+        }
+    }
+
+    enum Direction {
+        case up, down
+    }
+
     
     
     var body: some View {
@@ -77,7 +97,7 @@ struct GenerateInvoiceView: View {
                     userDetails
                     
                  
-                    Spacer(minLength: 300)
+                    Spacer(minLength: 400)
               
                     
                     
@@ -104,7 +124,9 @@ struct GenerateInvoiceView: View {
             .fullScreenCover(isPresented: $viewModel.showPDFViewer){
                 
                 if let url = viewModel.url {
-                    InvoiceViewSheet(url: url)
+                    NavigationStack {
+                        InvoiceViewSheet(isSheet: true, url: url).environmentObject(viewModel)
+                    }
                 } else {
                     Text("Error")
                 }
@@ -114,7 +136,30 @@ struct GenerateInvoiceView: View {
             }
             
         .toolbar{
-            CloseButton()
+            ToolbarItem(placement: .topBarTrailing) {
+                CloseButton()
+            }
+            
+            
+            
+            
+                            ToolbarItemGroup(placement: .keyboard) {
+                                HStack {
+                               
+                                            Button(action: { updateFocus(direction: .up) }) {
+                                                Image(systemName: "chevron.up")
+                                            }.bold()
+                                            Button(action: { updateFocus(direction: .down) }) {
+                                                Image(systemName: "chevron.down")
+                                            }.bold()
+                                        
+                                    Spacer()
+                                    Button("Done") {
+                                        hideKeyboard()
+                                    }.bold()
+                                }
+                            }
+                        
         }
             
         
@@ -130,26 +175,23 @@ struct GenerateInvoiceView: View {
     
     var userDetails: some View {
         
-        AddressDetailsView(name: $viewModel.userName, streetAddress: $viewModel.userStreetAddress, city: $viewModel.userCity, state: $viewModel.userState, postalCode: $viewModel.userPostalCode, country: $viewModel.userCountry)
+        AddressDetailsView(name: $viewModel.userName, streetAddress: $viewModel.userStreetAddress, city: $viewModel.userCity, state: $viewModel.userState, postalCode: $viewModel.userPostalCode, country: $viewModel.userCountry, focused: $focusField, isClient: false)
         
         
     }
     
     var clientDetails: some View {
         
-        AddressDetailsView(name: $viewModel.jobName, streetAddress: $viewModel.clientStreetAddress, city: $viewModel.clientCity, state: $viewModel.clientState, postalCode: $viewModel.clientPostalCode, country: $viewModel.clientCountry)
+        AddressDetailsView(name: $viewModel.jobName, streetAddress: $viewModel.clientStreetAddress, city: $viewModel.clientCity, state: $viewModel.clientState, postalCode: $viewModel.clientPostalCode, country: $viewModel.clientCountry, focused: $focusField, isClient: true)
         
     }
     
     var invoiceDetails: some View {
         
         VStack{
-            
-            IntegerTextField(placeholder: "Invoice Number", text: $viewModel.invoiceNumber, showAlertSymbol: true)
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 20)
-            
+
+            CustomTextField(text: $viewModel.invoiceNumber, hint: "Invoice Number", capitaliseWords: true).focused($focusField, equals: .invoiceNo)
+             
             DatePicker("Invoice date", selection: $viewModel.invoiceDate, in: Date()..., displayedComponents: .date)
                 .padding(.horizontal)
                 .padding(.vertical, 10)
