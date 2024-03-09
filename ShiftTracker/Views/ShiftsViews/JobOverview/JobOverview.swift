@@ -239,7 +239,7 @@ struct JobOverview: View {
                     
                 } else if value == 4 {
                     
-                    InvoicesListView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(selectedJobManager)
+                    InvoicesListView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(selectedJobManager).environmentObject(overviewModel)
                         .onAppear {
                         withAnimation {
                             shiftManager.showModePicker = false
@@ -670,9 +670,11 @@ struct JobOverview: View {
                 Spacer()
                 
             }
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
         }.buttonStyle(PlainButtonStyle())
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
+           
            .glassModifier(cornerRadius: 12, applyPadding: false)
     }
     

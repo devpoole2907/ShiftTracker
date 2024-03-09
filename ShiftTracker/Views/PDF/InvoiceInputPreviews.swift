@@ -97,16 +97,31 @@ struct InvoiceInputPreviews: View {
         
         VStack {
             
-            Picker("Tax Type", selection: $taxSelection) {
-                            ForEach(InterestOption.allCases) { option in
-                                Text(option.rawValue).tag(option)
-                                   
-                            }
+          
+            
+            HStack {
+                Text("Type")
+                Spacer()
+                Picker("Tax Type", selection: $taxSelection) {
+                    ForEach(InterestOption.allCases) { option in
+                        Text(option.rawValue).tag(option)
+                        
+                    }
+                }
             }
             
-         
+            .padding(.horizontal)
+                .padding(.vertical, 10)
+                .glassModifier(cornerRadius: 20)
+     
+            CustomTextField(text: $jobName, hint: "Rate", leadingIcon: "percent", hasPersistentLeadingIcon: true).keyboardType(.decimalPad)
+                .disabled(taxSelection == .none)
             
-        }
+            CustomTextField(text: $jobName, hint: "Abbreviation e.g GST, VAT", hasPersistentLeadingIcon: true)
+                .disabled(taxSelection == .none)
+            
+        }.frame(maxWidth: .infinity)
+            .padding() .glassModifier(cornerRadius: 20)
         
     }
     

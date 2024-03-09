@@ -10,6 +10,7 @@ import SwiftUI
 struct CustomTextField: View {
     
     @Binding var text: String
+    @Binding var value: Double
     var hint: String
     var leadingIcon: String? = nil
     var isPassword: Bool = false
@@ -17,11 +18,20 @@ struct CustomTextField: View {
     var alignLeft: Bool? = nil
     var capitaliseWords: Bool? = nil
     var isBold: Bool? = nil
+    var isNumber: Bool = false
     
     private var charLimit = 8
     
-    init(text: Binding<String>, hint: String, leadingIcon: String? = nil, isPassword: Bool = false, hasPersistentLeadingIcon: Bool? = nil, alignLeft: Bool? = nil, capitaliseWords: Bool? = nil, isBold: Bool? = nil) {
+    private let taxRateFormatter: NumberFormatter = {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = 2
+            return formatter
+        }()
+    
+    init(text: Binding<String> = .constant(""), value: Binding<Double> = .constant(0), hint: String, leadingIcon: String? = nil, isPassword: Bool = false, hasPersistentLeadingIcon: Bool? = nil, alignLeft: Bool? = nil, capitaliseWords: Bool? = nil, isBold: Bool? = nil, isNumber: Bool = false) {
         _text = text
+        _value = value
         self.hint = hint
         self.leadingIcon = leadingIcon
         self.isPassword = isPassword
@@ -29,6 +39,7 @@ struct CustomTextField: View {
         self.alignLeft = alignLeft
         self.capitaliseWords = capitaliseWords
         self.isBold = isBold
+        self.isNumber = isNumber
         
         // adds clear text button to text fields
         UITextField.appearance().clearButtonMode = .whileEditing
@@ -87,6 +98,13 @@ struct CustomTextField: View {
                 SecureField(hint, text: $text)
                     .multilineTextAlignment(alignLeft ?? false ? .leading : .trailing)
                  
+            } else if isNumber {
+                
+                TextField("Rate", value: $value, formatter: taxRateFormatter).keyboardType(.decimalPad)
+                    .padding(.leading, -15)
+                    .multilineTextAlignment(alignLeft ?? false ? .leading : .trailing)
+                    .fontWeight(isBold ?? false ? .bold : .regular)
+                
             } else {
                 TextField(hint, text: $text)
                     .padding(.leading, -15)
@@ -94,6 +112,9 @@ struct CustomTextField: View {
                     .textInputAutocapitalization(capitaliseWords ?? false ? .words : nil)
                     .textContentType(textContentType)
                     .fontWeight(isBold ?? false ? .bold : .regular)
+                
+                
+                
             }
             
         }.padding(.horizontal)

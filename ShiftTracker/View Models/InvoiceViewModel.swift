@@ -29,8 +29,8 @@ class InvoiceViewModel: ObservableObject {
     @AppStorage("userPostalCode") var userPostalCode = ""
     @AppStorage("userCountry") var userCountry = ""
     
-    
-    @Published var invoiceNumber = ""
+    // might as well save the last invoice number in there, so they know to tick it up one
+    @AppStorage("invoiceNumber") var invoiceNumber = "0001"
     @Published var invoiceDate = Date()
     @Published var dueDate = Date()
     
@@ -43,6 +43,14 @@ class InvoiceViewModel: ObservableObject {
     @Published var clientState = ""
     @Published var clientPostalCode = ""
     @Published var clientCountry = ""
+    
+    // tax input
+    
+    @AppStorage("taxAbbreviation") var taxAbbreviation = "GST"
+    @Published var singleTaxRate = 0.0
+    @Published var taxSelection: InterestOption = .single
+    @Published var taxedPay: Double = 0.0
+    @Published var taxTaken: Double = 0.0
     
     var url: URL? = nil
     
@@ -104,6 +112,8 @@ class InvoiceViewModel: ObservableObject {
                 }
             }
             
+            singleTaxRate = job.tax
+            
             
         }
         
@@ -126,6 +136,37 @@ class InvoiceViewModel: ObservableObject {
         
         totalPay = tableCells.reduce(0) { $0 + $1.pay }
         
+        
+        
+    }
+    
+    func calculateTax() {
+        if taxSelection != .none {
+               let totalTax = totalPay * (singleTaxRate / 100)
+               taxTaken = totalTax
+               taxedPay = totalPay - totalTax
+            print("tax taken is: \(taxTaken)")
+           } else {
+               print("you DIED")
+               taxedPay = totalPay
+               taxTaken = 0.0
+           }
+    }
+    
+    func uniquePdfUrl(in directory: URL, baseName: String, fileExtension: String = "pdf") -> URL {
+        var finalName = baseName
+        var fileUrl = directory.appendingPathComponent("\(finalName).\(fileExtension)")
+        var counter = 1
+        
+        let fileManager = FileManager.default
+        // Check if the file exists and append a number if it does
+        while fileManager.fileExists(atPath: fileUrl.path) {
+            finalName = "\(baseName) \(counter)"
+            fileUrl = directory.appendingPathComponent("\(finalName).\(fileExtension)")
+            counter += 1
+        }
+        
+        return fileUrl
     }
     
     @MainActor func render() {
@@ -136,7 +177,9 @@ class InvoiceViewModel: ObservableObject {
         
         let jobDirectory = URL.documentsDirectory.appendingPathComponent(jobName) // creates directory under the job name
             try? FileManager.default.createDirectory(at: jobDirectory, withIntermediateDirectories: true, attributes: nil)
-            let url = jobDirectory.appendingPathComponent("\(jobName) invoice \(invoiceNumber).pdf")
+           
+        
+        let uniqueUrl = uniquePdfUrl(in: jobDirectory, baseName: "\(jobName) invoice \(invoiceNumber)")
         
         let cellsPerPage = 36 // we need to limit how many cells can be displayed on each page, they may have selected a massive amount of shifts we dont want it to cut off
         
@@ -152,11 +195,13 @@ class InvoiceViewModel: ObservableObject {
         
         var box = CGRect(origin: .zero, size: a4Size)
         
-        guard let consumer = CGDataConsumer(url: url as CFURL), let pdfContext = CGContext(consumer: consumer, mediaBox: &box, nil)
+        guard let consumer = CGDataConsumer(url: uniqueUrl as CFURL), let pdfContext = CGContext(consumer: consumer, mediaBox: &box, nil)
         else {
             return
             // show some kinda error here!
         }
+        
+        calculateTax()
         
         for pageIndex in 0..<totalPages {
             
@@ -178,7 +223,9 @@ class InvoiceViewModel: ObservableObject {
             
             // let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate))
             
-            let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
+            
+            
+            let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, taxedPay: taxedPay, taxTaken: taxTaken, taxRate: 18.50, abbreviation: taxAbbreviation, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
             
             pdfContext.beginPDFPage(nil)
             
@@ -197,7 +244,7 @@ class InvoiceViewModel: ObservableObject {
         
         pdfContext.closePDF()
         
-        self.url = url
+        self.url = uniqueUrl
         
     }
     

@@ -16,6 +16,10 @@ struct InvoiceView: View {
     
     var tableCells: [ShiftTableCell]
     var totalPay: Double
+    var taxedPay: Double
+    var taxTaken: Double
+    var taxRate: Double
+    var abbreviation: String
     
     var invoiceNumber: String
     var invoiceDate: Date
@@ -34,6 +38,7 @@ struct InvoiceView: View {
     var userState: String
     var userPostalCode: String
     var userCountry: String
+    
     
     
     var body: some View {
@@ -58,8 +63,9 @@ struct InvoiceView: View {
                // Spacer()
                 
                 if isLastPage {
+           
                     
-                    TotalPayView(totalPay: totalPay)//.padding(.leading)
+                    TotalPayView(totalPay: totalPay, taxTaken: taxTaken, taxedPay: taxedPay, abbreviation: abbreviation, taxRate: taxRate)
                         .padding(.bottom)
                 } else {
                     Spacer(minLength: 30)
@@ -86,6 +92,6 @@ struct InvoiceView: View {
           ShiftTableCell(date: Date(), duration: 36000, rate: 18.50, pay: 146),
           ShiftTableCell(date: Date(), duration: 36000, rate: 18.50, pay: 146)]
     
-    return InvoiceView(isLastPage: true, tableCells: tableCells, totalPay: 246.0, invoiceNumber: "0007", invoiceDate: Date(), dueDate: Date(), clientName: "Apple, Inc", clientStreetAddress: "One Apple Park Way", clientCity: "Cupertino", clientState: "CA", clientPostalCode: "95014", clientCountry: "United States", userName: "Steve Jobs", userStreetAddress: "2044 Crist Drive", userCity: "Palo Alto", userState: "CA", userPostalCode: "94024", userCountry: "United States")
+    return InvoiceView(isLastPage: true, tableCells: tableCells, totalPay: 246.0, taxedPay: 296.00, taxTaken: 30.00, taxRate: 18.50, abbreviation: "GST", invoiceNumber: "0007", invoiceDate: Date(), dueDate: Date(), clientName: "Apple, Inc", clientStreetAddress: "One Apple Park Way", clientCity: "Cupertino", clientState: "CA", clientPostalCode: "95014", clientCountry: "United States", userName: "Steve Jobs", userStreetAddress: "2044 Crist Drive", userCity: "Palo Alto", userState: "CA", userPostalCode: "94024", userCountry: "United States")
 }
 

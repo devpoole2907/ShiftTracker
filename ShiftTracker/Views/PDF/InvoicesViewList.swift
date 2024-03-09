@@ -13,6 +13,7 @@ struct InvoicesListView: View {
     @EnvironmentObject var navigationState: NavigationState
     @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var selectedJobManager: JobSelectionManager
+    @EnvironmentObject var overviewModel: JobOverviewViewModel
     
     @Environment(\.managedObjectContext) var viewContext
     
@@ -45,7 +46,7 @@ struct InvoicesListView: View {
             }
         }
         
-        return pdfFiles
+        return pdfFiles.sorted(by: { ($0.creationDate ?? Date.distantPast) > ($1.creationDate ?? Date.distantPast) })
     }
     
     func fetchPDFs(in directory: URL) -> [InvoiceFile] {
@@ -166,6 +167,18 @@ struct InvoicesListView: View {
                 }
             }
         
+            .onAppear {
+                       invoices = fetchPDFFiles()
+                   }
+        
+        // couldve read the overviewmodel job from the get go perhaps, forgot about that mustve been some kinda duct tape fix...
+        // well hey! a duct tape fix using a duct tape fix! it just works tm
+            .onChange(of: overviewModel.job) { newJob in
+                       job = newJob
+                       invoices = fetchPDFFiles()
+                   }
+        
+         
             .navigationTitle("Invoices")
     }
 }

@@ -96,6 +96,14 @@ struct GenerateInvoiceView: View {
                     
                     userDetails
                     
+                    Text("Tax Details")
+                        .bold()
+                        .padding(.vertical, 5)
+                        .padding(.horizontal)
+                        .glassModifier(cornerRadius: 20)
+                    
+                    taxDetails
+                    
                  
                     Spacer(minLength: 400)
               
@@ -204,6 +212,40 @@ struct GenerateInvoiceView: View {
             
             
         }.padding() .glassModifier(cornerRadius: 20)
+        
+    }
+    
+    var taxDetails: some View {
+        
+        VStack {
+            
+          
+            
+            HStack {
+                Text("Type")
+                Spacer()
+                Picker("Tax Type", selection: $viewModel.taxSelection) {
+                    ForEach(InterestOption.allCases) { option in
+                        Text(option.rawValue).tag(option)
+                        
+                    }
+                }
+            }
+            
+            .padding(.horizontal)
+                .padding(.vertical, 10)
+                .glassModifier(cornerRadius: 20)
+     
+            CustomTextField(value: $viewModel.singleTaxRate, hint: "Rate", leadingIcon: "percent", hasPersistentLeadingIcon: true, isNumber: true).keyboardType(.decimalPad)
+                .disabled(viewModel.taxSelection == .none)
+                .opacity(viewModel.taxSelection == .none ? 0.4 : 1.0)
+            
+            CustomTextField(text: $viewModel.taxAbbreviation, hint: "Abbreviation e.g GST, VAT", hasPersistentLeadingIcon: true)
+                .disabled(viewModel.taxSelection == .none)
+                .opacity(viewModel.taxSelection == .none ? 0.4 : 1.0)
+            
+        }.frame(maxWidth: .infinity)
+            .padding() .glassModifier(cornerRadius: 20)
         
     }
     
