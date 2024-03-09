@@ -14,6 +14,7 @@ struct InvoicesListView: View {
     @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var overviewModel: JobOverviewViewModel
+    @EnvironmentObject var scrollManager: ScrollManager
     
     @Environment(\.managedObjectContext) var viewContext
     
@@ -86,8 +87,8 @@ struct InvoicesListView: View {
     
     var body: some View {
         
-        
-        List(invoices, id: \.url) { invoiceFile in
+        ScrollViewReader { proxy in
+            List(Array(invoices.enumerated()), id: \.offset) { index, invoiceFile in
             NavigationLink(destination:
                             
                             InvoiceViewSheet(url: invoiceFile.url).environmentObject(invoiceViewModel).environmentObject(navigationState)
@@ -117,6 +118,10 @@ struct InvoicesListView: View {
                 }
                 
             }.listRowBackground(Color.clear)
+                
+                    .id(index)
+                  
+                
                 .swipeActions {
                     Button(role: .destructive) {
                         deletePDF(fileURL: invoiceFile.url)
@@ -150,10 +155,41 @@ struct InvoicesListView: View {
                         
                     }
                 }
+                
+               
+                
+                .background {
+                    
+                    // we dont need the geometry reader, performance is better just doing this
+                    if index == 0 {
+                        Color.clear
+                            .onDisappear {
+                                scrollManager.timeSheetsScrolled = true
+                                print("time sheets has been scrolled")
+                            }
+                            .onAppear {
+                                scrollManager.timeSheetsScrolled = false
+                                print("timesheets has not been scrolled")
+                            }
+                    }
+                }
             
         }.listStyle(.plain)
         
             .scrollContentBackground(.hidden)
+            .onChange(of: scrollManager.scrollOverviewToTop) { value in
+                    if value {
+                        withAnimation(.spring) {
+                            proxy.scrollTo(0, anchor: .top) // Scroll to the first item using its ID
+                            print("Scrolled up to top of invoices")
+                        }
+                        DispatchQueue.main.async {
+                            scrollManager.scrollOverviewToTop = false
+                        }
+                    }
+                }
+        
+    }
         
             .background {
                 // this could be worked into the themeManagers pure dark mode?

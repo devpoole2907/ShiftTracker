@@ -632,12 +632,17 @@ struct CreateShiftForm: View {
                     .font(.callout)
                     .foregroundColor(.gray)
                     .frame(width: 30, height: 30)
+                    .contentShape(
+                        Rectangle()
+                    ).frame(width: 60, height: 60)
                     .rotationEffect(.init(degrees: 90))
                     .rotationEffect(.init(degrees: -startAngle))
                     .offset(x: width / 2)
                     .rotationEffect(.init(degrees: startAngle))
+                    
+                  //  .contentShape(Circle())
                 
-                    .gesture(
+                    .highPriorityGesture(
                         DragGesture()
                             .onChanged({ value in
                                 onDrag(value: value, fromSlider: true)
@@ -649,6 +654,9 @@ struct CreateShiftForm: View {
                     .font(.callout)
                     .foregroundColor(.gray)
                     .frame(width: 30, height: 30)
+                    .contentShape(
+                        Rectangle()
+                    ).frame(width: 60, height: 60)
                     .rotationEffect(.init(degrees: 90))
                     .rotationEffect(.init(degrees: -toAngle))
                     .offset(x: width / 2)
@@ -656,7 +664,7 @@ struct CreateShiftForm: View {
                     .rotationEffect(.init(degrees: toAngle))
                 
                 
-                    .gesture(
+                    .highPriorityGesture(
                         DragGesture()
                             .onChanged({ value in
                                 onDrag(value: value)

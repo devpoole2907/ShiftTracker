@@ -239,6 +239,8 @@ struct JobOverview: View {
                     
                 } else if value == 4 {
                     
+                    
+                    
                     InvoicesListView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(selectedJobManager).environmentObject(overviewModel)
                         .onAppear {
                         withAnimation {
