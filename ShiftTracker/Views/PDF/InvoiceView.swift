@@ -17,21 +17,40 @@ struct InvoiceView: View {
     var tableCells: [ShiftTableCell]
     var totalPay: Double
     
+    var invoiceNumber: String
+    var invoiceDate: Date
+    var dueDate: Date
+    
+    var clientName: String
+    var clientStreetAddress: String
+    var clientCity: String
+    var clientState: String
+    var clientPostalCode: String
+    var clientCountry: String
+    
+    var userName: String
+    var userStreetAddress: String
+    var userCity: String
+    var userState: String
+    var userPostalCode: String
+    var userCountry: String
+    
+    
     var body: some View {
         
       
             VStack(alignment: .leading, spacing: 20) {
                 
                 HStack {
-                    UserDetailsView().padding([.trailing, .bottom])
+                    InvoiceAddressView(clientName: userName, streetAddress: userStreetAddress, city: userCity, state: userState, postalCode: userPostalCode, country: userCountry, isClient: false).padding([.trailing, .bottom])
                     // for pdf gen
                     Spacer(minLength: 200)
                     // for swiftui preview
                     // Spacer()
-                    InvoiceDetailsView().padding(.bottom)
+                    InvoiceDetailsView(invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate).padding(.bottom)
                 }
                 
-                ClientDetailsView()
+                InvoiceAddressView(clientName: clientName, streetAddress: clientStreetAddress, city: clientCity, state: clientState, postalCode: clientPostalCode, country: clientCountry, isClient: true)
                 
                 InvoiceTableView(tableCells: tableCells)
                 
@@ -67,6 +86,6 @@ struct InvoiceView: View {
           ShiftTableCell(date: Date(), duration: 36000, rate: 18.50, pay: 146),
           ShiftTableCell(date: Date(), duration: 36000, rate: 18.50, pay: 146)]
     
-    return InvoiceView(isLastPage: true, tableCells: tableCells, totalPay: 246.0)
+    return InvoiceView(isLastPage: true, tableCells: tableCells, totalPay: 246.0, invoiceNumber: "0007", invoiceDate: Date(), dueDate: Date(), clientName: "Apple, Inc", clientStreetAddress: "One Apple Park Way", clientCity: "Cupertino", clientState: "CA", clientPostalCode: "95014", clientCountry: "United States", userName: "Steve Jobs", userStreetAddress: "2044 Crist Drive", userCity: "Palo Alto", userState: "CA", userPostalCode: "94024", userCountry: "United States")
 }
 

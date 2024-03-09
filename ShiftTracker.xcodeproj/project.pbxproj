@@ -102,6 +102,8 @@
 		7C11324C2ACA9C9600E983FD /* CustomScrollBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C11324B2ACA9C9600E983FD /* CustomScrollBackgroundModifier.swift */; };
 		7C16AEF92AC54C4F00C0B58E /* JobIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */; };
 		7C1A507E2A99F31A00305171 /* PageControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A507D2A99F31900305171 /* PageControlView.swift */; };
+		7C1A9FEC2B9BBDF50079411D /* InvoiceInputPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */; };
+		7C1A9FEE2B9BD9E40079411D /* AddressDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */; };
 		7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */; };
@@ -166,7 +168,7 @@
 		7C4E62BF2B9B343600416DD0 /* InvoiceTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62BE2B9B343600416DD0 /* InvoiceTableView.swift */; };
 		7C4E62C12B9B345A00416DD0 /* TotalPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C02B9B345A00416DD0 /* TotalPayView.swift */; };
 		7C4E62C32B9B347400416DD0 /* InvoiceDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C22B9B347400416DD0 /* InvoiceDetailsView.swift */; };
-		7C4E62C52B9B348700416DD0 /* ClientDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C42B9B348700416DD0 /* ClientDetailsView.swift */; };
+		7C4E62C52B9B348700416DD0 /* InvoiceAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C42B9B348700416DD0 /* InvoiceAddressView.swift */; };
 		7C4E62C72B9B349700416DD0 /* UserDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C62B9B349700416DD0 /* UserDetailsView.swift */; };
 		7C4E62C92B9B34B900416DD0 /* InvoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62C82B9B34B900416DD0 /* InvoiceView.swift */; };
 		7C4E62CB2B9B444700416DD0 /* InvoicePDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E62CA2B9B444700416DD0 /* InvoicePDFViewer.swift */; };
@@ -430,6 +432,8 @@
 		7C11324B2ACA9C9600E983FD /* CustomScrollBackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomScrollBackgroundModifier.swift; sourceTree = "<group>"; };
 		7C16AEF82AC54C4F00C0B58E /* JobIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobIconView.swift; sourceTree = "<group>"; };
 		7C1A507D2A99F31900305171 /* PageControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageControlView.swift; sourceTree = "<group>"; };
+		7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceInputPreviews.swift; sourceTree = "<group>"; };
+		7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDetailsView.swift; sourceTree = "<group>"; };
 		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerBundle.swift; sourceTree = "<group>"; };
 		7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerLiveActivity.swift; sourceTree = "<group>"; };
@@ -468,7 +472,7 @@
 		7C4E62BE2B9B343600416DD0 /* InvoiceTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceTableView.swift; sourceTree = "<group>"; };
 		7C4E62C02B9B345A00416DD0 /* TotalPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalPayView.swift; sourceTree = "<group>"; };
 		7C4E62C22B9B347400416DD0 /* InvoiceDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceDetailsView.swift; sourceTree = "<group>"; };
-		7C4E62C42B9B348700416DD0 /* ClientDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientDetailsView.swift; sourceTree = "<group>"; };
+		7C4E62C42B9B348700416DD0 /* InvoiceAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceAddressView.swift; sourceTree = "<group>"; };
 		7C4E62C62B9B349700416DD0 /* UserDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailsView.swift; sourceTree = "<group>"; };
 		7C4E62C82B9B34B900416DD0 /* InvoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceView.swift; sourceTree = "<group>"; };
 		7C4E62CA2B9B444700416DD0 /* InvoicePDFViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicePDFViewer.swift; sourceTree = "<group>"; };
@@ -1066,10 +1070,12 @@
 				7C4E62BE2B9B343600416DD0 /* InvoiceTableView.swift */,
 				7C4E62C02B9B345A00416DD0 /* TotalPayView.swift */,
 				7C4E62C22B9B347400416DD0 /* InvoiceDetailsView.swift */,
-				7C4E62C42B9B348700416DD0 /* ClientDetailsView.swift */,
+				7C4E62C42B9B348700416DD0 /* InvoiceAddressView.swift */,
 				7C4E62C62B9B349700416DD0 /* UserDetailsView.swift */,
 				7C4E62C82B9B34B900416DD0 /* InvoiceView.swift */,
 				7C4E62CA2B9B444700416DD0 /* InvoicePDFViewer.swift */,
+				7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */,
+				7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */,
 			);
 			path = PDF;
 			sourceTree = "<group>";
@@ -1494,6 +1500,7 @@
 				7C1BB6842AA8376E00957BF5 /* ChartAnnotationView.swift in Sources */,
 				1AA6A7B529EEAF7A00B13057 /* CalendarView.swift in Sources */,
 				7CF01D772ACBEE4600EBC36C /* DayOrMonthAggregate.swift in Sources */,
+				7C1A9FEE2B9BD9E40079411D /* AddressDetailsView.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
 				7CC985182AD3B9C90001BA57 /* NavBarIconModifier.swift in Sources */,
@@ -1539,6 +1546,7 @@
 				1A8D4ADE2A4EFC6000EEB334 /* ShiftDetailRow.swift in Sources */,
 				BF8191442A5A71130079E449 /* ThemeView.swift in Sources */,
 				1A30F3C72A22407E00A7BD92 /* BreaksManager.swift in Sources */,
+				7C1A9FEC2B9BBDF50079411D /* InvoiceInputPreviews.swift in Sources */,
 				7C1132462ACA9C1E00E983FD /* CustomSheetModifiers.swift in Sources */,
 				7C1BB6862AA838F300957BF5 /* HistoryViewModel.swift in Sources */,
 				7C5F735E2ABA59CF00F698A1 /* ThemesList.swift in Sources */,
@@ -1605,7 +1613,7 @@
 				1AB7D69829FB97C000326AAA /* ScheduleView.swift in Sources */,
 				7C5651882B3418A8005223DE /* PayPeriod.swift in Sources */,
 				7C2C2F892AA6CD710074E32E /* AppearanceView.swift in Sources */,
-				7C4E62C52B9B348700416DD0 /* ClientDetailsView.swift in Sources */,
+				7C4E62C52B9B348700416DD0 /* InvoiceAddressView.swift in Sources */,
 				1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */,
 				7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */,
 				7C7B46BC2AC16DF800D87140 /* MockupScheduleView.swift in Sources */,

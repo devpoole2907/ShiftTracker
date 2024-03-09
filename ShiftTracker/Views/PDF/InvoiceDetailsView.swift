@@ -9,18 +9,22 @@ import SwiftUI
 
 struct InvoiceDetailsView: View {
     
+    var invoiceNumber: String
+    var invoiceDate: Date
+    var dueDate: Date
+    
     var body: some View {
         
         VStack(alignment: .trailing, spacing: 2){
             Text("Invoice").bold().font(.subheadline)
-            Text("Invoice No: IN00007")
-            Text("Invoice date: \(Date().formatted())")
-            Text("Due date: \(Date().formatted())")
+            Text("Invoice No: \(invoiceNumber)")
+            Text("Invoice date: \(invoiceDate.formatted(date: .long, time: .omitted))")
+            Text("Due date: \(dueDate.formatted(date: .long, time: .omitted))")
         }.font(.system(size: 8))
     }
     
 }
 
 #Preview {
-    InvoiceDetailsView()
+    InvoiceDetailsView(invoiceNumber: "00001", invoiceDate: Date(), dueDate: Date())
 }

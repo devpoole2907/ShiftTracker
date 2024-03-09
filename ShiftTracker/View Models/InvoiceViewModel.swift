@@ -15,6 +15,33 @@ class InvoiceViewModel: ObservableObject {
     @Published var totalPay: Double = 0.0
     @Published var showPDFViewer = false
     
+    // input variables
+    
+    // user input
+    
+    @Published var userName = ""
+    @Published var userStreetAddress = ""
+    @Published var userCity = ""
+    @Published var userState = ""
+    @Published var userPostalCode = ""
+    @Published var userCountry = ""
+   
+    
+    
+    @Published var invoiceNumber = ""
+    @Published var invoiceDate = Date()
+    @Published var dueDate = Date()
+    
+    
+    // client input
+    
+    @Published var jobName = ""
+    @Published var clientStreetAddress = ""
+    @Published var clientCity = ""
+    @Published var clientState = ""
+    @Published var clientPostalCode = ""
+    @Published var clientCountry = ""
+    
     var url: URL? = nil
     
     var selectedShifts: Set<NSManagedObjectID>? = nil
@@ -32,6 +59,7 @@ class InvoiceViewModel: ObservableObject {
         self.viewContext = viewContext
         self.arrayShifts = arrayShifts
         self.singleExportShift = singleExportShift
+        
         
         setupData()
         
@@ -103,7 +131,7 @@ class InvoiceViewModel: ObservableObject {
             let endIndex = min(startIndex + cellsPerPage, tableCells.count)
             var cellsForPage = Array(tableCells[startIndex..<endIndex])
             
-            var emptyCellsNeeded = cellsPerPage - cellsForPage.count
+            let emptyCellsNeeded = cellsPerPage - cellsForPage.count
             if emptyCellsNeeded > 0 {
                 for _ in 0..<emptyCellsNeeded {
                     let emptyCell = ShiftTableCell(date: Date(), duration: 0, rate: 0, pay: 0, isEmpty: true)
@@ -115,7 +143,9 @@ class InvoiceViewModel: ObservableObject {
             
             let isLastPage = (pageIndex == totalPages - 1)
             
-            let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay))
+          // let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate))
+            
+            let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
             
             pdfContext.beginPDFPage(nil)
             
