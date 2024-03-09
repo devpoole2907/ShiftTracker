@@ -7,16 +7,18 @@
 
 import SwiftUI
 import CoreData
+import TipKit
 
 struct ConfigureExportView: View {
-    @ObservedObject var viewModel: ExportViewModel
+    @StateObject var viewModel: ExportViewModel
     
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     
-    
     init(shifts: FetchedResults<OldShift>? = nil, job: Job? = nil, selectedShifts: Set<NSManagedObjectID>? = nil, arrayShifts: [OldShift]? = nil, singleExportShift: OldShift? = nil) {
-        self.viewModel = ExportViewModel(shifts: shifts, selectedShifts: selectedShifts, job: job, viewContext: PersistenceController.shared.container.viewContext, arrayShifts: arrayShifts, singleExportShift: singleExportShift)
+        _viewModel = StateObject(wrappedValue: ExportViewModel(shifts: shifts, selectedShifts: selectedShifts, job: job, viewContext: PersistenceController.shared.container.viewContext, arrayShifts: arrayShifts, singleExportShift: singleExportShift))
+
+        
     }
     
     var body: some View {
@@ -39,9 +41,10 @@ struct ConfigureExportView: View {
                         .padding(.horizontal)
                         .padding(.vertical, 10)
                         .glassModifier(cornerRadius: 20)
+                  
             
                 
-                    if viewModel.selectedShifts == nil {
+                    if viewModel.selectedShifts == nil && viewModel.singleExportShift == nil {
                         
                         HStack {
                             Text("Date Range").bold()
@@ -56,6 +59,12 @@ struct ConfigureExportView: View {
                         .padding(.horizontal)
                         .padding(.vertical, 7)
                         .glassModifier(cornerRadius: 20)
+                       
+                    }
+                    
+                    if #available(iOS 17.0, *) {
+                        TipView(ExportCSVTip(), arrowEdge: .none)
+                            .padding()
                     }
                 
                     Spacer(minLength: 150)
@@ -65,17 +74,19 @@ struct ConfigureExportView: View {
                 
                 
             }.scrollContentBackground(.hidden)
-            
-                ActionButtonView(title: "Export", backgroundColor: buttonColor, textColor: textColor, icon: "square.and.arrow.up.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
+       
+                  
+                    ActionButtonView(title: "Export to CSV", backgroundColor: buttonColor, textColor: textColor, icon: "square.and.arrow.up.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
+                        
+                        dismiss()
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                            viewModel.exportCSV()
+                        }
+                        
+                        
+                    }.padding(.bottom, getRect().height == 667 ? 10 : 0)
                     
-                    dismiss()
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-                        viewModel.exportCSV()
-                    }
-                    
-                    
-                }.padding(.bottom, getRect().height == 667 ? 10 : 0)
                 
              
             

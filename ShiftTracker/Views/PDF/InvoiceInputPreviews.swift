@@ -158,7 +158,7 @@ struct InvoiceInputPreviews: View {
 enum InterestOption: String, CaseIterable, Identifiable {
     case none = "None"
     case single = "Single"
-    case compound = "Compound"
+   // case compound = "Compound" // perhaps a future update
 
     var id: String { self.rawValue }
 }

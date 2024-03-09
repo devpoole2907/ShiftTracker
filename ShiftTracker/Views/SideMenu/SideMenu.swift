@@ -47,6 +47,7 @@ struct SideMenu: View {
             }
             
             tagButton
+            //    .customTipPopover(title: "Tags", body: "Add tags to categorise your shifts.", icon: "number", position: .bottom)
             
             
             upgradeButton.environmentObject(purchaseManager)

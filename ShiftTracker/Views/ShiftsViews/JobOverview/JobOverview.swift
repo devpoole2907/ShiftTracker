@@ -602,7 +602,7 @@ struct JobOverview: View {
                         })
                         .environmentObject(shiftManager)
                         
-                        
+                   
                         
                         if let theJob = selectedJobManager.fetchJob(in: viewContext) {
                             if theJob.enableInvoices {
@@ -611,6 +611,8 @@ struct JobOverview: View {
                         } else { // no job selected, show all invoices anyway if any
                             invoicesSection
                         }
+                        
+                    
                         
                     }
  
@@ -670,12 +672,16 @@ struct JobOverview: View {
                 Spacer()
                 
             }
-                .padding(.vertical, 10)
+                .padding(.vertical, 16)
                 .frame(maxWidth: .infinity)
                 .contentShape(Rectangle())
         }.buttonStyle(PlainButtonStyle())
            
            .glassModifier(cornerRadius: 12, applyPadding: false)
+        
+        
+        
+        
     }
     
     var toolbarMenu: some View {

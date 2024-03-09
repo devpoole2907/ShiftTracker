@@ -76,6 +76,8 @@ class ContentViewModel: ObservableObject {
     @Published  var isPresented = false
     @Published var activityEnabled = false
     
+    @AppStorage("showTabButtonBadge") var showBadge = false
+    
     @Published  var showEndAlert = false
     @Published  var showStartBreakAlert = false
     @Published  var showEndBreakAlert = false
@@ -623,6 +625,7 @@ class ContentViewModel: ObservableObject {
         var latestShift: OldShift? = nil
         
 
+        showBadge = true // show the badge on the tab button
         
         if shiftState != .countdown {
             

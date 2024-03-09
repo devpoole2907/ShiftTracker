@@ -367,7 +367,10 @@ func onEnd(value: DragGesture.Value) {
                         .blur(radius: navigationState.calculatedBlur)
                         .allowsHitTesting(!navigationState.showMenu)
                     
-                   
+                        .onAppear {
+                            // hide new shift badge
+                            ContentViewModel.shared.showBadge = false
+                        }
                     
                         .background {
                             // this could be worked into the themeManagers pure dark mode?
@@ -543,24 +546,36 @@ func onEnd(value: DragGesture.Value) {
         VStack(spacing: 0){
             HStack(spacing: 0) {
                 TabButton(tab: .home, useSystemImage: true)
-                TabButton(tab: .timesheets, useSystemImage: true, action: {
-                    
-                    // scroll to top if any view in timesheets tab has been scrolled, otherwise pop to root or open side menu
-                    
-                    if scrollManager.timeSheetsScrolled {
-                        scrollManager.scrollOverviewToTop.toggle()
-                        scrollManager.timeSheetsScrolled = false
-                   
-                    } else if path.isEmpty {
-                        navigationState.showMenu.toggle()
+                ZStack(alignment: .top) {
+                    TabButton(tab: .timesheets, useSystemImage: true, action: {
                         
-                    } else {
-                        path = NavigationPath()
+                        // scroll to top if any view in timesheets tab has been scrolled, otherwise pop to root or open side menu
+                        
+                        if scrollManager.timeSheetsScrolled {
+                            scrollManager.scrollOverviewToTop.toggle()
+                            scrollManager.timeSheetsScrolled = false
+                            
+                        } else if path.isEmpty {
+                            navigationState.showMenu.toggle()
+                            
+                        } else {
+                            path = NavigationPath()
+                            
+                        }
+                        
+                        // hide new shift badge
+                        ContentViewModel.shared.showBadge = false
+                        
+                        
+                    })
+                    
+                    if   ContentViewModel.shared.showBadge {
+                        Circle().foregroundStyle(.red).frame(width: 10, height: 10)
+                            .padding(.leading, 22)
                         
                     }
                     
-                    
-                })
+                }
                 TabButton(tab: .schedule, useSystemImage: true, action: {
                     
                     if schedulePath.isEmpty {

@@ -106,6 +106,9 @@
 		7C1A9FEE2B9BD9E40079411D /* AddressDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */; };
 		7C1A9FF02B9C29020079411D /* InvoicesViewList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FEF2B9C29020079411D /* InvoicesViewList.swift */; };
 		7C1A9FF22B9C29160079411D /* InvoiceFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF12B9C29160079411D /* InvoiceFile.swift */; };
+		7C1A9FF42B9C50530079411D /* ExportCSVTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF32B9C50530079411D /* ExportCSVTip.swift */; };
+		7C1A9FF62B9C5DEF0079411D /* GenericTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF52B9C5DEF0079411D /* GenericTip.swift */; };
+		7C1A9FF82B9C5E230079411D /* CustomTipPopoverModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF72B9C5E230079411D /* CustomTipPopoverModifier.swift */; };
 		7C1AA4532A75106700330A54 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA529C5616800415870 /* WidgetKit.framework */; };
 		7C1AA4542A75106700330A54 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A52AFA729C5616800415870 /* SwiftUI.framework */; };
 		7C1AA4572A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */; };
@@ -438,6 +441,9 @@
 		7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDetailsView.swift; sourceTree = "<group>"; };
 		7C1A9FEF2B9C29020079411D /* InvoicesViewList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesViewList.swift; sourceTree = "<group>"; };
 		7C1A9FF12B9C29160079411D /* InvoiceFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceFile.swift; sourceTree = "<group>"; };
+		7C1A9FF32B9C50530079411D /* ExportCSVTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportCSVTip.swift; sourceTree = "<group>"; };
+		7C1A9FF52B9C5DEF0079411D /* GenericTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericTip.swift; sourceTree = "<group>"; };
+		7C1A9FF72B9C5E230079411D /* CustomTipPopoverModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTipPopoverModifier.swift; sourceTree = "<group>"; };
 		7C1AA4522A75106700330A54 /* ShiftTrackerActivityTimerExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShiftTrackerActivityTimerExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C1AA4562A75106700330A54 /* ShiftTrackerActivityTimerBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerBundle.swift; sourceTree = "<group>"; };
 		7C1AA4582A75106700330A54 /* ShiftTrackerActivityTimerLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShiftTrackerActivityTimerLiveActivity.swift; sourceTree = "<group>"; };
@@ -1104,6 +1110,9 @@
 			isa = PBXGroup;
 			children = (
 				7C7D52492B37A4E700368678 /* PayPeriodInputTip.swift */,
+				7C1A9FF32B9C50530079411D /* ExportCSVTip.swift */,
+				7C1A9FF52B9C5DEF0079411D /* GenericTip.swift */,
+				7C1A9FF72B9C5E230079411D /* CustomTipPopoverModifier.swift */,
 			);
 			path = Tips;
 			sourceTree = "<group>";
@@ -1510,6 +1519,7 @@
 				7C1A9FEE2B9BD9E40079411D /* AddressDetailsView.swift in Sources */,
 				1A22EFFF29C6559100A23F33 /* SettingsView.swift in Sources */,
 				1AB7D6A929FC040500326AAA /* PageIntro.swift in Sources */,
+				7C1A9FF62B9C5DEF0079411D /* GenericTip.swift in Sources */,
 				7CC985182AD3B9C90001BA57 /* NavBarIconModifier.swift in Sources */,
 				7C11324A2ACA9C7600E983FD /* CustomAnimatedSymbolModifier.swift in Sources */,
 				7C8CEA942A5D2528006C833F /* CurrentBreaksListView.swift in Sources */,
@@ -1524,6 +1534,7 @@
 				7CFF521B2AD5230C00BB3AD6 /* StatsSquareViewModel.swift in Sources */,
 				1A0F5F1929F11EC1003C83F0 /* ActionButtonView.swift in Sources */,
 				7CC2C6C42AC6AD9B00F15E74 /* ScheduledShiftRowTrailingSwipeButtons.swift in Sources */,
+				7C1A9FF42B9C50530079411D /* ExportCSVTip.swift in Sources */,
 				7CAF46BE2AD0293300584749 /* KeyboardDoneButton.swift in Sources */,
 				BF81913D2A5A6FF80079E449 /* SelectableButton.swift in Sources */,
 				7CE826C02B09E897002DDC28 /* CustomEditButton.swift in Sources */,
@@ -1645,6 +1656,7 @@
 				7C5651822B33C5EC005223DE /* BreakReminderSheet.swift in Sources */,
 				7C0AC1362A88ECAF0016456E /* JobChartEarningsWidget.swift in Sources */,
 				BFFEF1F82A69186200E3F406 /* AppIconManager.swift in Sources */,
+				7C1A9FF82B9C5E230079411D /* CustomTipPopoverModifier.swift in Sources */,
 				7C7B46B62AC1624D00D87140 /* MockupContentView.swift in Sources */,
 				BF8191462A5A731A0079E449 /* ThemeColorPicker.swift in Sources */,
 				7CF4D0DD2AD2220F001A891E /* ExportViewModel.swift in Sources */,

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PopupView
+import TipKit
 
 struct PayPeriodInputView: View {
     @Binding var payPeriodsEnabled: Bool
@@ -126,6 +127,8 @@ struct PayPeriodInputView: View {
         
             
         }
+        
+      
         
         .sheet(isPresented: $showTip){
             NavigationStack{
