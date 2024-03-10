@@ -24,10 +24,32 @@ struct PayPeriodsList: View {
     @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     
-    @FetchRequest(entity: PayPeriod.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \PayPeriod.startDate, ascending: false)])
-    var payPeriods: FetchedResults<PayPeriod>
+    let shiftManager = ShiftDataManager()
+    
+    @FetchRequest var payPeriods: FetchedResults<PayPeriod>
 
     @State private var showCreateSheet = false
+    @State private var showExportView = false
+    @State private var showInvoiceView = false
+    
+    @State private var shiftsToExport: [OldShift]? = nil
+    
+     func loadShiftsToExport(payPeriod: PayPeriod) {
+        
+        
+        
+        shiftsToExport = payPeriod.shifts?.allObjects as? [OldShift] ?? []
+        
+    }
+    
+    init(job: Job) {
+            let jobPredicate = NSPredicate(format: "job == %@", job)
+            self._payPeriods = FetchRequest(
+                entity: PayPeriod.entity(),
+                sortDescriptors: [NSSortDescriptor(keyPath: \PayPeriod.startDate, ascending: false)],
+                predicate: jobPredicate
+            )
+        }
     
     var body: some View {
         
@@ -65,19 +87,24 @@ struct PayPeriodsList: View {
                         Button(role: .destructive) {
                             payPeriodManager.deletePayPeriod(payPeriod, in: viewContext)
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Image(systemName: "trash")
+            
                         }.tint(.red)
                         
                         Button(role: .none) {
-                            
+                            loadShiftsToExport(payPeriod: payPeriod)
+                            showInvoiceView.toggle()
                         } label: {
-                            Label("Generate Invoice", systemImage: "rectangle.and.paperclip")
+                            Image(systemName: "rectangle.and.paperclip")
+                          
                         }
                         
                         Button(role: .none) {
-                            
+                            loadShiftsToExport(payPeriod: payPeriod)
+                            showExportView.toggle()
                         } label: {
-                            Label("Export to CSV", systemImage: "tablecells")
+                            Image(systemName: "tablecells")
+                         
                         }
                         
                         
@@ -95,12 +122,19 @@ struct PayPeriodsList: View {
                         }.tint(.red)
                         
                         Button(role: .none) {
+                            loadShiftsToExport(payPeriod: payPeriod)
+                            
+                            showInvoiceView.toggle()
                             
                         } label: {
-                            Label("Generate Invoice", systemImage: "rectangle.and.paperclip")
+                            Label("Generate Invoice or Timesheet", systemImage: "rectangle.and.paperclip")
                         }
                         
                         Button(role: .none) {
+                            loadShiftsToExport(payPeriod: payPeriod)
+                            
+                            
+                            showExportView.toggle()
                             
                         } label: {
                             Label("Export to CSV", systemImage: "tablecells")
@@ -147,6 +181,38 @@ struct PayPeriodsList: View {
         }
             
             floatingButtons
+            
+                .sheet(isPresented: $showExportView, onDismiss: {
+                    
+                    shiftsToExport = nil
+                    
+                }) {
+                    
+                 
+                        
+                    ConfigureExportView(job: selectedJobManager.fetchJob(in: viewContext), arrayShifts: shiftsToExport)
+                   
+                            .presentationDetents([.large])
+                            .customSheetRadius(35)
+                            .customSheetBackground()
+                    
+                  
+                    
+                }
+            
+                .sheet(isPresented: $showInvoiceView, onDismiss: {
+                    
+                    shiftsToExport = nil
+                    
+                }) {
+                    
+                   
+                        GenerateInvoiceView(job: selectedJobManager.fetchJob(in: viewContext), arrayShifts: shiftsToExport)
+             
+                            .customSheetBackground()
+                            .customSheetRadius(35)
+                   
+                }
         
     }
         
@@ -160,7 +226,16 @@ struct PayPeriodsList: View {
         
         
                     .onAppear{
-                        payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods)
+                        
+                        if let job = selectedJobManager.fetchJob(in: viewContext) {
+                            
+                            payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods, job: job)
+                        } else {
+                     // no job, dismiss
+                                     dismiss()
+                                 
+                             
+                        }
                     }
         
                 .sheet(isPresented: $showCreateSheet) {
@@ -237,8 +312,9 @@ struct PayPeriodsList: View {
                 
                 ActionButtonView(title: "Create", backgroundColor: buttonColor, textColor: textColor, icon: "note.text.badge.plus", buttonWidth: getRect().width - 60, action: {
                     
-                    
-                    payPeriodManager.createNewPayPeriod(using: viewContext, payPeriods: payPeriods)
+                    if let job = selectedJobManager.fetchJob(in: viewContext) {
+                        payPeriodManager.createNewPayPeriod(using: viewContext, payPeriods: payPeriods, job: job)
+                    }
                     
                     showCreateSheet = false
                     

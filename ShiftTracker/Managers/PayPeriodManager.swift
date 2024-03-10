@@ -23,17 +23,22 @@ class PayPeriodManager: ObservableObject {
         }
     }
     
-     func createNewPayPeriod(using context: NSManagedObjectContext, payPeriods: FetchedResults<PayPeriod>) {
+    func createNewPayPeriod(using context: NSManagedObjectContext, payPeriods: FetchedResults<PayPeriod>, job: Job) {
             let newPayPeriod = PayPeriod(context: context)
-            newPayPeriod.startDate = newPeriodStartDate
-            newPayPeriod.endDate = newPeriodEndDate
+        newPayPeriod.startDate = newPeriodStartDate.startOfDay
+        newPayPeriod.endDate = newPeriodEndDate.endOfDay
+            newPayPeriod.job = job
+            
+        
             // Associate shifts with the new pay period
-        updatePayPeriods(using: context, payPeriods: payPeriods)
+        updatePayPeriods(using: context, payPeriods: payPeriods, job: job)
             try? context.save()
         }
         
-     func updatePayPeriods(using context: NSManagedObjectContext, payPeriods: FetchedResults<PayPeriod>) {
+    func updatePayPeriods(using context: NSManagedObjectContext, payPeriods: FetchedResults<PayPeriod>, job: Job) {
+        
         let shiftsFetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        shiftsFetchRequest.predicate = NSPredicate(format: "job == %@", job)
         let allShifts: [OldShift]
         do {
             allShifts = try context.fetch(shiftsFetchRequest)
@@ -43,16 +48,21 @@ class PayPeriodManager: ObservableObject {
         }
         
         for shift in allShifts {
-            if let shiftStartDate = shift.shiftStartDate {
-                let matchingPayPeriod = payPeriods.first { payPeriod in
-                    if let payPeriodStartDate = payPeriod.startDate, let payPeriodEndDate = payPeriod.endDate {
-                        return shiftStartDate >= payPeriodStartDate && shiftStartDate <= payPeriodEndDate
+                if let shiftStartDate = shift.shiftStartDate {
+                    let matchingPayPeriod = (job.payPeriods as? Set<PayPeriod>)?.first { payPeriod in
+                        if let payPeriodStartDate = payPeriod.startDate, let payPeriodEndDate = payPeriod.endDate {
+                            return shiftStartDate >= payPeriodStartDate && shiftStartDate <= payPeriodEndDate
+                        }
+                        return false
                     }
-                    return false
+                    shift.payPeriod = matchingPayPeriod
+                    if let payPeriod = matchingPayPeriod {
+                                    payPeriod.shiftCount += 1
+                                    payPeriod.totalPay += shift.totalPay
+                                    payPeriod.totalSeconds += shift.duration
+                                }
                 }
-                shift.payPeriod = matchingPayPeriod
             }
-        }
         
         do {
             try context.save()
@@ -60,6 +70,8 @@ class PayPeriodManager: ObservableObject {
             print("Error saving updated shifts: \(error)")
         }
     }
+    
+    
     
     
     

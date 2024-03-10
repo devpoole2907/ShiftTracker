@@ -34,6 +34,7 @@
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="locations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="JobLocation" inverseName="job" inverseEntity="JobLocation"/>
         <relationship name="oldShifts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OldShift" inverseName="job" inverseEntity="OldShift"/>
+        <relationship name="payPeriods" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PayPeriod" inverseName="job" inverseEntity="PayPeriod"/>
         <relationship name="scheduledShifts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ScheduledShift" inverseName="job" inverseEntity="ScheduledShift"/>
     </entity>
     <entity name="JobLocation" representedClassName="JobLocation" syncable="YES" codeGenerationType="class">
@@ -72,7 +73,11 @@
     </entity>
     <entity name="PayPeriod" representedClassName="PayPeriod" syncable="YES" codeGenerationType="class">
         <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="shiftCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="totalPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="totalSeconds" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="payPeriods" inverseEntity="Job"/>
         <relationship name="shifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="payPeriod" inverseEntity="OldShift"/>
     </entity>
     <entity name="ScheduledShift" representedClassName="ScheduledShift" syncable="YES" codeGenerationType="class">

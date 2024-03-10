@@ -18,6 +18,7 @@ struct JobOverview: View {
     @StateObject var historyModel: HistoryViewModel = HistoryViewModel()
     @StateObject var payPeriodManager: PayPeriodManager = PayPeriodManager()
     
+    @EnvironmentObject var purchaseManager: PurchaseManager
     @EnvironmentObject var sortSelection: SortSelection
     @EnvironmentObject var shiftManager: ShiftDataManager
     @EnvironmentObject var navigationState: NavigationState
@@ -28,7 +29,7 @@ struct JobOverview: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
-    
+
     @FetchRequest var shifts: FetchedResults<OldShift>
     @FetchRequest var weeklyShifts: FetchedResults<OldShift>
     @FetchRequest var lastTenShifts: FetchedResults<OldShift>
@@ -66,6 +67,8 @@ struct JobOverview: View {
             oldShift.totalTips = Double(Int.random(in: 5...48))
             oldShift.job = selectedJob
             oldShift.shiftID = UUID()
+            
+            oldShift.breakDuration = 3600
             
             currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!
             
@@ -141,37 +144,6 @@ struct JobOverview: View {
                         .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                 
-                if let theJob = selectedJobManager.fetchJob(in: viewContext) {
-                    
-                    
-                    if theJob.payPeriodEnabled {
-                        
-                        payPeriodSection
-                        .id(refreshPayPeriodID)
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                        
-                        .onAppear {
-                            
-                            lastViewedDate = Date()
-                            
-                            }
-                            
-                            
-                            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            
-            let threshold: TimeInterval = 24 * 60 * 60
-            
-            if Date().timeIntervalSince(lastViewedDate) > threshold {
-                // The app was in the background for a long time, force refresh of pay period view
-                refreshPayPeriodID = UUID() 
-            }
-        }
-                        
-                    }
-                    
-                    
-                }
                 
                 recentShiftsSection
                     .onAppear {
@@ -213,7 +185,13 @@ struct JobOverview: View {
                 
                 // display list of all shifts in that pay period
                 
-                PayPeriodShiftsList(payPeriod: payPeriod, navPath: $navPath).environmentObject(overviewModel)
+                if let job = selectedJobManager.fetchJob(in: viewContext) {
+                    
+                    PayPeriodShiftsList(payPeriod: payPeriod, navPath: $navPath, job: job).environmentObject(overviewModel)
+                    
+                } else {
+                    Text("Error")
+                }
                 
             }
         
@@ -246,7 +224,13 @@ struct JobOverview: View {
                         }
                 } else if value == 3 {
 
-                    PayPeriodsList().environmentObject(payPeriodManager)
+                    
+                    if let job = selectedJobManager.fetchJob(in: viewContext) {
+                        PayPeriodsList(job: job).environmentObject(payPeriodManager)
+                    } else {
+                        Text("Error")
+                    }
+                
                     
                     // doing this here causes the weirdest visual bug!
                     /*
@@ -386,8 +370,9 @@ struct JobOverview: View {
                 
                 overviewModel.appeared.toggle()
                 
-                payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods)
-                
+                if let job = selectedJobManager.fetchJob(in: viewContext) {
+                    payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods, job: job)
+                }
                 
                 
             }
@@ -414,6 +399,12 @@ struct JobOverview: View {
             .onChange(of: selectedJobManager.selectedJobUUID) { jobUUID in
                 
                 overviewModel.job = selectedJobManager.fetchJob(with: jobUUID, in: viewContext)
+                
+                if let job = selectedJobManager.fetchJob(in: viewContext) {
+                    
+                    payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods, job: job)
+                    
+                }
             }
         
             .onChange(of: scrollManager.timeSheetsScrolled) { change in
@@ -424,6 +415,14 @@ struct JobOverview: View {
         
             .fullScreenCover(isPresented: $overviewModel.isEditJobPresented) {
                 JobView(job: overviewModel.job, isEditJobPresented: $overviewModel.isEditJobPresented, selectedJobForEditing: $overviewModel.job).environmentObject(ContentViewModel.shared)
+                    .customSheetBackground()
+                
+            }
+        
+            .fullScreenCover(isPresented: $overviewModel.showProView) {
+                ProView()
+                    .environmentObject(purchaseManager)
+                
                     .customSheetBackground()
                 
             }
@@ -603,29 +602,26 @@ struct JobOverview: View {
      
         
         return Group {
-            VStack(alignment: .center, spacing: 16){
+            VStack(alignment: .center, spacing: 8){
                 HStack(spacing: 8){
-                    VStack(spacing: 0) {
+                    VStack(spacing: 8) {
                         
                         StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
                             .environmentObject(shiftManager)
-                        
-                        
-                        
-                        Spacer()
+                   
                         
                         ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode, navPath: $navPath)
                             .environmentObject(shiftManager)
                         
+                        
                     }
                     
-                    VStack(spacing: 0) {
+                    VStack(spacing: 8) {
                         ExportSquare(totalShifts: shifts.count, action: {
                             overviewModel.activeSheet = .configureExportSheet
                         })
                         .environmentObject(shiftManager)
-                        
-                   
+
                         
                         if let theJob = selectedJobManager.fetchJob(in: viewContext) {
                             if theJob.enableInvoices {
@@ -638,12 +634,44 @@ struct JobOverview: View {
                     
                         
                     }
- 
-                }
+                } .frame(height: 230)
 
+                if let theJob = selectedJobManager.fetchJob(in: viewContext) {
+                    
+                    
+                    if theJob.payPeriodEnabled {
+                        
+                        payPeriodSection
+                        .id(refreshPayPeriodID)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                        
+                        .onAppear {
+                            
+                            lastViewedDate = Date()
+                            
+                            }
+                            
+                            
+                            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            
+            let threshold: TimeInterval = 24 * 60 * 60
+            
+            if Date().timeIntervalSince(lastViewedDate) > threshold {
+                // The app was in the background for a long time, force refresh of pay period view
+                refreshPayPeriodID = UUID()
+            }
+        }
+                        
+                    }
+                    
+                    
+                }
                 
             }
-            .frame(width: getRect().width - 44, height: 230)
+          //
+            
+
             
             
             
@@ -669,10 +697,11 @@ struct JobOverview: View {
         }) {
             PayPeriodSectionView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(overviewModel)
         }.buttonStyle(PlainButtonStyle())
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
             .padding(.horizontal, 10)
-            .frame(width: getRect().width - 44)
-            .glassModifier(cornerRadius: 12)
+           // .frame(width: getRect().width - 44)
+            .glassModifier(cornerRadius: 12, applyPadding: false)
         
        
         
@@ -687,25 +716,39 @@ struct JobOverview: View {
             navPath.append(4)
         }){
             HStack(spacing: 5){
-                Text("Invoices")
-                    .font(.callout)
+                
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Invoices &")
+                    Text("Timesheets")
+                }
+               
+                .font(.callout)
                     .bold()
                     .foregroundStyle(headerColor)
                     .padding(.leading)
+                
+                Spacer()
             
             Image(systemName: "chevron.right")
                 .bold()
-                .font(.caption)
-                .font(.callout)
+               
+                .font(.subheadline)
                 .foregroundStyle(.gray)
                 
-                Spacer()
+                .padding(.trailing, 27)
+                
+             //   Spacer()
                 
             }
-                .padding(.vertical, 16)
+                //.padding(.vertical, 14)
                 .frame(maxWidth: .infinity)
+                .padding(.vertical, 5)
                 .contentShape(Rectangle())
         }.buttonStyle(PlainButtonStyle())
+        
+            .frame(maxHeight: .infinity)
+        
+        
            
            .glassModifier(cornerRadius: 12, applyPadding: false)
         
@@ -737,9 +780,18 @@ struct JobOverview: View {
         overviewModel.activeSheet = .addShiftSheet
     }
     
+
+    
     func exportShift(_ shift: OldShift) {
-        overviewModel.shiftForExport = shift
-        overviewModel.activeSheet = .configureExportSheet
+        
+        if purchaseManager.hasUnlockedPro {
+            
+            overviewModel.shiftForExport = shift
+            overviewModel.activeSheet = .configureExportSheet
+            
+        } else {
+            overviewModel.showProView.toggle()
+        }
     }
     
 }
@@ -848,6 +900,15 @@ struct PayPeriodSectionView: View {
             }
             
             Spacer()
+            
+            Image(systemName: "chevron.right")
+                .bold()
+               
+                .font(.subheadline)
+                .foregroundStyle(.gray)
+                .padding(.trailing)
+            
+            
         }.contentShape(Rectangle())
         
         .contextMenu{

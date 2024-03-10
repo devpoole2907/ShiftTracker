@@ -266,9 +266,16 @@ func currentDateWithoutSeconds() -> Date {
 extension PayPeriod {
     var periodRange: String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        return "\(formatter.string(from: startDate!)) - \(formatter.string(from: endDate!))"
+        formatter.dateStyle = .medium
+        
+        if let startDate = startDate, let endDate = endDate {
+            
+            return "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate))"
+        }
+        
+        return ""
     }
+    
 }
 
 

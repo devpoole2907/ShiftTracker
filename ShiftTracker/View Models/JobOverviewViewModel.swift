@@ -16,6 +16,8 @@ class JobOverviewViewModel: ObservableObject {
     @Published var shiftForExport: OldShift? = nil
     @Published var shiftSelectionForExport: Set<NSManagedObjectID>? = nil
     
+    @Published var showProView = false
+    
     var navigationLocation: Int = 0
     
     @Published var selectedShiftToDupe: OldShift?

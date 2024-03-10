@@ -23,42 +23,45 @@ struct InvoicesListView: View {
     
     @Environment(\.colorScheme) var colorScheme
     
-    @State private var invoices: [InvoiceFile] = []
+    @State private var files: [PdfFile] = []
     
     @State private var job: Job? = nil
     
-    func fetchPDFFiles() -> [InvoiceFile] {
+    func fetchPDFFiles() -> [PdfFile] {
         let fileManager = FileManager.default
         let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
         
-        var pdfFiles: [InvoiceFile] = []
+        var pdfFiles: [PdfFile] = []
         
         if let job = job, let jobName = job.name {
             let jobDirectory = documentsDirectory.appendingPathComponent(jobName)
-            pdfFiles = fetchPDFs(in: jobDirectory)
+            let directoryName = filesToDisplay == .invoice ? "Invoices" : "Timesheets"
+            let specificDirectory = jobDirectory.appendingPathComponent(directoryName)
+            pdfFiles = fetchPDFs(in: specificDirectory)
         } else { // no job selected, display all
             // Fetch all PDFs in the documents directory, including subdirectories
             let enumerator = fileManager.enumerator(at: documentsDirectory, includingPropertiesForKeys: [.creationDateKey], options: [], errorHandler: nil)
             while let url = enumerator?.nextObject() as? URL {
-                if url.pathExtension == "pdf" {
+                if url.pathExtension == "pdf" && url.deletingLastPathComponent().lastPathComponent == (filesToDisplay == .invoice ? "Invoices" : "Timesheets") {
                     let attributes = try? fileManager.attributesOfItem(atPath: url.path)
                     let creationDate = attributes?[.creationDate] as? Date
-                    pdfFiles.append(InvoiceFile(url: url, creationDate: creationDate))
+                    pdfFiles.append(PdfFile(url: url, creationDate: creationDate))
                 }
             }
         }
         
         return pdfFiles.sorted(by: { ($0.creationDate ?? Date.distantPast) > ($1.creationDate ?? Date.distantPast) })
     }
+
     
-    func fetchPDFs(in directory: URL) -> [InvoiceFile] {
+    func fetchPDFs(in directory: URL) -> [PdfFile] {
         let fileManager = FileManager.default
         do {
             let fileURLs = try fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: [.creationDateKey])
-            return fileURLs.filter { $0.pathExtension == "pdf" }.map { url -> InvoiceFile in
+            return fileURLs.filter { $0.pathExtension == "pdf" }.map { url -> PdfFile in
                 let attributes = try? fileManager.attributesOfItem(atPath: url.path)
                 let creationDate = attributes?[.creationDate] as? Date
-                return InvoiceFile(url: url, creationDate: creationDate)
+                return PdfFile(url: url, creationDate: creationDate)
             }
         } catch {
             print("Error fetching PDF files in directory \(directory): \(error)")
@@ -70,7 +73,7 @@ struct InvoicesListView: View {
     func deletePDF(fileURL: URL) {
         do {
             try FileManager.default.removeItem(at: fileURL)
-            invoices = fetchPDFFiles() // Refresh the list
+            files = fetchPDFFiles() // Refresh the list
         } catch {
             print("Error deleting file: \(error)")
         }
@@ -80,23 +83,29 @@ struct InvoicesListView: View {
         
         _job = State(initialValue: job)
         
-        _invoices = State(initialValue: fetchPDFFiles())
+        _files = State(initialValue: fetchPDFFiles())
         
        
     }
     
+    @State var filesToDisplay: PdfFileType = .invoice
+    
     
     var body: some View {
         
+        
+        ZStack(alignment: .bottom){
         ScrollViewReader { proxy in
             
             
             List {
                 
+  
+                
                 if #available(iOS 17.0, *) {
-                    if invoices.isEmpty {
+                    if files.isEmpty {
                         
-                        TipView(GenericTip(titleString: "You have no invoices!", bodyString: "Create invoices by selecting shifts in the Latest Shifts and Activity views.", icon: "pencil.and.list.clipboard"))
+                        TipView(GenericTip(titleString: "You have no \(filesToDisplay.shortDescription)!", bodyString: "Create some by selecting shifts in the Latest Shifts and Activity views.", icon: "pencil.and.list.clipboard"))
                         
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
@@ -105,101 +114,108 @@ struct InvoicesListView: View {
                     
                 }
                 
-            ForEach(Array(invoices.enumerated()), id: \.offset) { index, invoiceFile in
                 
                 
-                
-                
-                
-                NavigationLink(destination:
+                ForEach(Array(files.enumerated()), id: \.offset) { index, invoiceFile in
+                    
+                    
+                    
+                    
+                    
+                    NavigationLink(destination:
+                                    
+                                    InvoiceViewSheet(url: invoiceFile.url).environmentObject(invoiceViewModel).environmentObject(navigationState)
+                        .toolbar(.hidden, for: .tabBar)
+                        .onAppear {
+                            navigationState.hideTabBar = true
+                        }
+                        .onDisappear {
+                            navigationState.hideTabBar = false
+                        }
+                                   
+                                   
+                                   
+                    ) {
+                        
+                        VStack(alignment: .leading, spacing: 4){
+                            if let lastPathComponentURL = URL(string: invoiceFile.url.lastPathComponent) {
+                                Text(lastPathComponentURL.deletingPathExtension().lastPathComponent).bold()
+                            }
+                            Divider().frame(maxWidth: 150)
+                            
+                            if let creationDate = invoiceFile.creationDate {
+                                Text("Created: \(creationDate.formatted())")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                            
+                        }
+                        
+                    }.listRowBackground(Color.clear)
+                    
+                        .id(index)
+                    
+                    
+                        .swipeActions {
+                            Button(role: .destructive) {
+                                deletePDF(fileURL: invoiceFile.url)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            
+                            if purchaseManager.hasUnlockedPro {
                                 
-                                InvoiceViewSheet(url: invoiceFile.url).environmentObject(invoiceViewModel).environmentObject(navigationState)
-                    .toolbar(.hidden, for: .tabBar)
-                    .onAppear {
-                        navigationState.hideTabBar = true
-                    }
-                    .onDisappear {
-                        navigationState.hideTabBar = false
-                    }
-                               
-                               
-                               
-                ) {
+                                ShareLink(item: invoiceFile.url, label: {
+                                    Image(systemName: "square.and.arrow.up.fill")
+                                })
+                                
+                            }
+                            
+                        }
                     
-                    VStack(alignment: .leading, spacing: 4){
-                        Text(invoiceFile.url.lastPathComponent).bold()
-                        
-                        Divider().frame(maxWidth: 150)
-                        
-                        if let creationDate = invoiceFile.creationDate {
-                            Text("Created: \(creationDate.formatted())")
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                deletePDF(fileURL: invoiceFile.url)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                            
+                            if purchaseManager.hasUnlockedPro {
+                                
+                                ShareLink(item: invoiceFile.url, label: {
+                                    Text("Share")
+                                    Image(systemName: "square.and.arrow.up.fill")
+                                })
+                                
+                            }
                         }
-                        
-                    }
                     
-                }.listRowBackground(Color.clear)
-                
-                    .id(index)
-                
-                
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            deletePDF(fileURL: invoiceFile.url)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                        
-                        if purchaseManager.hasUnlockedPro {
+                    
+                    
+                        .background {
                             
-                            ShareLink(item: invoiceFile.url, label: {
-                                Image(systemName: "square.and.arrow.up.fill")
-                            })
-                            
+                            // we dont need the geometry reader, performance is better just doing this
+                            if index == 0 {
+                                Color.clear
+                                    .onDisappear {
+                                        scrollManager.timeSheetsScrolled = true
+                                        print("time sheets has been scrolled")
+                                    }
+                                    .onAppear {
+                                        scrollManager.timeSheetsScrolled = false
+                                        print("timesheets has not been scrolled")
+                                    }
+                            }
                         }
-                        
-                    }
-                
-                    .contextMenu {
-                        Button(role: .destructive) {
-                            deletePDF(fileURL: invoiceFile.url)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                        
-                        if purchaseManager.hasUnlockedPro {
-                            
-                            ShareLink(item: invoiceFile.url, label: {
-                                Text("Share")
-                                Image(systemName: "square.and.arrow.up.fill")
-                            })
-                            
-                        }
-                    }
+                }
                 
                 
                 
-                    .background {
-                        
-                        // we dont need the geometry reader, performance is better just doing this
-                        if index == 0 {
-                            Color.clear
-                                .onDisappear {
-                                    scrollManager.timeSheetsScrolled = true
-                                    print("time sheets has been scrolled")
-                                }
-                                .onAppear {
-                                    scrollManager.timeSheetsScrolled = false
-                                    print("timesheets has not been scrolled")
-                                }
-                        }
-                    }
-            }
-        }.listStyle(.plain)
-        
-            .scrollContentBackground(.hidden)
-            .onChange(of: scrollManager.scrollOverviewToTop) { value in
+                
+            }.listStyle(.plain)
+            
+                .scrollContentBackground(.hidden)
+                .onChange(of: scrollManager.scrollOverviewToTop) { value in
                     if value {
                         withAnimation(.spring) {
                             proxy.scrollTo(0, anchor: .top) // Scroll to the first item using its ID
@@ -210,6 +226,22 @@ struct InvoicesListView: View {
                         }
                     }
                 }
+            
+        }
+            
+            if job != nil { // display all if job isnt selected
+                CustomSegmentedPicker(selection: $filesToDisplay, items: PdfFileType.allCases)
+                    .frame(height: 30)
+                    .glassModifier(cornerRadius: 20)
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                
+                    .onChange(of: filesToDisplay) { _ in
+                        files = fetchPDFFiles()
+                    }
+                
+                
+            }
         
     }
         
@@ -226,17 +258,50 @@ struct InvoicesListView: View {
             }
         
             .onAppear {
-                       invoices = fetchPDFFiles()
+                       files = fetchPDFFiles()
                    }
         
         // couldve read the overviewmodel job from the get go perhaps, forgot about that mustve been some kinda duct tape fix...
         // well hey! a duct tape fix using a duct tape fix! it just works tm
             .onChange(of: overviewModel.job) { newJob in
                        job = newJob
-                       invoices = fetchPDFFiles()
+                       files = fetchPDFFiles()
                    }
         
          
-            .navigationTitle("Invoices")
+            .navigationTitle(job != nil ? filesToDisplay.shortDescription : "Invoices & Timesheets")
+            .navigationBarTitleDisplayMode(job != nil ? .automatic : .inline)
+    }
+}
+
+enum PdfFileType: Int, CaseIterable {
+    
+    case invoice
+    case timesheet
+    
+    var shortDescription: String {
+        switch self {
+        case .invoice:
+            return "Invoices"
+        case .timesheet:
+            return "Timesheets"
+        }
+    }
+    
+    var singularDescription: String {
+        switch self {
+        case .invoice:
+            return "Invoice"
+        case .timesheet:
+            return "Timesheet"
+        }
+    }
+    
+    
+}
+
+extension PdfFileType: SegmentedItem {
+    var contentType: SegmentedContentType {
+        .text(shortDescription)
     }
 }

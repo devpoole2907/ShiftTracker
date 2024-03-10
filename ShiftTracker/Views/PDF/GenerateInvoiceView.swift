@@ -71,7 +71,7 @@ struct GenerateInvoiceView: View {
                 
                 VStack(alignment: .leading, spacing: 12) {
                     
-                    Text("Invoice Details")
+                    Text("\(viewModel.pdfFileType.singularDescription) Details")
                         .bold()
                         .padding(.vertical, 5)
                         .padding(.horizontal)
@@ -96,14 +96,15 @@ struct GenerateInvoiceView: View {
                     
                     userDetails
                     
-                    Text("Tax Details")
-                        .bold()
-                        .padding(.vertical, 5)
-                        .padding(.horizontal)
-                        .glassModifier(cornerRadius: 20)
-                    
-                    taxDetails
-                    
+                    if viewModel.pdfFileType == .invoice {
+                        Text("Tax Details")
+                            .bold()
+                            .padding(.vertical, 5)
+                            .padding(.horizontal)
+                            .glassModifier(cornerRadius: 20)
+                        
+                        taxDetails
+                    }
                  
                     Spacer(minLength: 400)
               
@@ -114,16 +115,25 @@ struct GenerateInvoiceView: View {
                 
             }
                 
-                ActionButtonView(title: "Generate", backgroundColor: buttonColor, textColor: textColor, icon: "printer.fill.and.paper.fill", buttonWidth: getRect().width - 60) {
-
-                    viewModel.render()
+                VStack {
                     
-                    viewModel.showPDFViewer.toggle()
+                    CustomSegmentedPicker(selection: $viewModel.pdfFileType, items: PdfFileType.allCases)
+                        .frame(width: getRect().width - 60, height: 30)
+                        .glassModifier(cornerRadius: 20)
                     
                     
-                }.padding(.bottom, getRect().height == 667 ? 10 : 0)
-                    .opacity(isFormValid ? 1.0 : 0.5)
-                    .disabled(!isFormValid)
+                    ActionButtonView(title: "Generate", backgroundColor: buttonColor, textColor: textColor, icon: "printer.fill.and.paper.fill", buttonWidth: getRect().width - 60) {
+                        
+                        viewModel.render()
+                        
+                        viewModel.showPDFViewer.toggle()
+                        
+                        
+                    }.padding(.bottom, getRect().height == 667 ? 10 : 0)
+                        .opacity(isFormValid ? 1.0 : 0.5)
+                        .disabled(!isFormValid)
+                    
+                }
                 
        
             
@@ -171,7 +181,7 @@ struct GenerateInvoiceView: View {
         }
             
         
-        .navigationTitle("Generate Invoice")
+        .navigationTitle("Generate \(viewModel.pdfFileType.singularDescription)")
         .navigationBarTitleDisplayMode(.inline)
     }
         
@@ -198,17 +208,20 @@ struct GenerateInvoiceView: View {
         
         VStack{
 
-            CustomTextField(text: $viewModel.invoiceNumber, hint: "Invoice Number", capitaliseWords: true).focused($focusField, equals: .invoiceNo)
+            CustomTextField(text: $viewModel.invoiceNumber, hint: "\(viewModel.pdfFileType.singularDescription) Number", capitaliseWords: true).focused($focusField, equals: .invoiceNo)
              
-            DatePicker("Invoice date", selection: $viewModel.invoiceDate, in: Date()..., displayedComponents: .date)
+            DatePicker(viewModel.pdfFileType == .invoice ? "Invoice Date" : "Start Date", selection: $viewModel.invoiceDate, in: Date()..., displayedComponents: .date)
                 .padding(.horizontal)
                 .padding(.vertical, 10)
                 .glassModifier(cornerRadius: 20)
             
-            DatePicker("Due date", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 20)
+          
+            DatePicker(viewModel.pdfFileType == .invoice ? "Due date" : "End Date", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
+                    .padding(.horizontal)
+                    .padding(.vertical, 10)
+                    .glassModifier(cornerRadius: 20)
+                
+            
             
             
         }.padding() .glassModifier(cornerRadius: 20)

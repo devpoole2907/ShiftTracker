@@ -30,6 +30,7 @@ struct ScheduledShiftsView: View {
     @ObservedObject var oldShiftsViewModel: OldShiftsViewModel
     
     @State private var showExportView: Bool = false
+    @State private var showProView = false
     @State private var shiftForExport: OldShift? = nil
     
     
@@ -201,6 +202,14 @@ struct ScheduledShiftsView: View {
             
         }
         
+        .fullScreenCover(isPresented: $showProView) {
+            ProView()
+                .environmentObject(purchaseManager)
+            
+                .customSheetBackground()
+            
+        }
+        
             
              
         
@@ -221,8 +230,15 @@ struct ScheduledShiftsView: View {
     }
     
     func exportShift(_ shift: OldShift) {
-        shiftForExport = shift
-        scheduleModel.activeSheet = .configureExportSheet
+        
+        if purchaseManager.hasUnlockedPro {
+            
+            shiftForExport = shift
+            scheduleModel.activeSheet = .configureExportSheet
+            
+        } else {
+            showProView.toggle()
+        }
     }
     
 }

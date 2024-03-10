@@ -472,13 +472,13 @@ struct StatView: View {
     var body: some View {
         VStack(alignment: .center) {
             Text(title)
-                .font(.headline)
+                .font(.subheadline)
                 .bold()
                 .roundedFontDesign()
                 .foregroundColor(.gray)
 
             Text(value)
-                .font(.title2)
+                .font(.title3)
                 .bold()
         }
     }

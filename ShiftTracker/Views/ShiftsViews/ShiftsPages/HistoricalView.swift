@@ -541,7 +541,7 @@ struct HistoricalView: View {
                                     
                                     
                                 }){
-                                    Text("Generate Invoice")
+                                    Text("Generate Invoice or Timesheet")
                                     Image(systemName: "rectangle.and.paperclip").bold()
                                 }.disabled(selectedJobManager.fetchJob(in: viewContext) == nil) // dont allow invoicing if no job is currently selected
                                 
@@ -693,9 +693,17 @@ struct HistoricalView: View {
         overviewModel.activeSheet = .addShiftSheet
     }
     
+   
     func exportShift(_ shift: OldShift) {
-        historyModel.selection = Set(arrayLiteral: shift.objectID)
-        historyModel.showExportView.toggle()
+        
+        if purchaseManager.hasUnlockedPro {
+            
+            historyModel.selection = Set(arrayLiteral: shift.objectID)
+            historyModel.showExportView.toggle()
+            
+        } else {
+            historyModel.showingProView.toggle()
+        }
     }
     
 }

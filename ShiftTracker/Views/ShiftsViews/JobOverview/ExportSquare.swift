@@ -28,20 +28,21 @@ struct ExportSquare: View {
         
         let headerColor: Color = colorScheme == .dark ? .white : .black
         
-        VStack(alignment: .leading, spacing: 8){
+        VStack(alignment: .leading, spacing: 14){
             
-            Text("Total Shifts")
-                .bold()
-                .font(.headline)
-                .foregroundStyle(headerColor)
+            VStack(alignment: .leading, spacing: 8){
+                Text("Total Shifts")
+                    .bold()
+                    .font(.headline)
+                    .foregroundStyle(headerColor)
+                
+                Text("\(totalShifts)")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundStyle(headerColor)
+            }
             
-            Text("\(totalShifts)")
-                .font(.largeTitle)
-                .bold()
-                .foregroundStyle(headerColor)
-            Spacer()
-            
-        
+        Spacer(minLength: 0)
             
             Button(action: {
                 
@@ -72,20 +73,24 @@ struct ExportSquare: View {
                     .font(.subheadline)
                     .foregroundStyle(headerColor)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .glassModifier(cornerRadius: 12, applyPadding: false)
-                .contentShape(Rectangle())
+           
+                
             }
             .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .glassModifier(cornerRadius: 12, applyPadding: false)
+            .contentShape(Rectangle())
             .buttonStyle(.scale)
             .haptics(onChangeOf: isTapped, type: .light)
             
-        }.padding()
+        } .frame(maxHeight: .infinity)
+          
+            .padding()
+        
             .glassModifier(cornerRadius: 12, applyPadding: false)
         
         // dont apply padding if invoices disabled, because the invoice square below is missing
-            .padding(.bottom, selectedJobManager.fetchJob(in: viewContext)?.enableInvoices ?? true ? 8 : 0)
+         //   .padding(.bottom, selectedJobManager.fetchJob(in: viewContext)?.enableInvoices ?? true ? 8 : 0)
         
             .fullScreenCover(isPresented: $showingProView) {
                 

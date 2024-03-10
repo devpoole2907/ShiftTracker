@@ -21,6 +21,8 @@ struct PayPeriodShiftsList: View {
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     @Environment(\.managedObjectContext) var viewContext
     
+    @Environment(\.dismiss) var dismiss
+    
     @Binding var navPath: NavigationPath
     
     @State var editMode = EditMode.inactive
@@ -28,33 +30,54 @@ struct PayPeriodShiftsList: View {
     @State private var showInvoiceView = false
     @State private var showingProView = false
     
+    let shiftManager = ShiftDataManager()
+    
     @State private var clearSelection = false // only set to true if export all/generate all to invoice button is pressed to clear the selection on dismiss
     
     var payPeriod: PayPeriod
+    
+    var job: Job
     
     // use a fetch instead of the relationship to ensure always up to date data
     
     @FetchRequest var shifts: FetchedResults<OldShift>
     @State private var selection = Set<NSManagedObjectID>()
 
-    init(payPeriod: PayPeriod, navPath: Binding<NavigationPath>) {
-           self.payPeriod = payPeriod
-           self._shifts = FetchRequest(
-               entity: OldShift.entity(),
-               sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)],
-               predicate: NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
-           )
-           
-           _navPath = navPath
-           
-       }
+    init(payPeriod: PayPeriod, navPath: Binding<NavigationPath>, job: Job) {
+        self.payPeriod = payPeriod
+               let jobPredicate = NSPredicate(format: "job == %@", job)
+               let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
+               let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, datePredicate])
+               self._shifts = FetchRequest(
+                   entity: OldShift.entity(),
+                   sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],
+                   predicate: compoundPredicate
+               )
+
+               _navPath = navPath
+        self.job = job
+        
+           }
 
        
     
     var body: some View {
-        ZStack(alignment: .bottomTrailing){
+        ZStack(alignment: .bottom){
         ScrollViewReader { proxy in
             List(selection: editMode.isEditing ? $selection : .constant(Set<NSManagedObjectID>())) {
+                
+                Spacer(minLength: 38).id(0)
+                
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                            // dirty but fixes it
+                            scrollManager.timeSheetsScrolled = false
+                        }
+                        
+                    }
+                
                 
                 ForEach(Array(shifts.enumerated()), id: \.element.objectID) { index, shift in
                     NavigationLink(value: shift) {
@@ -172,7 +195,19 @@ struct PayPeriodShiftsList: View {
             
         }
             
-            floatingButtons .padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+            VStack {
+                
+                statsSection.padding(.top, 5)
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    
+                    floatingButtons
+                }.padding(.bottom, navigationState.hideTabBar ? 49 : 0).animation(.none, value: navigationState.hideTabBar)
+                
+            }
             
                 .padding(.bottom)
         
@@ -213,11 +248,18 @@ struct PayPeriodShiftsList: View {
                 }
             
             
-    }
+    } .onAppear {
+        if selectedJobManager.fetchJob(in: viewContext) == nil || shifts.isEmpty {
+             dismiss()
+         }
+     }
         
         
         .navigationTitle(!selection.isEmpty ? "\(selection.count) selected" : "\(payPeriod.periodRange)")
         .navigationBarBackButtonHidden(editMode.isEditing)
+        
+        .navigationBarTitleDisplayMode(.inline)
+        
         .toolbar{
             if editMode.isEditing {
                 ToolbarItem(placement: .topBarLeading) {
@@ -248,6 +290,72 @@ struct PayPeriodShiftsList: View {
             
         }
         
+        
+    }
+    
+    var statsSection: some View {
+        
+        VStack {
+            
+            
+            
+            HStack(spacing: 0){
+                
+                Spacer()
+                
+                StatView(title: "Earnings", value: "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")")
+                
+                Spacer()
+      
+                StatView(title: "Hours", value: shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)))
+            Spacer()
+                StatView(title: "On Break", value: shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager)))
+                
+                Spacer()
+                
+                
+            
+                
+                
+                
+                
+            }//.padding(.top, 5)
+            
+            
+            // should show shift count ideally
+            
+          /*
+            Text("\(shifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }.count) shifts")
+                .roundedFontDesign()
+                .bold()
+                .padding()
+            */
+          
+  
+              //  .opacity(historyModel.chartSelection == nil ? 1.0 : 0.0)
+            
+                // let barMarks = historyModel.aggregatedShifts[index].dailyOrMonthlyAggregates
+            
+            // gotta do it this way, for some reason doing the check in the chartView fails and builds anyway for ios 16 causing a crash
+            if #available(iOS 17.0, *){
+                
+               /* ChartView(dateRange: dateRange, shifts: barMarks)
+                    .environmentObject(historyModel)
+                    .padding(.leading)*/
+                
+            } else {
+               /* iosSixteenChartView(dateRange: dateRange, shifts: barMarks)
+                    
+                    .padding(.leading)*/
+            }
+            
+            
+        }
+        .padding(.horizontal, 5)
+        .padding(.vertical, 4)
+        .glassModifier()
+        .frame(width: getRect().width - 20)
+         
         
     }
     
@@ -298,7 +406,7 @@ struct PayPeriodShiftsList: View {
                                     
                                     
                                 }){
-                                    Text("Generate Invoice")
+                                    Text("Generate Invoice or Timesheet")
                                     Image(systemName: "rectangle.and.paperclip").bold()
                                 }.disabled(selectedJobManager.fetchJob(in: viewContext) == nil) // dont allow invoicing if no job is currently selected
                                 
@@ -366,7 +474,7 @@ struct PayPeriodShiftsList: View {
                                     
                                     
                                 }){
-                                    Text("Generate Invoice for Pay Period")
+                                    Text("Generate Invoice/Timesheet for Pay Period")
                                     Image(systemName: "rectangle.and.paperclip").bold()
                                 }.disabled(selectedJobManager.fetchJob(in: viewContext) == nil) // dont allow invoicing if no job is currently selected
                                 
@@ -433,8 +541,14 @@ struct PayPeriodShiftsList: View {
     
     func exportShift(_ shift: OldShift) {
         
-        selection = Set(arrayLiteral: shift.objectID)
-        showExportView.toggle()
+        if purchaseManager.hasUnlockedPro {
+            
+            selection = Set(arrayLiteral: shift.objectID)
+            showExportView.toggle()
+            
+        } else {
+            showingProView.toggle()
+        }
     }
     
     private func deleteItems() {

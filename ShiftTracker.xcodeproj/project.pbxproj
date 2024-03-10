@@ -105,7 +105,7 @@
 		7C1A9FEC2B9BBDF50079411D /* InvoiceInputPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */; };
 		7C1A9FEE2B9BD9E40079411D /* AddressDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */; };
 		7C1A9FF02B9C29020079411D /* InvoicesViewList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FEF2B9C29020079411D /* InvoicesViewList.swift */; };
-		7C1A9FF22B9C29160079411D /* InvoiceFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF12B9C29160079411D /* InvoiceFile.swift */; };
+		7C1A9FF22B9C29160079411D /* PdfFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF12B9C29160079411D /* PdfFile.swift */; };
 		7C1A9FF42B9C50530079411D /* ExportCSVTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF32B9C50530079411D /* ExportCSVTip.swift */; };
 		7C1A9FF62B9C5DEF0079411D /* GenericTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF52B9C5DEF0079411D /* GenericTip.swift */; };
 		7C1A9FF82B9C5E230079411D /* CustomTipPopoverModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1A9FF72B9C5E230079411D /* CustomTipPopoverModifier.swift */; };
@@ -441,7 +441,7 @@
 		7C1A9FEB2B9BBDF50079411D /* InvoiceInputPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceInputPreviews.swift; sourceTree = "<group>"; };
 		7C1A9FED2B9BD9E40079411D /* AddressDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDetailsView.swift; sourceTree = "<group>"; };
 		7C1A9FEF2B9C29020079411D /* InvoicesViewList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoicesViewList.swift; sourceTree = "<group>"; };
-		7C1A9FF12B9C29160079411D /* InvoiceFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvoiceFile.swift; sourceTree = "<group>"; };
+		7C1A9FF12B9C29160079411D /* PdfFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfFile.swift; sourceTree = "<group>"; };
 		7C1A9FF32B9C50530079411D /* ExportCSVTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportCSVTip.swift; sourceTree = "<group>"; };
 		7C1A9FF52B9C5DEF0079411D /* GenericTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericTip.swift; sourceTree = "<group>"; };
 		7C1A9FF72B9C5E230079411D /* CustomTipPopoverModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTipPopoverModifier.swift; sourceTree = "<group>"; };
@@ -1179,7 +1179,7 @@
 				7CF01D762ACBEE4600EBC36C /* DayOrMonthAggregate.swift */,
 				7CB5494A2B09BE4B001E4328 /* ProFeature.swift */,
 				7C4E62BC2B9B341D00416DD0 /* ShiftTableCell.swift */,
-				7C1A9FF12B9C29160079411D /* InvoiceFile.swift */,
+				7C1A9FF12B9C29160079411D /* PdfFile.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1648,7 +1648,7 @@
 				1A5B0B9E2A53A3F00021572B /* JobView.swift in Sources */,
 				7CD8A31B2A8703C60011A1C0 /* DetailViewModel.swift in Sources */,
 				7C7B46BC2AC16DF800D87140 /* MockupScheduleView.swift in Sources */,
-				7C1A9FF22B9C29160079411D /* InvoiceFile.swift in Sources */,
+				7C1A9FF22B9C29160079411D /* PdfFile.swift in Sources */,
 				7C72D9C12A6FA6C700FADDFD /* TagPicker.swift in Sources */,
 				1A19141B2A15DC02000D0F8B /* CurrentShiftView.swift in Sources */,
 				7C62185E2AD0E8F100E67245 /* JobIconPicker.swift in Sources */,

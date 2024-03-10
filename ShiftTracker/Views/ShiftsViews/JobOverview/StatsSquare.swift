@@ -84,8 +84,11 @@ struct StatsSquare: View {
             .padding(.leading)
            Spacer()
         }
-            .padding(.vertical, 16)
+       // .frame(maxHeight: .infinity)
+            .padding(.vertical, 12)
             .glassModifier(cornerRadius: 12, applyPadding: false)
+        
+          //  .border(Color.red)
         
         
         

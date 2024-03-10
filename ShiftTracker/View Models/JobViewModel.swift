@@ -127,40 +127,61 @@ class JobViewModel: ObservableObject {
         var newJob: Job
 
         if let job = job {
-                // Job exists, so we are editing
-                print("yeah job exists")
-                newJob = job
-            
-            if name != job.name {
-                       // The name has been modified... migrate any invoices!
-                       let fileManager = FileManager.default
-                       let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-                       let oldDirectory = documentsDirectory.appendingPathComponent(job.name ?? "")
-                       let newDirectory = documentsDirectory.appendingPathComponent(name)
-                       
-                       do {
-                           try fileManager.createDirectory(at: newDirectory, withIntermediateDirectories: true, attributes: nil)
-                           if fileManager.fileExists(atPath: oldDirectory.path) {
-                               let fileURLs = try fileManager.contentsOfDirectory(at: oldDirectory, includingPropertiesForKeys: nil)
-                               for fileURL in fileURLs {
-                                   let newFileURL = newDirectory.appendingPathComponent(fileURL.lastPathComponent)
-                                   try fileManager.moveItem(at: fileURL, to: newFileURL)
-                               }
-                               try fileManager.removeItem(at: oldDirectory)
-                           }
-                       } catch {
-                           print("Error migrating invoices: \(error)")
-                       }
-                   }
-               
-                
-            } else {
-                // Creating a new job
-                newJob = Job(context: viewContext)
-                newJob.uuid = UUID()
+            // Job exists, so we are editing
+            print("yeah job exists")
+            newJob = job
 
-               
+            if name != job.name {
+                // The name has been modified... migrate any invoices and timesheets!
+                let fileManager = FileManager.default
+                let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let oldDirectory = documentsDirectory.appendingPathComponent(job.name ?? "")
+                let newDirectory = documentsDirectory.appendingPathComponent(name)
+
+                do {
+                    try fileManager.createDirectory(at: newDirectory, withIntermediateDirectories: true, attributes: nil)
+                    if fileManager.fileExists(atPath: oldDirectory.path) {
+                        // Migrate invoices
+                        let oldInvoicesDirectory = oldDirectory.appendingPathComponent("Invoices")
+                        let newInvoicesDirectory = newDirectory.appendingPathComponent("Invoices")
+                        try fileManager.createDirectory(at: newInvoicesDirectory, withIntermediateDirectories: true, attributes: nil)
+                        if fileManager.fileExists(atPath: oldInvoicesDirectory.path) {
+                            let invoiceFileURLs = try fileManager.contentsOfDirectory(at: oldInvoicesDirectory, includingPropertiesForKeys: nil)
+                            for fileURL in invoiceFileURLs {
+                                let newFileURL = newInvoicesDirectory.appendingPathComponent(fileURL.lastPathComponent)
+                                try fileManager.moveItem(at: fileURL, to: newFileURL)
+                            }
+                            try fileManager.removeItem(at: oldInvoicesDirectory)
+                        }
+
+                        // Migrate timesheets
+                        let oldTimesheetsDirectory = oldDirectory.appendingPathComponent("Timesheets")
+                        let newTimesheetsDirectory = newDirectory.appendingPathComponent("Timesheets")
+                        try fileManager.createDirectory(at: newTimesheetsDirectory, withIntermediateDirectories: true, attributes: nil)
+                        if fileManager.fileExists(atPath: oldTimesheetsDirectory.path) {
+                            let timesheetFileURLs = try fileManager.contentsOfDirectory(at: oldTimesheetsDirectory, includingPropertiesForKeys: nil)
+                            for fileURL in timesheetFileURLs {
+                                let newFileURL = newTimesheetsDirectory.appendingPathComponent(fileURL.lastPathComponent)
+                                try fileManager.moveItem(at: fileURL, to: newFileURL)
+                            }
+                            try fileManager.removeItem(at: oldTimesheetsDirectory)
+                        }
+
+                        // Remove the old job directory if it's empty
+                        if let contents = try? fileManager.contentsOfDirectory(atPath: oldDirectory.path), contents.isEmpty {
+                            try fileManager.removeItem(at: oldDirectory)
+                        }
+                    }
+                } catch {
+                    print("Error migrating invoices and timesheets: \(error)")
+                }
             }
+        } else {
+            // Creating a new job
+            newJob = Job(context: viewContext)
+            newJob.uuid = UUID()
+        }
+
         
         newJob.name = name
         newJob.title = title

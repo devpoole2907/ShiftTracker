@@ -18,6 +18,8 @@ class InvoiceViewModel: ObservableObject {
     //show pro view if they try export and arent pro
     @Published var showProView = false
     
+    @Published var pdfFileType: PdfFileType = .invoice
+    
     // input variables
     
     // user input
@@ -177,9 +179,17 @@ class InvoiceViewModel: ObservableObject {
         
         let jobDirectory = URL.documentsDirectory.appendingPathComponent(jobName) // creates directory under the job name
             try? FileManager.default.createDirectory(at: jobDirectory, withIntermediateDirectories: true, attributes: nil)
-           
         
-        let uniqueUrl = uniquePdfUrl(in: jobDirectory, baseName: "\(jobName) invoice \(invoiceNumber)")
+        let directoryName = pdfFileType == .invoice ? "Invoices" : "Timesheets"
+           let baseDirectory = URL.documentsDirectory.appendingPathComponent(jobName) // creates directory under the job name
+           let specificDirectory = baseDirectory.appendingPathComponent(directoryName)
+           
+           // Create the specific directory if it doesn't exist
+           try? FileManager.default.createDirectory(at: specificDirectory, withIntermediateDirectories: true, attributes: nil)
+           
+           // Generate a unique URL for the PDF in the specific directory
+           let baseName = pdfFileType == .invoice ? "\(jobName) invoice \(invoiceNumber)" : "\(jobName) timesheet \(invoiceNumber)"
+           let uniqueUrl = uniquePdfUrl(in: specificDirectory, baseName: baseName)
         
         let cellsPerPage = 36 // we need to limit how many cells can be displayed on each page, they may have selected a massive amount of shifts we dont want it to cut off
         
@@ -221,11 +231,18 @@ class InvoiceViewModel: ObservableObject {
             
             let isLastPage = (pageIndex == totalPages - 1)
             
-            // let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate))
+            // TODO!!!! replace text with actual timesheet view
             
-            
-            
-            let renderer = ImageRenderer(content: InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, taxedPay: taxedPay, taxTaken: taxTaken, taxRate: 18.50, abbreviation: taxAbbreviation, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
+            let content: AnyView
+
+            if pdfFileType == .invoice {
+                content = AnyView(InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, taxedPay: taxedPay, taxTaken: taxTaken, taxRate: 18.50, abbreviation: taxAbbreviation, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
+            } else {
+                content = AnyView(Text("Timesheet view goes here"))
+            }
+
+            let renderer = ImageRenderer(content: content)
+
             
             pdfContext.beginPDFPage(nil)
             

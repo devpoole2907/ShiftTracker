@@ -341,7 +341,7 @@ struct JobView: View {
     var clockInOutPanel: some View {
             VStack{
                 Toggle(isOn: $jobViewModel.clockInReminder) {
-                    Text("Remind me to clock in")
+                    Text("Clock In Reminder")
                 }
                 .disabled(jobViewModel.autoClockIn)
                 .onChange(of: jobViewModel.clockInReminder) { value in
@@ -354,7 +354,7 @@ struct JobView: View {
                 .padding(.top, 10)
                 
                 Toggle(isOn: $jobViewModel.clockOutReminder) {
-                    Text("Remind me to clock out")
+                    Text("Clock Out Reminder")
                 }
                 .disabled(jobViewModel.autoClockOut)
                 .onChange(of: jobViewModel.clockOutReminder) { value in
@@ -366,7 +366,7 @@ struct JobView: View {
                 .padding(.horizontal)
                 
                 Toggle(isOn: $jobViewModel.autoClockIn) {
-                    Text("Auto clock in")
+                    Text("Auto Clock In")
                 }
                 .disabled(jobViewModel.clockInReminder)
                 .onChange(of: jobViewModel.autoClockIn) { value in
@@ -385,7 +385,7 @@ struct JobView: View {
                 .padding(.horizontal)
                 
                 Toggle(isOn: $jobViewModel.autoClockOut) {
-                    Text("Auto clock out")
+                    Text("Auto Clock Out")
                 }
                 .disabled(jobViewModel.clockOutReminder)
                 .onChange(of: jobViewModel.autoClockOut) { value in
@@ -469,7 +469,7 @@ struct JobView: View {
         return VStack(alignment: .leading, spacing: 10){
             Toggle(isOn: $jobViewModel.enableInvoices){
                 
-                Text("Enable invoices").bold()
+                Text("Invoicing & Timesheets").bold()
                 
             }.toggleStyle(CustomToggleStyle())
                 .padding(.horizontal)
@@ -482,7 +482,7 @@ struct JobView: View {
         return VStack(alignment: .leading, spacing: 10){
             Toggle(isOn: $jobViewModel.rosterReminder){
                 
-                Text("Roster reminders").bold()
+                Text("Roster Reminders").bold()
                 
             }.toggleStyle(CustomToggleStyle())
                 .padding(.horizontal)
@@ -511,7 +511,7 @@ struct JobView: View {
         return VStack(alignment: .leading, spacing: 10){
             Toggle(isOn: $jobViewModel.breakReminder){
                 
-                Text("Break reminder").bold()
+                Text("Break Reminder").bold()
                 
             }.toggleStyle(CustomToggleStyle())
             
@@ -562,7 +562,7 @@ struct JobView: View {
         return VStack(alignment: .leading, spacing: 10){
             Toggle(isOn: $jobViewModel.payPeriodsEnabled){
                 
-                Text("Enable pay periods").bold()
+                Text("Pay Periods").bold()
                 
             }.toggleStyle(CustomToggleStyle())
                 .padding(.horizontal)
