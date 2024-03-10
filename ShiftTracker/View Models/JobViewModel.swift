@@ -47,8 +47,6 @@ class JobViewModel: ObservableObject {
     @Published var overtimeEnabled = false
     
     @Published var payPeriodsEnabled = false
-    @Published var payPeriodDuration: Int = 7
-    @Published var lastPayPeriodEndedDate: Date
     
     @Published var selectedIcon: String
     
@@ -114,9 +112,7 @@ class JobViewModel: ObservableObject {
         self.selectedDay = Int(job?.rosterDayOfWeek ?? 1)
         self.selectedTime = job?.rosterTime ?? Date()
         
-        self.payPeriodsEnabled = job?.payPeriodEnabled ?? false
-        self.payPeriodDuration = Int(job?.payPeriodLength ?? 7)
-        self.lastPayPeriodEndedDate = job?.lastPayPeriodEndedDate ?? Date()
+        self.payPeriodsEnabled = job?.payPeriodEnabled ?? true
         
         self.enableInvoices = job?.enableInvoices ?? true
         
@@ -156,31 +152,14 @@ class JobViewModel: ObservableObject {
                            print("Error migrating invoices: \(error)")
                        }
                    }
-                
-                // If editing an existing job, only toggle payPeriodEnabled if it's changing.
-                // Never modify lastPayPeriodEndedDate if it's already set
-                if newJob.payPeriodEnabled != payPeriodsEnabled {
-                    newJob.payPeriodEnabled = payPeriodsEnabled
-                }
-                
-                // Ensuring lastPayPeriodEndedDate is never modified once set
-                if newJob.lastPayPeriodEndedDate != nil {
-                    // Do not allow any modification to lastPayPeriodEndedDate
-                } else if payPeriodsEnabled {
-                    // Set lastPayPeriodEndedDate only if enabling and it's currently nil
-                    newJob.lastPayPeriodEndedDate = lastPayPeriodEndedDate
-                }
+               
                 
             } else {
                 // Creating a new job
                 newJob = Job(context: viewContext)
                 newJob.uuid = UUID()
 
-                // Set properties for a new job
-                newJob.payPeriodEnabled = payPeriodsEnabled
-                if payPeriodsEnabled {
-                    newJob.lastPayPeriodEndedDate = lastPayPeriodEndedDate
-                }
+               
             }
         
         newJob.name = name
@@ -202,7 +181,7 @@ class JobViewModel: ObservableObject {
         newJob.breakReminder = breakReminder
         newJob.breakReminderTime = breakRemindAfter
 
-        newJob.payPeriodLength = Int16(payPeriodDuration)
+        newJob.payPeriodEnabled = payPeriodsEnabled
 
         // replace this code with adding locations later when multiple address system update releases
         if let locationSet = newJob.locations, let location = locationSet.allObjects.first as? JobLocation {

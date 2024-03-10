@@ -100,6 +100,8 @@ struct JobView: View {
                         
                         invoicesPanel
                         
+                        payPeriodPanel
+                        
                         rosterReminderPanel
                         
                         breakReminderPanel
@@ -110,11 +112,8 @@ struct JobView: View {
                         
                         
                         
-                        payPeriodPanel
-                        if #available(iOS 17.0, *) {
-                            TipView(PayPeriodInputTip(), arrowEdge: .top)
-                        }
-                        
+                       
+                      
                         Spacer(minLength: 100)
                         
                     }
@@ -560,10 +559,16 @@ struct JobView: View {
     }
     
     var payPeriodPanel: some View {
-        // disable picker if the pay period ended date value isnt nil
-        return PayPeriodInputView(payPeriodsEnabled: $jobViewModel.payPeriodsEnabled, payPeriodDuration: $jobViewModel.payPeriodDuration, lastPayPeriodEndedDate: $jobViewModel.lastPayPeriodEndedDate, disablePickers: job?.lastPayPeriodEndedDate != nil).padding(.horizontal)
-            .padding(.vertical, 10)
-            .glassModifier(cornerRadius: 20)
+        return VStack(alignment: .leading, spacing: 10){
+            Toggle(isOn: $jobViewModel.payPeriodsEnabled){
+                
+                Text("Enable pay periods").bold()
+                
+            }.toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+            
+        }.glassModifier(cornerRadius: 20)
         
     }
     

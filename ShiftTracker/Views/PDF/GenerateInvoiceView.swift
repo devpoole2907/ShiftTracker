@@ -114,7 +114,7 @@ struct GenerateInvoiceView: View {
                 
             }
                 
-                ActionButtonView(title: "Generate", backgroundColor: buttonColor, textColor: textColor, icon: "printer.fill.and.paper.fill", buttonWidth: UIScreen.main.bounds.width - 60) {
+                ActionButtonView(title: "Generate", backgroundColor: buttonColor, textColor: textColor, icon: "printer.fill.and.paper.fill", buttonWidth: getRect().width - 60) {
 
                     viewModel.render()
                     

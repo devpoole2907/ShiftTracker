@@ -16,6 +16,7 @@ struct JobOverview: View {
     
     @StateObject var overviewModel: JobOverviewViewModel
     @StateObject var historyModel: HistoryViewModel = HistoryViewModel()
+    @StateObject var payPeriodManager: PayPeriodManager = PayPeriodManager()
     
     @EnvironmentObject var sortSelection: SortSelection
     @EnvironmentObject var shiftManager: ShiftDataManager
@@ -31,6 +32,9 @@ struct JobOverview: View {
     @FetchRequest var shifts: FetchedResults<OldShift>
     @FetchRequest var weeklyShifts: FetchedResults<OldShift>
     @FetchRequest var lastTenShifts: FetchedResults<OldShift>
+    
+    @FetchRequest(entity: PayPeriod.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \PayPeriod.startDate, ascending: false)])
+    var payPeriods: FetchedResults<PayPeriod>
     
     @State private var refreshPayPeriodID = UUID()
     @State private var lastViewedDate = Date()
@@ -139,7 +143,6 @@ struct JobOverview: View {
                 
                 if let theJob = selectedJobManager.fetchJob(in: viewContext) {
                     
-                    // some kind of if check for invoices - unless show it, and disable it saying "generate some invoices first!"
                     
                     if theJob.payPeriodEnabled {
                         
@@ -206,6 +209,14 @@ struct JobOverview: View {
                 
             }
         
+            .navigationDestination(for: PayPeriod.self) { payPeriod in
+                
+                // display list of all shifts in that pay period
+                
+                PayPeriodShiftsList(payPeriod: payPeriod, navPath: $navPath).environmentObject(overviewModel)
+                
+            }
+        
             .navigationDestination(for: Int.self) { value in
                 
                 // lets do some rough code here, we will save the currently navigated to destination to an int
@@ -234,8 +245,16 @@ struct JobOverview: View {
                             overviewModel.navigationLocation = 2
                         }
                 } else if value == 3 {
+
+                    PayPeriodsList().environmentObject(payPeriodManager)
                     
-                    PayPeriodView(navPath: $navPath, job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(overviewModel)
+                    // doing this here causes the weirdest visual bug!
+                    /*
+                    onAppear {
+                        withAnimation {
+                            shiftManager.showModePicker = false
+                        }
+                    }*/
                     
                 } else if value == 4 {
                     
@@ -366,6 +385,8 @@ struct JobOverview: View {
                 }
                 
                 overviewModel.appeared.toggle()
+                
+                payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods)
                 
                 
                 
@@ -634,13 +655,20 @@ struct JobOverview: View {
     
     var payPeriodSection: some View {
         
+        // making this a button fixes the strange visual bug since we can hide the mode picker here
         
-   
-        
-        
-        NavigationLink(value: 3) {
+        Button(action: {
+            
+            navPath.append(3)
+            
+                withAnimation {
+                    shiftManager.showModePicker = false
+                }
+            
+            
+        }) {
             PayPeriodSectionView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(overviewModel)
-        }
+        }.buttonStyle(PlainButtonStyle())
             .padding(.vertical, 16)
             .padding(.horizontal, 10)
             .frame(width: getRect().width - 44)
@@ -766,26 +794,26 @@ struct PayPeriodSectionView: View {
     @EnvironmentObject private var shiftManager: ShiftDataManager
     @EnvironmentObject private var overviewModel: JobOverviewViewModel
     
-    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
-    var shifts: FetchedResults<OldShift>
+  //  @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
+ //   var shifts: FetchedResults<OldShift>
     
     @State private var payPeriod: PayPeriod? = nil
     
     init(job: Job? = nil) {
         
-        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)]
+     //   let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+     //   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)]
     
         if let job = job {
             
-            let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
+        //    let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
          
-            fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
-            _payPeriod = State(initialValue: payPeriod)
+          //  fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
+        //    _payPeriod = State(initialValue: payPeriod)
             
         }
 
-        _shifts = FetchRequest(fetchRequest: fetchRequest, animation: .default)
+     //   _shifts = FetchRequest(fetchRequest: fetchRequest, animation: .default)
         
     }
     
@@ -797,7 +825,7 @@ struct PayPeriodSectionView: View {
                     Text("Pay Period").bold().font(.headline)
                     Divider().frame(height: 8)
                     if let payPeriod = payPeriod {
-                        Text("\(dateFormatter.string(from: payPeriod.startDate)) - \(dateFormatter.string(from: payPeriod.endDate))")
+                        Text("\(dateFormatter.string(from: Date())) - \(dateFormatter.string(from: Date()))")
                             .font(.caption)
                             .bold()
                             .roundedFontDesign()
@@ -805,25 +833,29 @@ struct PayPeriodSectionView: View {
                     }
                 }
                 
-                Text(
+                Text("Pay period info")
+                
+               /* Text(
                                         shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")" :
                                             shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)) :
                                             shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager))
-                                    )
+                                    )*/
                 
                 .roundedFontDesign()
                 .bold()
                     .foregroundStyle(.gray)
                     .font(.subheadline)
             }
-        }
+            
+            Spacer()
+        }.contentShape(Rectangle())
         
         .contextMenu{
       
            
             
             Button(action: {
-                exportPayPeriod(shifts)
+               // exportPayPeriod(shifts)
             }){
                 HStack {
                     Text("Export Shifts")
@@ -850,6 +882,8 @@ struct PayPeriodSectionView: View {
     }
     
 }
+
+
 
 
 

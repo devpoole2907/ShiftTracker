@@ -263,37 +263,12 @@ func currentDateWithoutSeconds() -> Date {
     return calendar.date(from: dateComponents) ?? Date()
 }
 
-func calculateCurrentPayPeriod(lastEndDate: Date, duration: Int) -> PayPeriod {
-    let calendar = Calendar.current
-    var endDate = lastEndDate
-
-    // Iterate forward to find the first period end date after today's date
-    while endDate < Date() {
-        endDate = calendar.date(byAdding: .day, value: duration, to: endDate)!
+extension PayPeriod {
+    var periodRange: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return "\(formatter.string(from: startDate!)) - \(formatter.string(from: endDate!))"
     }
-    
-    let startDate = calendar.date(byAdding: .day, value: -duration, to: endDate)!
-    
-    let payPeriod = PayPeriod(startDate: startDate, endDate: endDate)
-
-    return payPeriod
-    
-    
-}
-
-func calculateAllPayPeriods(since startDate: Date, duration: Int) -> [PayPeriod] {
-    let calendar = Calendar.current
-    var payPeriods = [PayPeriod]()
-    var currentStartDate = startDate
-
-    while currentStartDate <= Date() {
-        let currentEndDate = calendar.date(byAdding: .day, value: duration - 1, to: currentStartDate)!
-        payPeriods.append(PayPeriod(startDate: currentStartDate, endDate: currentEndDate))
-
-        currentStartDate = calendar.date(byAdding: .day, value: duration, to: currentStartDate)!
-    }
-
-    return payPeriods
 }
 
 

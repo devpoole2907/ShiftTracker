@@ -66,8 +66,14 @@
         <attribute name="totalTips" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <relationship name="breaks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Break" inverseName="oldShift" inverseEntity="Break"/>
         <relationship name="job" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Job" inverseName="oldShifts" inverseEntity="Job"/>
+        <relationship name="payPeriod" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PayPeriod" inverseName="shifts" inverseEntity="PayPeriod"/>
         <relationship name="scheduledShift" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ScheduledShift" inverseName="oldShift" inverseEntity="ScheduledShift"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="oldShifts" inverseEntity="Tag"/>
+    </entity>
+    <entity name="PayPeriod" representedClassName="PayPeriod" syncable="YES" codeGenerationType="class">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="shifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="payPeriod" inverseEntity="OldShift"/>
     </entity>
     <entity name="ScheduledShift" representedClassName="ScheduledShift" syncable="YES" codeGenerationType="class">
         <attribute name="breakReminder" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

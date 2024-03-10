@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 struct InvoicesListView: View {
     
@@ -88,92 +89,113 @@ struct InvoicesListView: View {
     var body: some View {
         
         ScrollViewReader { proxy in
-            List(Array(invoices.enumerated()), id: \.offset) { index, invoiceFile in
-            NavigationLink(destination:
-                            
-                            InvoiceViewSheet(url: invoiceFile.url).environmentObject(invoiceViewModel).environmentObject(navigationState)
-                .toolbar(.hidden, for: .tabBar)
-                .onAppear {
-                    navigationState.hideTabBar = true
-                }
-                .onDisappear {
-                    navigationState.hideTabBar = false
-                }
-                           
-                           
-                           
-            ) {
+            
+            
+            List {
                 
-                VStack(alignment: .leading, spacing: 4){
-                    Text(invoiceFile.url.lastPathComponent).bold()
-                    
-                    Divider().frame(maxWidth: 150)
-                    
-                    if let creationDate = invoiceFile.creationDate {
-                        Text("Created: \(creationDate.formatted())")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                if #available(iOS 17.0, *) {
+                    if invoices.isEmpty {
+                        
+                        TipView(GenericTip(titleString: "You have no invoices!", bodyString: "Create invoices by selecting shifts in the Latest Shifts and Activity views.", icon: "pencil.and.list.clipboard"))
+                        
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                        
                     }
                     
                 }
                 
-            }.listRowBackground(Color.clear)
+            ForEach(Array(invoices.enumerated()), id: \.offset) { index, invoiceFile in
+                
+                
+                
+                
+                
+                NavigationLink(destination:
+                                
+                                InvoiceViewSheet(url: invoiceFile.url).environmentObject(invoiceViewModel).environmentObject(navigationState)
+                    .toolbar(.hidden, for: .tabBar)
+                    .onAppear {
+                        navigationState.hideTabBar = true
+                    }
+                    .onDisappear {
+                        navigationState.hideTabBar = false
+                    }
+                               
+                               
+                               
+                ) {
+                    
+                    VStack(alignment: .leading, spacing: 4){
+                        Text(invoiceFile.url.lastPathComponent).bold()
+                        
+                        Divider().frame(maxWidth: 150)
+                        
+                        if let creationDate = invoiceFile.creationDate {
+                            Text("Created: \(creationDate.formatted())")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        
+                    }
+                    
+                }.listRowBackground(Color.clear)
                 
                     .id(index)
-                  
                 
-                .swipeActions {
-                    Button(role: .destructive) {
-                        deletePDF(fileURL: invoiceFile.url)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-                    
-                    if purchaseManager.hasUnlockedPro {
-                        
-                        ShareLink(item: invoiceFile.url, label: {
-                            Image(systemName: "square.and.arrow.up.fill")
-                        })
-                        
-                    }
-                    
-                }
-            
-                .contextMenu {
-                    Button(role: .destructive) {
-                        deletePDF(fileURL: invoiceFile.url)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-                    
-                    if purchaseManager.hasUnlockedPro {
-                        
-                        ShareLink(item: invoiceFile.url, label: {
-                            Text("Share")
-                            Image(systemName: "square.and.arrow.up.fill")
-                        })
-                        
-                    }
-                }
                 
-               
-                
-                .background {
-                    
-                    // we dont need the geometry reader, performance is better just doing this
-                    if index == 0 {
-                        Color.clear
-                            .onDisappear {
-                                scrollManager.timeSheetsScrolled = true
-                                print("time sheets has been scrolled")
-                            }
-                            .onAppear {
-                                scrollManager.timeSheetsScrolled = false
-                                print("timesheets has not been scrolled")
-                            }
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            deletePDF(fileURL: invoiceFile.url)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                        
+                        if purchaseManager.hasUnlockedPro {
+                            
+                            ShareLink(item: invoiceFile.url, label: {
+                                Image(systemName: "square.and.arrow.up.fill")
+                            })
+                            
+                        }
+                        
                     }
-                }
-            
+                
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            deletePDF(fileURL: invoiceFile.url)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                        
+                        if purchaseManager.hasUnlockedPro {
+                            
+                            ShareLink(item: invoiceFile.url, label: {
+                                Text("Share")
+                                Image(systemName: "square.and.arrow.up.fill")
+                            })
+                            
+                        }
+                    }
+                
+                
+                
+                    .background {
+                        
+                        // we dont need the geometry reader, performance is better just doing this
+                        if index == 0 {
+                            Color.clear
+                                .onDisappear {
+                                    scrollManager.timeSheetsScrolled = true
+                                    print("time sheets has been scrolled")
+                                }
+                                .onAppear {
+                                    scrollManager.timeSheetsScrolled = false
+                                    print("timesheets has not been scrolled")
+                                }
+                        }
+                    }
+            }
         }.listStyle(.plain)
         
             .scrollContentBackground(.hidden)

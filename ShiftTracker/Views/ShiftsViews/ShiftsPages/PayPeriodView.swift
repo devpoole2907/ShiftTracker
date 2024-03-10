@@ -7,7 +7,7 @@
 
 import SwiftUI
 import CoreData
-
+/*
 struct PayPeriodView: View {
     
     @Environment(\.colorScheme) private var colorScheme
@@ -46,7 +46,7 @@ struct PayPeriodView: View {
             
             let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
          
-            fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
+          //  fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
             _payPeriod = State(initialValue: payPeriod)
             _job = State(initialValue: job)
             
@@ -171,11 +171,11 @@ struct PayPeriodView: View {
                 
             }
         
-            .sheet(isPresented: $showingPayPeriodPicker) {
+         /*   .sheet(isPresented: $showingPayPeriodPicker) {
                 let allPeriods = calculateAllPayPeriods(since: job?.lastPayPeriodEndedDate ?? Date(), duration: Int(job?.payPeriodLength ?? 14))
                 PayPeriodPickerView(selectedPayPeriod: $payPeriod, allPayPeriods: allPeriods)
             }
-
+*/
         
         
             .navigationTitle(selection.isEmpty ? "Pay Period" : "\(selection.count) selected")
@@ -463,7 +463,7 @@ struct PayPeriodView: View {
         showExportView.toggle()
     }
     
-}
+}*/
 
 struct StatView: View {
     let title: String
@@ -483,6 +483,7 @@ struct StatView: View {
         }
     }
 }
+
 
 
 
