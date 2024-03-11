@@ -29,7 +29,7 @@ struct JobOverview: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.managedObjectContext) private var viewContext
-
+    
     @FetchRequest var shifts: FetchedResults<OldShift>
     @FetchRequest var weeklyShifts: FetchedResults<OldShift>
     @FetchRequest var lastTenShifts: FetchedResults<OldShift>
@@ -138,11 +138,11 @@ struct JobOverview: View {
             
             List{
                 
-             
-                    statsSection
-                        .frame(maxWidth: .infinity)
-                        .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
+                
+                statsSection
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                 
                 
                 recentShiftsSection
@@ -223,22 +223,22 @@ struct JobOverview: View {
                             overviewModel.navigationLocation = 2
                         }
                 } else if value == 3 {
-
+                    
                     
                     if let job = selectedJobManager.fetchJob(in: viewContext) {
                         PayPeriodsList(job: job).environmentObject(payPeriodManager)
                     } else {
                         Text("Error")
                     }
-                
+                    
                     
                     // doing this here causes the weirdest visual bug!
                     /*
-                    onAppear {
-                        withAnimation {
-                            shiftManager.showModePicker = false
-                        }
-                    }*/
+                     onAppear {
+                     withAnimation {
+                     shiftManager.showModePicker = false
+                     }
+                     }*/
                     
                 } else if value == 4 {
                     
@@ -246,10 +246,10 @@ struct JobOverview: View {
                     
                     InvoicesListView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(selectedJobManager).environmentObject(overviewModel)
                         .onAppear {
-                        withAnimation {
-                            shiftManager.showModePicker = false
+                            withAnimation {
+                                shiftManager.showModePicker = false
+                            }
                         }
-                    }
                     
                 }
                 
@@ -503,15 +503,15 @@ struct JobOverview: View {
                 .background {
                     
                     let deleteUIAction = UIAction(title: "Delete", image: UIImage(systemName: "trash.fill"), attributes: .destructive) { action in
-               
-                      
+                        
+                        
                         
                         deleteShift(shift)
                         
                     }
                     
                     let duplicateUIAction = UIAction(title: "Duplicate", image: UIImage(systemName: "plus.square.fill.on.square.fill")) { action in
-                            duplicateShift(shift)
+                        duplicateShift(shift)
                     }
                     
                     let shareUIAction = UIAction(title: "Export", image: UIImage(systemName: "square.and.arrow.up.fill")) { _ in
@@ -529,7 +529,7 @@ struct JobOverview: View {
                     
                 }
                 
-  
+                
                 
                 
                 .swipeActions {
@@ -539,7 +539,7 @@ struct JobOverview: View {
                     }, duplicateAction: {
                         duplicateShift(shift)
                     })
-                
+                    
                     
                     
                 }
@@ -599,7 +599,7 @@ struct JobOverview: View {
     
     var statsSection: some View {
         
-     
+        
         
         return Group {
             VStack(alignment: .center, spacing: 8){
@@ -608,7 +608,7 @@ struct JobOverview: View {
                         
                         StatsSquare(shifts: shifts, shiftsThisWeek: weeklyShifts)
                             .environmentObject(shiftManager)
-                   
+                        
                         
                         ChartSquare(shifts: weeklyShifts, statsMode: shiftManager.statsMode, navPath: $navPath)
                             .environmentObject(shiftManager)
@@ -621,7 +621,7 @@ struct JobOverview: View {
                             overviewModel.activeSheet = .configureExportSheet
                         })
                         .environmentObject(shiftManager)
-
+                        
                         
                         if let theJob = selectedJobManager.fetchJob(in: viewContext) {
                             if theJob.enableInvoices {
@@ -631,47 +631,47 @@ struct JobOverview: View {
                             invoicesSection
                         }
                         
-                    
+                        
                         
                     }
                 } .frame(height: 230)
-
-                if let theJob = selectedJobManager.fetchJob(in: viewContext), theJob.payPeriodEnabled, let payPeriods = theJob.payPeriods, !payPeriods.allObjects.isEmpty {
+                
+                if let theJob = selectedJobManager.fetchJob(in: viewContext), theJob.payPeriodEnabled {
                     
                     
                     
-                        
-                        payPeriodSection
+                    
+                    payPeriodSection
                         .id(refreshPayPeriodID)
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                        
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    
                         .onAppear {
                             
                             lastViewedDate = Date()
                             
+                        }
+                    
+                    
+                        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                            
+                            let threshold: TimeInterval = 24 * 60 * 60
+                            
+                            if Date().timeIntervalSince(lastViewedDate) > threshold {
+                                // The app was in the background for a long time, force refresh of pay period view
+                                refreshPayPeriodID = UUID()
                             }
-                            
-                            
-                            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
-            
-            let threshold: TimeInterval = 24 * 60 * 60
-            
-            if Date().timeIntervalSince(lastViewedDate) > threshold {
-                // The app was in the background for a long time, force refresh of pay period view
-                refreshPayPeriodID = UUID()
-            }
-        }
-                        
+                        }
+                    
                     
                     
                     
                 }
                 
             }
-          //
+            //
             
-
+            
             
             
             
@@ -689,38 +689,38 @@ struct JobOverview: View {
             
             navPath.append(3)
             
-                withAnimation {
-                    shiftManager.showModePicker = false
-                }
+            withAnimation {
+                shiftManager.showModePicker = false
+            }
             
             
         }) {
             
             if let job = selectedJobManager.fetchJob(in: viewContext), let payPeriod = job.payPeriods?.allObjects.first {
-             
-                PayPeriodSectionView(payPeriod: payPeriod as! PayPeriod, job: job).environmentObject(overviewModel)
+                
+                PayPeriodSectionView(payPeriod: payPeriod as? PayPeriod, job: job).environmentObject(overviewModel)
             } else {
-                Text("Error")
+                PayPeriodSectionView().environmentObject(overviewModel)
             }
             
-     
+            
         }.buttonStyle(PlainButtonStyle())
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
             .padding(.horizontal, 10)
-           // .frame(width: getRect().width - 44)
+        // .frame(width: getRect().width - 44)
             .glassModifier(cornerRadius: 12, applyPadding: false)
         
-       
         
-           
+        
+        
     }
     
     var invoicesSection: some View {
         
         let headerColor: Color = colorScheme == .dark ? .white : .black
         
-       return Button(action: {
+        return Button(action: {
             navPath.append(4)
         }){
             HStack(spacing: 5){
@@ -729,36 +729,36 @@ struct JobOverview: View {
                     Text("Invoices &")
                     Text("Timesheets")
                 }
-               
+                
                 .font(.callout)
-                    .bold()
-                    .foregroundStyle(headerColor)
-                    .padding(.leading)
+                .bold()
+                .foregroundStyle(headerColor)
+                .padding(.leading)
                 
                 Spacer()
-            
-            Image(systemName: "chevron.right")
-                .bold()
-               
-                .font(.subheadline)
-                .foregroundStyle(.gray)
                 
-                .padding(.trailing, 27)
+                Image(systemName: "chevron.right")
+                    .bold()
                 
-             //   Spacer()
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+                
+                    .padding(.trailing, 27)
+                
+                //   Spacer()
                 
             }
-                //.padding(.vertical, 14)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 5)
-                .contentShape(Rectangle())
+            //.padding(.vertical, 14)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 5)
+            .contentShape(Rectangle())
         }.buttonStyle(PlainButtonStyle())
         
             .frame(maxHeight: .infinity)
         
         
-           
-           .glassModifier(cornerRadius: 12, applyPadding: false)
+        
+            .glassModifier(cornerRadius: 12, applyPadding: false)
         
         
         
@@ -788,7 +788,7 @@ struct JobOverview: View {
         overviewModel.activeSheet = .addShiftSheet
     }
     
-
+    
     
     func exportShift(_ shift: OldShift) {
         
@@ -848,123 +848,7 @@ extension View {
     }
 }
 
-struct PayPeriodSectionView: View {
-    
-    @EnvironmentObject private var selectedJobManager: JobSelectionManager
-    @EnvironmentObject private var overviewModel: JobOverviewViewModel
-    
-    
-    @FetchRequest var shifts: FetchedResults<OldShift>
-    
-    var payPeriod: PayPeriod
-    var job: Job
-    
-    let shiftManager = ShiftDataManager()
-    
-    init(payPeriod: PayPeriod, job: Job) {
-        
-     //   let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
-     //   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)]
-    
-     
-            
-            let jobPredicate = NSPredicate(format: "job == %@", job)
-            let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
-            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, datePredicate])
-            self._shifts = FetchRequest(
-                entity: OldShift.entity(),
-                sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],
-                predicate: compoundPredicate
-            )
-            
-            
-            
-            
-            
-        //    let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
-         
-          //  fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
-        //    _payPeriod = State(initialValue: payPeriod)
-            
-        
-        self.payPeriod = payPeriod
-        self.job = job
 
-     //   _shifts = FetchRequest(fetchRequest: fetchRequest, animation: .default)
-        
-    }
-    
-    var body: some View {
-        HStack {
-            Image(systemName: "dollarsign.circle.fill").font(.largeTitle)
-            VStack(alignment: .leading){
-                HStack {
-                    Text("Pay Period").bold().font(.headline)
-                    Divider().frame(height: 8)
-                 
-                    Text("\(payPeriod.periodRange)")
-                            .font(.caption)
-                            .bold()
-                            .roundedFontDesign()
-                            .foregroundStyle(.gray)
-                    
-                }
-              Text(
-                                        shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")" :
-                                            shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)) :
-                                            shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager))
-                                    )
-                
-                .roundedFontDesign()
-                .bold()
-                    .foregroundStyle(.gray)
-                    .font(.subheadline)
-            }
-            
-            Spacer()
-            
-            Image(systemName: "chevron.right")
-                .bold()
-               
-                .font(.subheadline)
-                .foregroundStyle(.gray)
-                .padding(.trailing)
-            
-            
-        }.contentShape(Rectangle())
-        
-        .contextMenu{
-      
-           
-            
-            Button(action: {
-               // exportPayPeriod(shifts)
-            }){
-                HStack {
-                    Text("Export Shifts")
-                    Image(systemName: "square.and.arrow.up.fill")
-                }
-            }
-            
-        }
-    
-     
-        
-    }
-    
-    
-    private var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
-        return formatter
-    }()
-    
-    func exportPayPeriod(_ shifts: FetchedResults<OldShift>) {
-        overviewModel.shiftSelectionForExport = Set(shifts.map { $0.objectID })
-        overviewModel.activeSheet = .configureExportSheet
-    }
-    
-}
 
 
 

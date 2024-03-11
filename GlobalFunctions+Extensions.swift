@@ -284,39 +284,40 @@ extension PayPeriod {
 
 
 
-// used to create 3 default tags when the app launches
-
 func createTags(in viewContext: NSManagedObjectContext) {
     let tagNames = ["Night", "Overtime", "Late"]
     let tagColors = [UIColor(.indigo), UIColor(.orange), UIColor(.pink)]
     
     for index in tagNames.indices {
-        
         let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "name == %@", tagNames[index])
         
         do {
             let existingTags = try viewContext.fetch(fetchRequest)
             
-            if existingTags.isEmpty {
-                let tag = Tag(context: viewContext)
-                tag.name = tagNames[index]
-                
-                let (r, g, b) = tagColors[index].rgbComponents
-                tag.colorRed = Double(r)
-                tag.colorGreen = Double(g)
-                tag.colorBlue = Double(b)
-                tag.tagID = UUID()
-                tag.editable = false
-                
-                try viewContext.save()
+            // delete existing tags with same name
+            for tag in existingTags {
+                viewContext.delete(tag)
             }
+   
+            let tag = Tag(context: viewContext)
+            tag.name = tagNames[index]
+            
+            let (r, g, b) = tagColors[index].rgbComponents
+            tag.colorRed = Double(r)
+            tag.colorGreen = Double(g)
+            tag.colorBlue = Double(b)
+            tag.tagID = UUID()
+            tag.editable = false
+            
+            try viewContext.save()
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
     }
 }
+
 
 func createDefaultTheme(in viewContext: NSManagedObjectContext, with themeManager: ThemeDataManager){
     

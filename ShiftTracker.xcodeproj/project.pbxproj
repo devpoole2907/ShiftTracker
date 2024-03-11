@@ -181,6 +181,7 @@
 		7C5651822B33C5EC005223DE /* BreakReminderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */; };
 		7C5651842B33DC2B005223DE /* PayPeriodView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5651832B33DC2B005223DE /* PayPeriodView.swift */; };
 		7C56518C2B359E43005223DE /* OldShiftSwipeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C56518B2B359E43005223DE /* OldShiftSwipeActions.swift */; };
+		7C5D1CB32B9EFA4A004784F5 /* PayPeriodSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5D1CB22B9EFA4A004784F5 /* PayPeriodSectionView.swift */; };
 		7C5F735E2ABA59CF00F698A1 /* ThemesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */; };
 		7C6218582AD0BA4E00E67245 /* JobForShiftView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */; };
 		7C62185A2AD0BCBF00E67245 /* EstTaxPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */; };
@@ -491,6 +492,7 @@
 		7C5651812B33C5EC005223DE /* BreakReminderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakReminderSheet.swift; sourceTree = "<group>"; };
 		7C5651832B33DC2B005223DE /* PayPeriodView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodView.swift; sourceTree = "<group>"; };
 		7C56518B2B359E43005223DE /* OldShiftSwipeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldShiftSwipeActions.swift; sourceTree = "<group>"; };
+		7C5D1CB22B9EFA4A004784F5 /* PayPeriodSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayPeriodSectionView.swift; sourceTree = "<group>"; };
 		7C5F735D2ABA59CF00F698A1 /* ThemesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesList.swift; sourceTree = "<group>"; };
 		7C6218572AD0BA4E00E67245 /* JobForShiftView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobForShiftView.swift; sourceTree = "<group>"; };
 		7C6218592AD0BCBF00E67245 /* EstTaxPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstTaxPicker.swift; sourceTree = "<group>"; };
@@ -1190,6 +1192,7 @@
 				7CF890812B9D714F00AC2389 /* PayPeriodsList.swift */,
 				7CF890832B9D717E00AC2389 /* PayPeriodShiftsList.swift */,
 				7CF890892B9D721300AC2389 /* PayPeriodDetailRow.swift */,
+				7C5D1CB22B9EFA4A004784F5 /* PayPeriodSectionView.swift */,
 			);
 			path = PayPeriods;
 			sourceTree = "<group>";
@@ -1580,6 +1583,7 @@
 				7C1A9FEC2B9BBDF50079411D /* InvoiceInputPreviews.swift in Sources */,
 				7C1132462ACA9C1E00E983FD /* CustomSheetModifiers.swift in Sources */,
 				7C1BB6862AA838F300957BF5 /* HistoryViewModel.swift in Sources */,
+				7C5D1CB32B9EFA4A004784F5 /* PayPeriodSectionView.swift in Sources */,
 				7C5F735E2ABA59CF00F698A1 /* ThemesList.swift in Sources */,
 				1A1DEC9429F100950002D9E4 /* Enums.swift in Sources */,
 				7CFF521D2AD52C3100BB3AD6 /* ChartSquareViewModel.swift in Sources */,
