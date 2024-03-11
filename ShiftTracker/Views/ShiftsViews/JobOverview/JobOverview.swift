@@ -636,10 +636,10 @@ struct JobOverview: View {
                     }
                 } .frame(height: 230)
 
-                if let theJob = selectedJobManager.fetchJob(in: viewContext) {
+                if let theJob = selectedJobManager.fetchJob(in: viewContext), theJob.payPeriodEnabled, let payPeriods = theJob.payPeriods, !payPeriods.allObjects.isEmpty {
                     
                     
-                    if theJob.payPeriodEnabled {
+                    
                         
                         payPeriodSection
                         .id(refreshPayPeriodID)
@@ -663,7 +663,7 @@ struct JobOverview: View {
             }
         }
                         
-                    }
+                    
                     
                     
                 }
@@ -695,7 +695,15 @@ struct JobOverview: View {
             
             
         }) {
-            PayPeriodSectionView(job: selectedJobManager.fetchJob(in: viewContext)).environmentObject(overviewModel)
+            
+            if let job = selectedJobManager.fetchJob(in: viewContext), let payPeriod = job.payPeriods?.allObjects.first {
+             
+                PayPeriodSectionView(payPeriod: payPeriod as! PayPeriod, job: job).environmentObject(overviewModel)
+            } else {
+                Text("Error")
+            }
+            
+     
         }.buttonStyle(PlainButtonStyle())
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
@@ -843,27 +851,44 @@ extension View {
 struct PayPeriodSectionView: View {
     
     @EnvironmentObject private var selectedJobManager: JobSelectionManager
-    @EnvironmentObject private var shiftManager: ShiftDataManager
     @EnvironmentObject private var overviewModel: JobOverviewViewModel
     
-  //  @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
- //   var shifts: FetchedResults<OldShift>
     
-    @State private var payPeriod: PayPeriod? = nil
+    @FetchRequest var shifts: FetchedResults<OldShift>
     
-    init(job: Job? = nil) {
+    var payPeriod: PayPeriod
+    var job: Job
+    
+    let shiftManager = ShiftDataManager()
+    
+    init(payPeriod: PayPeriod, job: Job) {
         
      //   let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
      //   fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)]
     
-        if let job = job {
+     
+            
+            let jobPredicate = NSPredicate(format: "job == %@", job)
+            let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, datePredicate])
+            self._shifts = FetchRequest(
+                entity: OldShift.entity(),
+                sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],
+                predicate: compoundPredicate
+            )
+            
+            
+            
+            
             
         //    let payPeriod = calculateCurrentPayPeriod(lastEndDate: job.lastPayPeriodEndedDate!, duration: Int(job.payPeriodLength))
          
           //  fetchRequest.predicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate as CVarArg, payPeriod.endDate as CVarArg)
         //    _payPeriod = State(initialValue: payPeriod)
             
-        }
+        
+        self.payPeriod = payPeriod
+        self.job = job
 
      //   _shifts = FetchRequest(fetchRequest: fetchRequest, animation: .default)
         
@@ -876,22 +901,19 @@ struct PayPeriodSectionView: View {
                 HStack {
                     Text("Pay Period").bold().font(.headline)
                     Divider().frame(height: 8)
-                    if let payPeriod = payPeriod {
-                        Text("\(dateFormatter.string(from: Date())) - \(dateFormatter.string(from: Date()))")
+                 
+                    Text("\(payPeriod.periodRange)")
                             .font(.caption)
                             .bold()
                             .roundedFontDesign()
                             .foregroundStyle(.gray)
-                    }
+                    
                 }
-                
-                Text("Pay period info")
-                
-               /* Text(
+              Text(
                                         shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")" :
                                             shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)) :
                                             shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager))
-                                    )*/
+                                    )
                 
                 .roundedFontDesign()
                 .bold()
