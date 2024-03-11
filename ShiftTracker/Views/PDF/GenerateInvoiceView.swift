@@ -104,6 +104,15 @@ struct GenerateInvoiceView: View {
                             .glassModifier(cornerRadius: 20)
                         
                         taxDetails
+                    } else {
+                        Text("Timesheet Details")
+                            .bold()
+                            .padding(.vertical, 5)
+                            .padding(.horizontal)
+                            .glassModifier(cornerRadius: 20)
+                        
+                        descriptionToggle
+                        
                     }
                  
                     Spacer(minLength: 400)
@@ -190,6 +199,21 @@ struct GenerateInvoiceView: View {
         
     }
     
+    var descriptionToggle: some View {
+        
+     
+        return VStack(alignment: .leading, spacing: 10){
+            Toggle(isOn: $viewModel.showDescription) {
+                Text("Show Description of Work")
+                
+            }.toggleStyle(CustomToggleStyle())
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+            
+        }.glassModifier(cornerRadius: 20)
+        
+        
+    }
     
     var userDetails: some View {
         

@@ -13,12 +13,18 @@ class InvoiceViewModel: ObservableObject {
     
     @Published var tableCells: [ShiftTableCell] = []
     @Published var totalPay: Double = 0.0
+    @Published var totalSeconds: Double = 0.0
+    @Published var breakSeconds: Double = 0.0
+    @Published var overtimeSeconds: Double = 0.0
     @Published var showPDFViewer = false
     
     //show pro view if they try export and arent pro
     @Published var showProView = false
     
     @Published var pdfFileType: PdfFileType = .invoice
+    
+    // to display description of work in timesheet
+    @Published var showDescription = false
     
     // input variables
     
@@ -133,11 +139,13 @@ class InvoiceViewModel: ObservableObject {
             let duration = shift.duration // Assuming you have a duration property in OldShift
             let rate = shift.hourlyPay // Assuming you have a rate property in OldShift
             let pay = shift.totalPay
-            return ShiftTableCell(date: shift.shiftStartDate ?? Date(), duration: duration, rate: rate, pay: pay)
+            return ShiftTableCell(date: shift.shiftStartDate ?? Date(), duration: duration, rate: rate, pay: pay, endtime: shift.shiftEndDate ?? Date(), breakDuration: shift.breakDuration, overtimeDuration: shift.overtimeDuration, notes: shift.shiftNote ?? "")
         }
         
         totalPay = tableCells.reduce(0) { $0 + $1.pay }
-        
+        totalSeconds = tableCells.reduce(0) { $0 + $1.duration}
+        breakSeconds = tableCells.reduce(0) { $0 + $1.breakDuration}
+        overtimeSeconds = tableCells.reduce(0) { $0 + $1.overtimeDuration}
         
         
     }
@@ -222,7 +230,7 @@ class InvoiceViewModel: ObservableObject {
             let emptyCellsNeeded = cellsPerPage - cellsForPage.count
             if emptyCellsNeeded > 0 {
                 for _ in 0..<emptyCellsNeeded {
-                    let emptyCell = ShiftTableCell(date: Date(), duration: 0, rate: 0, pay: 0, isEmpty: true)
+                    let emptyCell = ShiftTableCell(date: Date(), isEmpty: true)
                     cellsForPage.append(emptyCell)
                 }
             }
@@ -238,7 +246,7 @@ class InvoiceViewModel: ObservableObject {
             if pdfFileType == .invoice {
                 content = AnyView(InvoiceView(isLastPage: isLastPage, tableCells: cellsForPage, totalPay: totalPay, taxedPay: taxedPay, taxTaken: taxTaken, taxRate: 18.50, abbreviation: taxAbbreviation, invoiceNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
             } else {
-                content = AnyView(Text("Timesheet view goes here"))
+                content = AnyView(TimesheetsView(isLastPage: isLastPage, showDescription: showDescription, tableCells: cellsForPage, totalSeconds: totalSeconds, breakSeconds: breakSeconds, overtimeSeconds: overtimeSeconds, timesheetNumber: invoiceNumber, invoiceDate: invoiceDate, dueDate: dueDate, clientName: jobName, clientStreetAddress: clientStreetAddress, clientCity: clientCity, clientState: clientState, clientPostalCode: clientPostalCode, clientCountry: clientCountry, userName: userName, userStreetAddress: userStreetAddress, userCity: userCity, userState: userState, userPostalCode: userPostalCode, userCountry: userCountry))
             }
 
             let renderer = ImageRenderer(content: content)

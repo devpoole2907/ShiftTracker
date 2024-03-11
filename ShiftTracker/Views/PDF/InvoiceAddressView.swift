@@ -18,10 +18,14 @@ struct InvoiceAddressView: View {
     
     var isClient: Bool
     
+    var fileType: PdfFileType = .invoice
+
+    
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             if isClient {
-                Text("Invoice to").foregroundStyle(.white).padding(.horizontal).background(Color.black.opacity(0.5)).padding(.vertical, 2).font(.caption)
+                Text("\(fileType == .invoice ? "Invoice to" : "Address to")").foregroundStyle(.white).padding(.horizontal).background(Color.black.opacity(0.5)).padding(.vertical, 2).font(.caption)
             }
             Text(clientName).bold()
             Text(streetAddress)
