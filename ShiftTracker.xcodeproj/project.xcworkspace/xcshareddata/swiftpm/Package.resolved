@@ -1,4 +1,5 @@
 {
+  "originHash" : "7f6ef6b7edc840264867ef9d374022ad2df2b81f4235763b50248b8a72e78257",
   "pins" : [
     {
       "identity" : "chartview",
@@ -73,5 +74,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
