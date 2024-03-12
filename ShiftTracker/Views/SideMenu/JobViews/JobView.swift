@@ -68,7 +68,7 @@ struct JobView: View {
         
         NavigationStack{
 
-            ZStack(alignment: .bottomTrailing){
+            ZStack(alignment: .bottom){
                 
                 themeManager.contentDynamicBackground.opacity(jobViewModel.hasAppeared ? 0 : 1)
                 
@@ -572,95 +572,129 @@ struct JobView: View {
         
     }
     
-    var floatingButtons: some View {
-        return HStack(spacing: 10){
+    func jobButtonAction() {
+        
+        
             
+            jobViewModel.buttonBounce.toggle()
             
-            
-            Button(action: {
-                
-                jobViewModel.buttonBounce.toggle()
-                
-                if jobViewModel.name.isEmpty {
-                    withAnimation(.linear(duration: 0.4)) {
-                        jobViewModel.nameShakeTimes += 2
-                    }
+            if jobViewModel.name.isEmpty {
+                withAnimation(.linear(duration: 0.4)) {
+                    jobViewModel.nameShakeTimes += 2
                 }
-                else if jobViewModel.hourlyPay.isEmpty || jobViewModel.hourlyPay == "0.0" {
-                    withAnimation(.linear(duration: 0.4)) {
-                        jobViewModel.payShakeTimes += 2
-                    }
-                } else if jobViewModel.title.isEmpty {
-                    withAnimation(.linear(duration: 0.4)) {
-                        jobViewModel.titleShakeTimes += 2
-                    }
-                    
-                    
-                } else if jobViewModel.overtimeEnabled && jobViewModel.overtimeAppliedAfter == 0 {
-                    withAnimation(.linear(duration: 0.4)) {
-                        jobViewModel.overtimeShakeTimes += 2
-                    }
-                }
-                else {
-                    print("saving")
-                    
-                    jobViewModel.saveJob(in: viewContext, locationManager: locationManager, selectedJobManager: selectedJobManager, jobViewModel: jobViewModel, contentViewModel: contentViewModel)
-                    
-                    dismiss()
-                    
-                }
-                
-                
-                
-            }) {
-                Image(systemName: "folder.badge.plus").customAnimatedSymbol(value: $jobViewModel.buttonBounce)
-                    .bold()
             }
+            else if jobViewModel.hourlyPay.isEmpty || jobViewModel.hourlyPay == "0.0" {
+                withAnimation(.linear(duration: 0.4)) {
+                    jobViewModel.payShakeTimes += 2
+                }
+            } else if jobViewModel.title.isEmpty {
+                withAnimation(.linear(duration: 0.4)) {
+                    jobViewModel.titleShakeTimes += 2
+                }
+                
+                
+            } else if jobViewModel.overtimeEnabled && jobViewModel.overtimeAppliedAfter == 0 {
+                withAnimation(.linear(duration: 0.4)) {
+                    jobViewModel.overtimeShakeTimes += 2
+                }
+            }
+            else {
+                print("saving")
+                
+                jobViewModel.saveJob(in: viewContext, locationManager: locationManager, selectedJobManager: selectedJobManager, jobViewModel: jobViewModel, contentViewModel: contentViewModel)
+                
+                dismiss()
+                
+            }
+            
+            
+            
+        
+        
+        
+    }
+    
+    var floatingButtons: some View {
+        
+        let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
+        let textColor: Color = colorScheme == .dark ? .white : .black
+        
+        return Group {
             
             if job != nil {
                 
-                Divider().frame(maxHeight: 10)
-                
-                
-                Button(action: {
+                HStack {
+                    Spacer()
+                HStack(spacing: 10){
                     
-                    dismiss()
                     
-                    CustomConfirmationAlert(action: {
+                    
+                    Button(action: {
+                        jobButtonAction()
+                    }) {
+                        Image(systemName: "folder.badge.plus").customAnimatedSymbol(value: $jobViewModel.buttonBounce)
+                            .bold()
+                    }
+                    
+                    if job != nil {
+                        
+                        Divider().frame(maxHeight: 10)
                         
                         
-                  
-                        
-                        
-                        jobViewModel.deleteJob(in: viewContext, selectedJobManager: selectedJobManager){
-                            notificationManager.scheduleNotifications()
-                            notificationManager.updateRosterNotifications(viewContext: viewContext)
-                            locationManager.startMonitoringAllLocations()
+                        Button(action: {
+                            
+                            dismiss()
+                            
+                            CustomConfirmationAlert(action: {
+                                
+                                
+                                
+                                
+                                
+                                jobViewModel.deleteJob(in: viewContext, selectedJobManager: selectedJobManager){
+                                    notificationManager.scheduleNotifications()
+                                    notificationManager.updateRosterNotifications(viewContext: viewContext)
+                                    locationManager.startMonitoringAllLocations()
+                                }
+                                
+                            }, cancelAction: {
+                                isEditJobPresented = true
+                                selectedJobForEditing = job
+                                
+                                
+                            }, title: "Are you sure? All associated previous and scheduled shifts will be deleted. Any saved invoices will be lost.").showAndStack()
+                            
+                            
+                        }
+                        ) {
+                            Image(systemName: "trash")
+                                .foregroundColor(.red)
+                                .bold()
                         }
                         
-                    }, cancelAction: {
-                        isEditJobPresented = true
-                        selectedJobForEditing = job
-                        
-                        
-                    }, title: "Are you sure? All associated previous and scheduled shifts will be deleted. Any saved invoices will be lost.").showAndStack()
+                    }
                     
                     
-                }
-                ) {
-                    Image(systemName: "trash")
-                        .foregroundColor(.red)
-                        .bold()
-                }
+                    
+                }.padding()
+                    .glassModifier(cornerRadius: 20)
+                
+                    .padding()
                 
             }
             
+            } else {
+                ActionButtonView(title: "Create Job", backgroundColor: buttonColor, textColor: textColor, icon: "folder.badge.plus", buttonWidth: getRect().width - 60) {
+                
+                jobButtonAction()
+                
+                
+                
+            }.padding(.bottom, getRect().height == 667 ? 10 : 0)
+            }
             
             
-        }.padding()
-            .glassModifier(cornerRadius: 20)
-        
-            .padding()
+        }
     }
     
     

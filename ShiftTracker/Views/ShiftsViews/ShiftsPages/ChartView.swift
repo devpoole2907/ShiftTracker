@@ -17,9 +17,6 @@ struct ChartView: View {
     
     var dateRange: ClosedRange<Date>
     var shifts: [DayOrMonthAggregate]
-    
-  //  var index: Int
-    
 
     var chartUnit: Calendar.Component {
         

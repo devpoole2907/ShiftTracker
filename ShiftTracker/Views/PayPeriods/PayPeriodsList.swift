@@ -54,7 +54,7 @@ struct PayPeriodsList: View {
     var body: some View {
         
         
-        ZStack(alignment: .bottomTrailing) {
+        ZStack(alignment: .bottom) {
             ScrollViewReader { proxy in
                 List {
                     
@@ -268,33 +268,19 @@ struct PayPeriodsList: View {
     }
     
     var floatingButtons: some View {
-        VStack{
-            
-            HStack(spacing: 10){
-                
-                
-                
-                Button(action: {
-                    withAnimation(.spring) {
-                        showCreateSheet.toggle()
-                    }
-                }){
-                    
-                    Image(systemName: "plus").customAnimatedSymbol(value: $showCreateSheet)
-                        .bold()
-                    
-                }
-                
-                
-                
-                
-            }.padding()
-                .glassModifier(cornerRadius: 20)
-            
-                .padding()
-            
-            //  Spacer().frame(height: (UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 50 : 40)
-        }
+        
+        let buttonColor: Color = colorScheme == .dark ? Color.white : Color.black
+        let textColor: Color = colorScheme == .dark ? .white : .black
+        
+        return ActionButtonView(title: "Create Pay Period", backgroundColor: buttonColor, textColor: textColor, icon: "note.text.badge.plus", buttonWidth: getRect().width - 60, action: {
+            withAnimation(.spring) {
+                showCreateSheet.toggle()
+            }
+        })
+        .padding(.bottom)
+        .padding(.bottom, getRect().height == 667 ? 10 : 0)
+        
+        
     }
     
     var isDateConflict: Bool {
@@ -329,11 +315,7 @@ struct PayPeriodsList: View {
                             DatePicker("Start Date", selection: $payPeriodManager.newPeriodStartDate, displayedComponents: .date)
                         
                             DatePicker("End Date", selection: $payPeriodManager.newPeriodEndDate, in: payPeriodManager.newPeriodStartDate..., displayedComponents: .date)
-                          
-                                
-                        
-                       
-                        
+
                         
                     }.padding()
                         .glassModifier(cornerRadius: 20)
@@ -350,6 +332,18 @@ struct PayPeriodsList: View {
                             .padding(.horizontal)
                         
                     }
+                    
+                    VStack(alignment: .leading, spacing: 10){
+                        Toggle(isOn: $payPeriodManager.remindMeAtEnd){
+                            
+                            Text("Notify at End").bold()
+                            
+                        }.toggleStyle(CustomToggleStyle())
+                            .padding(.horizontal)
+                            .padding(.vertical, 10)
+                        
+                    }.glassModifier(cornerRadius: 20)
+                        .padding(.horizontal)
                     
                     
                     Spacer(minLength: 120)

@@ -42,7 +42,7 @@ struct ShiftsList: View {
     
     var body: some View {
         let allShifts = sortSelection.filteredShifts.filter { shiftManager.shouldIncludeShift($0, jobModel: selectedJobManager) }
-        ZStack(alignment: .bottomTrailing){
+        ZStack(alignment: .bottom){
             ScrollViewReader { proxy in
                 List(selection: editMode.isEditing ? $selection : .constant(Set<NSManagedObjectID>())) {
                     
@@ -425,16 +425,15 @@ struct ShiftsList: View {
                 }.padding()
                     .glassModifier(cornerRadius: 20)
                 
-            }.padding(.trailing)
+            }
             
             TagSortView(selectedFilters: $sortSelection.selectedFilters)
-                .frame(width: UIScreen.main.bounds.width - 100)
+                .frame(width: getRect().width - 44)
                 .frame(maxHeight: 40)
                 .padding(5)
                 .glassModifier(cornerRadius: 20)
             
                 .padding(.bottom, 10)
-                .padding(.trailing)
             
             
             
