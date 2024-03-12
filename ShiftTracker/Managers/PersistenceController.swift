@@ -36,12 +36,15 @@ struct PersistenceController {
                 } else {
                     // Enable or disable CloudKit based on the user's preference
                     let iCloudEnabled = UserDefaults.standard.bool(forKey: "iCloudEnabled")
-                    if iCloudEnabled {
-                        storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+                    
+                    storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+                    
+                
+                        
                         storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
                         let containerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.poole.james.ShiftTracker")
-                        storeDescription.cloudKitContainerOptions = containerOptions
-                    }
+                        storeDescription.cloudKitContainerOptions = iCloudEnabled ? containerOptions : nil
+                    
                 }
         // use this to wipe core data upon launch if modifying the data base
      /*   do {
