@@ -83,16 +83,12 @@ struct PersistenceController {
         let iCloudEnabled = UserDefaults.standard.bool(forKey: "iCloudEnabled")
         let storeDescription = container.persistentStoreDescriptions.first!
         
-        if iCloudEnabled {
+        
             storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
             storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
             let containerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.poole.james.ShiftTracker")
-            storeDescription.cloudKitContainerOptions = containerOptions
-        } else {
-            storeDescription.setOption(nil as NSNumber?, forKey: NSPersistentHistoryTrackingKey)
-            storeDescription.setOption(nil as NSNumber?, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-            storeDescription.cloudKitContainerOptions = nil
-        }
+            storeDescription.cloudKitContainerOptions = iCloudEnabled ? containerOptions : nil
+        
 
         // Reload persistent stores
         reloadPersistentStores()
