@@ -257,7 +257,7 @@ struct PayPeriodsList: View {
                 .customSheetRadius()
                 .customSheetBackground()
             
-                .presentationDetents([.fraction(0.4)])
+                .presentationDetents([.fraction(0.44)])
             
             
         }
@@ -292,8 +292,11 @@ struct PayPeriodsList: View {
         }
             
             return payPeriods.contains { existingPayPeriod in
-                let existingStartDate = existingPayPeriod.startDate ?? Date()
-                let existingEndDate = existingPayPeriod.endDate ?? Date()
+                guard let existingStartDate = existingPayPeriod.startDate,
+                let existingEndDate = existingPayPeriod.endDate,
+                      existingStartDate <= existingEndDate else {
+                    return false
+                }
                 return (newStartDate...newEndDate).overlaps(existingStartDate...existingEndDate)
             }
             
