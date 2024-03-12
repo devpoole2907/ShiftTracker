@@ -19,15 +19,19 @@ struct PayPeriodDetailRow: View {
     @EnvironmentObject var selectedJobManager: JobSelectionManager
     
     @FetchRequest var shifts: FetchedResults<OldShift>
-       
-       init(_ payPeriod: PayPeriod) {
-           self.payPeriod = payPeriod
-           self._shifts = FetchRequest(
-               entity: OldShift.entity(),
-               sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: true)],
-               predicate: NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
-           )
-       }
+    
+    init(payPeriod: PayPeriod, job: Job) {
+        self.payPeriod = payPeriod
+               let jobPredicate = NSPredicate(format: "job == %@", job)
+               let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
+               let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, datePredicate])
+               self._shifts = FetchRequest(
+                   entity: OldShift.entity(),
+                   sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],
+                   predicate: compoundPredicate
+               )
+        
+           }
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()

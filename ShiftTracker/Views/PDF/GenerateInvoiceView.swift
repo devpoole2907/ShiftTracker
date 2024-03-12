@@ -234,16 +234,18 @@ struct GenerateInvoiceView: View {
 
             CustomTextField(text: $viewModel.invoiceNumber, hint: "\(viewModel.pdfFileType.singularDescription) Number", capitaliseWords: true).focused($focusField, equals: .invoiceNo)
              
-            DatePicker(viewModel.pdfFileType == .invoice ? "Invoice Date" : "Start Date", selection: $viewModel.invoiceDate, in: Date()..., displayedComponents: .date)
+            DatePicker(viewModel.pdfFileType == .invoice ? "Invoice Date" : "Date", selection: $viewModel.invoiceDate, in: Date()..., displayedComponents: .date)
                 .padding(.horizontal)
                 .padding(.vertical, 10)
                 .glassModifier(cornerRadius: 20)
             
-          
-            DatePicker(viewModel.pdfFileType == .invoice ? "Due date" : "End Date", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
+            if viewModel.pdfFileType == .invoice {
+                DatePicker("Due date", selection: $viewModel.dueDate, in: Date()..., displayedComponents: .date)
                     .padding(.horizontal)
                     .padding(.vertical, 10)
                     .glassModifier(cornerRadius: 20)
+                
+            }
                 
             
             

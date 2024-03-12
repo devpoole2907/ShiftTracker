@@ -57,12 +57,12 @@ struct PayPeriodsList: View {
         ZStack(alignment: .bottom) {
             ScrollViewReader { proxy in
                 List {
-                    
+                    if let job = selectedJobManager.fetchJob(in: viewContext) {
                     ForEach(Array(payPeriods.enumerated()), id: \.element.objectID) { index, payPeriod in
                         
                         NavigationLink(value: payPeriod) {
                             
-                            PayPeriodDetailRow(payPeriod)
+                            PayPeriodDetailRow(payPeriod: payPeriod, job: job)
                             
                             
                         }.listRowBackground(Color.clear)
@@ -142,6 +142,7 @@ struct PayPeriodsList: View {
                             }
                         
                     }
+                }
                 }.listStyle(.plain)
                 
                     .tint(Color.gray)
