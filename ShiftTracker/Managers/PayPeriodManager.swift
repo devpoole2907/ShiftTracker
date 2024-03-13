@@ -82,7 +82,12 @@ class PayPeriodManager: ObservableObject {
         
         for job in jobsToUpdate {
             let shiftsFetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
-            shiftsFetchRequest.predicate = NSPredicate(format: "job == %@", job)
+            let jobPredicate = NSPredicate(format: "job == %@", job)
+            let activeShiftPredicate = NSPredicate(format: "isActive == NO")
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, activeShiftPredicate])
+
+            shiftsFetchRequest.predicate = compoundPredicate
+
             
             let allShifts: [OldShift]
             do {

@@ -52,7 +52,11 @@ class SortSelection: ObservableObject {
         let request = NSFetchRequest<OldShift>(entityName: "OldShift")
         request.sortDescriptors = selectedSort.descriptors
          
-         var predicates = selectedFilters.compactMap { $0.predicate }
+         // dont show active shifts
+         var predicates = [NSPredicate(format: "isActive == NO")]
+             
+           
+             predicates.append(contentsOf: selectedFilters.compactMap { $0.predicate })
          
          if !searchTerm.isEmpty {
                  let searchPredicate = NSPredicate(

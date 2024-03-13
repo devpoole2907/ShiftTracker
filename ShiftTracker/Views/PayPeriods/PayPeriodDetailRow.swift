@@ -22,16 +22,19 @@ struct PayPeriodDetailRow: View {
     
     init(payPeriod: PayPeriod, job: Job) {
         self.payPeriod = payPeriod
-               let jobPredicate = NSPredicate(format: "job == %@", job)
-               let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
-               let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, datePredicate])
-               self._shifts = FetchRequest(
-                   entity: OldShift.entity(),
-                   sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],
-                   predicate: compoundPredicate
-               )
+        var predicates: [NSPredicate] = [NSPredicate(format: "isActive == NO")]
+        let jobPredicate = NSPredicate(format: "job == %@", job)
+        let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
+        predicates.append(jobPredicate)
+        predicates.append(datePredicate)
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        self._shifts = FetchRequest(
+            entity: OldShift.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],
+            predicate: compoundPredicate
+        )
         
-           }
+    }
     
     private var currencyFormatter: NumberFormatter {
         let formatter = NumberFormatter()
@@ -77,15 +80,15 @@ struct PayPeriodDetailRow: View {
                 }
                 
                 if let startDate = payPeriod.startDate, let endDate = payPeriod.endDate, currentDate >= startDate && currentDate <= endDate {
-                                    Text("Current")
-                                        .font(.caption)
-                                        .bold()
-                                        .roundedFontDesign()
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 3)
-                                        .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
-                                        .cornerRadius(6)
-                                }
+                    Text("Current")
+                        .font(.caption)
+                        .bold()
+                        .roundedFontDesign()
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
+                        .background(colorScheme == .dark ? Color(.systemGray6) : Color(.systemGray5))
+                        .cornerRadius(6)
+                }
                 
                 
                 

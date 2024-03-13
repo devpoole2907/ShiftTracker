@@ -32,8 +32,21 @@ struct HistoricalView: View {
     
     @Binding var navPath: NavigationPath
     
-    @FetchRequest(entity: OldShift.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)])
-    var shifts: FetchedResults<OldShift>
+    @FetchRequest var shifts: FetchedResults<OldShift>
+    
+    init(navPath: Binding<NavigationPath>){
+        
+        _navPath = navPath
+        
+        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
+        fetchRequest.predicate = NSPredicate(format: "isActive == NO")
+        
+        
+        
+        _shifts = FetchRequest(fetchRequest: fetchRequest, animation: .default)
+        
+    }
     
     var body: some View {
         

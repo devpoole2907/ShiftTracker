@@ -21,12 +21,15 @@ struct PayPeriodSectionView: View {
     let shiftManager = ShiftDataManager()
     
     init(payPeriod: PayPeriod? = nil, job: Job? = nil) {
-
+        
         if let job = job, let payPeriod = payPeriod, let startDate = payPeriod.startDate, let endDate = payPeriod.endDate {
             
+            var predicates: [NSPredicate] = [NSPredicate(format: "isActive == NO")]
             let jobPredicate = NSPredicate(format: "job == %@", job)
-            let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", startDate as CVarArg, endDate as CVarArg)
-            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, datePredicate])
+            let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
+            predicates.append(jobPredicate)
+            predicates.append(datePredicate)
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
             self._shifts = FetchRequest(
                 entity: OldShift.entity(),
                 sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],
@@ -41,52 +44,52 @@ struct PayPeriodSectionView: View {
             )
         }
         
-
+        
         
         
         self.payPeriod = payPeriod
         self.job = job
-
+        
     }
     
     var body: some View {
         HStack {
             Image(systemName: "dollarsign.circle.fill").font(.largeTitle)
             
-                
-                
-                
-                
-                if let payPeriod = payPeriod {
-                    VStack(alignment: .leading){
-                        HStack {
-                            Text("Pay Period").bold().font(.headline)
-                            Divider().frame(height: 8)
-                            Text("\(payPeriod.periodRange)")
-                                .font(.caption)
-                                .bold()
-                                .roundedFontDesign()
-                                .foregroundStyle(.gray)
-                        }
-                        
-                        Text(
-                            shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")" :
-                                shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)) :
-                                shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager))
-                        )
-                        
-                        .roundedFontDesign()
-                        .bold()
-                        .foregroundStyle(.gray)
-                        .font(.subheadline)
-                        
+            
+            
+            
+            
+            if let payPeriod = payPeriod {
+                VStack(alignment: .leading){
+                    HStack {
+                        Text("Pay Period").bold().font(.headline)
+                        Divider().frame(height: 8)
+                        Text("\(payPeriod.periodRange)")
+                            .font(.caption)
+                            .bold()
+                            .roundedFontDesign()
+                            .foregroundStyle(.gray)
                     }
                     
-                } else {
-                    Text("Pay Periods").bold().font(.headline)
+                    Text(
+                        shiftManager.statsMode == .earnings ? "\(shiftManager.currencyFormatter.string(from: NSNumber(value: shiftManager.addAllPay(shifts: shifts, jobModel: selectedJobManager))) ?? "0")" :
+                            shiftManager.statsMode == .hours ? shiftManager.formatTime(timeInHours: shiftManager.addAllHours(shifts: shifts, jobModel: selectedJobManager)) :
+                            shiftManager.formatTime(timeInHours: shiftManager.addAllBreaksHours(shifts: shifts, jobModel: selectedJobManager))
+                    )
+                    
+                    .roundedFontDesign()
+                    .bold()
+                    .foregroundStyle(.gray)
+                    .font(.subheadline)
+                    
                 }
                 
-                
+            } else {
+                Text("Pay Periods").bold().font(.headline)
+            }
+            
+            
             
             
             Spacer()

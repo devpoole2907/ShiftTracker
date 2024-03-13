@@ -28,7 +28,7 @@ struct ScheduleView: View {
 
     @FetchRequest(entity: Job.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Job.name, ascending: true)]) private var jobs: FetchedResults<Job>
     @FetchRequest(
-        sortDescriptors: ShiftSort.sorts[1].descriptors,
+        sortDescriptors: ShiftSort.sorts[1].descriptors, predicate: NSPredicate(format: "isActive == NO"),
         animation: .default)
     private var allShifts: FetchedResults<OldShift>
     @FetchRequest var scheduledShifts: FetchedResults<ScheduledShift>

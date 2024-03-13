@@ -20,17 +20,9 @@ class ContentViewModel: ObservableObject {
     
     static let shared = ContentViewModel()
     
-    @Published var payMultiplier: Double = 1.0 {
-        didSet {
-            savePayMultiplier()
-        }
-    }
+    @Published var payMultiplier: Double = 1.0
     
-    @Published var isMultiplierEnabled: Bool = false {
-        didSet {
-            saveIsMultiplierEnabled()
-        }
-    }
+    @Published var isMultiplierEnabled: Bool = false
     
     
     @Published var shiftState: ShiftState = .notStarted
@@ -56,7 +48,10 @@ class ContentViewModel: ObservableObject {
     @Published  var lastBreakElapsed: TimeInterval = 0
     @Published  var taxPercentage: Double = 0
     @Published  var overtimeMultiplier: Double = 1.25
-    @Published  var shift: Shift?
+   // old @Published  var shift: Shift?
+    
+    @Published var currentShift: OldShift?
+    
     @Published  var timeElapsed: TimeInterval = 0 {
         didSet {
             print("weird i got set?")
@@ -208,7 +203,7 @@ class ContentViewModel: ObservableObject {
            let previousEndDate = previousBreak.endDate {
             return previousEndDate
         } else {
-            return shift?.startDate ?? Date() // Return a default minimum date if no suitable break is found
+            return currentShift?.shiftStartDate ?? Date() // Return a default minimum date if no suitable break is found
         }
     }
     
@@ -220,46 +215,6 @@ class ContentViewModel: ObservableObject {
         return formatter
     }()
     
-    init() {
-        // Read the value of hourlyPay from UserDefaults, or use a default value if none is found
-        self._hourlyPay = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.hourlyPayKey))
-        self._lastPay = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.lastPayKey))
-        self._taxPercentage = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.taxPercentageKey))
-        self._lastTaxedPay = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.lastTaxedPayKey))
-        self._lastBreakElapsed = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.lastBreakElapsedKey))
-        self._breakTaken = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.breakTakenKey))
-        self._isOnBreak = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.isOnBreakKey))
-        self._breakTime = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.breakTimeKey))
-        self._timeElapsedBeforeBreak = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.timeElapsedBeforeBreakKey))
-        
-        // to determine auto clock out when contentview appears
-        
-        self._autoClockOut = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.autoClockOutKey))
-        
-        // overtime stuff
-        
-        // multiplier stuff
-        
-        self._payMultiplier = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.payMultiplierKey))
-        self._isMultiplierEnabled = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.multiplierEnabledKey))
-        
-        
-        // i dont know if ill use this, its old:
-        self._overtimeMultiplier = .init(initialValue: sharedUserDefaults.double(forKey: shiftKeys.overtimeMultiplierKey))
-        
-        self._isOvertime = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.isOvertimeKey))
-        
-        self._overtimeEnabled = .init(initialValue: sharedUserDefaults.bool(forKey: shiftKeys.overtimeEnabledKey))
-        
-        if let uuidString = sharedUserDefaults.string(forKey: "SelectedJobUUID"), let uuid = UUID(uuidString: uuidString) {
-            self._selectedJobUUID = .init(initialValue: uuid)
-        } else {
-            self._selectedJobUUID = .init(initialValue: nil)
-        }
-        
-        
-    }
-    
     var breakElapsed: TimeInterval {
         guard let breakStartDate = breakStartDate, let breakEndDate = breakEndDate else { return 0 }
         return breakEndDate.timeIntervalSince(breakStartDate)
@@ -268,9 +223,9 @@ class ContentViewModel: ObservableObject {
     // NEW totalPay and taxedPay factoring in overtime
     
   var totalPay: Double {
-        guard let shift = shift else { return 0 }
+      guard let shift = currentShift, let shiftStartDate = shift.shiftStartDate else { return 0 }
         
-        let elapsed = Date().timeIntervalSince(shift.startDate) - totalBreakDuration()
+        let elapsed = Date().timeIntervalSince(shiftStartDate) - totalBreakDuration()
         
         if elapsed >= applyOvertimeAfter && timeElapsedUntilOvertime == 0 && overtimeRate > 1.0 {
             timeElapsedUntilOvertime = elapsed
@@ -298,13 +253,13 @@ class ContentViewModel: ObservableObject {
     
     // this func is used for calculating the total pay when the shift is ended, as the user may provide a custom end date
     func computeTotalPay(for endDate: Date) -> Double {
-        guard let shift = shift else {
+        guard let shift = currentShift, let shiftStartDate = shift.shiftStartDate else {
             
             print("im returning 0")
             
             return 0 }
         
-        let elapsed = endDate.timeIntervalSince(shift.startDate) - totalBreakDuration()
+        let elapsed = endDate.timeIntervalSince(shiftStartDate) - totalBreakDuration()
         
         var computeOvertimeEnabled = false
         
@@ -387,41 +342,6 @@ class ContentViewModel: ObservableObject {
             return sortedBreaks[index - 1].endDate
         }
         return nil
-    }
-    
-    func saveHourlyPay() {
-        sharedUserDefaults.set(hourlyPay, forKey: shiftKeys.hourlyPayKey)
-    }
-    func saveLastPay() {
-        sharedUserDefaults.set(lastPay, forKey: shiftKeys.lastPayKey)
-        //saved last pay to userdefaults
-    }
-    func saveLastTaxedPay() {
-        sharedUserDefaults.set(lastTaxedPay, forKey: shiftKeys.lastTaxedPayKey)
-        //saved last taxed pay to userdefaults
-    }
-    
-    func saveTaxPercentage() {
-        sharedUserDefaults.set(taxPercentage, forKey: shiftKeys.taxPercentageKey)
-        //saved tax percentage to userdefaults
-    }
-    
-    public func saveLastBreak() {
-        sharedUserDefaults.set(lastBreakElapsed, forKey: shiftKeys.lastBreakElapsedKey)
-        //saved last break to userdefaults
-    }
-    
-    func saveOvertimeMultiplier() {
-        sharedUserDefaults.set(overtimeMultiplier, forKey: shiftKeys.overtimeMultiplierKey)
-        //saved tax percentage to userdefaults
-    }
-    
-    func savePayMultiplier() {
-        sharedUserDefaults.set(payMultiplier, forKey: shiftKeys.payMultiplierKey)
-    }
-    
-    func saveIsMultiplierEnabled() {
-        sharedUserDefaults.set(isMultiplierEnabled, forKey: shiftKeys.multiplierEnabledKey)
     }
     
     func saveAutoClockOut() {
@@ -573,7 +493,7 @@ class ContentViewModel: ObservableObject {
         }
         
 #if os(iOS)
-        updateActivity(startDate: shift?.startDate ?? Date())
+        updateActivity(startDate: currentShift?.shiftStartDate ?? Date())
 #endif
         
         
@@ -597,170 +517,6 @@ class ContentViewModel: ObservableObject {
             }
         }
     }
-    
-    func endShift(using viewContext: NSManagedObjectContext, endDate: Date, job: Job) -> OldShift? {
-        
-        
-        let newTotalPay = computeTotalPay(for: endDate)
-        let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
-        
-#if os(iOS)
-        stopActivity(startDate: shift?.startDate ?? Date(), totalPay: newTotalPay, taxedPay: newTaxedPay, shiftDuration: endDate.timeIntervalSince(shift?.startDate ?? Date()), breakDuration: totalBreakDuration(), endDate: endDate)
-#endif
-        
-        
-        print("time elapsed until overtime was: \(timeElapsedUntilOvertime)")
-        print("ending shift, overtime time elapsed is: \(timeElapsed - timeElapsedUntilOvertime)")
-        
-        // cancel any potential upcoming break reminders that may not have been triggered yet
-        cancelReminderNotification()
-        
-        
-        let overtimeElapsed = timeElapsed - timeElapsedUntilOvertime
-        
-        stopTimer(timer: &timer, timeElapsed: &timeElapsed)
-        breakTaken = false
-        isOvertime = false
-        
-        
-        
-        shiftEnded = true
-        sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.breakStartedDateKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.breakEndedDateKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey) // destroys the time elapsed before break
-        sharedUserDefaults.removeObject(forKey: shiftKeys.autoClockOutKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.autoClockOutTimeKey)
-        sharedUserDefaults.set(breakTaken, forKey: shiftKeys.breakTakenKey)
-        sharedUserDefaults.set(true, forKey: shiftKeys.shiftEndedKey)
-        sharedUserDefaults.set(false, forKey: shiftKeys.overtimeEnabledKey)
-        
-        
-        var latestShift: OldShift? = nil
-        
-
-        showBadge = true // show the badge on the tab button
-        
-        if shiftState != .countdown {
-            
-            if let shift = shift {
-                self.lastPay = totalPay
-                self.lastTaxedPay = taxedPay
-                saveLastPay() // Save the value of lastPay to UserDefaults
-                saveLastTaxedPay()
-                self.lastBreakElapsed = breakElapsed
-                saveLastBreak()
-                
-             
-                
-                latestShift = OldShift(context: viewContext)
-                latestShift!.hourlyPay = shift.hourlyPay
-                latestShift!.shiftStartDate = shift.startDate
-                latestShift!.shiftEndDate = endDate
-                latestShift!.totalPay = newTotalPay
-                latestShift!.taxedPay = newTaxedPay
-                latestShift!.tax = Double(taxPercentage)
-                latestShift!.breakElapsed = breakElapsed
-                latestShift!.duration = endDate.timeIntervalSince(shift.startDate)
-                latestShift!.overtimeDuration = overtimeElapsed
-                latestShift!.timeBeforeOvertime = timeElapsedUntilOvertime
-                latestShift!.overtimeEnabled = enableOvertime
-                latestShift!.overtimeRate = overtimeRate
-                latestShift!.multiplierEnabled = isMultiplierEnabled
-                latestShift!.payMultiplier = payMultiplier
-                
-                latestShift!.breakDuration = totalBreakDuration()
-                
-                latestShift!.shiftID = UUID()
-                
-                latestShift!.job = job
-                
-                let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "tagID IN %@", selectedTags)
-                let selectedTagEntities = try? viewContext.fetch(fetchRequest)
-                
-                latestShift!.tags = NSSet(array: selectedTagEntities ?? [])
-                
-                // empty the selected tags
-                selectedTags = Set<UUID>()
-                removeSelectedTags()
-                
-                
-                for tempBreak in tempBreaks {
-                    if let breakEndDate = tempBreak.endDate {
-                        breaksManager.createBreak(oldShift: latestShift!, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
-                    }
-                }
-                
-                //PersistenceController.shared.save()
-                if latestShift!.duration > 0 {
-                    do {
-                        try viewContext.save()
-                        
-                    } catch {
-                        print("Error saving new shift: \(error)")
-                    }
-                }
-                
-                
-            }
-        }
-        
-        shiftState = .notStarted
-        
-        sharedUserDefaults.removeObject(forKey: shiftKeys.lastBreakElapsedKey)
-        shift = nil
-        shiftEnded = true
-        overtimeDuration = 0
-        
-        timeElapsedUntilOvertime = 0 // reset time elapsed until overtime if it exists
-        
-        isPresented = true
-        //   breakStartDate = nil
-        //  breakEndDate = nil
-        
-        tempBreaks.removeAll()
-        clearTempBreaksFromUserDefaults()
-        isMultiplierEnabled = false
-        payMultiplier = 1.0
-        overtimeEnabled = false
-        
-        return latestShift
-    }
-    
-    func cancelShift() {
-    #if os(iOS)
-        stopActivity(startDate: shift?.startDate ?? Date())
-    #endif
-
-   
-        cancelReminderNotification()
-        stopTimer(timer: &timer, timeElapsed: &timeElapsed)
-        
-        
-        shiftState = .notStarted
-        shiftEnded = false
-        breakTaken = false
-        isOvertime = false
-        isMultiplierEnabled = false
-        overtimeEnabled = false
-        overtimeDuration = 0
-        timeElapsedUntilOvertime = 0
-        payMultiplier = 1.0
-
-       
-        tempBreaks.removeAll()
-        clearTempBreaksFromUserDefaults()
-        sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.breakStartedDateKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.breakEndedDateKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.timeElapsedBeforeBreakKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.breakTakenKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.overtimeEnabledKey)
-        sharedUserDefaults.removeObject(forKey: shiftKeys.lastBreakElapsedKey)
-     
-        shift = nil
-    }
 
     
     func endBreak(endDate: Date? = nil, viewContext: NSManagedObjectContext) {
@@ -777,7 +533,7 @@ class ContentViewModel: ObservableObject {
         
         isOnBreak = false
 #if os(iOS)
-        updateActivity(startDate: shift?.startDate ?? Date())
+        updateActivity(startDate: currentShift?.shiftStartDate ?? Date())
 #endif
         
         
@@ -823,25 +579,11 @@ class ContentViewModel: ObservableObject {
         
     }
     
-    func startTimer(startDate: Date, viewContext: NSManagedObjectContext) {
+    func newStartTimer(viewContext: NSManagedObjectContext){
         
-        if shift != nil{
+        if let currentShift = self.currentShift, let startDate = currentShift.shiftStartDate {
             
-            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                self.timeElapsed = Date().timeIntervalSince(startDate)// - self.totalBreakDuration()
-                
-                if self.shiftState == .countdown && self.timeElapsed >= 0 {
-                    self.shiftState = .inProgress
-                }
-                
-                
-                
-            }
-#if os(iOS)
-            startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
-#endif
-        }
-        else {
+            
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                 self.timeElapsed = Date().timeIntervalSince(startDate)
                 
@@ -854,9 +596,13 @@ class ContentViewModel: ObservableObject {
 #if os(iOS)
             startActivity(startDate: startDate, hourlyPay: hourlyPay, viewContext: viewContext)
 #endif
+            
+        } else {
+            return
         }
         
     }
+
 #if os(iOS)
     func startActivity(startDate: Date, hourlyPay: Double, viewContext: NSManagedObjectContext){
         if #available(iOS 16.2, *) {
@@ -942,74 +688,290 @@ class ContentViewModel: ObservableObject {
     }
 #endif
     
+    func checkForActiveShiftAndManageTimer(using viewContext: NSManagedObjectContext, completion: @escaping (Bool, Error?) -> Void) {
+            let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "isActive == YES")
+            do {
+                let activeShifts = try viewContext.fetch(fetchRequest)
+                if activeShifts.isEmpty {
+                    stopTimer(timer: &timer, timeElapsed: &timeElapsed)
+                    completion(false, nil)
+                    print("No active shift found. Timer stopped.")
+                } else {
+                    print("found active shift")
+                }
+                
+                completion(true, nil)
+                
+            } catch {
+                print("Failed to fetch active shifts: \(error.localizedDescription)")
+                
+            }
+        }
     
-    func startShift(using viewContext: NSManagedObjectContext, startDate: Date, job: Job) {
-        if shift == nil{ // PERHAPS YOU DONT NEED THIS?
-            if(hourlyPay == 0){
+    func newStartShift(using viewContext: NSManagedObjectContext, startDate: Date? = nil, job: Job? = nil) {
+        guard hourlyPay != 0 else {
+            print("Hourly pay is not set. Shift cannot start.")
+            return
+        }
+        
+        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isActive == YES")
+        do {
+            let activeShifts = try viewContext.fetch(fetchRequest)
+            if let activeShift = activeShifts.first {
+                print("Resuming active shift with start date: \(String(describing: activeShift.shiftStartDate))")
+                updateViewModelForActiveShift(activeShift)
+                newStartTimer(viewContext: viewContext)
+                loadSelectedTags()
+                loadTempBreaksFromUserDefaults()
                 return
             }
-            else {
-                
-                if startDate > Date() {
-                    shiftState = .countdown
-                    // Setup countdown
-                } else {
-                    shiftState = .inProgress
-                    // Setup timer
-                }
-                
-                
-                // lol this isnt actually using the hourly pay here...
-                shift = Shift(startDate: startDate, hourlyPay: job.hourlyPay)
-                sharedUserDefaults.set(shift?.startDate, forKey: shiftKeys.shiftStartDateKey)
-                
-                // save auto clock out bool and time
-                sharedUserDefaults.set(autoClockOut, forKey: shiftKeys.autoClockOutKey)
-                sharedUserDefaults.set(autoClockOutTime, forKey: shiftKeys.autoClockOutTimeKey)
-                
-                print("starting shift, time elapsed until overtime started was: \(timeElapsedUntilOvertime)")
-                
-                if job.overtimeEnabled {
-                    print("overtime is enabled when the shift started")
-                    self.applyOvertimeAfter = job.overtimeAppliedAfter
-                    print("Overtime will be applied after: \(applyOvertimeAfter)")
-                    self.overtimeRate = job.overtimeRate
-                    
-                    self.enableOvertime = job.overtimeEnabled
-                    
-                } else {
-                    self.applyOvertimeAfter = 0
-                    self.overtimeRate = 1.0
-                }
-                
-                
-                if let savedTimeElapsed = sharedUserDefaults.object(forKey: shiftKeys.timeElapsedBeforeBreakKey) as? TimeInterval {
-                    // timeElapsed = savedTimeElapsed
-                }
-                
-                startTimer(startDate: startDate, viewContext: viewContext)
-                
-                shiftsTracked += 1
+        } catch {
+            print("Failed to check for active shifts: \(error.localizedDescription)")
+        }
+
+        guard let startDate = startDate, let job = job else {
+            print("Missing startDate or job for new shift. Cannot proceed.")
+            return
+        }
+
+        let newShift = OldShift(context: viewContext)
+        newShift.shiftStartDate = startDate
+        newShift.hourlyPay = job.hourlyPay
+        newShift.isActive = true
+        newShift.job = job
+        newShift.payMultiplier = payMultiplier
+        newShift.multiplierEnabled = isMultiplierEnabled
+        setupNewShiftDetails(newShift, with: job)
+        updateViewModelForActiveShift(newShift)
+
+        loadTempBreaksFromUserDefaults()
+        loadSelectedTags()
+
+        do {
+            try viewContext.save()
+            
+            print("New shift started successfully.")
+        } catch {
+            print("Failed to start new shift: \(error.localizedDescription)")
+        }
+        
+        newStartTimer(viewContext: viewContext)
+     
+        
+    }
+
+    private func setupNewShiftDetails(_ shift: OldShift, with job: Job) {
+   
+        // this actuallyt shouldnt be toggled yet, unless the shift literally hits overtime so later. leaving here so you rememeber 
+       // shift.overtimeEnabled = job.overtimeEnabled
+        if job.overtimeEnabled {
+            shift.overtimeRate = job.overtimeRate
+        }
+
+        // Updating ViewModel's overtime settings for UI consistency
+        self.applyOvertimeAfter = job.overtimeAppliedAfter
+        self.overtimeRate = job.overtimeRate
+        self.enableOvertime = job.overtimeEnabled
+        
+        self.currentShift = shift
+        
+    }
+
+    private func updateViewModelForActiveShift(_ shift: OldShift) {
+        
+        if shift.shiftStartDate ?? Date() > Date() {
+            shiftState = .countdown
+            // Setup countdown
+        } else {
+            shiftState = .inProgress
+            // Setup timer
+        }
+        
+        print("shift state is in progress")
+        self.hourlyPay = shift.hourlyPay
+        self.applyOvertimeAfter = shift.job?.overtimeAppliedAfter ?? 0 // Assuming these properties exist
+        self.overtimeRate = shift.overtimeRate
+        self.enableOvertime = shift.overtimeEnabled
+        self.currentShift = shift
+        self.taxPercentage = shift.job?.tax ?? 0.0
+        self.payMultiplier = shift.payMultiplier
+        self.isMultiplierEnabled = shift.multiplierEnabled
+
+    }
+    
+    func newEndShift(using viewContext: NSManagedObjectContext, endDate: Date, completion: @escaping (Result<OldShift, Error>) -> Void) {
+        guard self.shiftState == .inProgress else {
+            // Assuming cancelShift() is updated to handle new architecture and uses a completion handler if needed.
+            cancelShift(using: viewContext) { result in
+                            switch result {
+                            case .success():
+                                print("Successfully canceled and deleted all active shifts.")
+                          
+                            case .failure(let error):
+                                print("Failed to cancel shifts: \(error.localizedDescription)")
+                            
+                            }
+                        }
+            print("we're cancelling!")
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Shift is not in progress"])))
+            return
+        }
+
+        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isActive == YES")
+        do {
+            let activeShifts = try viewContext.fetch(fetchRequest)
+            guard let activeShift = activeShifts.first else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No active shift to end."])))
+                return
             }
             
-            if isMultiplierEnabled {
-                print("multiplier is enabled")
-                
-                print("multiplier rate is: \(payMultiplier)")
-                
-                
+         
+            updateShiftDetails(activeShift, endDate: endDate, viewContext: viewContext) { result in
+                switch result {
+                case .success(let updatedShift):
+                    self.clearShiftState()
+                    completion(.success(updatedShift))
+                case .failure(let error):
+                    completion(.failure(error))
+                    self.clearShiftState()
+                }
             }
-            
-            loadTempBreaksFromUserDefaults()
-            
-            
-            print("temp break count after starting break is now: \(tempBreaks.count)")
-            
-            shiftEnded = false
-            sharedUserDefaults.set(false, forKey: shiftKeys.shiftEndedKey)
-            shiftStartDate = startDate // sets the picker value to startDate of the shift every time
+        } catch {
+            completion(.failure(error))
         }
     }
+
+    private func clearShiftState() {
+        DispatchQueue.main.async {
+      
+            self.shiftState = .notStarted
+            self.currentShift = nil
+            self.shiftEnded = true
+            self.breakTaken = false
+            self.isOvertime = false
+            self.overtimeDuration = 0
+            self.timeElapsedUntilOvertime = 0
+            self.isMultiplierEnabled = false
+            self.payMultiplier = 1.0
+            self.overtimeEnabled = false
+            self.tempBreaks.removeAll()
+         
+            self.clearTempBreaksFromUserDefaults()
+      
+            self.showBadge = true
+       
+            self.isPresented = true
+            self.cancelReminderNotification()
+            
+            self.stopTimer(timer: &self.timer, timeElapsed: &self.timeElapsed)
+
+        }
+    }
+    
+    private func updateShiftDetails(_ latestShift: OldShift, endDate: Date, viewContext: NSManagedObjectContext, completion: @escaping (Result<OldShift, Error>) -> Void) {
+        
+        let newTotalPay = computeTotalPay(for: endDate)
+        let newTaxedPay = newTotalPay - (newTotalPay * Double(taxPercentage) / 100.0)
+        
+#if os(iOS)
+        stopActivity(startDate: currentShift?.shiftStartDate ?? Date(), totalPay: newTotalPay, taxedPay: newTaxedPay, shiftDuration: endDate.timeIntervalSince(currentShift?.shiftStartDate ?? Date()), breakDuration: totalBreakDuration(), endDate: endDate)
+#endif
+        
+        
+        print("time elapsed until overtime was: \(timeElapsedUntilOvertime)")
+        print("ending shift, overtime time elapsed is: \(timeElapsed - timeElapsedUntilOvertime)")
+        
+        
+        let overtimeElapsed = timeElapsed - timeElapsedUntilOvertime
+    
+        
+            self.lastPay = totalPay
+            self.lastTaxedPay = taxedPay
+            self.lastBreakElapsed = breakElapsed
+            
+
+            latestShift.hourlyPay = currentShift?.hourlyPay ?? 0.0
+            latestShift.shiftStartDate = currentShift?.shiftStartDate
+            latestShift.shiftEndDate = endDate
+            latestShift.totalPay = newTotalPay
+            latestShift.taxedPay = newTaxedPay
+            latestShift.tax = Double(taxPercentage)
+            latestShift.breakElapsed = breakElapsed
+            latestShift.duration = endDate.timeIntervalSince(currentShift?.shiftStartDate ?? Date())
+            latestShift.overtimeDuration = overtimeElapsed
+            latestShift.timeBeforeOvertime = timeElapsedUntilOvertime
+            latestShift.overtimeEnabled = enableOvertime
+            latestShift.overtimeRate = overtimeRate
+            latestShift.multiplierEnabled = isMultiplierEnabled
+            latestShift.payMultiplier = payMultiplier
+        // set shift to inactive
+        latestShift.isActive = false
+            
+            latestShift.breakDuration = totalBreakDuration()
+            
+            latestShift.shiftID = UUID()
+            
+        // job is already set no need
+          //  latestShift.job = job
+            
+            let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "tagID IN %@", selectedTags)
+            let selectedTagEntities = try? viewContext.fetch(fetchRequest)
+            
+            latestShift.tags = NSSet(array: selectedTagEntities ?? [])
+            
+            // empty the selected tags
+            selectedTags = Set<UUID>()
+            removeSelectedTags()
+            
+            
+            for tempBreak in tempBreaks {
+                if let breakEndDate = tempBreak.endDate {
+                    breaksManager.createBreak(oldShift: latestShift, startDate: tempBreak.startDate, endDate: breakEndDate, isUnpaid: tempBreak.isUnpaid, in: viewContext)
+                }
+            }
+            
+            //PersistenceController.shared.save()
+            if latestShift.duration > 0 {
+                do {
+                        try viewContext.save()
+                        completion(.success(latestShift))
+                    } catch {
+                        completion(.failure(error))
+                    }
+            }
+            
+            
+
+        completion(.failure(NSError(domain: "", code: 2001, userInfo: [NSLocalizedDescriptionKey: "Error updating shift details"])))
+        
+    }
+    
+    func cancelShift(using viewContext: NSManagedObjectContext, completion: @escaping (Result<Void, Error>) -> Void) {
+        let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isActive == YES")
+        do {
+            let activeShifts = try viewContext.fetch(fetchRequest)
+            for activeShift in activeShifts {
+                // delete any shifts marked active
+                viewContext.delete(activeShift)
+            }
+
+            try viewContext.save()
+            clearShiftState()
+
+            completion(.success(()))
+            print("All active shifts canceled successfully.")
+        } catch {
+            completion(.failure(error))
+            print("Failed to cancel active shifts: \(error.localizedDescription)")
+        }
+    }
+
+
     
     private var shiftStartDateString: String? {
         guard let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date else {
@@ -1034,7 +996,11 @@ class ContentViewModel: ObservableObject {
 #endif
     
     func startShiftButtonAction(using viewContext: NSManagedObjectContext, startDate: Date, job: Job) {
-        startShift(using: viewContext, startDate: startDate, job: job)
+        
+        newStartShift(using: viewContext, startDate: startDate, job: job)
+        
+        
+       // startShift(using: viewContext, startDate: startDate, job: job)
         shiftStartDate = startDate
         // Add notification logic
         
@@ -1190,4 +1156,3 @@ class ContentViewModel: ObservableObject {
     }
     
 }
-

@@ -50,6 +50,7 @@
         <attribute name="breakStartDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="hourlyPay" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="isActive" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="multiplierEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="overtimeDuration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="overtimeEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

@@ -294,10 +294,7 @@ class JobViewModel: ObservableObject {
             
             if let jobUUID = jobViewModel.job?.uuid {
                 if jobUUID == contentViewModel.selectedJobUUID {
-                    contentViewModel.hourlyPay = jobViewModel.job!.hourlyPay
-                    contentViewModel.saveHourlyPay()
-                    contentViewModel.taxPercentage = jobViewModel.job!.tax
-                    contentViewModel.saveTaxPercentage()
+             
                 }
                 
                 

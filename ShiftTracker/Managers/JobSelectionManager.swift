@@ -17,9 +17,20 @@ class JobSelectionManager: ObservableObject {
 
     private func fetchLatestShifts(in context: NSManagedObjectContext) {
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "job == %@", fetchJob(in: context)!)
-        fetchRequest.fetchLimit = 10 // we'll only fetch 10 latest shifts
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "shiftStartDate", ascending: false)] // Assuming you have an endDate property
+   
+        guard let job = fetchJob(in: context) else {
+            print("Job not found.")
+            return
+        }
+        
+       
+        let jobPredicate = NSPredicate(format: "job == %@", job)
+        let activeShiftPredicate = NSPredicate(format: "isActive == NO")
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, activeShiftPredicate])
+        
+        fetchRequest.predicate = compoundPredicate
+        fetchRequest.fetchLimit = 10 // Limit to 10 latest shifts
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "shiftStartDate", ascending: false)]
 
         do {
             let shifts = try context.fetch(fetchRequest)
@@ -28,6 +39,7 @@ class JobSelectionManager: ObservableObject {
             print("Failed to fetch old shifts: \(error)")
         }
     }
+
 
     
     
@@ -49,7 +61,7 @@ class JobSelectionManager: ObservableObject {
 
     
     func selectJob(_ job: Job, with jobs: FetchedResults<Job>, shiftViewModel: ContentViewModel) {
-        if shiftViewModel.shift == nil {
+        //if shiftViewModel.currentShift == nil {
             if let jobUUID = job.uuid {
                 let currentIndex = jobs.firstIndex(where: { $0.uuid == jobUUID }) ?? 0
                 let selectedIndex = jobs.firstIndex(where: { $0.uuid == selectedJobUUID }) ?? 0
@@ -58,15 +70,11 @@ class JobSelectionManager: ObservableObject {
                 }
                 selectedJobUUID = jobUUID
                 shiftViewModel.selectedJobUUID = jobUUID
-                shiftViewModel.hourlyPay = job.hourlyPay
-                shiftViewModel.saveHourlyPay()
-                shiftViewModel.taxPercentage = job.tax
-                shiftViewModel.saveTaxPercentage()
                 storedSelectedJobUUID = jobUUID.uuidString
             }
-        } else {
+      /*  } else {
             OkButtonPopup(title: "End your current shift to select another job.").showAndStack()
-        }
+        }*/
     }
     
     // used when editing the currently selected job
@@ -80,14 +88,14 @@ class JobSelectionManager: ObservableObject {
     
     func deselectJob(shiftViewModel: ContentViewModel){
         
-        if shiftViewModel.shift == nil {
+       // if shiftViewModel.currentShift == nil {
             
             selectedJobUUID = nil
             storedSelectedJobUUID = ""
-        } else {
+       /* } else {
             OkButtonPopup(title: "End your current shift to deselect this job.").showAndStack()
 
-        }
+        }*/
         
         
         

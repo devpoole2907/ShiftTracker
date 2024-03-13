@@ -58,7 +58,7 @@ struct ContentView: View {
             List{
                 VStack(spacing: 20){
                     Group{
-                        if viewModel.shift == nil{
+                        if viewModel.currentShift == nil{
                             UpcomingShiftView()
                                 .padding(.horizontal)
                                 .shake(times: viewModel.upcomingShiftShakeTimes)
@@ -105,9 +105,25 @@ struct ContentView: View {
                             if value >= viewModel.autoClockOutTime && viewModel.autoClockOut {
                                 print("clocking out")
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                    if viewModel.shift != nil && !viewModel.isOnBreak{
-                                        self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(viewModel.autoClockOutTime), job: selectedJobManager.fetchJob(in: context)!)
+                                    if viewModel.currentShift != nil && !viewModel.isOnBreak{
                                         
+                                        viewModel.newEndShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(viewModel.autoClockOutTime)) { result in
+                                            DispatchQueue.main.async {
+                                                switch result {
+                                                case .success(let endedShift):
+                                                    
+                                                    print("Shift ended successfully. Details: \(endedShift)")
+                                                    
+                                                    try? viewModel.lastEndedShift = result.get()
+                                                    
+                                                case .failure(let error):
+                                                    
+                                                    print("Failed to end shift: \(error.localizedDescription)")
+                                                    
+                                                }
+                                            }
+                                        }
+                                     
                                         
                                         navigationState.activeSheet = .detailSheet
                                     }
@@ -119,13 +135,31 @@ struct ContentView: View {
                         }
                             
                             if value >= 86400 {
-                                DispatchQueue.main.async {
-                                    self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(86400), job: selectedJobManager.fetchJob(in: context)!)
+                               
+                                //    self.viewModel.lastEndedShift = viewModel.endShift(using: context, endDate: , job: selectedJobManager.fetchJob(in: context)!)
+                                    
+                                   viewModel.newEndShift(using: context, endDate: viewModel.shiftStartDate.addingTimeInterval(86400)) { result in
+                                        DispatchQueue.main.async {
+                                            switch result {
+                                            case .success(let endedShift):
+                                                
+                                                print("Shift ended successfully. Details: \(endedShift)")
+                                                
+                                                try? viewModel.lastEndedShift = result.get()
+                                                
+                                            case .failure(let error):
+                                                
+                                                print("Failed to end shift: \(error.localizedDescription)")
+                                                
+                                            }
+                                            navigationState.activeSheet = .detailSheet
+                                        }
+                                    }
                                     
                
-                                    navigationState.activeSheet = .detailSheet
                                     
-                                }
+                                    
+                                
                                 
                             }
                             
@@ -137,7 +171,7 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity)
                     
                     Group{
-                        if viewModel.shift == nil{
+                        if viewModel.currentShift == nil{
                             Button(action: {
                                 navigationState.showMenu.toggle()
                             }) {
@@ -147,7 +181,7 @@ struct ContentView: View {
                                     .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
-                            .disabled(viewModel.shift != nil)
+                            .disabled(viewModel.currentShift != nil)
                             .frame(maxWidth: UIScreen.main.bounds.width - 40, alignment: .leading)
                             .shake(times: jobShakeTimes)
                             
@@ -158,7 +192,7 @@ struct ContentView: View {
                     }
                 }.listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                if viewModel.shift != nil && !viewModel.tempBreaks.isEmpty {
+                if viewModel.currentShift != nil && !viewModel.tempBreaks.isEmpty {
                     CurrentBreaksListView().listRowBackground(Color.clear)
                 }
             }
@@ -222,7 +256,7 @@ struct ContentView: View {
                         }
                 }
             case .startBreakSheet:
-                ActionView(navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
+                ActionView(navTitle: "Start Break", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.currentShift?.shiftStartDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].startDate, actionType: .startBreak)
                     .environment(\.managedObjectContext, context)
                     .environmentObject(viewModel)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
@@ -230,7 +264,7 @@ struct ContentView: View {
                     .customSheetBackground()
                 
             case .endShiftSheet:
-                ActionView(navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.shift?.startDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift, job: selectedJobManager.fetchJob(in: context))
+                ActionView(navTitle: "End Shift", pickerStartDate: viewModel.tempBreaks.isEmpty ? viewModel.currentShift?.shiftStartDate : viewModel.tempBreaks[viewModel.tempBreaks.count - 1].endDate, actionType: .endShift)
                     .environment(\.managedObjectContext, context)
                     .environmentObject(viewModel)
                     .presentationDetents([.fraction((UIScreen.main.bounds.height) == 667 || (UIScreen.main.bounds.height) == 736 ? 0.7 : 0.55)])
@@ -258,16 +292,33 @@ struct ContentView: View {
         }
         .onAppear{
             print("Breaks in the breaks array: \(viewModel.tempBreaks.count)") //debugging
-            if let hourlyPayValue = UserDefaults.standard.object(forKey: shiftKeys.hourlyPayKey) as? Double {
+         /*   if let hourlyPayValue = UserDefaults.standard.object(forKey: shiftKeys.hourlyPayKey) as? Double {
                 viewModel.hourlyPay = hourlyPayValue
-            }
+            }*/
             
             let randomValue = Int.random(in: 1...100) // Generate a random number between 1 and 100
             viewModel.shouldShowPopup = randomValue <= 20
             viewModel.isFirstLaunch = !UserDefaults.standard.bool(forKey: "hasLaunchedBefore")
             UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
             print("I have appeared")
-            if let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date {
+            
+            
+            
+            // check for any active shift
+            
+            viewModel.checkForActiveShiftAndManageTimer(using: context) { success, error in
+                if success {
+                    viewModel.newStartShift(using: context)
+                }
+            }
+            
+            // still need to load tags!
+       
+            // this is done in the above function anyway
+            viewModel.loadSelectedTags()
+            
+            
+          /*  if let shiftStartDate = sharedUserDefaults.object(forKey: shiftKeys.shiftStartDateKey) as? Date {
                 if viewModel.hourlyPay != 0 {
                     
                     
@@ -285,22 +336,42 @@ struct ContentView: View {
                     viewModel.stopTimer(timer: &viewModel.timer, timeElapsed: &viewModel.timeElapsed)
                     sharedUserDefaults.removeObject(forKey: shiftKeys.shiftStartDateKey)
                 }
-            }
+            }*/
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 navigationState.gestureEnabled = true
             }
         }
+
+        
         .onReceive(NotificationCenter.default.publisher(for: .didEnterRegion), perform: { notification in
             
-            if let jobID = notification.userInfo?["jobID"] as? UUID, let job = selectedJobManager.fetchJob(with: jobID, in: context), viewModel.shift == nil && !viewModel.isOnBreak{
+            if let jobID = notification.userInfo?["jobID"] as? UUID, let job = selectedJobManager.fetchJob(with: jobID, in: context), viewModel.currentShift == nil && !viewModel.isOnBreak{
                 selectedJobManager.selectJob(job, with: jobs, shiftViewModel: viewModel)
-                viewModel.startShift(using: context, startDate: Date(), job: job)
+                
+                viewModel.newStartShift(using: context, startDate: Date(), job: job)
+          
             }
         })
         .onReceive(NotificationCenter.default.publisher(for: .didExitRegion), perform: { _ in
-            
-            if viewModel.shift != nil && !viewModel.isOnBreak {
-                viewModel.endShift(using: context, endDate: Date(), job: selectedJobManager.fetchJob(in: context)!)
+            // might cause clock outs if theyre clocked in for one job but exit the location of another?
+            if viewModel.currentShift != nil && !viewModel.isOnBreak {
+
+                viewModel.newEndShift(using: context, endDate: Date()) { result in
+                    DispatchQueue.main.async {
+                        switch result {
+                        case .success(let endedShift):
+                            
+                            print("Shift ended successfully. Details: \(endedShift)")
+                            
+                            try? viewModel.lastEndedShift = result.get()
+                            
+                        case .failure(let error):
+                            
+                            print("Failed to end shift: \(error.localizedDescription)")
+                            
+                        }
+                    }
+                }
             }
         })
     }

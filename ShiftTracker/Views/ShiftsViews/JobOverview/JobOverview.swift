@@ -80,52 +80,44 @@ struct JobOverview: View {
         }
     }
     
-    init(navPath: Binding<NavigationPath>, job: Job? = nil){
+    init(navPath: Binding<NavigationPath>, job: Job? = nil) {
         print("job overview itself got reinitialised")
+        
+        let excludeActiveShiftPredicate = NSPredicate(format: "isActive == NO")
         
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         let weekFetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         let lastTenFetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         
-        
-        
         let oneWeekAgo = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: Date().endOfDay) ?? Date()
-        
         let weekFetchDatePredicate = NSPredicate(format: "shiftStartDate >= %@", oneWeekAgo as NSDate)
         
+        var predicates: [NSPredicate] = [excludeActiveShiftPredicate]
         if let jobID = job?.objectID {
-            fetchRequest.predicate = NSPredicate(format: "job == %@", jobID)
-            
-            let compoundPredicate = NSCompoundPredicate(type: .and, subpredicates: [NSPredicate(format: "job == %@", jobID), weekFetchDatePredicate])
-            
-            weekFetchRequest.predicate = compoundPredicate
-            
-            lastTenFetchRequest.predicate = NSPredicate(format: "job == %@", jobID)
-            
-            
-        } else {
-            weekFetchRequest.predicate = weekFetchDatePredicate
+            predicates.append(NSPredicate(format: "job == %@", jobID))
         }
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        
+        predicates.append(weekFetchDatePredicate)
+        weekFetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        
+        lastTenFetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [excludeActiveShiftPredicate, NSPredicate(format: "job == %@", job?.objectID ?? NSManagedObjectID())])
+        
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
         weekFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
         lastTenFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
-        _shifts = FetchRequest(fetchRequest: fetchRequest)
-        _weeklyShifts = FetchRequest(fetchRequest: weekFetchRequest)
-        
         lastTenFetchRequest.fetchLimit = 10
         
+        _shifts = FetchRequest(fetchRequest: fetchRequest)
+        _weeklyShifts = FetchRequest(fetchRequest: weekFetchRequest)
         _lastTenShifts = FetchRequest(fetchRequest: lastTenFetchRequest)
         
-        
-        
         _navPath = navPath
-        
         _overviewModel = StateObject(wrappedValue: JobOverviewViewModel(job: job))
         
-        
         UITableView.appearance().backgroundColor = UIColor.clear
-        
     }
+
     
     
     @Binding var navPath: NavigationPath
@@ -773,7 +765,7 @@ struct JobOverview: View {
                 Text("Edit Job")
                 Image(systemName: "pencil")
             }
-        }.disabled(overviewModel.job == nil || ContentViewModel.shared.shift != nil)
+        }.disabled(overviewModel.job == nil || ContentViewModel.shared.currentShift != nil)
     }
     
     func deleteShift(_ shift: OldShift) {

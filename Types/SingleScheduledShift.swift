@@ -61,7 +61,7 @@ struct SingleScheduledShift: Hashable, Identifiable {
     init(oldShift: OldShift){
         
         self.startDate = oldShift.shiftStartDate!
-        self.endDate = oldShift.shiftEndDate!
+        self.endDate = oldShift.shiftEndDate ?? Date() // TODO: COME BACK! DONT FORCE!
         
         self.id = oldShift.shiftID ?? UUID()
         

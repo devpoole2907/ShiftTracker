@@ -73,7 +73,7 @@ struct TimerView: View {
 
         private var taxedPay: Double {
             let pay = totalPay
-            let taxPercentage = sharedUserDefaults.double(forKey: shiftKeys.taxPercentageKey)
+            let taxPercentage = viewModel.taxPercentage
             let afterTax = pay - (pay * taxPercentage / 100.0)
             return afterTax
         }
@@ -104,7 +104,7 @@ struct TimerView: View {
         VStack(alignment: .center, spacing: 5) {
  
                 // This is the center aligned text
-                Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
+            Text("\(currencyFormatter.string(from: NSNumber(value: totalPay)) ?? "")")
                     .padding(.horizontal, 20)
                     .font(.system(size: 60).monospacedDigit())
                     .fontWeight(.bold)
@@ -118,7 +118,7 @@ struct TimerView: View {
             .padding(.top)
 
             
-            if sharedUserDefaults.double(forKey: shiftKeys.taxPercentageKey) > 0 {
+            if taxedPay != totalPay {
                 HStack(spacing: 2){
                     Image(systemName: "chart.line.downtrend.xyaxis")
                         .font(.system(size: 15).monospacedDigit())
@@ -137,7 +137,7 @@ struct TimerView: View {
                 
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 5)
-            }
+                }
             
             Divider().frame(maxWidth: 200)
             

@@ -53,7 +53,16 @@ struct ContentViewButtonsView: View {
                     action: {
                         CustomConfirmationAlert(action: {
                             viewModel.uncompleteCancelledScheduledShift(viewContext: viewContext)
-                            viewModel.cancelShift()
+                            viewModel.cancelShift(using: viewContext) { result in
+                                            switch result {
+                                            case .success():
+                                                print("Successfully canceled and deleted all active shifts.")
+                                           
+                                            case .failure(let error):
+                                                print("Failed to cancel shifts: \(error.localizedDescription)")
+                                               
+                                            }
+                                        }
                         }, cancelAction: nil, title: "Cancel your upcoming shift?").showAndStack()
                         
                     },
@@ -76,8 +85,8 @@ struct ContentViewButtonsView: View {
                     AnimatedButton(
                         action: { navigationState.activeSheet = .endShiftSheet },
                         title: "End Shift",
-                        backgroundColor: (viewModel.shift == nil || (viewModel.shift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
-                        isDisabled: viewModel.shift == nil || viewModel.isOnBreak || viewModel.isEditing
+                        backgroundColor: (viewModel.currentShift == nil || (viewModel.currentShift != nil && viewModel.isOnBreak) || viewModel.isEditing) ? disabledButtonColor : buttonColor,
+                        isDisabled: viewModel.currentShift == nil || viewModel.isOnBreak || viewModel.isEditing
                     )
                     
                 }

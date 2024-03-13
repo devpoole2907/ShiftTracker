@@ -45,9 +45,12 @@ struct PayPeriodShiftsList: View {
 
     init(payPeriod: PayPeriod, navPath: Binding<NavigationPath>, job: Job) {
         self.payPeriod = payPeriod
+            var predicates: [NSPredicate] = [NSPredicate(format: "isActive == NO")]
                let jobPredicate = NSPredicate(format: "job == %@", job)
                let datePredicate = NSPredicate(format: "shiftStartDate >= %@ AND shiftEndDate <= %@", payPeriod.startDate! as CVarArg, payPeriod.endDate! as CVarArg)
-               let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [jobPredicate, datePredicate])
+        predicates.append(jobPredicate)
+        predicates.append(datePredicate)
+               let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
                self._shifts = FetchRequest(
                    entity: OldShift.entity(),
                    sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)],

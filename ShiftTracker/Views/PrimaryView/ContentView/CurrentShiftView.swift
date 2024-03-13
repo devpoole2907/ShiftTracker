@@ -10,7 +10,6 @@ import CoreData
 
 struct CurrentShiftView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var selectedJobManager: JobSelectionManager
     @EnvironmentObject var viewModel: ContentViewModel
     
     static let dateFormatter: DateFormatter = {
@@ -19,11 +18,9 @@ struct CurrentShiftView: View {
         return formatter
     }()
     
-    @State private var job: Job?
-    
     var body: some View {
         
-        let startDate = viewModel.shift?.startDate ?? Date()
+        let startDate = viewModel.currentShift?.shiftStartDate ?? Date()
         
         VStack(alignment: .leading) {
              
@@ -44,7 +41,7 @@ struct CurrentShiftView: View {
     
                 Divider().frame(maxWidth: startDate > Date() ? 240 : 200)
          
-            if let job = job {
+            if let job = viewModel.currentShift?.job {
                 HStack{
                     
                     let color = Color(red: Double(job.colorRed), green: Double(job.colorGreen), blue: Double(job.colorBlue))
@@ -69,8 +66,6 @@ struct CurrentShiftView: View {
             }
             
             
-        }.onAppear {
-            job = selectedJobManager.fetchJob(in: viewContext)
         }
         
         .onReceive(viewModel.$timeElapsed) { _ in

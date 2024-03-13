@@ -330,8 +330,25 @@ struct ActionView: View {
                         // delete any scheduled shifts marked complete
                         
                         viewModel.deleteCompletedScheduledShifts(viewContext: viewContext)
+
+                        viewModel.newEndShift(using: viewContext, endDate: actionDate) { result in
+                            DispatchQueue.main.async {
+                                switch result {
+                                case .success(let endedShift):
+                                    
+                                    print("Shift ended successfully. Details: \(endedShift)")
+                                    
+                                    try? viewModel.lastEndedShift = result.get()
+                                    
+                                case .failure(let error):
+                                    
+                                    print("Failed to end shift: \(error.localizedDescription)")
+                                   
+                                }
+                            }
+                        }
                         
-                        viewModel.lastEndedShift = viewModel.endShift(using: viewContext, endDate: actionDate, job: self.job!)
+                        
                         dismiss()
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -342,7 +359,16 @@ struct ActionView: View {
                     .contextMenu {
                         Button(action: {
                             viewModel.uncompleteCancelledScheduledShift(viewContext: viewContext)
-                            viewModel.cancelShift()
+                            viewModel.cancelShift(using: viewContext) { result in
+                                            switch result {
+                                            case .success():
+                                                print("Successfully canceled and deleted all active shifts.")
+                                        
+                                            case .failure(let error):
+                                                print("Failed to cancel shifts: \(error.localizedDescription)")
+                                      
+                                            }
+                                        }
                             
                             dismiss()
                         }){
@@ -366,7 +392,6 @@ struct ActionView: View {
                         viewModel.clockOutReminderTime = self.clockOutReminderTime
                         viewModel.payMultiplier = self.payMultiplier
                         viewModel.isMultiplierEnabled = self.payMultiplier > 1.0
-                        viewModel.savePayMultiplier() //saves to user defaults
                         
                         // auto clock out at the clock out reminder time:
                         

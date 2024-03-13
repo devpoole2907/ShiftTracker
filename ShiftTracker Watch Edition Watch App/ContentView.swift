@@ -453,7 +453,7 @@ struct ActionView: View {
                 )
                 
                 Button(action: {
-                    viewModel.endShift(using: context, endDate: actionDate)
+                  //  viewModel.endShift(using: context, endDate: actionDate)
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     HStack {

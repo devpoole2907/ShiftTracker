@@ -54,19 +54,21 @@ struct ChartWidgetProvider: IntentTimelineProvider {
     
     private func fetchShifts(forJob job: Job?) throws -> [OldShift] {
         let context = PersistenceController.shared.container.viewContext
-
-
         
         let request: NSFetchRequest<OldShift> = OldShift.fetchRequest()
-        request.predicate = nil
-        if let job = job {
-            request.predicate = NSPredicate(format: "job == %@", job)
+        var predicates: [NSPredicate] = [NSPredicate(format: "isActive == NO")]
 
+        if let job = job {
+            let jobPredicate = NSPredicate(format: "job == %@", job)
+            predicates.append(jobPredicate)
         }
-       
+
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        
         let result = try context.fetch(request)
         return result
     }
+
 
 
 

@@ -41,7 +41,7 @@ struct JobRow: View {
             Spacer()
             if showEdit{
                 Button(action: {
-                    if (isSelected && viewModel.shift == nil) || !isSelected {
+                    if (isSelected && viewModel.currentShift == nil) || !isSelected {
                         editAction()
                     }
                     else {
