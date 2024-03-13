@@ -710,10 +710,6 @@ class ContentViewModel: ObservableObject {
         }
     
     func newStartShift(using viewContext: NSManagedObjectContext, startDate: Date? = nil, job: Job? = nil) {
-        guard hourlyPay != 0 else {
-            print("Hourly pay is not set. Shift cannot start.")
-            return
-        }
         
         let fetchRequest: NSFetchRequest<OldShift> = OldShift.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "isActive == YES")

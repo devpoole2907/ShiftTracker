@@ -31,7 +31,7 @@ struct ContentViewButtonsView: View {
                 AnimatedButton(
                     action: { navigationState.activeSheet = .startShiftSheet }, title: "Start Shift",
                     backgroundColor: buttonColor,
-                    isDisabled: viewModel.hourlyPay == 0 || selectedJobManager.selectedJobUUID == nil
+                    isDisabled:  selectedJobManager.selectedJobUUID == nil
                 )
                 .frame(maxWidth: .infinity)
                 .onAppear(perform: viewModel.prepareHaptics)
