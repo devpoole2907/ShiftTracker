@@ -8,15 +8,18 @@
 import Foundation
 import SwiftUI
 import CoreData
+import Combine
 
 class JobViewModel: ObservableObject {
+    
+    private var cancellables = Set<AnyCancellable>()
     
     let jobIcons = [
         "briefcase.fill", "display", "tshirt.fill", "takeoutbag.and.cup.and.straw.fill", "trash.fill",
         "wineglass.fill", "cup.and.saucer.fill", "film.fill", "building.columns.fill", "camera.fill", "camera.macro", "bus.fill", "box.truck.fill", "fuelpump.fill", "popcorn.fill", "cross.case.fill", "frying.pan.fill", "cart.fill", "paintbrush.fill", "wrench.adjustable.fill",
-                "car.fill", "ferry.fill", "bolt.fill", "books.vertical.fill",
-                    "newspaper.fill", "theatermasks.fill", "lightbulb.led.fill", "spigot.fill"]
-
+        "car.fill", "ferry.fill", "bolt.fill", "books.vertical.fill",
+        "newspaper.fill", "theatermasks.fill", "lightbulb.led.fill", "spigot.fill"]
+    
     let jobColors = [
         Color.pink, Color.green, Color.blue, Color.purple, Color.orange, Color.cyan]
     
@@ -24,8 +27,15 @@ class JobViewModel: ObservableObject {
     
     var job: Job?
     
+    enum JobSaveError: Error {
+        case duplicateName
+        case hourlyPayIsZero
+        // add more errors for in future, safer than the simple existing checks
+    }
+    
     @Published var miniMapAnnotation: IdentifiablePointAnnotation?
     @Published var name = ""
+    @Published var isNameDuplicate: Bool = false // to check for name duplicates
     @Published var title = ""
     @Published var hourlyPay: String = ""
     @Published var taxPercentage: Double = 0
@@ -116,28 +126,67 @@ class JobViewModel: ObservableObject {
         
         self.enableInvoices = job?.enableInvoices ?? true
         
+        setupNameDebounce()
         
     }
     
-    func saveJob(in viewContext: NSManagedObjectContext, locationManager: LocationDataManager, selectedJobManager: JobSelectionManager, jobViewModel: JobViewModel, contentViewModel: ContentViewModel) {
+    private func setupNameDebounce() {
+        $name
+            .debounce(for: .seconds(0.75), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] in self?.checkForDuplicateJobName($0) }
+            .store(in: &cancellables)
+    }
+    
+    private func checkForDuplicateJobName(_ name: String) {
+        let exists = jobNameExists(name, excluding: job?.objectID)
+        DispatchQueue.main.async {
+            self.isNameDuplicate = exists
+        }
+    }
+    
+    func jobNameExists(_ name: String, excluding jobId: NSManagedObjectID? = nil) -> Bool {
+        let fetchRequest: NSFetchRequest<Job> = Job.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name ==[c] %@", name)
         
+        let context = PersistenceController.shared.container.viewContext
+        
+        do {
+            let results = try context.fetch(fetchRequest)
+            if let jobId = jobId {
+                return results.contains { $0.objectID != jobId && $0.name?.lowercased() == name.lowercased() }
+            }
+            return !results.isEmpty
+        } catch {
+            print("Failed to fetch job names: \(error)")
+            return false
+        }
+    }
+    
+    func saveJob(in viewContext: NSManagedObjectContext, locationManager: LocationDataManager, selectedJobManager: JobSelectionManager, jobViewModel: JobViewModel, contentViewModel: ContentViewModel, completion: @escaping (Bool, Error?) -> Void) {
+        
+        let isDuplicate = jobViewModel.jobNameExists(name, excluding: job?.objectID)
+            if isDuplicate {
+                completion(false, JobSaveError.duplicateName)
+                return // Stop execution
+            }
         
         let notificationManager = ShiftNotificationManager.shared
         
         var newJob: Job
-
+        
         if let job = job {
             // Job exists, so we are editing
             print("yeah job exists")
             newJob = job
-
+            
             if name != job.name {
                 // The name has been modified... migrate any invoices and timesheets!
                 let fileManager = FileManager.default
                 let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
                 let oldDirectory = documentsDirectory.appendingPathComponent(job.name ?? "")
                 let newDirectory = documentsDirectory.appendingPathComponent(name)
-
+                
                 do {
                     try fileManager.createDirectory(at: newDirectory, withIntermediateDirectories: true, attributes: nil)
                     if fileManager.fileExists(atPath: oldDirectory.path) {
@@ -153,7 +202,7 @@ class JobViewModel: ObservableObject {
                             }
                             try fileManager.removeItem(at: oldInvoicesDirectory)
                         }
-
+                        
                         // Migrate timesheets
                         let oldTimesheetsDirectory = oldDirectory.appendingPathComponent("Timesheets")
                         let newTimesheetsDirectory = newDirectory.appendingPathComponent("Timesheets")
@@ -166,7 +215,7 @@ class JobViewModel: ObservableObject {
                             }
                             try fileManager.removeItem(at: oldTimesheetsDirectory)
                         }
-
+                        
                         // Remove the old job directory if it's empty
                         if let contents = try? fileManager.contentsOfDirectory(atPath: oldDirectory.path), contents.isEmpty {
                             try fileManager.removeItem(at: oldDirectory)
@@ -181,11 +230,17 @@ class JobViewModel: ObservableObject {
             newJob = Job(context: viewContext)
             newJob.uuid = UUID()
         }
-
+        
         
         newJob.name = name
         newJob.title = title
-        newJob.hourlyPay = Double(hourlyPay) ?? 0.0
+        
+        if let newHourlyPay = Double(hourlyPay), newHourlyPay > 0 {
+            newJob.hourlyPay = newHourlyPay
+        } else {
+            completion(false, JobSaveError.hourlyPayIsZero)
+        }
+        
         newJob.clockInReminder = clockInReminder
         newJob.clockOutReminder = clockOutReminder
         newJob.tax = taxPercentage
@@ -201,9 +256,9 @@ class JobViewModel: ObservableObject {
         newJob.rosterDayOfWeek = Int16(selectedDay)
         newJob.breakReminder = breakReminder
         newJob.breakReminderTime = breakRemindAfter
-
+        
         newJob.payPeriodEnabled = payPeriodsEnabled
-
+        
         // replace this code with adding locations later when multiple address system update releases
         if let locationSet = newJob.locations, let location = locationSet.allObjects.first as? JobLocation {
             location.address = selectedAddress
@@ -213,9 +268,9 @@ class JobViewModel: ObservableObject {
             location.radius = selectedRadius
             newJob.addToLocations(location)
         }
-
         
-
+        
+        
         
         
         let uiColor = UIColor(selectedColor)
@@ -260,36 +315,40 @@ class JobViewModel: ObservableObject {
                     
                 }
             }
- 
+            
+            completion(true, nil)
+            
         } catch {
             print("Failed to save job: \(error.localizedDescription)")
+            completion(false, error)
         }
         
-     
+        
         
         
     }
     
+    
     @MainActor func deleteJob(in viewContext: NSManagedObjectContext, selectedJobManager: JobSelectionManager, completion: () -> Void) {
-         
-         let scheduleModel = SchedulingViewModel()
+        
+        let scheduleModel = SchedulingViewModel()
         
         // need to delete any system calendar events first before deleting
-         
-         if let shifts = job?.scheduledShifts as? Set<ScheduledShift> {
-             
-             for shift in shifts {
-
-                 if let eventID = shift.calendarEventID {
-                     scheduleModel.deleteEventFromCalendar(eventIdentifier: eventID)
-                 }
-                 
-                 
-             }
-             
-         }
-         
-         //
+        
+        if let shifts = job?.scheduledShifts as? Set<ScheduledShift> {
+            
+            for shift in shifts {
+                
+                if let eventID = shift.calendarEventID {
+                    scheduleModel.deleteEventFromCalendar(eventIdentifier: eventID)
+                }
+                
+                
+            }
+            
+        }
+        
+        //
         
         if job!.uuid == selectedJobManager.selectedJobUUID {
             

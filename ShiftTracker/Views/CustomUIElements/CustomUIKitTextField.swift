@@ -95,13 +95,21 @@ struct CustomUIKitTextField: UIViewRepresentable {
     
     func updateUIView(_ uiView: UITextField, context: Context) {
         uiView.text = text
-        if let showAlertSymbol = showAlertSymbol, showAlertSymbol {
-            uiView.leftView?.isHidden = !text.isEmpty // Show the alert icon only if the text is empty
-        } else {
-            uiView.leftView?.isHidden = true // Always hide the alert icon if showAlertSymbol is false or nil
-        }
+        
+        // Always ensure the left view is correctly set based on showAlertSymbol
+        if showAlertSymbol ?? false {
+            let alertIcon = UIImage(systemName: "exclamationmark.triangle.fill") // Using SF Symbols for the alert icon
+            let alertIconView = UIImageView(image: alertIcon)
+            alertIconView.tintColor = .gray // You might want this to be more attention-grabbing
 
+            // Set or update the left view of the text field to the alert icon view
+            uiView.leftView = alertIconView
+            uiView.leftViewMode = .always
+        } else {
+            uiView.leftView = nil
+        }
     }
+
     
     func addToolbar(_ textField: UITextField, context: Context) {
         let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))

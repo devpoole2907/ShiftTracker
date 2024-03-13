@@ -170,7 +170,7 @@ struct JobView: View {
                floatingButtons
                 
                 
-            }
+            } .ignoresSafeArea(.keyboard)
             
             .navigationTitle(jobTitle)
             
@@ -266,7 +266,7 @@ struct JobView: View {
                 
             }.frame(height: 80)
             
-            CustomUIKitTextField(placeholder: "Company/Client Name", text: $jobViewModel.name, centerAlign: true, rounded: true, capitaliseWords: true)
+            CustomUIKitTextField(placeholder: "Company/Client Name", text: $jobViewModel.name, centerAlign: true, rounded: true, capitaliseWords: true, showAlertSymbol: jobViewModel.isNameDuplicate)
                 .minimumScaleFactor(0.5)
                 .bold()
                 .multilineTextAlignment(.center)
@@ -577,8 +577,8 @@ struct JobView: View {
         
             
             jobViewModel.buttonBounce.toggle()
-            
-            if jobViewModel.name.isEmpty {
+            // check for duplicate again here because if user is fast enough they can beat the debounced check
+        if jobViewModel.name.isEmpty || jobViewModel.jobNameExists(jobViewModel.name, excluding: jobViewModel.job?.objectID){
                 withAnimation(.linear(duration: 0.4)) {
                     jobViewModel.nameShakeTimes += 2
                 }
@@ -601,9 +601,15 @@ struct JobView: View {
             else {
                 print("saving")
                 
-                jobViewModel.saveJob(in: viewContext, locationManager: locationManager, selectedJobManager: selectedJobManager, jobViewModel: jobViewModel, contentViewModel: contentViewModel)
+                jobViewModel.saveJob(in: viewContext, locationManager: locationManager, selectedJobManager: selectedJobManager, jobViewModel: jobViewModel, contentViewModel: contentViewModel) { success, _ in
+                    
+                    if success {
+                        dismiss() // dont dismiss view if it fails due to a matching name found for example
+                    }
+                    
+                }
                 
-                dismiss()
+               
                 
             }
             
@@ -623,22 +629,23 @@ struct JobView: View {
             
             if job != nil {
                 
-                HStack {
-                    Spacer()
-                HStack(spacing: 10){
+            
+                HStack(spacing: 2){
+                    
+                    ActionButtonView(title: jobViewModel.isNameDuplicate ? "Duplicate Job Name Found" : "Update Job", backgroundColor: buttonColor, textColor: textColor, icon: jobViewModel.isNameDuplicate ? "exclamationmark.triangle.fill" : "folder.badge.plus", buttonWidth: getRect().width - 120) {
+                    
+                    jobButtonAction()
                     
                     
                     
-                    Button(action: {
-                        jobButtonAction()
-                    }) {
-                        Image(systemName: "folder.badge.plus").customAnimatedSymbol(value: $jobViewModel.buttonBounce)
-                            .bold()
-                    }
+                }
+                    
+                        .opacity(!jobViewModel.isNameDuplicate ? 1.0 : 0.5)
+                        .disabled(jobViewModel.isNameDuplicate)
                     
                     if job != nil {
                         
-                        Divider().frame(maxHeight: 10)
+                      
                         
                         
                         Button(action: {
@@ -670,27 +677,32 @@ struct JobView: View {
                             Image(systemName: "trash")
                                 .foregroundColor(.red)
                                 .bold()
-                        }
+                        }.padding(18)
+                            .glassModifier(cornerRadius: 20, darker: true)
+                            .padding(.top, 0.5)
                         
                     }
                     
                     
                     
-                }.padding()
-                    .glassModifier(cornerRadius: 20)
+                }.padding(.bottom, getRect().height == 667 ? 10 : 0)
                 
-                    .padding()
                 
-            }
+            
             
             } else {
-                ActionButtonView(title: "Create Job", backgroundColor: buttonColor, textColor: textColor, icon: "folder.badge.plus", buttonWidth: getRect().width - 60) {
+                
+                ActionButtonView(title: jobViewModel.isNameDuplicate ? "Duplicate Job Name Found" : "Create Job", backgroundColor: buttonColor, textColor: textColor, icon: jobViewModel.isNameDuplicate ? "exclamationmark.triangle.fill" : "folder.badge.plus", buttonWidth: getRect().width - 60) {
                 
                 jobButtonAction()
                 
                 
                 
             }.padding(.bottom, getRect().height == 667 ? 10 : 0)
+                
+                    .opacity(!jobViewModel.isNameDuplicate ? 1.0 : 0.5)
+                    .disabled(jobViewModel.isNameDuplicate)
+                
             }
             
             
