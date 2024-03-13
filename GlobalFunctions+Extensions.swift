@@ -285,37 +285,48 @@ extension PayPeriod {
 
 
 func createTags(in viewContext: NSManagedObjectContext) {
-    let tagNames = ["Night", "Overtime", "Late"]
-    let tagColors = [UIColor(.indigo), UIColor(.orange), UIColor(.pink)]
+    let tagDetails = [
+            ("night", "Night", UIColor(.indigo)),
+            ("overtime", "Overtime", UIColor(.orange)),
+            ("late", "Late", UIColor(.pink))
+        ]
     
-    for index in tagNames.indices {
-        let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "name == %@", tagNames[index])
-        
-        do {
-            let existingTags = try viewContext.fetch(fetchRequest)
-            
-            // delete existing tags with same name
-            for tag in existingTags {
-                viewContext.delete(tag)
-            }
-   
-            let tag = Tag(context: viewContext)
-            tag.name = tagNames[index]
-            
-            let (r, g, b) = tagColors[index].rgbComponents
-            tag.colorRed = Double(r)
-            tag.colorGreen = Double(g)
-            tag.colorBlue = Double(b)
-            tag.tagID = UUID()
-            tag.editable = false
-            
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-    }
+    for (tagKey, name, color) in tagDetails {
+           let fetchRequest: NSFetchRequest<Tag> = Tag.fetchRequest()
+           fetchRequest.predicate = NSPredicate(format: "tagKey == %@", tagKey)
+           
+           do {
+               let tags = try viewContext.fetch(fetchRequest)
+               let tag: Tag
+               
+               if tags.count > 1 {
+                   for (index, duplicateTag) in tags.enumerated() {
+                       if index > 0 { // Keep the first one, delete the rest.
+                           viewContext.delete(duplicateTag)
+                       }
+                   }
+               }
+               
+               if let existingTag = tags.first {
+                   tag = existingTag
+               } else {
+                   tag = Tag(context: viewContext)
+                   tag.tagID = UUID()
+                   tag.tagKey = tagKey
+               }
+               
+               tag.name = name
+               let (r, g, b) = color.rgbComponents
+               tag.colorRed = Double(r)
+               tag.colorGreen = Double(g)
+               tag.colorBlue = Double(b)
+               tag.editable = false
+               
+               try viewContext.save()
+           } catch {
+               print("Error managing tags: \(error)")
+           }
+       }
 }
 
 

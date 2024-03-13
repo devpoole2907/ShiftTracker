@@ -109,6 +109,7 @@
         <attribute name="editable" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="tagID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="tagKey" optional="YES" attributeType="String"/>
         <relationship name="oldShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OldShift" inverseName="tags" inverseEntity="OldShift"/>
         <relationship name="scheduledShifts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ScheduledShift" inverseName="tags" inverseEntity="ScheduledShift"/>
     </entity>
