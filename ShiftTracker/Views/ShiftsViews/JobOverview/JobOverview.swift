@@ -370,9 +370,9 @@ struct JobOverview: View {
                 
                 overviewModel.appeared.toggle()
                 
-                if let job = selectedJobManager.fetchJob(in: viewContext) {
-                    payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods, job: job)
-                }
+             // update all pay periods
+                    payPeriodManager.updatePayPeriods(using: viewContext)
+                
                 
                 
             }
@@ -402,7 +402,7 @@ struct JobOverview: View {
                 
                 if let job = selectedJobManager.fetchJob(in: viewContext) {
                     
-                    payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods, job: job)
+                    payPeriodManager.updatePayPeriods(using: viewContext, for: job)
                     
                 }
             }

@@ -241,7 +241,7 @@ struct PayPeriodsList: View {
             
             if let job = selectedJobManager.fetchJob(in: viewContext) {
                 
-                payPeriodManager.updatePayPeriods(using: viewContext, payPeriods: payPeriods, job: job)
+                payPeriodManager.updatePayPeriods(using: viewContext, for: job)
             } else {
                 // no job, dismiss
                 dismiss()
