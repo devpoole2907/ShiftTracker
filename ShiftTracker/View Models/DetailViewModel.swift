@@ -321,6 +321,8 @@ class DetailViewModel: ObservableObject {
             
             return
             
+        } else {
+            print("error! shift save failed")
         }
         
         withAnimation {
@@ -338,7 +340,6 @@ class DetailViewModel: ObservableObject {
         do {
             
             try viewContext.save()
-            
             
             
         } catch {
@@ -377,7 +378,7 @@ class DetailViewModel: ObservableObject {
             return
         }
         
-        
+        print("added shift")
        
         
         newShift.job = job

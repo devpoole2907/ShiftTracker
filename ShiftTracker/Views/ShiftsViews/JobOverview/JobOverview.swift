@@ -37,6 +37,11 @@ struct JobOverview: View {
     @FetchRequest(entity: PayPeriod.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \PayPeriod.startDate, ascending: false)])
     var payPeriods: FetchedResults<PayPeriod>
     
+    @FetchRequest(
+            entity: OldShift.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
+        ) var testShifts: FetchedResults<OldShift>
+    
     @State private var refreshPayPeriodID = UUID()
     @State private var lastViewedDate = Date()
     
@@ -101,7 +106,15 @@ struct JobOverview: View {
         predicates.append(weekFetchDatePredicate)
         weekFetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         
-        lastTenFetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [excludeActiveShiftPredicate, NSPredicate(format: "job == %@", job?.objectID ?? NSManagedObjectID())])
+        if let jobObjectId = job?.objectID {
+            
+            lastTenFetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [excludeActiveShiftPredicate, NSPredicate(format: "job == %@", jobObjectId)])
+            
+        } else {
+            lastTenFetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [excludeActiveShiftPredicate])
+        }
+        
+   
         
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
         weekFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \OldShift.shiftStartDate, ascending: false)]
@@ -129,6 +142,12 @@ struct JobOverview: View {
         ZStack(alignment: .bottomTrailing){
             
             List{
+                
+             /*   ForEach(testShifts, id: \.shiftID) { shift in
+                    
+                    ShiftDetailRow(shift: shift)
+                    
+                }*/
                 
                 
                 statsSection
@@ -312,7 +331,7 @@ struct JobOverview: View {
                     
                 case .addShiftSheet:
                     
-                    if overviewModel.job != nil {
+                   
                         
                         if let shift = overviewModel.selectedShiftToDupe {
                             NavigationStack{
@@ -325,7 +344,7 @@ struct JobOverview: View {
                             
                             
                             
-                        } else {
+                        } else if overviewModel.job != nil {
                             
                             
                             NavigationStack{
@@ -336,9 +355,11 @@ struct JobOverview: View {
                             .customSheetBackground()
                             .customSheetRadius(35)
                         }
-                    } else {
-                        Text("Error")
-                    }
+                        
+                        else {
+                            Text("Error")
+                        }
+                    
                     
                 case .symbolSheet:
                     JobIconPicker()
